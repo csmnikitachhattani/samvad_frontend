@@ -56,6 +56,7 @@ const LoginPage = () => {
       >
         <Box
           sx={{
+            
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

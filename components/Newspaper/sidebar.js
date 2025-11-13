@@ -4,12 +4,31 @@ import { useRouter, usePathname } from "next/navigation";
 import PersonIcon from "@mui/icons-material/Person";
 import DescriptionIcon from "@mui/icons-material/Description";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DashboardIcon from "@mui/icons-material/Dashboard"
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
 
   const isActive = (path) => pathname === path;
+  const menuItems = [
+    { 
+      label: "Dashboard", 
+      path: "/newspaper",
+      icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
+    },
+    {
+      label: "Profile",
+      path: "/newspaper/profile",
+      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Release Order",
+      path: "/newspaper/release-order",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    // Add more items here
+  ];
 
   return (
     <Box
@@ -60,39 +79,32 @@ export default function Sidebar() {
         </Box>
 
         <List sx={{ px: 0 }}>
-          <ListItemButton
-            onClick={() => router.push("/newspaper/profile")}
-            sx={{
-              borderRadius: "12px",
-              mb: 1,
-              py: 1.5,
-              px: 2,
-              bgcolor: isActive("/newspaper/profile") ? "rgba(255,255,255,0.25)" : "transparent",
-              border: isActive("/newspaper/profile") ? "1px solid rgba(255,255,255,0.4)" : "1px solid transparent",
-              transition: "all 0.3s",
-              "&:hover": { bgcolor: "rgba(255,255,255,0.2)", transform: "translateX(6px)" },
+      {menuItems.map((item) => (
+        <ListItemButton
+          key={item.path}
+          onClick={() => router.push(item.path)}
+          sx={{
+            borderRadius: "12px",
+            mb: 1,
+            py: 1.5,
+            px: 2,
+            bgcolor: isActive(item.path) ? "rgba(255,255,255,0.25)" : "transparent",
+            border: isActive(item.path) ? "1px solid rgba(255,255,255,0.4)" : "1px solid transparent",
+            transition: "all 0.3s",
+            "&:hover": { bgcolor: "rgba(255,255,255,0.2)", transform: "translateX(6px)" },
+          }}
+        >
+          {item.icon}
+          <ListItemText
+            primary={item.label}
+            primaryTypographyProps={{
+              fontWeight: isActive(item.path) ? 600 : 500,
+              fontSize: "0.95rem",
             }}
-          >
-            <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />
-            <ListItemText primary="Profile" primaryTypographyProps={{ fontWeight: isActive("/newspaper/profile") ? 600 : 500, fontSize: "0.95rem" }} />
-          </ListItemButton>
-
-          <ListItemButton
-            onClick={() => router.push("/newspaper/release-order")}
-            sx={{
-              borderRadius: "12px",
-              py: 1.5,
-              px: 2,
-              bgcolor: isActive("/newspaper/release-order") ? "rgba(255,255,255,0.25)" : "transparent",
-              border: isActive("/newspaper/release-order") ? "1px solid rgba(255,255,255,0.4)" : "1px solid transparent",
-              transition: "all 0.3s",
-              "&:hover": { bgcolor: "rgba(255,255,255,0.2)", transform: "translateX(6px)" },
-            }}
-          >
-            <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />
-            <ListItemText primary="Release Order" primaryTypographyProps={{ fontWeight: isActive("/newspaper/release-order") ? 600 : 500, fontSize: "0.95rem" }} />
-          </ListItemButton>
-        </List>
+          />
+        </ListItemButton>
+      ))}
+    </List>
       </Box>
 
       {/* Bottom Section */}
