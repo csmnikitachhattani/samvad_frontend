@@ -27,6 +27,11 @@ export default function Sidebar() {
       path: "/newspaper/release-order",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
+    {
+      label: "Bill Entry",
+      path: "/newspaper/bill-entry",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
     // Add more items here
   ];
 

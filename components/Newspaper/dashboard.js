@@ -134,7 +134,7 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <Box mb={4}>
           <Typography variant="h5" fontWeight="bold" color="#1f2937">
-            Welcome back, Admin! 👋
+            Welcome back, Newspaper Admin! 👋
           </Typography>
           <Typography color="gray">Here’s what’s happening today.</Typography>
         </Box>

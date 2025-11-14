@@ -285,14 +285,14 @@ export default function ReleaseOrderListing() {
           <Button variant="outlined" startIcon={<DownloadIcon />} onClick={handleExportCSV}>
             Export
           </Button>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={handleNewRO} sx={{ background: "linear-gradient(135deg,#FF7A00,#E65100)" }}>
+          {/* <Button variant="contained" startIcon={<AddIcon />} onClick={handleNewRO} sx={{ background: "linear-gradient(135deg,#FF7A00,#E65100)" }}>
             New RO
-          </Button>
+          </Button> */}
         </Stack>
       </Box>
 
       {/* Summary Cards */}
-      <Grid container spacing={2} sx={{ mb: 3 }}>
+      {/* <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={6} sm={3}>
           <Card sx={{ p: 2 }}>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
@@ -333,7 +333,7 @@ export default function ReleaseOrderListing() {
             </Typography>
           </Card>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       {/* Controls */}
       <Paper sx={{ p: 2, mb: 2 }}>
@@ -391,7 +391,7 @@ export default function ReleaseOrderListing() {
             <TableRow>
               <TableCell>RO ID</TableCell>
               <TableCell>Title</TableCell>
-              <TableCell>Department</TableCell>
+              {/* <TableCell>Department</TableCell> */}
               <TableCell>Release Date</TableCell>
               <TableCell>Publish Date</TableCell>
               <TableCell>Status</TableCell>
@@ -416,11 +416,15 @@ export default function ReleaseOrderListing() {
                   <Typography sx={{ fontWeight: 600 }}>{row.title}</Typography>
                   <Typography variant="caption" color="text.secondary">Created by {row.createdBy}</Typography>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Chip label={row.department} size="small" />
-                </TableCell>
+                </TableCell> */}
                 <TableCell>{formatDate(row.releaseDate)}</TableCell>
-                <TableCell>{formatDate(row.publishDate)}</TableCell>
+                <TableCell>
+                  {row.publishDate
+                    ? formatDate(row.publishDate)    // if date exists
+                    : "not published"}
+                </TableCell>
                 <TableCell>
                   <Chip label={row.status} color={statusColor(row.status)} size="small" />
                 </TableCell>
@@ -430,19 +434,19 @@ export default function ReleaseOrderListing() {
                       {row.proof}
                     </Button>
                   ) : (
-                    <Button startIcon={<UploadFileIcon />} size="small" onClick={() => handleUploadProof(row)}>
-                      Upload
-                    </Button>
-                  )}
+                      <Button startIcon={<UploadFileIcon />} size="small" onClick={() => handleUploadProof(row)}>
+                        Upload
+                      </Button>
+                    )}
                 </TableCell>
                 <TableCell align="right">
                   <Stack direction="row" spacing={1} justifyContent="flex-end">
                     <IconButton size="small" color="primary" onClick={() => handleView(row)}>
                       <VisibilityIcon />
                     </IconButton>
-                    <IconButton size="small" color="info" onClick={() => handleEdit(row)}>
+                    {/* <IconButton size="small" color="info" onClick={() => handleEdit(row)}>
                       <EditIcon />
-                    </IconButton>
+                    </IconButton> */}
                   </Stack>
                 </TableCell>
               </TableRow>
