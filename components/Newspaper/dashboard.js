@@ -140,14 +140,15 @@ export default function Dashboard() {
         </Box>
 
         {/* Stats Grid */}
-        <Grid container spacing={1}>
+        <Grid container spacing={2} justifyContent="space-between">
           {stats.map((stat, i) => (
-            <Grid item xs={12} sm={6} key={i}>
+            <Grid item xs={12} sm={6} md={4} key={i}>
               <Card
                 sx={{
                   p: 3,
                   borderRadius: "16px",
                   border: "1px solid #e5e7eb",
+                  width: "300px",
                   ":hover": {
                     boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                   },

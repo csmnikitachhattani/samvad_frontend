@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Dashboard from "@/components/Newspaper/dashboard"
+import NoticeBoard from "@/components/Newspaper/noticeboard"
 import {
   Box,
   Card,
@@ -27,8 +28,12 @@ function ReleaseOrderListing() {
 
   return (
   <Box>
-    <Box>
+    <Box sx={{width: "100%"}}>
       <Dashboard />
+    </Box>
+    <Box>
+    <Divider sx={{ mb: 3 }} />
+      <NoticeBoard />
     </Box>
     <Card
       sx={{
@@ -55,8 +60,8 @@ function ReleaseOrderListing() {
         Release Order Listing
       </Typography>
 
+      
       <Divider sx={{ mb: 3 }} />
-
       <TableContainer
         component={Paper}
         sx={{
