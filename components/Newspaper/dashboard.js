@@ -69,7 +69,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#f9fafb" }}>
+    <Box sx={{ bgcolor: "#f9fafb" }}>
       {/* HEADER */}
       <Box
         sx={{
@@ -140,7 +140,7 @@ export default function Dashboard() {
         </Box>
 
         {/* Stats Grid */}
-        <Grid container spacing={3}>
+        <Grid container spacing={1}>
           {stats.map((stat, i) => (
             <Grid item xs={12} sm={6} key={i}>
               <Card

@@ -85,9 +85,9 @@ export default function Sidebar() {
           onClick={() => router.push(item.path)}
           sx={{
             borderRadius: "12px",
-            mb: 1,
-            py: 1.5,
-            px: 2,
+            mb: 0.5,
+            py: 1,
+            px: 1,
             bgcolor: isActive(item.path) ? "rgba(255,255,255,0.25)" : "transparent",
             border: isActive(item.path) ? "1px solid rgba(255,255,255,0.4)" : "1px solid transparent",
             transition: "all 0.3s",
@@ -99,7 +99,7 @@ export default function Sidebar() {
             primary={item.label}
             primaryTypographyProps={{
               fontWeight: isActive(item.path) ? 600 : 500,
-              fontSize: "0.95rem",
+              fontSize: "0.75rem",
             }}
           />
         </ListItemButton>
@@ -118,7 +118,7 @@ export default function Sidebar() {
             bgcolor: "rgba(255, 255, 255, 0.15)",
             color: "#fff",
             borderRadius: "12px",
-            py: 1.2,
+            py: 1,
             fontWeight: 600,
             textTransform: "none",
             fontSize: "0.95rem",
