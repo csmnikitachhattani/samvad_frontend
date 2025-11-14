@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Dashboard from "@/components/Newspaper/dashboard"
 import {
   Box,
   Card,
@@ -25,6 +26,10 @@ function ReleaseOrderListing() {
   ];
 
   return (
+  <Box>
+    <Box>
+      <Dashboard />
+    </Box>
     <Card
       sx={{
         p: 3,
@@ -96,6 +101,7 @@ function ReleaseOrderListing() {
         </Typography>
       </Box>
     </Card>
+  </Box>
   );
 }
 
