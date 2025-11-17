@@ -37,86 +37,129 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 /* -------------------------
    MOCK DATA
    ------------------------- */
-const MOCK_RELEASE_ORDERS = [
-  {
-    id: "RO-0012",
-    title: "City Marathon 2025",
-    department: "Editorial",
-    releaseDate: "2025-11-06",
-    publishDate: "2025-11-08",
-    status: "Published",
-    proof: "proof.pdf",
-    amount: 12000,
-    createdBy: "Ashish R.",
-  },
-  {
-    id: "RO-0013",
-    title: "New Ad Campaign",
-    department: "Ads",
-    releaseDate: "2025-11-05",
-    publishDate: "2025-11-07",
-    status: "Pending",
-    proof: null,
-    amount: 20000,
-    createdBy: "Nikita C.",
-  },
-  {
-    id: "RO-0014",
-    title: "Local Festival Story",
-    department: "News",
-    releaseDate: "2025-11-06",
-    publishDate: "2025-11-09",
-    status: "Rejected",
-    proof: null,
-    amount: 0,
-    createdBy: "Raj P.",
-  },
-  {
-    id: "RO-0015",
-    title: "Sponsored Travel Feature",
-    department: "Editorial",
-    releaseDate: "2025-11-01",
-    publishDate: "2025-11-03",
-    status: "Published",
-    proof: "travel-proof.pdf",
-    amount: 15000,
-    createdBy: "Priya S.",
-  },
-  {
-    id: "RO-0016",
-    title: "Weekly Business Roundup",
-    department: "Business",
-    releaseDate: "2025-10-30",
-    publishDate: "2025-11-01",
-    status: "Published",
-    proof: "business.pdf",
-    amount: 8000,
-    createdBy: "Nikita C.",
-  },
-  {
-    id: "RO-0017",
-    title: "Tech Expo Coverage",
-    department: "News",
-    releaseDate: "2025-11-10",
-    publishDate: null,
-    status: "Pending",
-    proof: null,
-    amount: 5000,
-    createdBy: "Rohit K.",
-  },
-  // add more mock rows to demonstrate pagination
-  ...Array.from({ length: 22 }).map((_, idx) => ({
-    id: `RO-${100 + idx}`,
-    title: `Sample RO ${idx + 1}`,
-    department: ["Editorial", "Ads", "News", "Business"][idx % 4],
-    releaseDate: `2025-11-${(idx % 28) + 1 < 10 ? "0" : ""}${(idx % 28) + 1}`,
-    publishDate: null,
-    status: ["Pending", "Published", "Rejected"][idx % 3],
-    proof: idx % 3 === 0 ? `doc-${idx}.pdf` : null,
-    amount: 1000 + (idx * 250),
-    createdBy: ["Nikita", "Ashish", "Priya"][idx % 3],
-  })),
-];
+   const MOCK_RELEASE_ORDERS = [
+    {
+      id: "RO-0012",
+      title: "City Marathon 2025",
+      department: "Editorial",
+      releaseDate: "2025-11-06",
+      publishDate: "2025-11-08",
+      status: "Published",
+      bill_status: "Processed",
+      proof: "proof.pdf",
+      amount: 12000,
+      createdBy: "Ashish R.",
+    },
+    {
+      id: "RO-0013",
+      title: "New Ad Campaign",
+      department: "Ads",
+      releaseDate: "2025-11-05",
+      publishDate: "2025-11-07",
+      status: "Pending",
+      bill_status: "Under Process",
+      proof: null,
+      amount: 20000,
+      createdBy: "Nikita C.",
+    },
+    {
+      id: "RO-0014",
+      title: "Local Festival Story",
+      department: "News",
+      releaseDate: "2025-11-06",
+      publishDate: "2025-11-09",
+      status: "Rejected",
+      bill_status: "Cancelled",
+      proof: null,
+      amount: 0,
+      createdBy: "Raj P.",
+    },
+    {
+      id: "RO-0015",
+      title: "Sponsored Travel Feature",
+      department: "Editorial",
+      releaseDate: "2025-11-01",
+      publishDate: "2025-11-03",
+      status: "Published",
+      bill_status: "Processed",
+      proof: "travel-proof.pdf",
+      amount: 15000,
+      createdBy: "Priya S.",
+    },
+    {
+      id: "RO-0016",
+      title: "Weekly Business Roundup",
+      department: "Business",
+      releaseDate: "2025-10-30",
+      publishDate: "2025-11-01",
+      status: "Published",
+      bill_status: "Approved",
+      proof: "business.pdf",
+      amount: 8000,
+      createdBy: "Nikita C.",
+    },
+    {
+      id: "RO-0017",
+      title: "Tech Expo Coverage",
+      department: "News",
+      releaseDate: "2025-11-10",
+      publishDate: null,
+      status: "Pending",
+      bill_status: "Verification Pending",
+      proof: null,
+      amount: 5000,
+      createdBy: "Rohit K.",
+    },
+    {
+      id: "RO-0018",
+      title: "Sports Weekly Highlights",
+      department: "Sports",
+      releaseDate: "2025-11-02",
+      publishDate: "2025-11-05",
+      status: "Published",
+      bill_status: "Paid",
+      proof: "sports.pdf",
+      amount: 6000,
+      createdBy: "Amit S.",
+    },
+    {
+      id: "RO-0019",
+      title: "Real Estate Market Update",
+      department: "Business",
+      releaseDate: "2025-11-03",
+      publishDate: "2025-11-04",
+      status: "Pending",
+      bill_status: "Payment Pending",
+      proof: null,
+      amount: 4500,
+      createdBy: "Nikita C.",
+    },
+    {
+      id: "RO-0020",
+      title: "Health Awareness Column",
+      department: "Lifestyle",
+      releaseDate: "2025-10-29",
+      publishDate: "2025-10-31",
+      status: "Published",
+      bill_status: "Sent to Client",
+      proof: "health.pdf",
+      amount: 3000,
+      createdBy: "Priya S.",
+    },
+    {
+      id: "RO-0021",
+      title: "Government Policy Review",
+      department: "Editorial",
+      releaseDate: "2025-11-07",
+      publishDate: null,
+      status: "Rejected",
+      bill_status: "Not Applicable",
+      proof: null,
+      amount: 0,
+      createdBy: "Ashish R.",
+    },
+  ];
+  
 
 /* -------------------------
    Helpers
@@ -211,7 +254,8 @@ export default function ReleaseOrderListing() {
       "Department",
       "Release Date",
       "Publish Date",
-      "Status",
+      "Ro Status",
+      "Bill Status",
       "Proof",
       "Amount",
       "Created By",
@@ -223,6 +267,7 @@ export default function ReleaseOrderListing() {
       r.releaseDate || "",
       r.publishDate || "",
       r.status,
+      r.bill_status,
       r.proof || "",
       r.amount,
       r.createdBy,
@@ -291,49 +336,6 @@ export default function ReleaseOrderListing() {
         </Stack>
       </Box>
 
-      {/* Summary Cards */}
-      {/* <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={6} sm={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {counts.total}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Total ROs
-            </Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: "success.main" }}>
-              {counts.published}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Published
-            </Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: "warning.main" }}>
-              {counts.pending}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Pending
-            </Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: "error.main" }}>
-              {counts.rejected}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Rejected
-            </Typography>
-          </Card>
-        </Grid>
-      </Grid> */}
 
       {/* Controls */}
       <Paper sx={{ p: 2, mb: 2 }}>
@@ -391,10 +393,11 @@ export default function ReleaseOrderListing() {
             <TableRow>
               <TableCell>RO ID</TableCell>
               <TableCell>Title</TableCell>
-              {/* <TableCell>Department</TableCell> */}
-              <TableCell>Release Date</TableCell>
+              <TableCell>Client Name </TableCell>
+              {/* <TableCell>Release Date</TableCell> */}
               <TableCell>Publish Date</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell>Ro Status</TableCell>
+              <TableCell>Bill Status</TableCell>
               <TableCell>Proof</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
@@ -411,19 +414,24 @@ export default function ReleaseOrderListing() {
 
             {pageRows.map((row) => (
               <TableRow key={row.id} hover>
-                <TableCell sx={{ fontWeight: 700 }}>{row.id}</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{row.id}
+                <div>{formatDate(row.releaseDate)}</div>
+                </TableCell>
                 <TableCell>
                   <Typography sx={{ fontWeight: 600 }}>{row.title}</Typography>
                   <Typography variant="caption" color="text.secondary">Created by {row.createdBy}</Typography>
                 </TableCell>
-                {/* <TableCell>
+                <TableCell>
                   <Chip label={row.department} size="small" />
-                </TableCell> */}
-                <TableCell>{formatDate(row.releaseDate)}</TableCell>
+                </TableCell>
+                {/* <TableCell>{formatDate(row.releaseDate)}</TableCell> */}
                 <TableCell>
                   {row.publishDate
                     ? formatDate(row.publishDate)    // if date exists
                     : "not published"}
+                </TableCell>
+                <TableCell>
+                  <Chip label={row.bill_status} size="small" />
                 </TableCell>
                 <TableCell>
                   <Chip label={row.status} color={statusColor(row.status)} size="small" />
@@ -447,6 +455,9 @@ export default function ReleaseOrderListing() {
                     {/* <IconButton size="small" color="info" onClick={() => handleEdit(row)}>
                       <EditIcon />
                     </IconButton> */}
+                      <Button variant="outlined"  onClick={handleExportCSV}>
+            Bill Entry
+          </Button>
                   </Stack>
                 </TableCell>
               </TableRow>
