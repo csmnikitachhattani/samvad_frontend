@@ -23,7 +23,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import newspaperService from "@/services/newspaperService";
 
 function ProfileDetail() {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
   const [newspaper, setNewspaper] = useState(null);
 
   const handleTabChange = (event, newValue) => {
@@ -31,9 +31,9 @@ function ProfileDetail() {
   };
 
   
-  useEffect(() => {
-    loadUser();
-  }, []);
+  // useEffect(() => {
+  //   loadUser();
+  // }, []);
 
   const loadUser = async () => {
     const res = await newspaperService.getNewspapers("00020");

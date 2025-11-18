@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState } from "react";
 import { 
   Box, 
   TextField, 
@@ -18,6 +18,7 @@ import MapIcon from "@mui/icons-material/Map";
 import PublicIcon from "@mui/icons-material/Public";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import newspaperService from "@/services/newspaperService";
 
 function UpdateProfile() {
   const [formData, setFormData] = useState({
@@ -29,12 +30,22 @@ function UpdateProfile() {
     district: "",
     state: "",
     userId: "",
-    username: "",
+    user_name: "",
   });
 
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [newspaper, setNewspaper] = useState(null);
 
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    const res = await newspaperService.getNewspapers("00020");
+    console.log(res)
+    setFormData(res.data?.data);
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -87,9 +98,6 @@ function UpdateProfile() {
         message: "Profile updated successfully!", 
         severity: "success" 
       });
-      
-      // Optionally reset form or keep data
-      // setFormData({ publicationName: "", editorName: "", email: "", mobile: "", address: "", district: "", state: "" });
     } else {
       setSnackbar({ 
         open: true, 
@@ -130,17 +138,15 @@ function UpdateProfile() {
           fontSize: "1.25rem",
         }}
       >
-        Update Publication Profile
+        Update Newspaper Profile
       </Typography>
-
       <Box component="form" onSubmit={handleSubmit}>
-          
         <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
             <TextField
               label="User Id"
               name="userId"
-              value={formData.userId}
+              value={formData.user_id}
               onChange={handleChange}
               fullWidth
               required
@@ -181,7 +187,7 @@ function UpdateProfile() {
             <TextField
               label="User Name"
               name="user name"
-              value={formData.username}
+              value={formData.user_name}
               onChange={handleChange}
               fullWidth
               required
@@ -219,9 +225,9 @@ function UpdateProfile() {
           {/* Publication Name */}
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Publication Name"
-              name="publicationName"
-              value={formData.publicationName}
+              label="Newspaper Name"
+              name="newspaperName"
+              value={formData.user_name}
               onChange={handleChange}
               fullWidth
               required
@@ -306,7 +312,7 @@ function UpdateProfile() {
               label="Email ID"
               name="email"
               type="email"
-              value={formData.email}
+              value={formData.email_id}
               onChange={handleChange}
               fullWidth
               required
@@ -348,7 +354,7 @@ function UpdateProfile() {
             <TextField
               label="Mobile Number"
               name="mobile"
-              value={formData.mobile}
+              value={formData.contact_no}
               onChange={handleChange}
               fullWidth
               required
