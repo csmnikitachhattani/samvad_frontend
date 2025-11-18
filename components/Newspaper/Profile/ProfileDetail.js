@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Tabs,
@@ -20,12 +20,24 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import BusinessIcon from "@mui/icons-material/Business";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import newspaperService from "@/services/newspaperService";
 
 function ProfileDetail() {
   const [activeTab, setActiveTab] = useState(0);
+  const [newspaper, setNewspaper] = useState(null);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
+  };
+
+  
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    const res = await newspaperService.getNewspapers("00020");
+    setNewspaper(res.data);
   };
 
   return (
