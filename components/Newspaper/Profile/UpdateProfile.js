@@ -46,6 +46,24 @@ function UpdateProfile() {
     console.log(res)
     setFormData(res.data?.data);
   };
+  const handleUpdateNpUser = async () => {
+    try {
+      const updateObject = {
+        District_Text:formData.District_Text,
+        email_id: formData.email_id,
+        user_name:formData.user_name,
+        address: formData.address,
+        contact_no:formData.contact_no
+      };
+  
+      const result = await newspaperService.updateNpUser('00020', updateObject);
+  
+      console.log("User Updated:", result);
+    } catch (err) {
+      console.log("Error:", err.message);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -58,31 +76,31 @@ function UpdateProfile() {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.publicationName.trim()) {
-      newErrors.publicationName = "Publication name is required";
-    }
-    if (!formData.editorName.trim()) {
-      newErrors.editorName = "Editor name is required";
-    }
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
-    }
-    if (!formData.mobile.trim()) {
-      newErrors.mobile = "Mobile number is required";
-    } else if (!/^\d{10}$/.test(formData.mobile)) {
-      newErrors.mobile = "Mobile number must be 10 digits";
-    }
-    if (!formData.address.trim()) {
-      newErrors.address = "Address is required";
-    }
-    if (!formData.district.trim()) {
-      newErrors.district = "District is required";
-    }
-    if (!formData.state.trim()) {
-      newErrors.state = "State is required";
-    }
+    // if (!formData.publicationName.trim()) {
+    //   newErrors.publicationName = "Publication name is required";
+    // }
+    // if (!formData.editorName.trim()) {
+    //   newErrors.editorName = "Editor name is required";
+    // }
+    // if (!formData.email.trim()) {
+    //   newErrors.email = "Email is required";
+    // } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    //   newErrors.email = "Invalid email format";
+    // }
+    // if (!formData.mobile.trim()) {
+    //   newErrors.mobile = "Mobile number is required";
+    // } else if (!/^\d{10}$/.test(formData.mobile)) {
+    //   newErrors.mobile = "Mobile number must be 10 digits";
+    // }
+    // if (!formData.address.trim()) {
+    //   newErrors.address = "Address is required";
+    // }
+    // if (!formData.district.trim()) {
+    //   newErrors.district = "District is required";
+    // }
+    // if (!formData.state.trim()) {
+    //   newErrors.state = "State is required";
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -265,7 +283,7 @@ function UpdateProfile() {
           </Grid>
 
           {/* Editor Name */}
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <TextField
               label="Editor Name"
               name="editorName"
@@ -304,7 +322,7 @@ function UpdateProfile() {
                 },
               }}
             />
-          </Grid>
+          </Grid> */}
 
           {/* Email */}
           <Grid item xs={12} sm={6}>
@@ -630,6 +648,7 @@ function UpdateProfile() {
             variant="contained"
             type="submit"
             startIcon={<SaveIcon />}
+            onClick={handleUpdateNpUser}
             sx={{
               borderRadius: "10px",
               background: "linear-gradient(135deg, #FF7A00 0%, #E65100 100%)",
