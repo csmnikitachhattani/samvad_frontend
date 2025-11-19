@@ -39,7 +39,7 @@ export default function NoticeBoard() {
       {/* Header */}
       <Box
         sx={{
-          bgcolor: "#E40063", 
+          bgcolor: "#E40063",
           color: "white",
           p: 2,
         }}
@@ -72,19 +72,19 @@ export default function NoticeBoard() {
           ))}
         </List> */}
         <List>
-  {notices.map((item, index) => (
-    <ListItem key={index} sx={{ alignItems: "flex-start", py: 0.5 }}>
-      <ListItemText
-        primary={
-          <div
-            style={{ fontSize: "15px", color: "#333" }}
-            dangerouslySetInnerHTML={{ __html: `• ${item.Information}` }}
-          />
-        }
-      />
-    </ListItem>
-  ))}
-</List>
+          {notices.map((item, index) => (
+            <ListItem key={index} sx={{ alignItems: "flex-start", py: 0.5 }}>
+              <ListItemText
+                primary={
+                  <div
+                    style={{ fontSize: "15px", color: "#333" }}
+                    dangerouslySetInnerHTML={{ __html: `• ${item.Information}` }}
+                  />
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
 
       </Box>
     </Card>

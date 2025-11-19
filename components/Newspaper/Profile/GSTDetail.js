@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -18,6 +18,10 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import newspaperService from "@/services/newspaperService";
+
+
+
 
 function GstDetail() {
   const [formData, setFormData] = useState({
@@ -49,6 +53,15 @@ function GstDetail() {
     "Casual",
     "Non-Resident",
   ];
+  useEffect(() => {
+    loadUser();
+  }, []);
+  
+  const loadUser = async () => {
+    const res = await newspaperService.getNewspapersGSTDetails("00020");
+    console.log(res)
+    setFormData(res.data?.data);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -120,7 +133,7 @@ function GstDetail() {
             <TextField
               label="GSTIN / Provisional ID"
               name="gstin"
-              value={formData.gstin}
+              value={formData.GST_number}
               onChange={handleChange}
               fullWidth
               required
@@ -142,7 +155,7 @@ function GstDetail() {
             <TextField
               label="Legal Name (as per GST certificate)"
               name="legalName"
-              value={formData.legalName}
+              value={formData.GST_legalName}
               onChange={handleChange}
               fullWidth
               required
@@ -167,7 +180,6 @@ function GstDetail() {
               name="state"
               value={formData.state}
               onChange={handleChange}
-              fullWidth
               required
               error={!!errors.state}
               helperText={errors.state}
