@@ -31,6 +31,7 @@ function UpdateProfile() {
     state: "",
     userId: "",
     user_name: "",
+    landmark: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -490,61 +491,17 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-          {/* Address */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              fullWidth
-              required
-              multiline
-              rows={3}
-              error={!!errors.address}
-              helperText={errors.address}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ alignSelf: "flex-start", mt: 2 }}>
-                    <LocationOnIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                  fontFamily: "'Inter', sans-serif",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: "#FFF8F1",
-                  },
-                  "&.Mui-focused": {
-                    backgroundColor: "#FFF8F1",
-                    "& fieldset": {
-                      borderColor: "#FF7A00",
-                      borderWidth: "2px",
-                    },
-                  },
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#E65100",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </Grid>
+        
 
           {/* District */}
           <Grid item xs={12} sm={6}>
             <TextField
               label="District"
               name="district"
-              value={formData.district}
+              value={formData.District_Text}
               onChange={handleChange}
               fullWidth
               required
-              error={!!errors.district}
-              helperText={errors.district}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -591,6 +548,49 @@ function UpdateProfile() {
                 startAdornment: (
                   <InputAdornment position="start">
                     <PublicIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "10px",
+                  fontFamily: "'Inter', sans-serif",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    backgroundColor: "#FFF8F1",
+                  },
+                  "&.Mui-focused": {
+                    backgroundColor: "#FFF8F1",
+                    "& fieldset": {
+                      borderColor: "#FF7A00",
+                      borderWidth: "2px",
+                    },
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#E65100",
+                  fontWeight: 600,
+                },
+              }}
+            />
+          </Grid>
+            {/* Address */}
+            <Grid item md={12}>
+            <TextField
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              fullWidth
+              required
+              multiline
+              rows={3}
+              error={!!errors.address}
+              helperText={errors.address}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start" sx={{ alignSelf: "flex-start", mt: 2 }}>
+                    <LocationOnIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
                   </InputAdornment>
                 ),
               }}
