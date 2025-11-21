@@ -34,7 +34,7 @@ export default function BankDetailsForm() {
   }, []);
 
   const loadUser = async () => {
-    const res = await newspaperService.getNewspapersBankDetails("000020");
+    const res = await newspaperService.getNewspapersBankDetails("000019");
     setFormData(res?.data?.data[0]);
   };
   const [errors, setErrors] = useState({});
@@ -47,7 +47,7 @@ export default function BankDetailsForm() {
   const handleUpdateBankDetail = async () => {
     try {
       const updateObject = {
-        action: "update",               // REQUIRED for your stored procedure
+        action: "edit",               // REQUIRED for your stored procedure
         user_id: "00020",               // or dynamic ID
         np_cd: "000019",                // pass np_cd if needed
         bank_name: formData.bank_name,

@@ -52,6 +52,7 @@ const newspaperService = {
         "/np/bank-detail",
         payload
       );
+      console.log("getting update report", res)
       return res.data;
     } catch (err) {
       throw err;
