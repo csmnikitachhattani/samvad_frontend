@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -19,6 +19,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import NumbersIcon from "@mui/icons-material/Numbers";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import newspaperService from "@/services/newspaperService";
 
 export default function BankDetailsForm() {
   const [formData, setFormData] = useState({
@@ -31,7 +32,15 @@ export default function BankDetailsForm() {
     ifscCode: "",
     micrCode: "",
   });
+  useEffect(() => {
+    loadUser();
+  }, []);
 
+  const loadUser = async () => {
+    const res = await newspaperService.getNewspapersBankDetails("000019");
+    console.log(res)
+    setFormData(res.data?.data);
+  };
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState({
     open: false,

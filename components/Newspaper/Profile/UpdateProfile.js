@@ -22,7 +22,7 @@ import newspaperService from "@/services/newspaperService";
 
 function UpdateProfile() {
   const [formData, setFormData] = useState({
-    publicationName: "",
+    NewspaperName: "",
     editorName: "",
     email: "",
     mobile: "",
@@ -36,7 +36,6 @@ function UpdateProfile() {
 
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-  const [newspaper, setNewspaper] = useState(null);
 
   useEffect(() => {
     loadUser();
@@ -53,12 +52,11 @@ function UpdateProfile() {
         District_Text:formData.District_Text,
         email_id: formData.email_id,
         user_name:formData.user_name,
-        address: formData.address,
-        contact_no:formData.contact_no
+        address: formData.loginaddr,
+        contact_no:formData.contact_no,
+        fax_no: formData.fax_no
       };
-  
-      const result = await newspaperService.updateNpUser('00020', updateObject);
-  
+      const result = await newspaperService.updateProfile('00020', updateObject);
       console.log("User Updated:", result);
     } catch (err) {
       console.log("Error:", err.message);
@@ -66,6 +64,7 @@ function UpdateProfile() {
   };
 
   const handleChange = (e) => {
+    console.log("email validations")
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     // Clear error when user starts typing
@@ -77,27 +76,19 @@ function UpdateProfile() {
   const validateForm = () => {
     const newErrors = {};
     
-    // if (!formData.publicationName.trim()) {
-    //   newErrors.publicationName = "Publication name is required";
-    // }
-    // if (!formData.editorName.trim()) {
-    //   newErrors.editorName = "Editor name is required";
-    // }
-    // if (!formData.email.trim()) {
-    //   newErrors.email = "Email is required";
-    // } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    //   newErrors.email = "Invalid email format";
-    // }
-    // if (!formData.mobile.trim()) {
-    //   newErrors.mobile = "Mobile number is required";
-    // } else if (!/^\d{10}$/.test(formData.mobile)) {
-    //   newErrors.mobile = "Mobile number must be 10 digits";
-    // }
+    if (!formData.NewspaperName.trim()) {
+      newErrors.NewspaperName = "Publication name is required";
+    }
+    if (!formData.email_id.trim()) {
+      newErrors.email_id = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email_id)) {
+      newErrors.email_id = "Invalid email format";
+    }
     // if (!formData.address.trim()) {
     //   newErrors.address = "Address is required";
     // }
-    // if (!formData.district.trim()) {
-    //   newErrors.district = "District is required";
+    // if (!formData.District_Text.trim()) {
+    //   newErrors.District_Text = "District is required";
     // }
     // if (!formData.state.trim()) {
     //   newErrors.state = "State is required";
@@ -128,7 +119,7 @@ function UpdateProfile() {
 
   const handleCancel = () => {
     setFormData({
-      publicationName: "",
+      NewspaperName: "",
       editorName: "",
       email: "",
       mobile: "",
@@ -161,7 +152,7 @@ function UpdateProfile() {
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="User Id"
               name="userId"
@@ -169,8 +160,8 @@ function UpdateProfile() {
               onChange={handleChange}
               fullWidth
               required
-              error={!!errors.publicationName}
-              helperText={errors.publicationName}
+              error={!!errors.NewspaperName}
+              helperText={errors.NewspaperName}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -202,7 +193,7 @@ function UpdateProfile() {
             />
           </Grid>
          { /* user Name */}
-         <Grid item xs={12} sm={6}>
+         <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="User Name"
               name="user name"
@@ -242,7 +233,7 @@ function UpdateProfile() {
           </Grid>
 
           {/* Publication Name */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="Newspaper Name"
               name="newspaperName"
@@ -250,8 +241,8 @@ function UpdateProfile() {
               onChange={handleChange}
               fullWidth
               required
-              error={!!errors.publicationName}
-              helperText={errors.publicationName}
+              error={!!errors.NewspaperName}
+              helperText={errors.NewspaperName}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -282,51 +273,8 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-
-          {/* Editor Name */}
-          {/* <Grid item xs={12} sm={6}>
-            <TextField
-              label="Editor Name"
-              name="editorName"
-              value={formData.editorName}
-              onChange={handleChange}
-              fullWidth
-              required
-              error={!!errors.editorName}
-              helperText={errors.editorName}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                  fontFamily: "'Inter', sans-serif",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: "#FFF8F1",
-                  },
-                  "&.Mui-focused": {
-                    backgroundColor: "#FFF8F1",
-                    "& fieldset": {
-                      borderColor: "#FF7A00",
-                      borderWidth: "2px",
-                    },
-                  },
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#E65100",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </Grid> */}
-
           {/* Email */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="Email ID"
               name="email"
@@ -369,7 +317,7 @@ function UpdateProfile() {
           </Grid>
 
           {/* Mobile */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="Mobile Number"
               name="mobile"
@@ -411,11 +359,11 @@ function UpdateProfile() {
           </Grid>
           
           {/* Fax Number */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="Fax Number"
               name="fax_no"
-              value={formData.mobile}
+              value={formData.fax_no}
               onChange={handleChange}
               fullWidth
               required
@@ -453,7 +401,7 @@ function UpdateProfile() {
           </Grid>
               
           {/* Landmark */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="Landmark"
               name="landmark"
@@ -494,7 +442,7 @@ function UpdateProfile() {
         
 
           {/* District */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="District"
               name="district"
@@ -534,7 +482,7 @@ function UpdateProfile() {
           </Grid>
 
           {/* State */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="State"
               name="state"
@@ -575,11 +523,11 @@ function UpdateProfile() {
             />
           </Grid>
             {/* Address */}
-            <Grid item md={12}>
+            <Grid item sm={12}>
             <TextField
               label="Address"
               name="address"
-              value={formData.address}
+              value={formData.loginaddr}
               onChange={handleChange}
               fullWidth
               required
@@ -618,6 +566,7 @@ function UpdateProfile() {
             />
           </Grid>
         </Grid>
+       
 
         {/* Action Buttons */}
         <Box sx={{ mt: 4, display: "flex", gap: 2, justifyContent: "flex-end" }}>
