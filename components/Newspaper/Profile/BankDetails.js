@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -23,7 +21,6 @@ import newspaperService from "@/services/newspaperService";
 
 export default function BankDetailsForm() {
   const [formData, setFormData] = useState({
-    accountNumber: "",
     accountHolderName: "",
     state: "",
     district: "",
@@ -38,8 +35,7 @@ export default function BankDetailsForm() {
 
   const loadUser = async () => {
     const res = await newspaperService.getNewspapersBankDetails("000019");
-    console.log(res)
-    setFormData(res.data?.data);
+    setFormData(res?.data?.data[0]);
   };
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState({
@@ -57,31 +53,31 @@ export default function BankDetailsForm() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.accountNumber.trim())
-      newErrors.accountNumber = "Account number is required";
-    else if (!/^\d{9,20}$/.test(formData.accountNumber))
-      newErrors.accountNumber = "Account number must be 9–20 digits";
+    // if (!formData.account_no.trim())
+    //   newErrors.account_no = "Account number is required";
+    // else if (!/^\d{9,20}$/.test(formData.account_no))
+    //   newErrors.account_nos = "Account number must be 9–20 digits";
 
-    if (!formData.accountHolderName.trim())
-      newErrors.accountHolderName = "Account holder name is required";
+    // if (!formData.accountHolderName.trim())
+    //   newErrors.accountHolderName = "Account holder name is required";
 
-    if (!formData.state.trim()) newErrors.state = "State is required";
-    if (!formData.district.trim()) newErrors.district = "District is required";
-    if (!formData.bankName.trim()) newErrors.bankName = "Bank name is required";
-    if (!formData.branchName.trim())
-      newErrors.branchName = "Branch name is required";
+    // if (!formData.state.trim()) newErrors.state = "State is required";
+    // if (!formData.district.trim()) newErrors.district = "District is required";
+    // if (!formData.bankName.trim()) newErrors.bankName = "Bank name is required";
+    // if (!formData.branchName.trim())
+    //   newErrors.branchName = "Branch name is required";
 
-    if (!formData.ifscCode.trim()) newErrors.ifscCode = "IFSC code is required";
-    else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(formData.ifscCode))
-      newErrors.ifscCode = "Invalid IFSC format (e.g., SBIN0001234)";
+    // if (!formData.ifscCode.trim()) newErrors.ifscCode = "IFSC code is required";
+    // else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(formData.ifscCode))
+    //   newErrors.ifscCode = "Invalid IFSC format (e.g., SBIN0001234)";
 
-    if (!formData.micrCode.trim())
-      newErrors.micrCode = "MICR code is required";
-    else if (!/^\d{9}$/.test(formData.micrCode))
-      newErrors.micrCode = "MICR code must be 9 digits";
+    // if (!formData.micrCode.trim())
+    //   newErrors.micrCode = "MICR code is required";
+    // else if (!/^\d{9}$/.test(formData.micrCode))
+    //   newErrors.micrCode = "MICR code must be 9 digits";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    // setErrors(newErrors);
+    // return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
@@ -159,12 +155,10 @@ export default function BankDetailsForm() {
             <TextField
               label="Account No."
               name="accountNumber"
-              value={formData.accountNumber}
+              value={formData.account_no}
               onChange={handleChange}
               fullWidth
-              required
-              error={!!errors.accountNumber}
-              helperText={errors.accountNumber}
+              
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -181,7 +175,7 @@ export default function BankDetailsForm() {
             <TextField
               label="Account Holder Name"
               name="accountHolderName"
-              value={formData.accountHolderName}
+              value={formData.account_holder_name}
               onChange={handleChange}
               fullWidth
               required
@@ -247,7 +241,7 @@ export default function BankDetailsForm() {
             <TextField
               label="Bank Name"
               name="bankName"
-              value={formData.bankName}
+              value={formData.bank_name}
               onChange={handleChange}
               fullWidth
               required
@@ -271,7 +265,7 @@ export default function BankDetailsForm() {
             <TextField
               label="Branch Name"
               name="branchName"
-              value={formData.branchName}
+              value={formData.branch_name}
               onChange={handleChange}
               fullWidth
               required
@@ -295,7 +289,7 @@ export default function BankDetailsForm() {
             <TextField
               label="IFSC Code"
               name="ifscCode"
-              value={formData.ifscCode}
+              value={formData.ifsc_code}
               onChange={handleChange}
               fullWidth
               required
@@ -317,7 +311,7 @@ export default function BankDetailsForm() {
             <TextField
               label="MICR Code"
               name="micrCode"
-              value={formData.micrCode}
+              value={formData.micr_code}
               onChange={handleChange}
               fullWidth
               required
