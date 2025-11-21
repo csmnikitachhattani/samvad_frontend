@@ -38,6 +38,27 @@ const newspaperService = {
     }
   },
 
+  updateBankDetail: async (updateData) => {
+    try {
+      const payload = {
+        action: updateData.action,
+        user_id: updateData.user_id,
+        np_cd: updateData.np_cd,
+        financial_year: updateData.financial_year,
+        ...updateData
+      };
+  
+      const res = await axiosClient.post(
+        "/np/bank-detail",
+        payload
+      );
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+  
+
 
 };
 

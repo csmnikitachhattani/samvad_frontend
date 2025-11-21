@@ -34,7 +34,7 @@ export default function BankDetailsForm() {
   }, []);
 
   const loadUser = async () => {
-    const res = await newspaperService.getNewspapersBankDetails("000019");
+    const res = await newspaperService.getNewspapersBankDetails("000020");
     setFormData(res?.data?.data[0]);
   };
   const [errors, setErrors] = useState({});
@@ -44,6 +44,31 @@ export default function BankDetailsForm() {
     severity: "success",
   });
 
+  const handleUpdateBankDetail = async () => {
+    try {
+      const updateObject = {
+        action: "update",               // REQUIRED for your stored procedure
+        user_id: "00020",               // or dynamic ID
+        np_cd: "000019",                // pass np_cd if needed
+        bank_name: formData.bank_name,
+        account_no: formData.account_no,
+        account_holder_name: formData.account_holder_name,
+        ifsc_code: formData.ifsc_code,
+        micr_code: formData.micr_code,
+        district: formData.district,
+        branch_name: formData.branch_name,
+        status: formData.status,
+        financial_year: "2025-2026",
+      };
+  
+      const result = await newspaperService.updateBankDetail(updateObject);
+  
+      console.log("Bank Detail Updated:", result);
+    } catch (err) {
+      console.log("Error updating bank detail:", err.message);
+    }
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -355,6 +380,7 @@ export default function BankDetailsForm() {
             variant="contained"
             type="submit"
             startIcon={<SaveIcon />}
+            onClick={handleUpdateBankDetail}
             sx={{
               borderRadius: "10px",
               background: "linear-gradient(135deg, #FF7A00 0%, #E65100 100%)",
