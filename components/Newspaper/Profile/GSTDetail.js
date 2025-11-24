@@ -21,11 +21,12 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import newspaperService from "@/services/newspaperService";
 function GstDetail() {
   const [formData, setFormData] = useState({
-    gstin: "",
-    legalName: "",
-    state: "",
-    dateOfRegistration: "",
-    taxpayerType: "",
+    GST_number: "",
+    GST_legalName: "",
+    GST_StateID: "",
+    GST_StateText: "",
+    GST_DateOfRegistration: "",
+    GST_TaxpayerType: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -57,7 +58,7 @@ function GstDetail() {
     try {
       const updateObject = {
         action: "update",      
-        //user_id: formData.user_id,     
+        user_id: '00019',     
         GST_legalName: formData.GST_legalName,
         GST_number: formData.GST_number,
         GST_StateID: formData.GST_StateID,
@@ -78,7 +79,7 @@ function GstDetail() {
   };
   
   const loadUser = async () => {
-    const res = await newspaperService.getNewspapersGSTDetails("00020");
+    const res = await newspaperService.getNewspapersGSTDetails("00019");
     console.log(res)
     setFormData(res.data?.data);
   };
@@ -91,16 +92,20 @@ function GstDetail() {
     console.log(formData.GST_TaxpayerType)
   };
 
+
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.gstin.trim()) newErrors.gstin = "GSTIN is required";
-    if (!formData.legalName.trim()) newErrors.legalName = "Legal name is required";
-    if (!formData.state.trim()) newErrors.state = "State is required";
-    if (!formData.dateOfRegistration) newErrors.dateOfRegistration = "Date of registration is required";
-    if (!formData.GST_TaxpayerTyp.trim()) newErrors.taxpayerType = "Taxpayer type is required";
+  
+    if (!formData.GST_number.trim()) newErrors.GST_number = "GSTIN is required";
+    if (!formData.GST_legalName.trim()) newErrors.GST_legalName = "Legal name is required";
+    if (!formData.GST_StateText.trim()) newErrors.GST_StateText = "State is required";
+    if (!formData.GST_DateOfRegistration) newErrors.GST_DateOfRegistration = "Date required";
+    if (!formData.GST_TaxpayerType.trim()) newErrors.GST_TaxpayerType = "Taxpayer type required";
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -154,8 +159,8 @@ function GstDetail() {
           <Grid item xs={12} sm={12}>
             <TextField
               label="GSTIN / Provisional ID"
-              name="gstin"
-              value={formData.GST_number}
+              name="GST_number"
+              value={formData.GST_number || ""}
               onChange={handleChange}
               fullWidth
               required
@@ -176,8 +181,8 @@ function GstDetail() {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Legal Name (as per GST certificate)"
-              name="legalName"
-              value={formData.GST_legalName}
+              name="GST_legalName"
+              value={formData.GST_legalName || ""}
               onChange={handleChange}
               fullWidth
               required
@@ -199,8 +204,9 @@ function GstDetail() {
             <TextField
               select
               label="State (as per GST certificate)"
-              name="state"
-              value={formData.state}
+              name="GST_StateText"
+              value={formData.GST_StateText || ""}
+
               onChange={handleChange}
               required
               error={!!errors.state}
@@ -227,8 +233,8 @@ function GstDetail() {
             <TextField
               label="Date of Registration"
               type="date"
-              name="dateOfRegistration"
-              value={formData.dateOfRegistration}
+              name="GST_DateOfRegistration"
+              value={formData.GST_DateOfRegistration || ""}
               onChange={handleChange}
               fullWidth
               required
