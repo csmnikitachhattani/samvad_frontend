@@ -56,6 +56,30 @@ function GstDetail() {
   useEffect(() => {
     loadUser();
   }, []);
+  const handleUpdateGSTDetail = async () => {
+    console.log(formData.GST_TaxpayerType)
+    try {
+      const updateObject = {
+        action: "update",               // REQUIRED for stored procedure
+        user_id: formData.user_id,      // dynamic user ID
+        GST_legalName: formData.GST_legalName,
+        GST_number: formData.GST_number,
+        GST_StateID: formData.GST_StateID,
+        GST_StateText: formData.GST_StateText,
+        GST_DateOfRegistration: formData.GST_DateOfRegistration,
+        GST_TaxpayerType: formData.GST_TaxpayerType,
+        ip_address: formData.ip_address || "0.0.0.0",
+        by_user_id: formData.by_user_id || "000019",
+        by_user_name: formData.by_user_name || "",
+      };
+  
+      const result = await newspaperService.updateGSTDetail(updateObject);
+  
+      console.log("GST Detail Updated:", result);
+    } catch (err) {
+      console.log("Error updating GST detail:", err.message);
+    }
+  };
   
   const loadUser = async () => {
     const res = await newspaperService.getNewspapersGSTDetails("00020");
@@ -65,8 +89,10 @@ function GstDetail() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value)
     setFormData({ ...formData, [name]: value });
     if (errors[name]) setErrors({ ...errors, [name]: "" });
+    console.log(formData.GST_TaxpayerType)
   };
 
   const validateForm = () => {
@@ -229,8 +255,8 @@ function GstDetail() {
             <TextField
               select
               label="Taxpayer Type"
-              name="taxpayerType"
-              value={formData.taxpayerType}
+              name="GST_TaxpayerType"
+              value={formData.GST_TaxpayerType}
               onChange={handleChange}
               fullWidth
               required
@@ -269,6 +295,7 @@ function GstDetail() {
             type="submit"
             startIcon={<SaveIcon />}
             sx={submitBtnStyle}
+            onClick={handleUpdateGSTDetail}
           >
             Submit
           </Button>

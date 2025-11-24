@@ -11,7 +11,7 @@ const newspaperService = {
   },
 
   getNewspapersGSTDetails: (user_id) =>
-    axiosClient.get(`/npuser/gst/${user_id}`),
+    axiosClient.get(`/gst/${user_id}`),
 
   updateNpUser: async (userId, updateData) => {
     try {
@@ -58,6 +58,30 @@ const newspaperService = {
       throw err;
     }
   },
+
+  updateGSTDetail: async (updateData) => {
+    try {
+      const payload = {
+        action: "update",
+        user_id: updateData.user_id,
+        GST_legalName: updateData.GST_legalName,
+        GST_number: updateData.GST_number,
+        GST_StateID: updateData.GST_StateID,
+        GST_StateText: updateData.GST_StateText,
+        GST_DateOfRegistration: updateData.GGST_DateOfRegistration,
+        GST_TaxpayerType: updateData.GST_TaxpayerType,
+        ip_address: updateData.ip_address,
+        by_user_id: updateData.by_user_id || "",
+        by_user_name: updateData.by_user_name || "",
+      };
+
+      const res = await axiosClient.post(`/gst/update`, payload);
+      return res.data;
+    } catch (err) {
+      throw err; // interceptor will format
+    }
+  },
+
   
 
 
