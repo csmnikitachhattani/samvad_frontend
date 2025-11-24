@@ -19,10 +19,6 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import newspaperService from "@/services/newspaperService";
-
-
-
-
 function GstDetail() {
   const [formData, setFormData] = useState({
     gstin: "",
@@ -60,17 +56,17 @@ function GstDetail() {
     console.log(formData.GST_TaxpayerType)
     try {
       const updateObject = {
-        action: "update",               // REQUIRED for stored procedure
-        user_id: formData.user_id,      // dynamic user ID
+        action: "update",      
+        //user_id: formData.user_id,     
         GST_legalName: formData.GST_legalName,
         GST_number: formData.GST_number,
         GST_StateID: formData.GST_StateID,
         GST_StateText: formData.GST_StateText,
         GST_DateOfRegistration: formData.GST_DateOfRegistration,
         GST_TaxpayerType: formData.GST_TaxpayerType,
-        ip_address: formData.ip_address || "0.0.0.0",
-        by_user_id: formData.by_user_id || "000019",
-        by_user_name: formData.by_user_name || "",
+        //ip_address: formData.ip_address || "0.0.0.0",
+        // by_user_id: formData.by_user_id || "000019",
+        // by_user_name: formData.by_user_name || "",
       };
   
       const result = await newspaperService.updateGSTDetail(updateObject);
@@ -101,7 +97,7 @@ function GstDetail() {
     if (!formData.legalName.trim()) newErrors.legalName = "Legal name is required";
     if (!formData.state.trim()) newErrors.state = "State is required";
     if (!formData.dateOfRegistration) newErrors.dateOfRegistration = "Date of registration is required";
-    if (!formData.taxpayerType.trim()) newErrors.taxpayerType = "Taxpayer type is required";
+    if (!formData.GST_TaxpayerTyp.trim()) newErrors.taxpayerType = "Taxpayer type is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
