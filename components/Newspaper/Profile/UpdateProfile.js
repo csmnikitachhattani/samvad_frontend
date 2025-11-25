@@ -43,7 +43,6 @@ function UpdateProfile() {
 
   const loadUser = async () => {
     const res = await newspaperService.getNewspapers("00020");
-    console.log(res)
     setFormData(res.data?.data);
   };
   const handleUpdateNpUser = async () => {

@@ -48,7 +48,7 @@ function GstDetail() {
     loadUser();
   }, []);
   const handleUpdateGSTDetail = async () => {
-    console.log(formData.GST_TaxpayerType)
+    console.log(formData.GST_TaxpayerType, formData.GST_DateOfRegistration)
     try {
       const updateObject = {
         action: "update",      
@@ -200,7 +200,6 @@ function GstDetail() {
               label="State (as per GST certificate)"
               name="GST_StateText"
               value={formData.GST_StateText || ""}
-
               onChange={handleChange}
               required
               error={!!errors.state}
@@ -228,7 +227,7 @@ function GstDetail() {
               label="Date of Registration"
               type="date"
               name="GST_DateOfRegistration"
-              value={formData.GST_DateOfRegistration || ""}
+              value={formData.GST_DateOfRegistration}
               onChange={handleChange}
               fullWidth
               required

@@ -25,19 +25,31 @@ import newspaperService from "@/services/newspaperService";
 function ProfileDetail() {
   const [activeTab, setActiveTab] = useState(1);
   const [newspaper, setNewspaper] = useState(null);
+  const [formData, setFormData] = useState({
+    NewspaperName: "",
+    editorName: "",
+    email: "",
+    mobile: "",
+    address: "",
+    district: "",
+    state: "",
+    userId: "",
+    user_name: "",
+    landmark: "",
+  });
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
   
-  // useEffect(() => {
-  //   loadUser();
-  // }, []);
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   const loadUser = async () => {
     const res = await newspaperService.getNewspapers("00020");
-    setNewspaper(res.data);
+    setFormData(res.data?.data);
   };
 
   return (
@@ -191,7 +203,7 @@ function ProfileDetail() {
                       fontFamily: "'Inter', sans-serif",
                     }}
                   >
-                    SHRIDEV PRINTERS AND STATIONERS
+                    {formData.np_name}
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Chip
@@ -251,11 +263,10 @@ function ProfileDetail() {
                         fontFamily: "'Inter', sans-serif",
                       }}
                     >
-                      SHRIDEV PRINTERS AND STATIONERS - Raipur
+                      {formData.user_name} - {formData.District_Text}
                     </Typography>
                   </Box>
                 </Grid>
-
                 <Grid item xs={12} md={6}>
                   <Box
                     sx={{
@@ -296,11 +307,10 @@ function ProfileDetail() {
                         fontFamily: "'Inter', sans-serif",
                       }}
                     >
-                      shridevpress@gmail.com
+                      {formData.email_id}
                     </Typography>
                   </Box>
                 </Grid>
-
                 <Grid item xs={12} md={6}>
                   <Box
                     sx={{
@@ -342,7 +352,8 @@ function ProfileDetail() {
                           fontFamily: "'Inter', sans-serif",
                         }}
                       >
-                        9827916900
+                        {formData.contact_no}
+                        
                       </Typography>
                       <Chip
                         icon={<VerifiedIcon sx={{ fontSize: "0.9rem" }} />}
@@ -363,7 +374,51 @@ function ProfileDetail() {
                     </Box>
                   </Box>
                 </Grid>
-
+                <Grid item xs={12} md={6}>
+                  <Box
+                    sx={{
+                      p: 2.5,
+                      borderRadius: "12px",
+                      backgroundColor: "#FAFAFA",
+                      border: "1px solid #F3F4F6",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        backgroundColor: "#FFF3E0",
+                        borderColor: "#FFE0B2",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                      <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                      <Typography 
+                        variant="subtitle2" 
+                        sx={{ 
+                          color: "#6B7280", 
+                          fontWeight: 600,
+                          fontFamily: "'Inter', sans-serif",
+                          textTransform: "uppercase",
+                          fontSize: "0.75rem",
+                          letterSpacing: "0.5px",
+                        }}
+                      >
+                        Fax No
+                      </Typography>
+                    </Box>
+                    <Typography 
+                      sx={{ 
+                        color: "#1F2937", 
+                        fontWeight: 500,
+                        fontSize: "0.95rem",
+                        fontFamily: "'Inter', sans-serif",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      {formData.fax_no}
+                    </Typography>
+                  </Box>
+                </Grid>
                 <Grid item xs={12} md={6}>
                   <Box
                     sx={{
@@ -405,7 +460,52 @@ function ProfileDetail() {
                         lineHeight: 1.6,
                       }}
                     >
-                      Raipur, Raipur District<br />
+                      {formData.loginaddr}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Box
+                    sx={{
+                      p: 2.5,
+                      borderRadius: "12px",
+                      backgroundColor: "#FAFAFA",
+                      border: "1px solid #F3F4F6",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        backgroundColor: "#FFF3E0",
+                        borderColor: "#FFE0B2",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                      <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                      <Typography 
+                        variant="subtitle2" 
+                        sx={{ 
+                          color: "#6B7280", 
+                          fontWeight: 600,
+                          fontFamily: "'Inter', sans-serif",
+                          textTransform: "uppercase",
+                          fontSize: "0.75rem",
+                          letterSpacing: "0.5px",
+                        }}
+                      >
+                        Location
+                      </Typography>
+                    </Box>
+                    <Typography 
+                      sx={{ 
+                        color: "#1F2937", 
+                        fontWeight: 500,
+                        fontSize: "0.95rem",
+                        fontFamily: "'Inter', sans-serif",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      Raipur, Raipur District
                       Chhattisgarh
                     </Typography>
                   </Box>
