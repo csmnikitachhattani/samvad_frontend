@@ -36,13 +36,7 @@ function GstDetail() {
     severity: "success",
   });
 
-  const states = [
-    "Chhattisgarh",
-    "Madhya Pradesh",
-    "Maharashtra",
-    "Uttar Pradesh",
-    "Gujarat",
-  ];
+  const states = [];
 
   const taxpayerTypes = [
     "Regular",
