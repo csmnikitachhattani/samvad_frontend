@@ -21,6 +21,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import BusinessIcon from "@mui/icons-material/Business";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import newspaperService from "@/services/newspaperService";
+import BankDetailsView from "./BankDetailsView";
 
 function ProfileDetail() {
   const [activeTab, setActiveTab] = useState(1);
@@ -170,6 +171,7 @@ function ProfileDetail() {
         <Box sx={{ p: 3 }}>
           {activeTab === 0 && (
             <Box>
+            <Box>
               {/* Profile Header */}
               <Box 
                 sx={{ 
@@ -220,7 +222,6 @@ function ProfileDetail() {
                   </Box>
                 </Box>
               </Box>
-
               {/* Profile Details Grid */}
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
@@ -511,6 +512,10 @@ function ProfileDetail() {
                   </Box>
                 </Grid>
               </Grid>
+            </Box>
+            <Box>
+              <BankDetailsView />
+            </Box>
             </Box>
           )}
 

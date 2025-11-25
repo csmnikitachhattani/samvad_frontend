@@ -16,7 +16,6 @@ import BusinessIcon from "@mui/icons-material/Business";
 import NumbersIcon from "@mui/icons-material/Numbers";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import BankSubDetail from "@/components/Newspaper/Profile/BankSubDetail"
 import newspaperService from "@/services/newspaperService";
 
 export default function BankDetailsForm() {
@@ -42,30 +41,7 @@ export default function BankDetailsForm() {
     setFormData(res?.data?.data[0] || {});
   };
 
-  const handleUpdateBankDetail = async () => {
-    try {
-      const updateObject = {
-        action: "edit",
-        user_id: "00020",
-        np_cd: "000019",
-        bank_name: formData.bank_name,
-        account_no: formData.account_no,
-        account_holder_name: formData.account_holder_name,
-        ifsc_code: formData.ifsc_code,
-        micr_code: formData.micr_code,
-        district: formData.district,
-        branch_name: formData.branch_name,
-        status: formData.status,
-        financial_year: "2025-2026",
-      };
-
-      const result = await newspaperService.updateBankDetail(updateObject);
-
-      console.log("Bank Detail Updated:", result);
-    } catch (err) {
-      console.log("Error updating bank detail:", err.message);
-    }
-  };
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -272,28 +248,7 @@ export default function BankDetailsForm() {
 
       {/* Buttons */}
       <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
-        <Button
-          variant="outlined"
-          startIcon={<CancelIcon />}
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-
-        <Button
-          variant="contained"
-          startIcon={<SaveIcon />}
-          onClick={handleUpdateBankDetail}
-          sx={{
-            background: "linear-gradient(135deg, #FF7A00 0%, #E65100 100%)",
-          }}
-        >
-          Save Changes
-        </Button>
-      </Box>
-
-      <Box>
-        <BankSubDetail />
+        
       </Box>
     </Box>
   );
