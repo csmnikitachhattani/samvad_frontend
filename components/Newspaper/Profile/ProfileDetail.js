@@ -22,7 +22,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import newspaperService from "@/services/newspaperService";
 import BankDetailsView from "./BankDetailsView";
-
+import GSTDetailView from "./GSTDetailView";
 function ProfileDetail() {
   const [activeTab, setActiveTab] = useState(1);
   const [newspaper, setNewspaper] = useState(null);
@@ -43,7 +43,7 @@ function ProfileDetail() {
     setActiveTab(newValue);
   };
 
-  
+
   useEffect(() => {
     loadUser();
   }, []);
@@ -52,21 +52,30 @@ function ProfileDetail() {
     const res = await newspaperService.getNewspapers("00020");
     setFormData(res.data?.data);
   };
+  function getInitials(fullName) {
+    if (!fullName) return "";
+
+    const parts = fullName.trim().split(/\s+/);
+    const first = parts[0]?.charAt(0) || "";
+    const second = parts[1]?.charAt(0) || "";
+
+    return (first + second).toUpperCase();
+  }
 
   return (
-    <Box 
-      sx={{ 
-        p: 3, 
-        backgroundColor: "#FFF8F1", 
+    <Box
+      sx={{
+        p: 3,
+        backgroundColor: "#FFF8F1",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
     >
       {/* Breadcrumb */}
       <Box sx={{ mb: 2.5 }}>
-        <Typography 
-          variant="body2" 
-          sx={{ 
+        <Typography
+          variant="body2"
+          sx={{
             color: "#6B7280",
             fontFamily: "'Inter', sans-serif",
             fontWeight: 500,
@@ -89,8 +98,8 @@ function ProfileDetail() {
       >
         <Typography
           variant="h5"
-          sx={{ 
-            color: "#E65100", 
+          sx={{
+            color: "#E65100",
             fontWeight: 700,
             letterSpacing: "0.5px",
             fontFamily: "'Inter', sans-serif",
@@ -171,351 +180,366 @@ function ProfileDetail() {
         <Box sx={{ p: 3 }}>
           {activeTab === 0 && (
             <Box>
-            <Box>
-              {/* Profile Header */}
-              <Box 
-                sx={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  mb: 3,
-                  pb: 3,
-                  borderBottom: "2px solid #FFE0B2",
-                }}
-              >
-                <Avatar
+              <Box>
+                {/* Profile Header */}
+                <Box
                   sx={{
-                    width: 80,
-                    height: 80,
-                    bgcolor: "linear-gradient(135deg, #FF7A00 0%, #E65100 100%)",
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    mr: 3,
-                    boxShadow: "0 4px 12px rgba(230, 81, 0, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    mb: 3,
+                    pb: 3,
+                    borderBottom: "2px solid #FFE0B2",
                   }}
                 >
-                  SP
-                </Avatar>
-                <Box>
-                  <Typography
-                    variant="h5"
-                    sx={{ 
-                      color: "#1F2937", 
+                  <Avatar
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      bgcolor: "linear-gradient(135deg, #FF7A00 0%, #E65100 100%)",
+                      fontSize: "2rem",
                       fontWeight: 700,
-                      mb: 0.5,
-                      fontFamily: "'Inter', sans-serif",
+                      mr: 3,
+                      boxShadow: "0 4px 12px rgba(230, 81, 0, 0.3)",
                     }}
                   >
-                    {formData.np_name}
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Chip
-                      size="small"
-                      label="Last Updated: 25 Nov 2022"
+                    {/* {formData.user_name.charAt(0)} */}
+                    {getInitials(formData.user_name)}
+                  </Avatar>
+                  <Box>
+                    <Typography
+                      variant="h5"
                       sx={{
-                        backgroundColor: "#FFF3E0",
-                        color: "#E65100",
-                        fontWeight: 500,
-                        fontSize: "0.75rem",
+                        color: "#1F2937",
+                        fontWeight: 700,
+                        mb: 0.5,
                         fontFamily: "'Inter', sans-serif",
                       }}
-                    />
+                    >
+                      {formData.np_name}
+                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Chip
+                        size="small"
+                        label="Last Updated: 25 Nov 2022"
+                        sx={{
+                          backgroundColor: "#FFF3E0",
+                          color: "#E65100",
+                          fontWeight: 500,
+                          fontSize: "0.75rem",
+                          fontFamily: "'Inter', sans-serif",
+                        }}
+                      />
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-              {/* Profile Details Grid */}
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Box
-                    sx={{
-                      p: 2.5,
-                      borderRadius: "12px",
-                      backgroundColor: "#FAFAFA",
-                      border: "1px solid #F3F4F6",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#FFF3E0",
-                        borderColor: "#FFE0B2",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                      <BusinessIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          color: "#6B7280", 
-                          fontWeight: 600,
-                          fontFamily: "'Inter', sans-serif",
-                          textTransform: "uppercase",
-                          fontSize: "0.75rem",
-                          letterSpacing: "0.5px",
-                        }}
-                      >
-                        User Name
-                      </Typography>
-                    </Box>
-                    <Typography 
-                      sx={{ 
-                        color: "#1F2937", 
-                        fontWeight: 500,
-                        fontSize: "0.95rem",
-                        fontFamily: "'Inter', sans-serif",
+                {/* Profile Details Grid */}
+                <Typography
+                  variant="h6"
+                  sx={{
+                    mb: 3,
+                    color: "#1F2937",
+                    fontWeight: 700,
+                    fontSize: "1.25rem",
+                  }}
+                >
+                  Newspaper Detail Details
+      </Typography>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "12px",
+                        backgroundColor: "#FAFAFA",
+                        border: "1px solid #F3F4F6",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#FFF3E0",
+                          borderColor: "#FFE0B2",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        },
                       }}
                     >
-                      {formData.user_name} - {formData.District_Text}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box
-                    sx={{
-                      p: 2.5,
-                      borderRadius: "12px",
-                      backgroundColor: "#FAFAFA",
-                      border: "1px solid #F3F4F6",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#FFF3E0",
-                        borderColor: "#FFE0B2",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                      <EmailIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          color: "#6B7280", 
-                          fontWeight: 600,
-                          fontFamily: "'Inter', sans-serif",
-                          textTransform: "uppercase",
-                          fontSize: "0.75rem",
-                          letterSpacing: "0.5px",
-                        }}
-                      >
-                        Email ID
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                        <BusinessIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#6B7280",
+                            fontWeight: 600,
+                            fontFamily: "'Inter', sans-serif",
+                            textTransform: "uppercase",
+                            fontSize: "0.75rem",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          User Name
                       </Typography>
-                    </Box>
-                    <Typography 
-                      sx={{ 
-                        color: "#1F2937", 
-                        fontWeight: 500,
-                        fontSize: "0.95rem",
-                        fontFamily: "'Inter', sans-serif",
-                      }}
-                    >
-                      {formData.email_id}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box
-                    sx={{
-                      p: 2.5,
-                      borderRadius: "12px",
-                      backgroundColor: "#FAFAFA",
-                      border: "1px solid #F3F4F6",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#FFF3E0",
-                        borderColor: "#FFE0B2",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                      <PhoneIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          color: "#6B7280", 
-                          fontWeight: 600,
-                          fontFamily: "'Inter', sans-serif",
-                          textTransform: "uppercase",
-                          fontSize: "0.75rem",
-                          letterSpacing: "0.5px",
-                        }}
-                      >
-                        Mobile Number
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Typography 
-                        sx={{ 
-                          color: "#1F2937", 
+                      </Box>
+                      <Typography
+                        sx={{
+                          color: "#1F2937",
                           fontWeight: 500,
                           fontSize: "0.95rem",
                           fontFamily: "'Inter', sans-serif",
                         }}
                       >
-                        {formData.contact_no}
-                        
+                        {formData.user_name} - {formData.District_Text}
                       </Typography>
-                      <Chip
-                        icon={<VerifiedIcon sx={{ fontSize: "0.9rem" }} />}
-                        label="Verified"
-                        size="small"
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "12px",
+                        backgroundColor: "#FAFAFA",
+                        border: "1px solid #F3F4F6",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#FFF3E0",
+                          borderColor: "#FFE0B2",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        },
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                        <EmailIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#6B7280",
+                            fontWeight: 600,
+                            fontFamily: "'Inter', sans-serif",
+                            textTransform: "uppercase",
+                            fontSize: "0.75rem",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          Email ID
+                      </Typography>
+                      </Box>
+                      <Typography
                         sx={{
-                          backgroundColor: "#D1FAE5",
-                          color: "#065F46",
-                          fontWeight: 600,
-                          fontSize: "0.7rem",
-                          height: "22px",
+                          color: "#1F2937",
+                          fontWeight: 500,
+                          fontSize: "0.95rem",
                           fontFamily: "'Inter', sans-serif",
-                          "& .MuiChip-icon": {
-                            color: "#059669",
-                          },
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box
-                    sx={{
-                      p: 2.5,
-                      borderRadius: "12px",
-                      backgroundColor: "#FAFAFA",
-                      border: "1px solid #F3F4F6",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#FFF3E0",
-                        borderColor: "#FFE0B2",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                      <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          color: "#6B7280", 
-                          fontWeight: 600,
-                          fontFamily: "'Inter', sans-serif",
-                          textTransform: "uppercase",
-                          fontSize: "0.75rem",
-                          letterSpacing: "0.5px",
                         }}
                       >
-                        Fax No
+                        {formData.email_id}
                       </Typography>
                     </Box>
-                    <Typography 
-                      sx={{ 
-                        color: "#1F2937", 
-                        fontWeight: 500,
-                        fontSize: "0.95rem",
-                        fontFamily: "'Inter', sans-serif",
-                        lineHeight: 1.6,
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "12px",
+                        backgroundColor: "#FAFAFA",
+                        border: "1px solid #F3F4F6",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#FFF3E0",
+                          borderColor: "#FFE0B2",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        },
                       }}
                     >
-                      {formData.fax_no}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box
-                    sx={{
-                      p: 2.5,
-                      borderRadius: "12px",
-                      backgroundColor: "#FAFAFA",
-                      border: "1px solid #F3F4F6",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#FFF3E0",
-                        borderColor: "#FFE0B2",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                      <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          color: "#6B7280", 
-                          fontWeight: 600,
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                        <PhoneIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#6B7280",
+                            fontWeight: 600,
+                            fontFamily: "'Inter', sans-serif",
+                            textTransform: "uppercase",
+                            fontSize: "0.75rem",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          Mobile Number
+                      </Typography>
+                      </Box>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "#1F2937",
+                            fontWeight: 500,
+                            fontSize: "0.95rem",
+                            fontFamily: "'Inter', sans-serif",
+                          }}
+                        >
+                          {formData.contact_no}
+
+                        </Typography>
+                        <Chip
+                          icon={<VerifiedIcon sx={{ fontSize: "0.9rem" }} />}
+                          label="Verified"
+                          size="small"
+                          sx={{
+                            backgroundColor: "#D1FAE5",
+                            color: "#065F46",
+                            fontWeight: 600,
+                            fontSize: "0.7rem",
+                            height: "22px",
+                            fontFamily: "'Inter', sans-serif",
+                            "& .MuiChip-icon": {
+                              color: "#059669",
+                            },
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "12px",
+                        backgroundColor: "#FAFAFA",
+                        border: "1px solid #F3F4F6",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#FFF3E0",
+                          borderColor: "#FFE0B2",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        },
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                        <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#6B7280",
+                            fontWeight: 600,
+                            fontFamily: "'Inter', sans-serif",
+                            textTransform: "uppercase",
+                            fontSize: "0.75rem",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          Fax No
+                      </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          color: "#1F2937",
+                          fontWeight: 500,
+                          fontSize: "0.95rem",
                           fontFamily: "'Inter', sans-serif",
-                          textTransform: "uppercase",
-                          fontSize: "0.75rem",
-                          letterSpacing: "0.5px",
+                          lineHeight: 1.6,
                         }}
                       >
-                        Location
+                        {formData.fax_no}
                       </Typography>
                     </Box>
-                    <Typography 
-                      sx={{ 
-                        color: "#1F2937", 
-                        fontWeight: 500,
-                        fontSize: "0.95rem",
-                        fontFamily: "'Inter', sans-serif",
-                        lineHeight: 1.6,
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "12px",
+                        backgroundColor: "#FAFAFA",
+                        border: "1px solid #F3F4F6",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#FFF3E0",
+                          borderColor: "#FFE0B2",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        },
                       }}
                     >
-                      {formData.loginaddr}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box
-                    sx={{
-                      p: 2.5,
-                      borderRadius: "12px",
-                      backgroundColor: "#FAFAFA",
-                      border: "1px solid #F3F4F6",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#FFF3E0",
-                        borderColor: "#FFE0B2",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                      <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          color: "#6B7280", 
-                          fontWeight: 600,
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                        <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#6B7280",
+                            fontWeight: 600,
+                            fontFamily: "'Inter', sans-serif",
+                            textTransform: "uppercase",
+                            fontSize: "0.75rem",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          Location
+                      </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          color: "#1F2937",
+                          fontWeight: 500,
+                          fontSize: "0.95rem",
                           fontFamily: "'Inter', sans-serif",
-                          textTransform: "uppercase",
-                          fontSize: "0.75rem",
-                          letterSpacing: "0.5px",
+                          lineHeight: 1.6,
                         }}
                       >
-                        Location
+                        {formData.loginaddr}
                       </Typography>
                     </Box>
-                    <Typography 
-                      sx={{ 
-                        color: "#1F2937", 
-                        fontWeight: 500,
-                        fontSize: "0.95rem",
-                        fontFamily: "'Inter', sans-serif",
-                        lineHeight: 1.6,
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "12px",
+                        backgroundColor: "#FAFAFA",
+                        border: "1px solid #F3F4F6",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#FFF3E0",
+                          borderColor: "#FFE0B2",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        },
                       }}
                     >
-                      Raipur, Raipur District
-                      Chhattisgarh
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                        <LocationOnIcon sx={{ color: "#FF7A00", mr: 1.5, fontSize: "1.3rem" }} />
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#6B7280",
+                            fontWeight: 600,
+                            fontFamily: "'Inter', sans-serif",
+                            textTransform: "uppercase",
+                            fontSize: "0.75rem",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          Location
+                      </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          color: "#1F2937",
+                          fontWeight: 500,
+                          fontSize: "0.95rem",
+                          fontFamily: "'Inter', sans-serif",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        Raipur, Raipur District
+                        Chhattisgarh
                     </Typography>
-                  </Box>
+                    </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-            <Box>
-              <BankDetailsView />
-            </Box>
+              </Box>
+              <Box sx={{ padding: "20px, 10px" }}>
+                <BankDetailsView />
+              </Box>
+              <Box sx={{ padding: "20px, 10px" }}>
+                <GSTDetailView />
+              </Box>
             </Box>
           )}
 

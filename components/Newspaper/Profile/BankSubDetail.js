@@ -16,15 +16,8 @@ import {
   import { useState } from "react";
   
   export default function TaxDetailsForm() {
-  
-    // ---------------------------------
-    // DROPDOWN State
-    // ---------------------------------
     const [selectedType, setSelectedType] = useState("PAN");
-  
-    // ---------------------------------
-    // FORM DATA for each type
-    // ---------------------------------
+
     const [formData, setFormData] = useState({
       PAN: { number: "", holder: "" },
       TIN: { number: "", state: "" },

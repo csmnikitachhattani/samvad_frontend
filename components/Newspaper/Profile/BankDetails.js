@@ -292,7 +292,7 @@ export default function BankDetailsForm() {
         </Button>
       </Box>
 
-      <Box>
+      <Box >
         <BankSubDetail />
       </Box>
     </Box>

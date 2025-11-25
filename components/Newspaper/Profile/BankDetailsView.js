@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  TextField,
-  Button,
   Typography,
   Grid,
   InputAdornment,
@@ -14,12 +12,9 @@ import MapIcon from "@mui/icons-material/Map";
 import PublicIcon from "@mui/icons-material/Public";
 import BusinessIcon from "@mui/icons-material/Business";
 import NumbersIcon from "@mui/icons-material/Numbers";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Cancel";
 import newspaperService from "@/services/newspaperService";
 
 export default function BankDetailsForm() {
-  // Using backend API keys so inputs stay controlled
   const [formData, setFormData] = useState({
     account_no: "",
     account_holder_name: "",
@@ -41,45 +36,27 @@ export default function BankDetailsForm() {
     setFormData(res?.data?.data[0] || {});
   };
 
- 
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const labelStyle = {
+    fontSize: "14px",
+    fontWeight: 600,
+    color: "#6B7280",
+    marginBottom: "4px",
+    display: "flex",
+    alignItems: "center",
+    gap: "5px",
   };
 
-  // Reset form
-  const handleCancel = () => {
-    setFormData({
-      account_no: "",
-      account_holder_name: "",
-      state: "",
-      district: "",
-      bank_name: "",
-      branch_name: "",
-      ifsc_code: "",
-      micr_code: "",
-      status: "",
-    });
-  };
-
-  const fieldStyle = {
-    "& .MuiOutlinedInput-root": {
-      borderRadius: "10px",
-      "&:hover": { backgroundColor: "#FFF8F1" },
-      "&.Mui-focused": {
-        backgroundColor: "#FFF8F1",
-        "& fieldset": { borderColor: "#FF7A00", borderWidth: "2px" },
-      },
-    },
-    "& .MuiInputLabel-root.Mui-focused": {
-      color: "#E65100",
-      fontWeight: 600,
-    },
+  const valueStyle = {
+    fontSize: "16px",
+    fontWeight: 500,
+    color: "#111827",
+    backgroundColor: "#FFF8F1",
+    padding: "10px 14px",
+    borderRadius: "10px",
   };
 
   return (
-    <Box sx={{ fontFamily: "'Inter', sans-serif" }}>
+    <Box sx={{ fontFamily: "'Inter', sans-serif", marginTop: "30px", border: "1px solid #e5e5e5", padding: "10px" }}>
       <Typography
         variant="h6"
         sx={{
@@ -95,161 +72,68 @@ export default function BankDetailsForm() {
       <Grid container spacing={3}>
         {/* Account Number */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Account No."
-            name="account_no"
-            value={formData.account_no || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <NumbersIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <NumbersIcon sx={{ color: "#FF7A00" }} /> Account No.
+          </Typography>
+          <Typography sx={valueStyle}>{formData.account_no || "-"}</Typography>
         </Grid>
 
         {/* Account Holder Name */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Account Holder Name"
-            name="account_holder_name"
-            value={formData.account_holder_name || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <PersonIcon sx={{ color: "#FF7A00" }} /> Account Holder Name
+          </Typography>
+          <Typography sx={valueStyle}>{formData.account_holder_name || "-"}</Typography>
         </Grid>
 
         {/* State */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="State"
-            name="state"
-            value={formData.state || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PublicIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <PublicIcon sx={{ color: "#FF7A00" }} /> State
+          </Typography>
+          <Typography sx={valueStyle}>{formData.state || "-"}</Typography>
         </Grid>
 
         {/* District */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="District"
-            name="district"
-            value={formData.district || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <MapIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <MapIcon sx={{ color: "#FF7A00" }} /> District
+          </Typography>
+          <Typography sx={valueStyle}>{formData.district || "-"}</Typography>
         </Grid>
 
         {/* Bank Name */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Bank Name"
-            name="bank_name"
-            value={formData.bank_name || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <AccountBalanceIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <AccountBalanceIcon sx={{ color: "#FF7A00" }} /> Bank Name
+          </Typography>
+          <Typography sx={valueStyle}>{formData.bank_name || "-"}</Typography>
         </Grid>
 
         {/* Branch Name */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Branch Name"
-            name="branch_name"
-            value={formData.branch_name || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <BusinessIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <BusinessIcon sx={{ color: "#FF7A00" }} /> Branch Name
+          </Typography>
+          <Typography sx={valueStyle}>{formData.branch_name || "-"}</Typography>
         </Grid>
 
         {/* IFSC Code */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="IFSC Code"
-            name="ifsc_code"
-            value={formData.ifsc_code || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <NumbersIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <NumbersIcon sx={{ color: "#FF7A00" }} /> IFSC Code
+          </Typography>
+          <Typography sx={valueStyle}>{formData.ifsc_code || "-"}</Typography>
         </Grid>
 
         {/* MICR Code */}
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="MICR Code"
-            name="micr_code"
-            value={formData.micr_code || ""}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <NumbersIcon sx={{ color: "#FF7A00" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldStyle}
-          />
+          <Typography sx={labelStyle}>
+            <NumbersIcon sx={{ color: "#FF7A00" }} /> MICR Code
+          </Typography>
+          <Typography sx={valueStyle}>{formData.micr_code || "-"}</Typography>
         </Grid>
       </Grid>
-
-      {/* Buttons */}
-      <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
-        
-      </Box>
     </Box>
   );
 }
