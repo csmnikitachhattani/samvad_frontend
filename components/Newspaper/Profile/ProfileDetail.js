@@ -181,6 +181,7 @@ function ProfileDetail() {
           {activeTab === 0 && (
             <Box>
               <Box>
+              <divider></divider>
                 {/* Profile Header */}
                 <Box
                   sx={{
@@ -534,9 +535,11 @@ function ProfileDetail() {
                   </Grid>
                 </Grid>
               </Box>
+              <divider></divider>
               <Box sx={{ padding: "20px, 10px" }}>
                 <BankDetailsView />
               </Box>
+              <divider></divider>
               <Box sx={{ padding: "20px, 10px" }}>
                 <GSTDetailView />
               </Box>

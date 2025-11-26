@@ -18,7 +18,10 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+
 import newspaperService from "@/services/newspaperService";
+import commonServices from "@/services/commonServices";
+
 function GstDetail() {
   const [formData, setFormData] = useState({
     GST_number: "",
@@ -29,6 +32,7 @@ function GstDetail() {
     GST_TaxpayerType: "",
   });
 
+  const [states, setStates] = useState([]);
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -36,96 +40,121 @@ function GstDetail() {
     severity: "success",
   });
 
-  const states = [];
+  const taxpayerTypes = ["Regular", "Composition", "Casual", "Non-Resident"];
 
-  const taxpayerTypes = [
-    "Regular",
-    "Composition",
-    "Casual",
-    "Non-Resident",
-  ];
+  // Get user GST details
   useEffect(() => {
     loadUser();
   }, []);
+
+  // Load all states
+  useEffect(() => {
+    async function fetchStates() {
+      try {
+        const response = await commonServices.getStates();
+        setStates(response.data?.data || []);
+        console.log(response.data?.data)
+      } catch (error) {
+        console.error("Failed to fetch states", error);
+      }
+    }
+    fetchStates();
+  }, []);
+
+  // Load GST detail of user
+  const loadUser = async () => {
+    try {
+      const res = await newspaperService.getNewspapersGSTDetails("00019");
+      if (res?.data?.data) setFormData(res.data.data);
+    } catch (err) {
+      console.error("Error loading GST:", err);
+    }
+  };
+
+  // Handle form change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // When state is selected, update both value + Text
+    if (name === "GST_StateID") {
+      const stateObj = states.find((s) => s.states_id == value);
+      setFormData({
+        ...formData,
+        GST_StateID: value,
+        GST_StateText: stateObj?.states_text || "",
+      });
+      return;
+    }
+
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
+  };
+
+  // Validation
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.GST_number.trim()) newErrors.GST_number = "GSTIN is required";
+    if (!formData.GST_legalName.trim()) newErrors.GST_legalName = "Legal name required";
+    if (!formData.GST_StateID) newErrors.GST_StateID = "Select a state";
+    if (!formData.GST_DateOfRegistration) newErrors.GST_DateOfRegistration = "Date required";
+    if (!formData.GST_TaxpayerType.trim()) newErrors.GST_TaxpayerType = "Taxpayer type required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Update GST Detail API
   const handleUpdateGSTDetail = async () => {
-    console.log(formData.GST_TaxpayerType, formData.GST_DateOfRegistration)
+    if (!validateForm()) {
+      setSnackbar({
+        open: true,
+        message: "Please fix the errors before submitting",
+        severity: "error",
+      });
+      return;
+    }
+
     try {
       const updateObject = {
-        action: "update",      
-        user_id: '00019',     
+        action: "update",
+        user_id: "00019",
         GST_legalName: formData.GST_legalName,
         GST_number: formData.GST_number,
         GST_StateID: formData.GST_StateID,
         GST_StateText: formData.GST_StateText,
         GST_DateOfRegistration: formData.GST_DateOfRegistration,
         GST_TaxpayerType: formData.GST_TaxpayerType,
-        //ip_address: formData.ip_address || "0.0.0.0",
-        // by_user_id: formData.by_user_id || "000019",
-        // by_user_name: formData.by_user_name || "",
+        ip_address: "192.168.29.1",
       };
-  
-      const result = await newspaperService.updateGSTDetail(updateObject);
-  
-      console.log("GST Detail Updated:", result);
-    } catch (err) {
-      console.log("Error updating GST detail:", err.message);
-    }
-  };
-  
-  const loadUser = async () => {
-    const res = await newspaperService.getNewspapersGSTDetails("00019");
-    console.log(res)
-    setFormData(res.data?.data);
-  };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    console.log(name, value)
-    setFormData({ ...formData, [name]: value });
-    if (errors[name]) setErrors({ ...errors, [name]: "" });
-    console.log(formData.GST_TaxpayerType)
-  };
+      await newspaperService.updateGSTDetail(updateObject);
 
-
-  const validateForm = () => {
-    const newErrors = {};
-  
-    if (!formData.GST_number.trim()) newErrors.GST_number = "GSTIN is required";
-    if (!formData.GST_legalName.trim()) newErrors.GST_legalName = "Legal name is required";
-    if (!formData.GST_StateText.trim()) newErrors.GST_StateText = "State is required";
-    if (!formData.GST_DateOfRegistration) newErrors.GST_DateOfRegistration = "Date required";
-    if (!formData.GST_TaxpayerType.trim()) newErrors.GST_TaxpayerType = "Taxpayer type required";
-  
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-  
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log("Submitted GST Data:", formData);
       setSnackbar({
         open: true,
-        message: "GST details submitted successfully!",
+        message: "GST details updated successfully!",
         severity: "success",
       });
-    } else {
+    } catch (err) {
+      console.log("Error updating GST detail:", err.message);
+
       setSnackbar({
         open: true,
-        message: "Please fix the errors before submitting",
+        message: "Failed to update GST details",
         severity: "error",
       });
     }
   };
 
+  // Reset
   const handleReset = () => {
     setFormData({
-      gstin: "",
-      legalName: "",
-      state: "",
-      dateOfRegistration: "",
-      taxpayerType: "",
+      GST_number: "",
+      GST_legalName: "",
+      GST_StateID: "",
+      GST_StateText: "",
+      GST_DateOfRegistration: "",
+      GST_TaxpayerType: "",
     });
     setErrors({});
   };
@@ -134,198 +163,153 @@ function GstDetail() {
 
   return (
     <Box sx={{ fontFamily: "'Inter', sans-serif" }}>
-      <Typography
-        variant="h6"
-        sx={{
-          mb: 3,
-          color: "#1F2937",
-          fontWeight: 700,
-          fontFamily: "'Inter', sans-serif",
-          fontSize: "1.25rem",
-        }}
-      >
+      <Typography variant="h6" sx={{ mb: 3, fontWeight: 700 }}>
         GST Details
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit}>
-        <Grid container spacing={5}>
-          {/* GSTIN */}
-          <Grid item xs={12} sm={12}>
-            <TextField
-              label="GSTIN / Provisional ID"
-              name="GST_number"
-              value={formData.GST_number || ""}
-              onChange={handleChange}
-              fullWidth
-              required
-              error={!!errors.gstin}
-              helperText={errors.gstin || "Case sensitive"}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <NumbersIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyle}
-            />
-          </Grid>
-
-          {/* Legal Name */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Legal Name (as per GST certificate)"
-              name="GST_legalName"
-              value={formData.GST_legalName || ""}
-              onChange={handleChange}
-              fullWidth
-              required
-              error={!!errors.legalName}
-              helperText={errors.legalName}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyle}
-            />
-          </Grid>
-
-          {/* State */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              label="State (as per GST certificate)"
-              name="GST_StateText"
-              value={formData.GST_StateText || ""}
-              onChange={handleChange}
-              required
-              error={!!errors.state}
-              helperText={errors.state}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LocationOnIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyle}
-            >
-              {states.map((state) => (
-                <MenuItem key={state} value={state}>
-                  {state}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-
-          {/* Date of Registration */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Date of Registration"
-              type="date"
-              name="GST_DateOfRegistration"
-              value={formData.GST_DateOfRegistration}
-              onChange={handleChange}
-              fullWidth
-              required
-              error={!!errors.dateOfRegistration}
-              helperText={errors.dateOfRegistration}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarMonthIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyle}
-            />
-          </Grid>
-
-          {/* Taxpayer Type */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              label="Taxpayer Type"
-              name="GST_TaxpayerType"
-              value={formData.GST_TaxpayerType}
-              onChange={handleChange}
-              fullWidth
-              required
-              error={!!errors.taxpayerType}
-              helperText={errors.taxpayerType}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AssignmentIndIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyle}
-            >
-              {taxpayerTypes.map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+      {/* FORM */}
+      <Grid container spacing={5}>
+        {/* GST Number */}
+        <Grid item xs={12}>
+          <TextField
+            label="GSTIN / Provisional ID"
+            name="GST_number"
+            value={formData.GST_number}
+            onChange={handleChange}
+            fullWidth
+            error={!!errors.GST_number}
+            helperText={errors.GST_number || "Case sensitive"}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <NumbersIcon sx={{ color: "#FF7A00" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          />
         </Grid>
 
-        {/* Action Buttons */}
-        <Box sx={{ mt: 4, display: "flex", gap: 2, justifyContent: "flex-end" }}>
-          <Button
-            variant="outlined"
-            startIcon={<CancelIcon />}
-            onClick={handleReset}
-            sx={cancelBtnStyle}
-          >
-            Reset
-          </Button>
-          <Button
-            variant="contained"
-            type="submit"
-            startIcon={<SaveIcon />}
-            sx={submitBtnStyle}
-            onClick={handleUpdateGSTDetail}
-          >
-            Submit
-          </Button>
-        </Box>
-      </Box>
+        {/* Legal Name */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Legal Name (as per GST certificate)"
+            name="GST_legalName"
+            value={formData.GST_legalName}
+            onChange={handleChange}
+            fullWidth
+            error={!!errors.GST_legalName}
+            helperText={errors.GST_legalName}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon sx={{ color: "#FF7A00" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          />
+        </Grid>
 
-      {/* Bottom Note */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="body2" sx={{ color: "red", lineHeight: 1.8 }}>
-          छ. ग. संवाद को विज्ञापन प्रविष्ट करने वाले कार्यालय/पत्रिकाओं का GST No. अनिवार्य है यदि आपके कार्यालय द्वारा GST No. लिया गया है तो विवरण एंट्री करें अन्यथा <strong>नहीं</strong> पर टिक करें।  
-          GST No. नहीं देने पर प्रकाशन की जिम्मेदारी संवाद की नहीं होगी।
-          <br />
-          <strong>नोट:</strong> कृपया जानकारी सही दें, अन्यथा गलत जानकारी के कारण समस्या होने पर संवाद की कोई जिम्मेदारी नहीं होगी।
-        </Typography>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", mt: 1 }}
-        >
-          सहायता हेतु संपर्क करें: 9300002855 (आशीष राजपूत)
-        </Typography>
+        {/* State */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            select
+            label="State (as per GST certificate)"
+            name="GST_StateID"
+            value={formData.GST_State_Text}
+            onChange={handleChange}
+            fullWidth
+            error={!!errors.GST_StateID}
+            helperText={errors.GST_StateID}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationOnIcon sx={{ color: "#FF7A00" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          >
+            {states.map((s) => (
+              <MenuItem key={s.state_id} value={s.state_id}>
+                {s.state_name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+
+        {/* Date */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            type="date"
+            label="Date of Registration"
+            name="GST_DateOfRegistration"
+            value={formData.GST_DateOfRegistration}
+            onChange={handleChange}
+            fullWidth
+            error={!!errors.GST_DateOfRegistration}
+            helperText={errors.GST_DateOfRegistration}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <CalendarMonthIcon sx={{ color: "#FF7A00" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          />
+        </Grid>
+
+        {/* Taxpayer Type */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            select
+            label="Taxpayer Type"
+            name="GST_TaxpayerType"
+            value={formData.GST_TaxpayerType}
+            onChange={handleChange}
+            fullWidth
+            error={!!errors.GST_TaxpayerType}
+            helperText={errors.GST_TaxpayerType}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AssignmentIndIcon sx={{ color: "#FF7A00" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          >
+            {taxpayerTypes.map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+      </Grid>
+
+      {/* ACTION BUTTONS */}
+      <Box sx={{ mt: 4, display: "flex", gap: 2, justifyContent: "flex-end" }}>
+        <Button variant="outlined" startIcon={<CancelIcon />} onClick={handleReset} sx={cancelBtnStyle}>
+          Reset
+        </Button>
+
+        <Button variant="contained" startIcon={<SaveIcon />} sx={submitBtnStyle} onClick={handleUpdateGSTDetail}>
+          Submit
+        </Button>
       </Box>
 
       {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={4000}
+        autoHideDuration={3500}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%", fontFamily: "'Inter', sans-serif" }}
-        >
+        <Alert severity={snackbar.severity} onClose={handleCloseSnackbar} sx={{ width: "100%" }}>
           {snackbar.message}
         </Alert>
       </Snackbar>
@@ -333,55 +317,28 @@ function GstDetail() {
   );
 }
 
-// ---- Styles ----
+/* ---------- Styles ---------- */
+
 const inputStyle = {
   "& .MuiOutlinedInput-root": {
     borderRadius: "10px",
-    fontFamily: "'Inter', sans-serif",
-    transition: "all 0.3s ease",
     "&:hover": { backgroundColor: "#FFF8F1" },
-    "&.Mui-focused": {
-      backgroundColor: "#FFF8F1",
-      "& fieldset": { borderColor: "#FF7A00", borderWidth: "2px" },
-    },
-  },
-  "& .MuiInputLabel-root.Mui-focused": {
-    color: "#E65100",
-    fontWeight: 600,
+    "&.Mui-focused fieldset": { borderColor: "#FF7A00" },
   },
 };
 
 const cancelBtnStyle = {
   borderRadius: "10px",
-  borderColor: "#9CA3AF",
-  color: "#6B7280",
-  fontWeight: 600,
   textTransform: "none",
   px: 3,
-  py: 1,
-  fontFamily: "'Inter', sans-serif",
-  "&:hover": {
-    borderColor: "#6B7280",
-    backgroundColor: "#F3F4F6",
-    transform: "translateY(-2px)",
-  },
 };
 
 const submitBtnStyle = {
   borderRadius: "10px",
-  background: "linear-gradient(135deg, #FF7A00 0%, #E65100 100%)",
-  color: "#fff",
-  fontWeight: 600,
   textTransform: "none",
   px: 3,
-  py: 1,
-  fontFamily: "'Inter', sans-serif",
-  boxShadow: "0 4px 12px rgba(230, 81, 0, 0.3)",
-  "&:hover": {
-    background: "linear-gradient(135deg, #E65100 0%, #D84315 100%)",
-    transform: "translateY(-2px)",
-    boxShadow: "0 6px 16px rgba(230, 81, 0, 0.4)",
-  },
+  background: "linear-gradient(135deg, #FF7A00, #E65100)",
 };
 
 export default GstDetail;
+
