@@ -160,10 +160,6 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
     },
   ];
   
-
-/* -------------------------
-   Helpers
-   ------------------------- */
 const formatDate = (iso) => {
   if (!iso) return "—";
   const d = new Date(iso);

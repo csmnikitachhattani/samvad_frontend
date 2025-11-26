@@ -118,15 +118,15 @@ function UpdateProfile() {
 
   const handleCancel = () => {
     setFormData({
-      NewspaperName: "",
-      editorName: "",
+      // NewspaperName: "",
+      // editorName: "",
       email_id: "",
       contact_no: "",
       loginaddr: "",
       District_Text: "",
-      state: "",
-      userId: "",
-      username: "",
+      state_text: "",
+      user_id: "",
+      user_name: "",
     });
     setErrors({});
   };

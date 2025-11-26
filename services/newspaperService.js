@@ -37,7 +37,6 @@ const newspaperService = {
       throw err; // interceptor will format it
     }
   },
-
   updateBankDetail: async (updateData) => {
     try {
       const payload = {
@@ -58,7 +57,11 @@ const newspaperService = {
       throw err;
     }
   },
-
+  getNewspaperBankSubDetails: (np_cd, action = "get") => {
+    return axiosClient.get(`/bank-sub-detail/${np_cd}`, {
+      params: { action },
+    });
+  },
   updateGSTDetail: async (updateData) => {
     try {
       const payload = {
@@ -71,9 +74,6 @@ const newspaperService = {
       throw err; // interceptor will format
     }
   },
-
-  
-
 
 };
 

@@ -13,7 +13,8 @@ import {
   import EditIcon from "@mui/icons-material/Edit";
   import DeleteIcon from "@mui/icons-material/Delete";
   import AddIcon from "@mui/icons-material/Add";
-  import { useState } from "react";
+  import { useState, useEffect } from "react";
+  import newspaperService from "@/services/newspaperService";
   
   export default function TaxDetailsForm() {
     const [selectedType, setSelectedType] = useState("PAN");
@@ -23,10 +24,15 @@ import {
       TIN: { number: "", state: "" },
       CST: { number: "", issuedDate: "" },
     });
+
+    useEffect(() => {
+      loadUser();
+    }, []);
   
-    // ---------------------------------
-    // Actions
-    // ---------------------------------
+    const loadUser = async () => {
+      const res = await newspaperService.getNewspaperBankSubDetails("000019");
+      //setFormData(res?.data?.data[0] || {});
+    };
     const handleCreate = () => {
       console.log("Create", selectedType, formData[selectedType]);
     };
