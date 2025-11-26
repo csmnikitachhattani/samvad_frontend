@@ -40,7 +40,7 @@ function GstDetail() {
     severity: "success",
   });
 
-  const taxpayerTypes = ["Regular", "Composition", "Casual", "Non-Resident"];
+  const taxpayerTypes = ["Regular", "Composite", "Casual", "Tax Deductor"];
 
   // Get user GST details
   useEffect(() => {
@@ -77,11 +77,11 @@ function GstDetail() {
 
     // When state is selected, update both value + Text
     if (name === "GST_StateID") {
-      const stateObj = states.find((s) => s.states_id == value);
+      const stateObj = states.find((s) => s.state_code == value);
       setFormData({
         ...formData,
         GST_StateID: value,
-        GST_StateText: stateObj?.states_text || "",
+        GST_StateText: stateObj?.state_name || "",
       });
       return;
     }
@@ -114,7 +114,7 @@ function GstDetail() {
       });
       return;
     }
-
+    console.log("date",formData.GST_DateOfRegistration)
     try {
       const updateObject = {
         action: "update",
@@ -217,7 +217,7 @@ function GstDetail() {
             select
             label="State (as per GST certificate)"
             name="GST_StateID"
-            value={formData.GST_State_Text}
+            value={formData.GST_StateID}
             onChange={handleChange}
             fullWidth
             error={!!errors.GST_StateID}
@@ -232,11 +232,12 @@ function GstDetail() {
             sx={inputStyle}
           >
             {states.map((s) => (
-              <MenuItem key={s.state_id} value={s.state_id}>
+              <MenuItem key={s.state_code} value={s.state_code}>
                 {s.state_name}
               </MenuItem>
             ))}
           </TextField>
+
         </Grid>
 
         {/* Date */}

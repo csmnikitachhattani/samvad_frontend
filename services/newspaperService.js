@@ -68,7 +68,7 @@ const newspaperService = {
         GST_number: updateData.GST_number,
         GST_StateID: updateData.GST_StateID,
         GST_StateText: updateData.GST_StateText,
-        GST_DateOfRegistration: updateData.GGST_DateOfRegistration,
+        GST_DateOfRegistration: updateData.GST_DateOfRegistration,
         GST_TaxpayerType: updateData.GST_TaxpayerType,
         ip_address: updateData.ip_address,
         by_user_id: updateData.by_user_id || "",
