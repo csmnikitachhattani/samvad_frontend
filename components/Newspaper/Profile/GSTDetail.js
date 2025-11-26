@@ -18,7 +18,6 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-
 import newspaperService from "@/services/newspaperService";
 import commonServices from "@/services/commonServices";
 
@@ -62,10 +61,21 @@ function GstDetail() {
   }, []);
 
   // Load GST detail of user
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return new Date(dateString).toISOString().split("T")[0];
+  };
+  
   const loadUser = async () => {
     try {
       const res = await newspaperService.getNewspapersGSTDetails("00019");
-      if (res?.data?.data) setFormData(res.data.data);
+      let data = res?.data?.data
+      if (res?.data?.data) {
+      setFormData({
+        ...data,
+        GST_DateOfRegistration: formatDate(data.GST_DateOfRegistration)
+      });
+    }
     } catch (err) {
       console.error("Error loading GST:", err);
     }
