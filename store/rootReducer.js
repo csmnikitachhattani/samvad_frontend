@@ -1,13 +1,8 @@
 import { combineReducers } from "@reduxjs/toolkit";
-
-import authReducer from "../modules/auth/authSlice";
-import userReducer from "../modules/user/userSlice";
-import productReducer from "../modules/products/productSlice";
+import realeaseReducer from "@/store/modules/newspaper/realeaseSlice";
 
 const rootReducer = combineReducers({
-  auth: authReducer,
-  user: userReducer,
-  products: productReducer,
+  realease: realeaseReducer,
 });
 
 export default rootReducer;
