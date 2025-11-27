@@ -444,12 +444,7 @@ export default function ReleaseOrderListing() {
                     <IconButton size="small" color="primary" onClick={() => handleView(row)}>
                       <VisibilityIcon />
                     </IconButton>
-                    {/* <IconButton size="small" color="info" onClick={() => handleEdit(row)}>
-                      <EditIcon />
-                    </IconButton> */}
-                      <Button variant="outlined"  onClick={handleExportCSV}>
-            Bill Entry
-          </Button>
+                    <Button onClick={() => dispatch(toggleStatusModal())} sx={{textTransform: 'capitalize', background: "linear-gradient(135deg, #FFA726 0%, #FB8C00 100%)", color: "#FFF" }}>change Status</Button>
                   </Stack>
                 </TableCell>
               </TableRow>

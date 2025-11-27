@@ -65,6 +65,7 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
           pb: 1,
           background: "linear-gradient(135deg, #FF7043 0%, #F4511E 100%)",
           color: "white",
+          mb: 6,
         }}
       >
         Upload Proof
