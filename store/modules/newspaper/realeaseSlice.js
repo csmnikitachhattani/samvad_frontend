@@ -5,6 +5,7 @@ const realeaseSlice = createSlice({
   initialState: {
     value: 0,
     uploadModalShow: false,
+    statusModalShow: false,
   },
   reducers: {
     increment: (state) => {
@@ -14,12 +15,13 @@ const realeaseSlice = createSlice({
       state.value -= 1;
     },
     toggleUploadModal: (state) =>{
-      console.log(state.uploadModalShow)
       state.uploadModalShow = !state.uploadModalShow
-      console.log(state.uploadModalShow)
+    },
+    toggleStatusModal: (state) =>{
+      state.statusModalShow = !state.statusModalShow
     }
   },
 });
 
-export const { increment, decrement, toggleUploadModal } = realeaseSlice.actions;
+export const { increment, decrement, toggleUploadModal, toggleStatusModal } = realeaseSlice.actions;
 export default realeaseSlice.reducer;

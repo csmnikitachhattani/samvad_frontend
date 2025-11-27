@@ -33,9 +33,10 @@ import FilePresentIcon from "@mui/icons-material/FilePresent";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import { toggleUploadModal } from "@/store/modules/newspaper/realeaseSlice.js";
+import { toggleUploadModal, toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 import UploadProof from './UploadProof'
+import StatusModal from './StatusModal'
 
    const MOCK_RELEASE_ORDERS = [
     {
@@ -288,9 +289,6 @@ export default function ReleaseOrderListing() {
     alert(`Edit ${row.id} — implement edit flow`);
   };
 
-  const handleUploadProof = (row) => {
-    alert(`Upload proof for ${row.id}`);
-  };
 
   const toggleSortDir = (key) => {
     if (sortBy === key) {
@@ -474,7 +472,8 @@ export default function ReleaseOrderListing() {
             showLastButton
           />
         </Box>
-      </Paper>   
+      </Paper>
+      <StatusModal />
       <UploadProof />
     </Box>
   );

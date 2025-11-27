@@ -1,36 +1,39 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
-  Grid,
-  Card,
-  Typography,
-  Button,
-  IconButton,
+  Stack,
   TextField,
-  Select,
   MenuItem,
+  Select,
   InputLabel,
   FormControl,
-  Chip,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Avatar,
-  Stack,
-  Paper,
-  Pagination,
-  Tooltip,
-} from "@mui/material"
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
+import { useSelector, useDispatch } from "react-redux";
+export default function StatusUpdateDialog({ open, setOpen, onSave }) {
+  const [statusData, setStatusData] = useState({
+    status: "",
+    rejectReason: "",
+  });
+  const statusModalShow = useSelector((state) => state.realease.statusModalShow);
+  const handleSave = () => {
+    onSave(statusData);
+    setOpen(false);
+  };
 
-export default function UploadProofDialog() {
-    return (
-        <Box sx={{ p: 3 }}>
-            <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+  return (
+    <Box>
+      <Dialog open={statusModalShow} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
-          New Bill Entry
+          Update Status
           <IconButton
             onClick={() => setOpen(false)}
             sx={{ position: "absolute", right: 8, top: 8 }}
@@ -41,71 +44,44 @@ export default function UploadProofDialog() {
 
         <DialogContent dividers>
           <Stack spacing={2}>
-            <TextField
-              label="Bill ID"
-              fullWidth
-              value={newBill.id}
-              onChange={(e) =>
-                setNewBill({ ...newBill, id: e.target.value })
-              }
-            />
-
-            <TextField
-              label="Release Order ID"
-              fullWidth
-              value={newBill.roId}
-              onChange={(e) =>
-                setNewBill({ ...newBill, roId: e.target.value })
-              }
-            />
-
-            <TextField
-              label="Bill Amount"
-              fullWidth
-              type="number"
-              value={newBill.amount}
-              onChange={(e) =>
-                setNewBill({ ...newBill, amount: e.target.value })
-              }
-            />
-
-            <TextField
-              label="Publish Date"
-              type="date"
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-              value={newBill.publishDate}
-              onChange={(e) =>
-                setNewBill({ ...newBill, publishDate: e.target.value })
-              }
-            />
-
+            {/* STATUS DROPDOWN */}
             <FormControl fullWidth>
               <InputLabel>Status</InputLabel>
               <Select
                 label="Status"
-                value={newBill.status}
+                value={statusData.status}
                 onChange={(e) =>
-                  setNewBill({ ...newBill, status: e.target.value })
+                  setStatusData({ ...statusData, status: e.target.value })
                 }
               >
-                <MenuItem value="Paid">Paid</MenuItem>
-                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="Published">Published</MenuItem>
                 <MenuItem value="Rejected">Rejected</MenuItem>
               </Select>
             </FormControl>
+
+            {/* REJECTION REASON FIELD – only show when Rejected */}
+            {statusData.status === "Rejected" && (
+              <TextField
+                label="Rejection Reason"
+                fullWidth
+                multiline
+                rows={3}
+                value={statusData.rejectReason}
+                onChange={(e) =>
+                  setStatusData({ ...statusData, rejectReason: e.target.value })
+                }
+              />
+            )}
           </Stack>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSaveBill}>
-            Save Bill
+          <Button variant="contained" onClick={handleSave}>
+            Update
           </Button>
         </DialogActions>
       </Dialog>
-        </Box>
-    )
-
+    </Box>
+  );
 }
-

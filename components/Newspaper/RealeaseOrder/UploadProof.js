@@ -32,6 +32,7 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
       alert("Please select a file first.");
       return;
     }
+    
 
     const uploadData = {
       file,
