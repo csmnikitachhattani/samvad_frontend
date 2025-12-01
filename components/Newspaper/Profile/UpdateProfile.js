@@ -22,13 +22,12 @@ import newspaperService from "@/services/newspaperService";
 
 function UpdateProfile() {
   const [formData, setFormData] = useState({
-    NewspaperName: "",
-    editorName: "",
+   
     email_id: "",
     mobile: "",
     loginaddr: "",
     District_Text: "",
-    state: "",
+    // state: "",
     userId: "",
     user_name: "",
     landmark: "",
@@ -53,7 +52,9 @@ function UpdateProfile() {
         user_name:formData.user_name,
         address: formData.loginaddr,
         contact_no:formData.contact_no,
-        fax_no: formData.fax_no
+        fax_no: formData.fax_no, 
+        landmark : formData.landmark,
+        
       };
       const result = await newspaperService.updateProfile('00020', updateObject);
       console.log("User Updated:", result);

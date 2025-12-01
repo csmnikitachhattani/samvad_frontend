@@ -5,7 +5,7 @@ const newspaperService = {
     axiosClient.get(`/npuser/${user_id}`),
 
   getNewspapersBankDetails: (user_id, action = "get") => {
-    return axiosClient.get(`/bank-detail/${user_id}`, {
+    return axiosClient.get(`/np/bank-detail/${user_id}`, {
       payload: { action },
     });
   },
@@ -48,7 +48,7 @@ const newspaperService = {
       };
   
       const res = await axiosClient.post(
-        "/np/bank-detail",
+        "/np/bank-detail/edit",
         payload
       );
       console.log("getting update report", res)
