@@ -8,6 +8,7 @@ import {
   InputAdornment,
   Alert,
   Snackbar,
+  MenuItem,
 } from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import PersonIcon from "@mui/icons-material/Person";
@@ -19,6 +20,7 @@ import PublicIcon from "@mui/icons-material/Public";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import newspaperService from "@/services/newspaperService";
+import commonServices from "@/services/commonServices";
 
 function UpdateProfile() {
   const [formData, setFormData] = useState({
@@ -35,10 +37,32 @@ function UpdateProfile() {
 
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [states, setStates] = useState([]);
+  const inputStyle = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+      "&:hover": { backgroundColor: "#FFF8F1" },
+      "&.Mui-focused fieldset": { borderColor: "#FF7A00" },
+    },
+  };
 
   useEffect(() => {
     loadUser();
   }, []);
+
+  useEffect(() => {
+    async function fetchStates() {
+      try {
+        const response = await commonServices.getStates();
+        setStates(response.data?.data || []);
+        console.log(response.data?.data)
+      } catch (error) {
+        console.error("Failed to fetch states", error);
+      }
+    }
+    fetchStates();
+  }, []);
+
 
   const loadUser = async () => {
     const res = await newspaperService.getNewspapers("00020");
@@ -64,13 +88,21 @@ function UpdateProfile() {
   };
 
   const handleChange = (e) => {
-    console.log("email validations")
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
+
+    // When state is selected, update both value + Text
+    if (name === "StateID") {
+      const stateObj = states.find((s) => s.state_code == value);
+      setFormData({
+        ...formData,
+        State_Code: value,
+        State_Text: stateObj?.state_name || "",
+      });
+      return;
     }
+
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
   };
 
   const validateForm = () => {
@@ -152,7 +184,7 @@ function UpdateProfile() {
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item size={{ xs:12, sm:4 }}>
             <TextField
               label="User Id"
               name="userId"
@@ -193,7 +225,7 @@ function UpdateProfile() {
             />
           </Grid>
          { /* user Name */}
-         <Grid item xs={12} sm={6} md={4}>
+         <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="User Name"
               name="user name"
@@ -233,7 +265,7 @@ function UpdateProfile() {
           </Grid>
 
           {/* Publication Name */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="Newspaper Name"
               name="newspaperName"
@@ -274,7 +306,7 @@ function UpdateProfile() {
             />
           </Grid>
           {/* Email */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="Email ID"
               name="email"
@@ -315,9 +347,8 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-
           {/* Mobile */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="Mobile Number"
               name="mobile"
@@ -357,9 +388,8 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-          
           {/* Fax Number */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="Fax Number"
               name="fax_no"
@@ -399,9 +429,8 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-              
           {/* Landmark */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="Landmark"
               name="landmark"
@@ -439,10 +468,8 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-        
-
           {/* District */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="District"
               name="district"
@@ -480,13 +507,12 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-
           {/* State */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="State"
               name="state"
-              value={formData.state}
+              value={formData.State_Text}
               onChange={handleChange}
               fullWidth
               required
@@ -522,8 +548,8 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-            {/* Address */}
-            <Grid item sm={12}>
+          {/* Address */}
+          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="Address"
               name="address"
@@ -565,9 +591,32 @@ function UpdateProfile() {
               }}
             />
           </Grid>
+          {/* States Text*/}
+          <Grid size={{xs: 12, sm:4}}>
+          <TextField
+            select
+            label="States"
+            name="StateID"
+            value={formData.State_Text}
+            onChange={handleChange}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationOnIcon sx={{ color: "#FF7A00" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          >
+            {states.map((s) => (
+              <MenuItem key={s.state_code} value={s.state_code}>
+                {s.state_name}
+              </MenuItem>
+            ))}
+          </TextField>
         </Grid>
-       
-
+        </Grid>
         {/* Action Buttons */}
         <Box sx={{ mt: 4, display: "flex", gap: 2, justifyContent: "flex-end" }}>
           <Button

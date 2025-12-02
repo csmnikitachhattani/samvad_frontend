@@ -118,7 +118,7 @@ export default function BankDetailsForm() {
 
       <Grid container spacing={3}>
         {/* Account Number */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}} >
           <TextField
             label="Account No."
             name="account_no"
@@ -137,7 +137,7 @@ export default function BankDetailsForm() {
         </Grid>
 
         {/* Account Holder Name */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}}>
           <TextField
             label="Account Holder Name"
             name="account_holder_name"
@@ -156,7 +156,7 @@ export default function BankDetailsForm() {
         </Grid>
 
         {/* State */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}}>
           <TextField
             label="State"
             name="state"
@@ -175,7 +175,7 @@ export default function BankDetailsForm() {
         </Grid>
 
         {/* District */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}}>
           <TextField
             label="District"
             name="district"
@@ -194,7 +194,7 @@ export default function BankDetailsForm() {
         </Grid>
 
         {/* Bank Name */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}}>
           <TextField
             label="Bank Name"
             name="bank_name"
@@ -213,7 +213,7 @@ export default function BankDetailsForm() {
         </Grid>
 
         {/* Branch Name */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}}>
           <TextField
             label="Branch Name"
             name="branch_name"
@@ -232,7 +232,7 @@ export default function BankDetailsForm() {
         </Grid>
 
         {/* IFSC Code */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}}>
           <TextField
             label="IFSC Code"
             name="ifsc_code"
@@ -251,7 +251,7 @@ export default function BankDetailsForm() {
         </Grid>
 
         {/* MICR Code */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm:4}}>
           <TextField
             label="MICR Code"
             name="micr_code"
