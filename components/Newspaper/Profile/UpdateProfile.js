@@ -33,6 +33,8 @@ function UpdateProfile() {
     userId: "",
     user_name: "",
     landmark: "",
+    State_Text: '',
+    State_code: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -78,6 +80,7 @@ function UpdateProfile() {
         contact_no:formData.contact_no,
         fax_no: formData.fax_no, 
         landmark : formData.landmark,
+        State_Text: formData.State_Text,
         
       };
       const result = await newspaperService.updateProfile('00020', updateObject);
@@ -88,10 +91,11 @@ function UpdateProfile() {
   };
 
   const handleChange = (e) => {
+    console.log("is this running")
     const { name, value } = e.target;
 
     // When state is selected, update both value + Text
-    if (name === "StateID") {
+    if (name === "State_Code") {
       const stateObj = states.find((s) => s.state_code == value);
       setFormData({
         ...formData,
@@ -187,8 +191,8 @@ function UpdateProfile() {
         <Grid item size={{ xs:12, sm:4 }}>
             <TextField
               label="User Id"
-              name="userId"
-              value={formData.user_id}
+              name="user_id"
+              value={formData?.user_id}
               onChange={handleChange}
               fullWidth
               required
@@ -228,7 +232,7 @@ function UpdateProfile() {
          <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="User Name"
-              name="user name"
+              name="user_name"
               value={formData.user_name}
               onChange={handleChange}
               fullWidth
@@ -429,45 +433,7 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-          {/* Landmark */}
-          <Grid size={{ xs:12, sm:4 }}>
-            <TextField
-              label="Landmark"
-              name="landmark"
-              value={formData.landmark}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PhoneIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                  fontFamily: "'Inter', sans-serif",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: "#FFF8F1",
-                  },
-                  "&.Mui-focused": {
-                    backgroundColor: "#FFF8F1",
-                    "& fieldset": {
-                      borderColor: "#FF7A00",
-                      borderWidth: "2px",
-                    },
-                  },
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#E65100",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </Grid>
+          
           {/* District */}
           <Grid size={{ xs:12, sm:4 }}>
             <TextField
@@ -507,47 +473,7 @@ function UpdateProfile() {
               }}
             />
           </Grid>
-          {/* State */}
-          <Grid size={{ xs:12, sm:4 }}>
-            <TextField
-              label="State"
-              name="state"
-              value={formData.State_Text}
-              onChange={handleChange}
-              fullWidth
-              required
-              error={!!errors.state}
-              helperText={errors.state}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PublicIcon sx={{ color: "#FF7A00", fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                  fontFamily: "'Inter', sans-serif",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: "#FFF8F1",
-                  },
-                  "&.Mui-focused": {
-                    backgroundColor: "#FFF8F1",
-                    "& fieldset": {
-                      borderColor: "#FF7A00",
-                      borderWidth: "2px",
-                    },
-                  },
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#E65100",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </Grid>
+          
           {/* Address */}
           <Grid size={{ xs:12, sm:4 }}>
             <TextField
@@ -596,8 +522,8 @@ function UpdateProfile() {
           <TextField
             select
             label="States"
-            name="StateID"
-            value={formData.State_Text}
+            name="State_Code"
+            value={formData.State_Code}
             onChange={handleChange}
             fullWidth
             InputProps={{
