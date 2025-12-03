@@ -14,6 +14,7 @@ const newspaperService = {
     axiosClient.get(`/gst/${user_id}`),
 
   updateNpUser: async (userId, updateData) => {
+    console.log(updateData)
     try {
       const res = await axiosClient.patch(`/npuser/edit/${userId}`, updateData);
       return res.data;

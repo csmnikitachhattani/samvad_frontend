@@ -81,6 +81,7 @@ function UpdateProfile() {
         fax_no: formData.fax_no, 
         landmark : formData.landmark,
         State_Text: formData.State_Text,
+        State_Code: formData.State_Code
         
       };
       const result = await newspaperService.updateProfile('00020', updateObject);

@@ -38,7 +38,7 @@ import { useSelector, useDispatch } from "react-redux";
 import UploadProof from './UploadProof'
 import StatusModal from './StatusModal'
 
-   const MOCK_RELEASE_ORDERS = [
+const MOCK_RELEASE_ORDERS = [
     {
       id: "RO-0012",
       title: "City Marathon 2025",
