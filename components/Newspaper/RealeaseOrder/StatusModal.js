@@ -16,8 +16,8 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
 import { useSelector, useDispatch } from "react-redux";
+import {toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
 export default function StatusUpdateDialog({ open, setOpen, onSave }) {
   const [statusData, setStatusData] = useState({
     status: "",
@@ -28,14 +28,14 @@ export default function StatusUpdateDialog({ open, setOpen, onSave }) {
     onSave(statusData);
     setOpen(false);
   };
-
+  const dispatch = useDispatch();
   return (
     <Box>
       <Dialog open={statusModalShow} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
           Update Status
           <IconButton
-            onClick={() => setOpen(false)}
+              onClick={() => dispatch(toggleStatusModal())}
             sx={{ position: "absolute", right: 8, top: 8 }}
           >
             <CloseIcon />

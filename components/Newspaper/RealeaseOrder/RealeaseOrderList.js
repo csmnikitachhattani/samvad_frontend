@@ -40,126 +40,7 @@ import StatusModal from './StatusModal'
 import ROService from "@/services/ROServices";
 
 const MOCK_RELEASE_ORDERS = [
-    // {
-    //   id: "RO-0012",
-    //   title: "City Marathon 2025",
-    //   department: "Editorial",
-    //   releaseDate: "2025-11-06",
-    //   publishDate: "2025-11-08",
-    //   status: "Published",
-    //   bill_status: "Processed",
-    //   proof: "proof.pdf",
-    //   amount: 12000,
-    //   createdBy: "Ashish R.",
-    // },
-    // {
-    //   id: "RO-0013",
-    //   title: "New Ad Campaign",
-    //   department: "Ads",
-    //   releaseDate: "2025-11-05",
-    //   publishDate: "2025-11-07",
-    //   status: "Pending",
-    //   bill_status: "Under Process",
-    //   proof: null,
-    //   amount: 20000,
-    //   createdBy: "Nikita C.",
-    // },
-    // {
-    //   id: "RO-0014",
-    //   title: "Local Festival Story",
-    //   department: "News",
-    //   releaseDate: "2025-11-06",
-    //   publishDate: "2025-11-09",
-    //   status: "Rejected",
-    //   bill_status: "Cancelled",
-    //   proof: null,
-    //   amount: 0,
-    //   createdBy: "Raj P.",
-    // },
-    // {
-    //   id: "RO-0015",
-    //   title: "Sponsored Travel Feature",
-    //   department: "Editorial",
-    //   releaseDate: "2025-11-01",
-    //   publishDate: "2025-11-03",
-    //   status: "Published",
-    //   bill_status: "Processed",
-    //   proof: "travel-proof.pdf",
-    //   amount: 15000,
-    //   createdBy: "Priya S.",
-    // },
-    // {
-    //   id: "RO-0016",
-    //   title: "Weekly Business Roundup",
-    //   department: "Business",
-    //   releaseDate: "2025-10-30",
-    //   publishDate: "2025-11-01",
-    //   status: "Published",
-    //   bill_status: "Approved",
-    //   proof: "business.pdf",
-    //   amount: 8000,
-    //   createdBy: "Nikita C.",
-    // },
-    // {
-    //   id: "RO-0017",
-    //   title: "Tech Expo Coverage",
-    //   department: "News",
-    //   releaseDate: "2025-11-10",
-    //   publishDate: null,
-    //   status: "Pending",
-    //   bill_status: "Verification Pending",
-    //   proof: null,
-    //   amount: 5000,
-    //   createdBy: "Rohit K.",
-    // },
-    // {
-    //   id: "RO-0018",
-    //   title: "Sports Weekly Highlights",
-    //   department: "Sports",
-    //   releaseDate: "2025-11-02",
-    //   publishDate: "2025-11-05",
-    //   status: "Published",
-    //   bill_status: "Paid",
-    //   proof: "sports.pdf",
-    //   amount: 6000,
-    //   createdBy: "Amit S.",
-    // },
-    // {
-    //   id: "RO-0019",
-    //   title: "Real Estate Market Update",
-    //   department: "Business",
-    //   releaseDate: "2025-11-03",
-    //   publishDate: "2025-11-04",
-    //   status: "Pending",
-    //   bill_status: "Payment Pending",
-    //   proof: null,
-    //   amount: 4500,
-    //   createdBy: "Nikita C.",
-    // },
-    // {
-    //   id: "RO-0020",
-    //   title: "Health Awareness Column",
-    //   department: "Lifestyle",
-    //   releaseDate: "2025-10-29",
-    //   publishDate: "2025-10-31",
-    //   status: "Published",
-    //   bill_status: "Sent to Client",
-    //   proof: "health.pdf",
-    //   amount: 3000,
-    //   createdBy: "Priya S.",
-    // },
-    // {
-    //   id: "RO-0021",
-    //   title: "Government Policy Review",
-    //   department: "Editorial",
-    //   releaseDate: "2025-11-07",
-    //   publishDate: null,
-    //   status: "Rejected",
-    //   bill_status: "Not Applicable",
-    //   proof: null,
-    //   amount: 0,
-    //   createdBy: "Ashish R.",
-    // },
+  
   ];
   
 
@@ -192,6 +73,7 @@ export default function ReleaseOrderListing() {
     }
   };
   // states
+  const formatINR = (value) => `₹ ${Number(value).toLocaleString("en-IN")}`;
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("releaseDate");
@@ -396,80 +278,117 @@ export default function ReleaseOrderListing() {
 
       {/* Table */}
       <Paper>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {/* <TableCell>RO ID</TableCell> */}
-              <TableCell>Title</TableCell>
-              <TableCell>Client Name </TableCell>
-              {/* <TableCell>Release Date</TableCell> */}
-              <TableCell>Publish Date</TableCell>
-              {/* <TableCell>Ro Status</TableCell> */}
-              <TableCell>total Rate</TableCell>
-              <TableCell>Proof</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
+      <Paper>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell>RO No.</TableCell>
+        <TableCell>Subject</TableCell>
+        <TableCell>Client Name</TableCell>
+        <TableCell>Publish Date</TableCell>
+        <TableCell>Total Rate</TableCell>
+        <TableCell>Content Size</TableCell>
+        <TableCell>Proof</TableCell>
+        <TableCell align="right">Actions</TableCell>
+      </TableRow>
+    </TableHead>
 
-          <TableBody>
-            {/* {pageRows.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
-                  No results found
-                </TableCell>
-              </TableRow>
-            )} */}
+    <TableBody>
+      {Rodata?.map((row, index) => (
+        <TableRow key={index} hover>
+          <TableCell>
+          <Typography sx={{ fontWeight: 600, width: '100px' }}>{row.np_news_cd}</Typography>
+          </TableCell>
+          {/* Subject */}
+          <TableCell>
+            <Typography sx={{ fontWeight: 600, width: '250px' }}>{row.subject}</Typography>
+            <Typography variant="caption" color="text.secondary">
+              RO Date: {row.ro_date || "—"}
+            </Typography>
+          </TableCell>
 
-            {Rodata.map((row) => (
-              <TableRow key={row.id} hover>
-                {/* <TableCell sx={{ fontWeight: 700 }}>{row.id}
-                <div>{formatDate(row.ro_date)}</div>
-                </TableCell> */}
-                <TableCell>
-                  <Typography sx={{ fontWeight: 600 }}>{row.subject}</Typography>
-                  <Typography variant="caption" color="text.secondary">Created by {row.ro_date}</Typography>
-                </TableCell>
-                <TableCell>
-                  {/* <Chip label={row.client_name} size="small" /> */}
-                  <Typography sx={{ fontWeight: 600 }}>{row.client_name}</Typography>
-                </TableCell>
-                {/* <TableCell>{formatDate(row.releaseDate)}</TableCell> */}
-                <TableCell>
-                  {row.publishDate
-                    ? formatDate(row.publishDate)    // if date exists
-                    : "not published"}
-                </TableCell>
-                {/* <TableCell>
-                  <Chip label={row.bill_status} size="small" />
-             <Typography>{row.total_rate}</Typography> 
-                </TableCell> */}
-                <TableCell>
-                  {/* <Chip label={row.status} color={statusColor(row.status)} size="small" /> */}
-                  <Typography>{row.total_rate}</Typography>
-                </TableCell>
-                <TableCell>
-                  {row.proof ? (
-                    <Button startIcon={<FilePresentIcon />} size="small" onClick={() => alert(`Download ${row.proof}`)}>
-                      {row.proof}
-                    </Button>
-                  ) : (
-                      <Button startIcon={<UploadFileIcon />} size="small" onClick={() => dispatch(toggleUploadModal())}>
-                        Upload
-                      </Button>
-                    )}
-                </TableCell>
-                <TableCell align="right">
-                  <Stack direction="row" spacing={1} justifyContent="flex-end">
-                    <IconButton size="small" color="primary" onClick={() => handleView(row)}>
-                      <VisibilityIcon />
-                    </IconButton>
-                    <Button onClick={() => dispatch(toggleStatusModal())} sx={{textTransform: 'capitalize', background: "linear-gradient(135deg, #FFA726 0%, #FB8C00 100%)", color: "#FFF" }}>change Status</Button>
-                  </Stack>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+          {/* Client Name */}
+          <TableCell>
+            <Typography sx={{ fontWeight: 600, width: '250px' }}>{row.client_name}</Typography>
+          </TableCell>
+
+          {/* Publish Date */}
+          <TableCell>
+            {row.sch_pub_date ? row.sch_pub_date : "Not Published"}
+          </TableCell>
+
+          {/* Total Rate */}
+          <TableCell>
+          <Typography>{formatINR(row.total_rate)}</Typography>
+          </TableCell>
+
+          {/* Total Rate */}
+          <TableCell>
+            <Typography>{row.size_row} X {row.size_col}</Typography>
+          </TableCell>
+
+          {/* Proof Upload / View */}
+          <TableCell>
+            {row.proof ? (
+              <Button
+                startIcon={<FilePresentIcon />}
+                size="small"
+                onClick={() => alert(`Download proof: ${row.proof}`)}
+              >
+                {row.proof}
+              </Button>
+            ) : (
+              <Button
+                startIcon={<UploadFileIcon />}
+                size="small"
+                onClick={() => dispatch(toggleUploadModal())}
+              >
+                Upload
+              </Button>
+            )}
+          </TableCell>
+
+          {/* Actions */}
+          <TableCell align="right">
+            <Stack direction="row" spacing={1} justifyContent="flex-end">
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() => handleView(row)}
+              >
+                <VisibilityIcon />
+              </IconButton>
+              <Button
+  onClick={() => dispatch(toggleStatusModal())}
+  sx={{
+    textTransform: "none",
+    fontWeight: 600,
+    fontSize: "0.9rem",
+    padding: "6px 18px",
+    borderRadius: "30px",
+    background: "linear-gradient(135deg, #FF9800 0%, #F57C00 100%)",
+    color: "#fff",
+    boxShadow: "0 3px 10px rgba(255, 152, 0, 0.3)",
+    transition: "all 0.25s ease",
+    "&:hover": {
+      background: "linear-gradient(135deg, #FB8C00 0%, #EF6C00 100%)",
+      boxShadow: "0 4px 14px rgba(255, 152, 0, 0.45)",
+      transform: "translateY(-2px)",
+    },
+  }}
+>
+  Update Status
+</Button>
+
+            </Stack>
+          </TableCell>
+
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</Paper>
+
 
         {/* Pagination */}
         {/* <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
