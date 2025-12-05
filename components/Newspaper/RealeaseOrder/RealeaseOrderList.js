@@ -399,7 +399,7 @@ export default function ReleaseOrderListing() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>RO ID</TableCell>
+              {/* <TableCell>RO ID</TableCell> */}
               <TableCell>Title</TableCell>
               <TableCell>Client Name </TableCell>
               {/* <TableCell>Release Date</TableCell> */}
@@ -422,12 +422,12 @@ export default function ReleaseOrderListing() {
 
             {Rodata.map((row) => (
               <TableRow key={row.id} hover>
-                <TableCell sx={{ fontWeight: 700 }}>{row.id}
+                {/* <TableCell sx={{ fontWeight: 700 }}>{row.id}
                 <div>{formatDate(row.ro_date)}</div>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <Typography sx={{ fontWeight: 600 }}>{row.subject}</Typography>
-                  <Typography variant="caption" color="text.secondary">Created by {row.createdBy}</Typography>
+                  <Typography variant="caption" color="text.secondary">Created by {row.ro_date}</Typography>
                 </TableCell>
                 <TableCell>
                   {/* <Chip label={row.client_name} size="small" /> */}
