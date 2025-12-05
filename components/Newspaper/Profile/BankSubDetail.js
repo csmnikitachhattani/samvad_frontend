@@ -147,10 +147,6 @@ import {
     return (
       <Card sx={{ p: 2, borderRadius: 3, boxShadow: 3 }}>
         <CardContent>
-  
-          {/* ---------------------------------
-              DROPDOWN
-          --------------------------------- */}
           <FormControl fullWidth>
             <InputLabel>Select Type</InputLabel>
             <Select

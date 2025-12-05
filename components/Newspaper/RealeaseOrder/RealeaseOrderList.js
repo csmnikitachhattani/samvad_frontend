@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -37,6 +37,7 @@ import { toggleUploadModal, toggleStatusModal } from "@/store/modules/newspaper/
 import { useSelector, useDispatch } from "react-redux";
 import UploadProof from './UploadProof'
 import StatusModal from './StatusModal'
+import ROService from "@/services/ROServices";
 
 const MOCK_RELEASE_ORDERS = [
     {
@@ -173,8 +174,19 @@ const statusColor = (status) => {
   if (status === "Rejected") return "error";
   return "default";
 };
-
 export default function ReleaseOrderListing() {
+  useEffect(() => {
+    loadUser();
+  }, []);
+  const loadUser = async () => {
+    try {
+      const res = await ROService.getROList('000019');
+      console.log(res)
+      //let data = res?.data?.data
+    } catch (err) {
+      console.error("Error loading GST:", err);
+    }
+  };
   // states
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");

@@ -180,7 +180,7 @@ function GstDetail() {
       {/* FORM */}
       <Grid container spacing={5}>
         {/* GST Number */}
-        <Grid item xs={12}>
+        <Grid item size={{xs:12, sm: 4}}>
           <TextField
             label="GSTIN / Provisional ID"
             name="GST_number"
@@ -201,7 +201,7 @@ function GstDetail() {
         </Grid>
 
         {/* Legal Name */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm: 4}}>
           <TextField
             label="Legal Name (as per GST certificate)"
             name="GST_legalName"
@@ -222,7 +222,7 @@ function GstDetail() {
         </Grid>
 
         {/* State */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm: 4}}>
           <TextField
             select
             label="State (as per GST certificate)"
@@ -251,7 +251,7 @@ function GstDetail() {
         </Grid>
 
         {/* Date */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm: 4}}>
           <TextField
             type="date"
             label="Date of Registration"
@@ -274,7 +274,7 @@ function GstDetail() {
         </Grid>
 
         {/* Taxpayer Type */}
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{xs:12, sm: 4}}>
           <TextField
             select
             label="Taxpayer Type"

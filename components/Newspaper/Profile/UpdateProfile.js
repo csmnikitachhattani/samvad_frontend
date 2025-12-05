@@ -24,15 +24,12 @@ import commonServices from "@/services/commonServices";
 
 function UpdateProfile() {
   const [formData, setFormData] = useState({
-   
     email_id: "",
-    mobile: "",
     loginaddr: "",
     District_Text: "",
     // state: "",
     userId: "",
     user_name: "",
-    landmark: "",
     State_Text: '',
     State_code: null,
   });
@@ -79,7 +76,6 @@ function UpdateProfile() {
         address: formData.loginaddr,
         contact_no:formData.contact_no,
         fax_no: formData.fax_no, 
-        landmark : formData.landmark,
         State_Text: formData.State_Text,
         State_Code: formData.State_Code
         
@@ -273,8 +269,8 @@ function UpdateProfile() {
           <Grid size={{ xs:12, sm:4 }}>
             <TextField
               label="Newspaper Name"
-              name="newspaperName"
-              value={formData.user_name}
+              name="np_name"
+              value={formData.np_name}
               onChange={handleChange}
               fullWidth
               required

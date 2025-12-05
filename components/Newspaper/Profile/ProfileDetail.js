@@ -13,6 +13,7 @@ import {
 import UpdateProfile from "./UpdateProfile";
 import BankDetails from "./BankDetails";
 import GSTDetail from "./GSTDetail";
+import BankSubDetails from './BankSubDetail';
 import ForgotPassword from "./ForgotPassword";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EmailIcon from "@mui/icons-material/Email";
@@ -170,8 +171,9 @@ function ProfileDetail() {
           >
             <Tab label="View Profile" />
             <Tab label="Update Profile" />
-            <Tab label="Change Password" />
+            {/* <Tab label="Change Password" /> */}
             <Tab label="Bank Details" />
+            <Tab label="Bank Sub Details" />
             <Tab label="GST Details" />
           </Tabs>
         </Box>
@@ -547,8 +549,9 @@ function ProfileDetail() {
           )}
 
           {activeTab === 1 && <UpdateProfile />}
-          {activeTab === 2 && <ForgotPassword />}
-          {activeTab === 3 && <BankDetails />}
+          {/* {activeTab === 2 && <ForgotPassword />} */}
+          {activeTab === 2 && <BankDetails />}
+          {activeTab === 3 && <BankSubDetails />}
           {activeTab === 4 && <GSTDetail />}
         </Box>
       </Card>
