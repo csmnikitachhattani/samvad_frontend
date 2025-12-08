@@ -135,9 +135,6 @@ export default function ReleaseOrderListing() {
   // const pageCount = Math.ceil(filtered.length / rowsPerPage);
   // const pageRows = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
-  /* -------------------------
-     Actions
-     ------------------------- */
   const handleExportCSV = () => {
     // simple CSV export
     const headers = [
@@ -187,7 +184,6 @@ export default function ReleaseOrderListing() {
     alert(`Edit ${row.id} — implement edit flow`);
   };
 
-
   const toggleSortDir = (key) => {
     if (sortBy === key) {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -227,55 +223,6 @@ export default function ReleaseOrderListing() {
       </Box>
 
 
-      {/* Controls */}
-      {/* <Paper sx={{ p: 2, mb: 2 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item size={{xs:12, md:4}}>
-            <TextField
-              placeholder="Search by RO ID, title or user..."
-              value={query}
-              onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-              fullWidth
-              size="small"
-            />
-          </Grid>
-
-          <Grid item size={{xs:6, sm:3, md:2}}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Status</InputLabel>
-              <Select
-                label="Status"
-                value={statusFilter}
-                onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              >
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="Published">Published</MenuItem>
-                <MenuItem value="Pending">Pending</MenuItem>
-                <MenuItem value="Rejected">Rejected</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item size={{xs:6, sm:3, md:4}}>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="body2" color="text.secondary">Sort</Typography>
-              <Button variant={sortBy === "releaseDate" ? "contained" : "outlined"} size="small" onClick={() => toggleSortDir("releaseDate")}>
-                Release Date {sortBy === "releaseDate" && (sortDir === "asc" ? <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />)}
-              </Button>
-              <Button variant={sortBy === "amount" ? "contained" : "outlined"} size="small" onClick={() => toggleSortDir("amount")}>
-                Amount {sortBy === "amount" && (sortDir === "asc" ? <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />)}
-              </Button>
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} md={3} sx={{ textAlign: { xs: "left", md: "right" } }}>
-            <Tooltip title="Advanced filters">
-              <IconButton><FilterListIcon /></IconButton>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      </Paper> */}
-
       {/* Table */}
       <Paper>
       <Paper>
@@ -287,9 +234,9 @@ export default function ReleaseOrderListing() {
         <TableCell>Client Name</TableCell>
         <TableCell>Publish Date</TableCell>
         <TableCell>Total Rate</TableCell>
-        <TableCell>Content Size</TableCell>
-        <TableCell>Proof</TableCell>
-        <TableCell align="right">Actions</TableCell>
+        <TableCell>Content Size(L*W)</TableCell>
+        <TableCell>Published Proof</TableCell>
+        <TableCell align="right">Update Publish Status</TableCell>
       </TableRow>
     </TableHead>
 
@@ -301,7 +248,7 @@ export default function ReleaseOrderListing() {
           </TableCell>
           {/* Subject */}
           <TableCell>
-            <Typography sx={{ fontWeight: 600, width: '250px' }}>{row.subject}</Typography>
+            <Typography sx={{ fontWeight: 600, width: '250px' }}>{row.subject.substring(0,50)}</Typography>
             <Typography variant="caption" color="text.secondary">
               RO Date: {row.ro_date || "—"}
             </Typography>
@@ -309,7 +256,7 @@ export default function ReleaseOrderListing() {
 
           {/* Client Name */}
           <TableCell>
-            <Typography sx={{ fontWeight: 600, width: '250px' }}>{row.client_name}</Typography>
+            <Typography sx={{ fontWeight: 600, width: '250px' }}>{row.client_name.substring(0,50)}</Typography>
           </TableCell>
 
           {/* Publish Date */}
@@ -343,7 +290,7 @@ export default function ReleaseOrderListing() {
                 size="small"
                 onClick={() => dispatch(toggleUploadModal())}
               >
-                Upload
+                Upload Publish Copy
               </Button>
             )}
           </TableCell>
@@ -377,7 +324,7 @@ export default function ReleaseOrderListing() {
     },
   }}
 >
-  Update Status
+  Update
 </Button>
 
             </Stack>
@@ -390,21 +337,7 @@ export default function ReleaseOrderListing() {
 </Paper>
 
 
-        {/* Pagination */}
-        {/* <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            Showing {(page - 1) * rowsPerPage + 1} - {Math.min(page * rowsPerPage, filtered.length)} of {filtered.length}
-          </Typography>
-
-          <Pagination
-            count={pageCount}
-            page={page}
-            onChange={(e, v) => setPage(v)}
-            color="primary"
-            showFirstButton
-            showLastButton
-          />
-        </Box> */}
+        
       </Paper>
       <StatusModal />
       <UploadProof />
