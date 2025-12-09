@@ -15,23 +15,21 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
 
-export default function StatusUpdateDialog({
-  open,
-  setOpen,
-  onSave,
-  roData,
-}) {
+export default function StatusUpdateDialog({ open, onSave, roData }) {
   const [statusData, setStatusData] = useState({
     status: "",
     rejectReason: "",
     publishDate: "",
   });
+  
 
+  const [remarks, setRemarks] = useState('');
   const [errors, setErrors] = useState({
     publishDate: "",
     rejectReason: "",
@@ -42,7 +40,6 @@ export default function StatusUpdateDialog({
 
   const handleClose = () => {
     dispatch(toggleStatusModal());
-    setOpen(false);
     setErrors({ publishDate: "", rejectReason: "" });
   };
 
@@ -51,7 +48,6 @@ export default function StatusUpdateDialog({
     let newErrors = { publishDate: "", rejectReason: "" };
     let valid = true;
 
-    // If status = Published → validate date
     if (statusData.status === "Published") {
       if (!statusData.publishDate) {
         newErrors.publishDate = "Publish date is required";
@@ -59,7 +55,6 @@ export default function StatusUpdateDialog({
       }
     }
 
-    // If status = Rejected → validate reject reason
     if (statusData.status === "Rejected") {
       if (!statusData.rejectReason.trim()) {
         newErrors.rejectReason = "Rejection reason is required";
@@ -72,87 +67,113 @@ export default function StatusUpdateDialog({
   };
 
   const handleSave = () => {
-    if (!validate()) return; // stop if validation fails
+    if (!validate()) return;
     onSave(statusData);
     handleClose();
   };
 
   return (
     <Dialog
-      open={statusModalShow}
-      onClose={handleClose}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        sx: { borderRadius: 3, p: 0.5 },
-      }}
-    >
-      {/* HEADER */}
-      <DialogTitle
+  open={statusModalShow}
+  onClose={() => dispatch(toggleStatusModal())}
+  maxWidth="sm"
+  fullWidth
+  PaperProps={{
+    sx: {
+      borderRadius: 3,
+      p: 2,
+      maxHeight: "90vh",
+    },
+  }}
+>
+  <DialogTitle
+    sx={{
+      fontWeight: 700,
+      fontSize: "1.3rem",
+      pb: 1,
+    }}
+  >
+    Update RO Status
+  </DialogTitle>
+
+  <IconButton
+    onClick={() => dispatch(toggleStatusModal())}
+    sx={{
+      position: "absolute",
+      right: 12,
+      top: 12,
+    }}
+  >
+    <CloseIcon />
+  </IconButton>
+
+  <DialogContent dividers sx={{ mt: 1 }}>
+    <Box display="flex" flexDirection="column" gap={3}>
+      
+      {/* Static Value Section */}
+      <Box
         sx={{
-          fontWeight: 700,
-          fontSize: "1.2rem",
-          borderBottom: "1px solid #eee",
-          pb: 1,
+          background: "#F8F9FA",
+          borderRadius: 2,
+          p: 2,
+          border: "1px solid #E0E0E0",
         }}
       >
-        Update Status
-        <IconButton
-          onClick={handleClose}
-          sx={{ position: "absolute", right: 12, top: 12 }}
+        <Typography fontSize={14} color="text.secondary">
+          RO Number
+        </Typography>
+        <Typography fontWeight={600} fontSize={16}>
+          26/05/1998
+        </Typography>
+
+        <Box mt={2}>
+          <Typography fontSize={14} color="text.secondary">
+            Client Name
+          </Typography>
+          <Typography fontWeight={600} fontSize={16}>
+            Tender
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Status Field */}
+      <FormControl fullWidth>
+        <InputLabel>Status</InputLabel>
+        <Select
+          label="Status"
+          value={statusData.status}
+          onChange={(e) => setStatusData({ status: e.target.value,
+            publishDate: "",
+            rejectReason: "",})}
+          sx={{
+            borderRadius: 2,
+          }}
         >
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
+          <MenuItem value="Published">Published</MenuItem>
+          <MenuItem value="Rejected">Rejected</MenuItem>
+        </Select>
+      </FormControl>
 
-      {/* CONTENT */}
-      <DialogContent dividers sx={{ background: "#fffaf2" }}>
-        <Stack spacing={2.5}>
-          {/* RO DETAILS */}
-          <TextField
-            label="RO No"
-            value={roData?.ro_no || ""}
-            fullWidth
-            InputProps={{ readOnly: true }}
-          />
-
-          <TextField
-            label="RO Date"
-            value={roData?.ro_date || ""}
-            fullWidth
-            InputProps={{ readOnly: true }}
-          />
-
-          {/* STATUS SELECT */}
-          <FormControl fullWidth>
-            <InputLabel>Status</InputLabel>
-            <Select
-              label="Status"
-              value={statusData.status}
-              onChange={(e) => {
-                setStatusData((prev) => ({
-                  ...prev,
-                  status: e.target.value,
-                  // clear fields when switching status
-                  publishDate: "",
-                  rejectReason: "",
-                }));
-                setErrors({ publishDate: "", rejectReason: "" });
-              }}
-            >
-              <MenuItem value="Published">Published</MenuItem>
-              <MenuItem value="Rejected">Rejected</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* PUBLISH DATE (only if Published selected) */}
-          {statusData.status === "Published" && (
+      {/* Remarks */}
+      <TextField
+        label="Remarks"
+        multiline
+        minRows={3}
+        value={remarks}
+        onChange={(e) => setRemarks(e.target.value)}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+          },
+        }}
+      />
+      {statusData.status === "Published" && (
             <TextField
               label="Publish Date"
               type="date"
               fullWidth
-              value={statusData.publishDate}
               InputLabelProps={{ shrink: true }}
+              value={statusData.publishDate}
               error={Boolean(errors.publishDate)}
               helperText={errors.publishDate}
               inputProps={{
@@ -186,37 +207,36 @@ export default function StatusUpdateDialog({
               }
             />
           )}
-        </Stack>
-      </DialogContent>
 
-      {/* ACTIONS */}
-      <DialogActions sx={{ p: 2, borderTop: "1px solid #eee" }}>
-        <Button
-          onClick={handleClose}
-          sx={{
-            textTransform: "capitalize",
-          }}
-        >
-          Cancel
-        </Button>
 
-        <Button
-          variant="contained"
-          onClick={handleSave}
-          sx={{
-            textTransform: "capitalize",
-            background: "linear-gradient(135deg, #FFA726 0%, #FB8C00 100%)",
-            color: "#FFF",
-            px: 3,
-            "&:hover": {
-              background:
-                "linear-gradient(135deg, #FB8C00 0%, #F57C00 100%)",
-            },
-          }}
-        >
-          Update
-        </Button>
-      </DialogActions>
-    </Dialog>
+    </Box>
+  </DialogContent>
+
+  <DialogActions sx={{ px: 3, pb: 2 }}>
+    <Button
+      variant="outlined"
+      onClick={() => dispatch(toggleStatusModal())}
+      sx={{ borderRadius: 2, textTransform: "none" }}
+    >
+      Cancel
+    </Button>
+
+    <Button
+      variant="contained"
+      // onClick={handleSubmit}
+      sx={{
+        borderRadius: 2,
+        textTransform: "none",
+        background: "linear-gradient(135deg, #FFA726 0%, #FB8C00 100%)",
+        color: "#FFF",
+        px: 3,
+      }}
+    >
+      Update Status
+    </Button>
+  </DialogActions>
+</Dialog>
+
   );
 }
+
