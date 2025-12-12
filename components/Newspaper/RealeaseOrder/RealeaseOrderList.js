@@ -34,7 +34,8 @@ import FilePresentIcon from "@mui/icons-material/FilePresent";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import { toggleUploadModal, toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
+import { toggleUploadModal, toggleStatusModal, } from "@/store/modules/newspaper/realeaseSlice.js";
+import { publishRO, getRODetails } from "@/store/modules/newspaper/realeaseSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 import UploadProof from './UploadProof';
 import StatusModal from './StatusModal';
@@ -49,10 +50,20 @@ export default function ReleaseOrderListing() {
   useEffect(() => {
     loadUser();
   }, []);
-
+  const ToggleStatusDialog = (avak_ref_id, advt_no) => {
+    dispatch(toggleStatusModal())
+    dispatch(
+      getRODetails({
+        avak_ref_id: avak_ref_id,
+        advt_no: advt_no,
+        financial_year : '2024-2025'
+      })
+    );
+  };
   const loadUser = async () => {
     try {
       const res = await ROService.getROList("000019");
+      console.log(res?.data?.data)
       setRoData(res?.data?.data || []);
     } catch (err) {
       console.error("Error loading RO:", err);
@@ -60,7 +71,6 @@ export default function ReleaseOrderListing() {
       setLoading(false);
     }
   };
-
   const formatINR = (value) => `₹ ${Number(value).toLocaleString("en-IN")}`;
   const dispatch = useDispatch();
 
@@ -200,7 +210,7 @@ export default function ReleaseOrderListing() {
                         </IconButton>
 
                         <Button
-                          onClick={() => dispatch(toggleStatusModal())}
+                          onClick={() => ToggleStatusDialog(row.avak_ref_id, row.advt_no)}
                           sx={{
                             textTransform: "none",
                             fontWeight: 600,
