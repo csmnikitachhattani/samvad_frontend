@@ -28,14 +28,20 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
     rejectReason: "",
     publishDate: "",
   });
-  const ToggleStatusDialog = (avak_ref_id, advt_no) => {
-    dispatch(toggleStatusModal())
+  
+  const { financial_year, avak_ref_id, advt_no } = useSelector((state) => state.realease.roDetails);
+  const SubmitData = () => {
+    console.log("running certifired")
+    // dispatch(toggleStatusModal())
+    const payload = {
+      avak_ref_id: avak_ref_id,
+      advt_no: advt_no,
+      publish_status_cd: "P",
+      remark: "Publishing RO",
+      action_taken_by: "nikits"
+    };
     dispatch(
-      publishRO({
-        avak_ref_id: avak_ref_id,
-        advt_no: advt_no,
-        financial_year : '2024-2025'
-      })
+      publishRO(payload)
     );
   };
 
@@ -46,7 +52,6 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
   });
 
   const statusModalShow = useSelector((state) => state.realease.statusModalShow);
-  const { financial_year, avak_ref_id, advt_no } = useSelector((state) => state.ro);
   const dispatch = useDispatch();
 
   
@@ -242,7 +247,7 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
 
         <Button
           variant="contained"
-          // onClick={handleSubmit}
+          onClick={SubmitData}
           sx={{
             borderRadius: 2,
             textTransform: "none",

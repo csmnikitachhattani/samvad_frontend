@@ -10,6 +10,11 @@ const realeaseSlice = createSlice({
     value: 0,
     uploadModalShow: false,
     statusModalShow: false,
+    roDetails:{
+      financial_year:'',
+      avak_ref_id:'',
+      advt_no:'',
+    }
   },
   reducers: {
     increment: (state) => {
@@ -24,15 +29,22 @@ const realeaseSlice = createSlice({
     toggleStatusModal: (state, action) =>{
       console.log(action?.payload)
       state.statusModalShow = !state.statusModalShow
-    }
+      if(action.payload.financial_year){
+      state.roDetails= action?.payload
+      }
+      console.log(state.roDetails,state.statusModalShow, 'assigning values')
+    },
+    
   },
 });
 export const publishRO = createAsyncThunk(
   "release/publishRO",
-  async ({ avak_ref_id, advt_no }, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
+
+     console.log(payload)
     try {
-      const res = await axiosClient.get(
-        "/ro/details",
+      const res = await axiosClient.post(
+        "/ro/publish-ro",
         payload
       );
       console.log(res)
@@ -48,6 +60,7 @@ export const getRODetails = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     const { financial_year,avak_ref_id, advt_no,} = data
     console.log(data)
+  
     try {
       //const response = await axios.get(`http://localhost:4000/api/ro/details/${data?.avak_ref_id}`);
       const res = await axiosClient.get(`/ro/details/`, {  params: {
@@ -55,8 +68,9 @@ export const getRODetails = createAsyncThunk(
         avak_ref_id,
         advt_no,
       },}
+
       )
-      console.log(res)
+      dispatch(setLoading(false)); 
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Unable to fetch details");

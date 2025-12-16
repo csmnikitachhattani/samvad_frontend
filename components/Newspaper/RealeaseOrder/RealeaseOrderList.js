@@ -51,7 +51,11 @@ export default function ReleaseOrderListing() {
     loadUser();
   }, []);
   const ToggleStatusDialog = (avak_ref_id, advt_no) => {
-    dispatch(toggleStatusModal())
+    dispatch(toggleStatusModal({
+      show: true,  
+      avak_ref_id: avak_ref_id,
+      advt_no: advt_no,
+      financial_year : '2024-2025'}))
     dispatch(
       getRODetails({
         avak_ref_id: avak_ref_id,
