@@ -20,7 +20,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
-import { publishRO, getRODetails } from "@/store/modules/newspaper/realeaseSlice.js";
+import { publishRO, getRODetails, PostPublishPrecheck } from "@/store/modules/newspaper/realeaseSlice.js";
 
 export default function StatusUpdateDialog({ open, onSave, roData }) {
   const [statusData, setStatusData] = useState({
@@ -29,19 +29,23 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
     publishDate: "",
   });
   
-  const { financial_year, avak_ref_id, advt_no } = useSelector((state) => state.realease.roDetails);
+  const { financial_year, avak_ref_id, advt_no, ro_no, user_id, np_news_cd } = useSelector((state) => state.realease.roDetails);
   const SubmitData = () => {
     console.log("running certifired")
     // dispatch(toggleStatusModal())
     const payload = {
       avak_ref_id: avak_ref_id,
       advt_no: advt_no,
-      publish_status_cd: "P",
-      remark: "Publishing RO",
-      action_taken_by: "nikits"
+      financial_year: financial_year,
+      // publish_status_cd: "P",
+      // remark: "Publishing RO",
+      // action_taken_by: "nikits"
+      ro_no: ro_no,
+      user_id: user_id,
+      np_news_cd: np_news_cd,
     };
     dispatch(
-      publishRO(payload)
+      PostPublishPrecheck(payload)
     );
   };
 

@@ -45,22 +45,36 @@ export default function ReleaseOrderListing() {
 
   const [Rodata, setRoData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  function lastTwoChars(str) {
+    return str.slice(-2);
+  }
+  function getAfterSlash(str) {
+    return str.split("/").pop();
+  }
   // Load API Data
   useEffect(() => {
     loadUser();
   }, []);
-  const ToggleStatusDialog = (avak_ref_id, advt_no) => {
+  const ToggleStatusDialog = (avak_ref_id, advt_no, ro_number) => {
     dispatch(toggleStatusModal({
       show: true,  
       avak_ref_id: avak_ref_id,
       advt_no: advt_no,
-      financial_year : '2024-2025'}))
+      financial_year : '2024-2025',
+      np_news_cd: getAfterSlash(ro_number),
+      ro_no: ro_number,
+      user_id: '00020'
+    }))
     dispatch(
       getRODetails({
         avak_ref_id: avak_ref_id,
         advt_no: advt_no,
-        financial_year : '2024-2025'
+        financial_year : '2024-2025',
+        np_news_cd: getAfterSlash(ro_number),
+        ro_no: ro_number,
+        user_id: '00020'
+
+        
       })
     );
   };
@@ -214,7 +228,7 @@ export default function ReleaseOrderListing() {
                         </IconButton>
 
                         <Button
-                          onClick={() => ToggleStatusDialog(row.avak_ref_id, row.advt_no)}
+                          onClick={() => ToggleStatusDialog(row.avak_ref_id, row.advt_no, row.np_news_cd)}
                           sx={{
                             textTransform: "none",
                             fontWeight: 600,

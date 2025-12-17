@@ -27,12 +27,9 @@ const realeaseSlice = createSlice({
       state.uploadModalShow = !state.uploadModalShow
     },
     toggleStatusModal: (state, action) =>{
-      console.log(action?.payload)
       state.statusModalShow = !state.statusModalShow
-      if(action.payload.financial_year){
-      state.roDetails= action?.payload
-      }
-      console.log(state.roDetails,state.statusModalShow, 'assigning values')
+      state.roDetails= action?.payload || {}
+      console.log(state.roDetails)
     },
     
   },
@@ -67,6 +64,32 @@ export const getRODetails = createAsyncThunk(
         financial_year,
         avak_ref_id,
         advt_no,
+      },}
+
+      )
+      dispatch(setLoading(false)); 
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Unable to fetch details");
+    }
+  }
+);
+
+export const PostPublishPrecheck = createAsyncThunk(
+  "release/getRODetails",
+  async (data, { rejectWithValue }) => {
+    const { financial_year,avak_ref_id, advt_no, np_news_cd, user_id, ro_no} = data
+    console.log(data)
+  
+    try {
+      //const response = await axios.get(`http://localhost:4000/api/ro/details/${data?.avak_ref_id}`);
+      const res = await axiosClient.post(`/ro/publish-precheck/`, {  params: {
+        financial_year,
+        avak_ref_id,
+        advt_no,
+        np_news_cd,
+        user_id,
+        ro_no
       },}
 
       )
