@@ -38,7 +38,7 @@ export const publishRO = createAsyncThunk(
   "release/publishRO",
   async (payload, { rejectWithValue }) => {
 
-     console.log(payload)
+     console.log("published",payload)
     try {
       const res = await axiosClient.post(
         "/ro/publish-ro",
@@ -76,7 +76,7 @@ export const getRODetails = createAsyncThunk(
 );
 
 export const PostPublishPrecheck = createAsyncThunk(
-  "release/getRODetails",
+  "release/getPrechecked",
   async (data, { rejectWithValue }) => {
     const { financial_year,avak_ref_id, advt_no, np_news_cd, user_id, ro_no} = data
     console.log(data)
@@ -92,9 +92,25 @@ export const PostPublishPrecheck = createAsyncThunk(
         ro_no
       },}
 
-      )
-      dispatch(setLoading(false)); 
-      return res.data;
+      ) 
+      console.log(res.data.data)
+      if(res.data.data == 1){
+        console.log("trytty")
+      //dispatch(publishRO(financial_year,avak_ref_id, advt_no, np_news_cd, user_id, ro_no)); await dispatch(
+        await dispatch(
+          publishRO({
+            financial_year,
+            avak_ref_id,
+            advt_no,
+            np_news_cd,
+            user_id,
+            ro_no
+          })
+        ).unwrap();
+
+      
+      }
+      return res.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Unable to fetch details");
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Stack,
@@ -21,6 +21,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleStatusModal } from "@/store/modules/newspaper/realeaseSlice.js";
 import { publishRO, getRODetails, PostPublishPrecheck } from "@/store/modules/newspaper/realeaseSlice.js";
+import ROService from "@/services/ROServices";
 
 export default function StatusUpdateDialog({ open, onSave, roData }) {
   const [statusData, setStatusData] = useState({
@@ -28,6 +29,7 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
     rejectReason: "",
     publishDate: "",
   });
+  const [actions, setActions] = useState([])
   
   const { financial_year, avak_ref_id, advt_no, ro_no, user_id, np_news_cd } = useSelector((state) => state.realease.roDetails);
   const SubmitData = () => {
@@ -37,18 +39,32 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
       avak_ref_id: avak_ref_id,
       advt_no: advt_no,
       financial_year: financial_year,
-      // publish_status_cd: "P",
-      // remark: "Publishing RO",
-      // action_taken_by: "nikits"
       ro_no: ro_no,
       user_id: user_id,
       np_news_cd: np_news_cd,
+      publish_status_cd : statusData.status,
+      published_date: statusData.publishDate,
     };
-    dispatch(
+    const res = dispatch(
       PostPublishPrecheck(payload)
     );
+    
   };
-
+  useEffect(() => {
+    LoadActions();
+  }, []);
+  const LoadActions = async () => {
+    try {
+      const res = await ROService.getROActionList();
+      console.log(res.data)
+      setActions(res?.data || []);
+      console.log("actions=", actions)
+    } catch (err) {
+      console.error("Error loading RO:", err);
+    } finally {
+     
+    }
+  };
   const [remarks, setRemarks] = useState('');
   const [errors, setErrors] = useState({
     publishDate: "",
@@ -147,7 +163,7 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
               RO Number
         </Typography>
             <Typography fontWeight={600} fontSize={16}>
-              26/05/1998
+              {ro_no || {}}
         </Typography>
 
             <Box mt={2}>
@@ -175,13 +191,18 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
                 borderRadius: 2,
               }}
             >
-              <MenuItem value="Published">Published</MenuItem>
-              <MenuItem value="Rejected">Rejected</MenuItem>
+              {/* <MenuItem value="Published">Published</MenuItem> */}
+              {actions.map((option) => (
+          <MenuItem key={option.action_status_cd} value={option.action_status_cd}>
+            {option.action_name}
+          </MenuItem>
+        ))}
+            
             </Select>
           </FormControl>
 
 
-          {statusData.status === "Published" && (
+          {statusData.status === "08/publish_status/07" && (
             <TextField
               label="Publish Date"
               type="date"
@@ -204,7 +225,7 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
           )}
 
           {/* REJECTION REASON */}
-          {statusData.status === "Rejected" && (
+          {statusData.status === "18//00" && (
             <TextField
               label="Rejection Reason"
               fullWidth
