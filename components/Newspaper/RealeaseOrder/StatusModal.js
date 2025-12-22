@@ -42,7 +42,8 @@ export default function StatusUpdateDialog({ open, onSave, roData }) {
       ro_no: ro_no,
       user_id: user_id,
       np_news_cd: np_news_cd,
-      publish_status_cd : statusData.status,
+      status_cd : statusData.status,
+      reason: statusData.rejectReason,
       published_date: statusData.publishDate,
     };
     const res = dispatch(
