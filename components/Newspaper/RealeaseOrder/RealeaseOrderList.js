@@ -55,6 +55,27 @@ export default function ReleaseOrderListing() {
   useEffect(() => {
     loadUser();
   }, []);
+  const toggleUploadDialog = (avak_ref_id, advt_no, ro_number) =>{
+    dispatch(toggleUploadModal({
+      show: true,  
+      avak_ref_id: avak_ref_id,
+      advt_no: advt_no,
+      financial_year : '2024-2025',
+      np_news_cd: getAfterSlash(ro_number),
+      ro_no: ro_number,
+      user_id: '00020'
+    }))
+    dispatch(
+      getRODetails({
+        avak_ref_id: avak_ref_id,
+        advt_no: advt_no,
+        financial_year : '2024-2025',
+        np_news_cd: getAfterSlash(ro_number),
+        ro_no: ro_number,
+        user_id: '00020'        
+      })
+    );
+  }
   const ToggleStatusDialog = (avak_ref_id, advt_no, ro_number) => {
     dispatch(toggleStatusModal({
       show: true,  
@@ -72,9 +93,7 @@ export default function ReleaseOrderListing() {
         financial_year : '2024-2025',
         np_news_cd: getAfterSlash(ro_number),
         ro_no: ro_number,
-        user_id: '00020'
-
-        
+        user_id: '00020'        
       })
     );
   };
@@ -209,7 +228,7 @@ export default function ReleaseOrderListing() {
                         <Button
                           startIcon={<UploadFileIcon />}
                           size="small"
-                          onClick={() => dispatch(toggleUploadModal())}
+                          onClick={() => toggleUploadDialog(row.avak_ref_id, row.advt_no, row.np_news_cd)}
                         >
                           Upload Publish Copy
                         </Button>

@@ -23,8 +23,9 @@ const realeaseSlice = createSlice({
     decrement: (state) => {
       state.value -= 1;
     },
-    toggleUploadModal: (state) =>{
+    toggleUploadModal: (state, action) =>{
       state.uploadModalShow = !state.uploadModalShow
+      state.roDetails= action?.payload || {}
     },
     toggleStatusModal: (state, action) =>{
       state.statusModalShow = !state.statusModalShow
@@ -34,6 +35,7 @@ const realeaseSlice = createSlice({
     
   },
 });
+
 export const publishRO = createAsyncThunk(
   "release/publishRO",
   async (payload, { rejectWithValue }) => {
@@ -52,6 +54,7 @@ export const publishRO = createAsyncThunk(
     }
   }
 );
+
 export const rejectRO = createAsyncThunk(
   "release/rehaectRO",
   async (payload, { rejectWithValue }) => {

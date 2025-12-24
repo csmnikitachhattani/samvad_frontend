@@ -17,12 +17,13 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useSelector, useDispatch } from "react-redux";
+import axiosClient from "@/lib/axiosClient";
 import { toggleUploadModal } from "@/store/modules/newspaper/realeaseSlice.js";
 export default function UploadProofDialog({ open, setOpen, onUpload }) {
   const [file, setFile] = useState(null);
   const [remarks, setRemarks] = useState("");  
   const uploadModalShow = useSelector((state) => state.realease.uploadModalShow);
-
+  const { financial_year, avak_ref_id, advt_no, ro_no, user_id, np_news_cd } = useSelector((state) => state.realease.roDetails);
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -44,6 +45,29 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
     setFile(null);
     setRemarks("");
   };
+  const uploadPublishProof = async (file) => {
+    const formData = new FormData();
+  
+    formData.append("file", file); // 🔴 important
+    formData.append("advt_no", advt_no);
+    formData.append("fin_year", financial_year);
+    formData.append("ro_no", ro_no);
+    formData.append("ip_address", "127.0.0.1");
+  
+    try {
+      const res = await axiosClient.post(
+        "/ro/publish-precheck/",
+        formData
+      );
+  
+      const data = await res.json();
+      console.log(data);
+  
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
   const dispatch = useDispatch();
   return (
     <Dialog 
@@ -86,8 +110,35 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
       </DialogTitle>
 
       <DialogContent sx={{ pt: 3, pb: 2, mT: 20 }}>
+      <Box
+            sx={{
+              background: "#F8F9FA",
+              borderRadius: 2,
+              p: 2,
+              border: "1px solid #E0E0E0",
+              mb: 5,
+            }}
+          >
+            <Typography fontSize={14} color="text.secondary">
+              RO Number
+        </Typography>
+            <Typography fontWeight={600} fontSize={16}>
+              {ro_no}
+        </Typography>
+
+            <Box mt={2}>
+              <Typography fontSize={14} color="text.secondary">
+                Client Name
+          </Typography>
+              <Typography fontWeight={600} fontSize={16}>
+                Tender
+          </Typography>
+            </Box>
+          </Box>
         <Stack spacing={3}>
           {/* Upload Area */}
+
+
           <Paper
             elevation={0}
             sx={{
@@ -149,27 +200,6 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
             </Box>
           </Paper>
 
-          {/* Remarks Field */}
-          {/* <TextField
-            label="Add Remarks (Optional)"
-            fullWidth
-            multiline
-            rows={3}
-            value={remarks}
-            onChange={(e) => setRemarks(e.target.value)}
-            placeholder="Enter any additional notes or comments..."
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                "&:hover fieldset": {
-                  borderColor: "#667eea",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#667eea",
-                }
-              }
-            }}
-          /> */}
         </Stack>
       </DialogContent>
 
@@ -188,7 +218,8 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
 
         <Button 
           variant="contained" 
-          onClick={handleUpload}
+          onClick={uploadPublishProof
+          }
           disabled={!file}
           sx={{ 
             textTransform: "none",
