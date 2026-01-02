@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import Dashboard from "@/components/client/dashboard";
-import NoticeBoard from "@/components/Newspaper/noticeboard";
+import NoticeBoard from "@/components/client/noticeboard";
+import Report from "@/components/client/report"
 import { Box, Divider } from "@mui/material";
 
 function ReleaseOrderListing() {
@@ -17,12 +17,13 @@ function ReleaseOrderListing() {
   return (
     <Box>
       <Box sx={{ width: "100%" }}>
-        <Dashboard />
+            <NoticeBoard />
+
       </Box>
       <Box>
-        <Divider sx={{ mb: 3 }} />
-        <NoticeBoard />
+        <Report/>
       </Box>
+      
     </Box>
   );
 }
