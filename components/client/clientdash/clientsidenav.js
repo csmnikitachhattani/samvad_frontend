@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AppBar, Toolbar, Box, Typography, Avatar } from "@mui/material";
-import ClientSideNavbar from "./ClientSideNavbar";
+import ClientSideNavbar from "./clientsidenavebar";
 
 const ClientSideNav = () => {
   return (

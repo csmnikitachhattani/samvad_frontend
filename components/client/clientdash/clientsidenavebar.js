@@ -47,12 +47,11 @@ const ClientSideNavbar = ({ isCollapsed }) => {
           { label: "Under Processing Request", path: "/Forward-Request" },
           { label: "Accepted Request", path: "/Forward-Request" },
           { label: "Published Advertisement", path: "/Forward-Request" },
-          { label: "Report", path: "/report" },
-          { label: "Check Status", path: "/newsratelist" },
+          { label: "Report", path: "/client/report" },
+          { label: "Check Status", path: "/client/newsratelist" },
           { label: "News Paper Rate List", path: "/newsratelist" },
           {
-            label:
-              "Generated Bill List / Outstanding / Payment Details",
+            label: "Generated Bill List / Outstanding / Payment Details",
             path: "/Forward-Request",
           },
         ].map((item, index) => (
