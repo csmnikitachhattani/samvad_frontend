@@ -1,7 +1,8 @@
 "use client";
 
 import { Box } from "@mui/material";
-import Sidebar from "@/Layout/ClientLayout";
+import ClientLayout from "@/Layout/ClientLayout";
+
 
 export default function DashboardLayout({ children }) {
   return (
@@ -12,8 +13,9 @@ export default function DashboardLayout({ children }) {
         overflow: "hidden", // ✅ prevents layout shifting
       }}
     >
-      {/* Sidebar */}
-      <Sidebar />
+      {/*  */}
+      <ClientLayout />
+  
 
       {/* Main Content */}
       <Box

@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { Box, Grid, Typography, Link } from "@mui/material";
-import NICLOGO from "@/assets/images/256px-NIC_logo.svg.png";
+import NICLOGO from "@/public/images/256px-NIC_logo.svg.png";
 
 const ClientFooter = () => {
   const currentYear = new Date().getFullYear();

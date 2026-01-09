@@ -1,24 +1,21 @@
 "use client";
 import { Box } from "@mui/material";
 import Sidebar from "@/components/client/clientdash/clientsidenav";
+import ClientFooter from "@/components/client/clientdash/clientfooter"
+import Header from "@/components/client/clientdash/clientheader";
 
 
 export default function NewspaperLayout({ children }) {
   return (
+  <Box>
+ <Header/>
   
+
     <Box sx={{ display: "flex", height: "100vh", bgcolor: "#F8FAFC" }}>
       {/* Sidebar Panel (Fixed Width) */}
-      <Box
-        // sx={{
-        //   width: 260,
-        //   flexShrink: 0,
-        //   color: "#fff",
-        //   background: "linear-gradient(180deg, #FF7A00 0%, #FF3D00 100%)", // 🍊 Bright Orange Gradient
-        //   display: "flex",
-        //   flexDirection: "column",
-        // }}
-      >
+      <Box>
         <Sidebar />
+       
       </Box>
 
       {/* Main Content Area (Scrolls) */}
@@ -36,5 +33,9 @@ export default function NewspaperLayout({ children }) {
         <Box sx={{ flexGrow: 1, mt: 2 }}>{children}</Box>
       </Box>
     </Box>
+    <ClientFooter/>
+   
+    </Box>
+    
   );
 }
