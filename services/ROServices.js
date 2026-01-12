@@ -2,12 +2,12 @@ import axiosClient from "@/lib/axiosClient";
 
 const ROService = {
   getROList: (user_id) =>
-    axiosClient.get(`/ro/list/`),
+    axiosClient.get(`/newspaper/ro/list/`),
 
 
   getROActionList: async ()=>{
     try {
-      const res = await axiosClient.get('/ro/actions/list')
+      const res = await axiosClient.get('/newspaper/ro/actions/list')
       console.log(res.data)
       return res.data
     }

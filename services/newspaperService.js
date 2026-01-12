@@ -11,12 +11,12 @@ const newspaperService = {
   },
 
   getNewspapersGSTDetails: (user_id) =>
-    axiosClient.get(`/gst/${user_id}`),
+    axiosClient.get(`/newspaper/gst/${user_id}`),
 
   updateNpUser: async (userId, updateData) => {
     console.log(updateData)
     try {
-      const res = await axiosClient.patch(`/npuser/edit/${userId}`, updateData);
+      const res = await axiosClient.patch(`/newspaper/npuser/edit/${userId}`, updateData);
       return res.data;
     } catch (err) {
       throw err; // already formatted by interceptor
@@ -32,7 +32,7 @@ const newspaperService = {
         ...updateData,
       };
 
-      const res = await axiosClient.post("http://localhost:5000/api/np-profile", payload);
+      const res = await axiosClient.post("/newspaper/np-profile", payload);
       return res.data;
     } catch (err) {
       throw err; // interceptor will format it
@@ -49,7 +49,7 @@ const newspaperService = {
       };
   
       const res = await axiosClient.post(
-        "/np/bank-detail/edit",
+        "/newspaper/np/bank-detail/edit",
         payload
       );
       console.log("getting update report", res)
@@ -59,7 +59,7 @@ const newspaperService = {
     }
   },
   getNewspaperBankSubDetails: (np_cd, action = "get") => {
-    return axiosClient.get(`/bank-sub-detail/${np_cd}`, {
+    return axiosClient.get(`/newspaper/bank-sub-detail/${np_cd}`, {
       params: { action },
     });
   },
@@ -69,7 +69,7 @@ const newspaperService = {
         ...updateData
       };
 
-      const res = await axiosClient.post(`/gst/update`, payload);
+      const res = await axiosClient.post(`/newspaper/gst/update`, payload);
       return res.data;
     } catch (err) {
       throw err; // interceptor will format
