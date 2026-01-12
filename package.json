@@ -15,11 +15,16 @@
     "@mui/material": "^7.3.5",
     "@reduxjs/toolkit": "^2.11.0",
     "axios": "^1.13.2",
+    "file-saver": "^2.0.5",
+    "html-react-parser": "^5.2.11",
+    "jspdf": "^3.0.4",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.553.0",
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "^9",
