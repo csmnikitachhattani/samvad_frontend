@@ -39,9 +39,9 @@ const ClientSideNavbar = ({ isCollapsed }) => {
           { label: "Notice Board", path: "/client/noticeboard" },
           {
             label: "Create New Request / Upload Your Work Order",
-            path: "/newrequest",
+            path: "/client/clientnewrequist",
           },
-          { label: "Inbox", path: "/newrequest" },
+          { label: "Inbox", path: "/client/newrequest" },
           { label: "Submited Requests", path: "/newrequest" },
           { label: "Draft Request", path: "/forwardto" },
           { label: "Under Processing Request", path: "/Forward-Request" },
