@@ -9,7 +9,7 @@ import NewsRateList from "@/components/client/newsratelist";
 import { Box, Divider } from "@mui/material";
 import ClientFileUpload from "@/components/client/clientfileupload";
 
-function ReleaseOrderListing() {
+function ClientModule() {
   // Mock data
   const mockData = [
     { id: 1, title: "Dainik Bhaskar" },
@@ -21,21 +21,23 @@ function ReleaseOrderListing() {
 
   return (
     <Box>
+        <Box><CreateNewRequest/><RequestForm/></Box>
       <Box sx={{ width: "100%" }}>
+        
             <NoticeBoard />
 
       </Box>
-      <Box>
+      {/* <Box>
         <Report/>
       </Box>
       <Box><ForwardTo/></Box>
       
-      <Box><CreateNewRequest/><RequestForm/></Box>
+    
       <Box><ClientFileUpload/></Box>
       <Box><NewsRateList/></Box>
-    
+     */}
     </Box>
   );
 }
 
-export default ReleaseOrderListing;
+export default ClientModule;

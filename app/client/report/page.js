@@ -5,7 +5,7 @@ import Report from "@/components/client/report";
 
 import { Box, Divider } from "@mui/material";
 
-function ReleaseOrderListing() {
+function ClientModule() {
   // Mock data
 
   return (
@@ -17,4 +17,4 @@ function ReleaseOrderListing() {
   );
 }
 
-export default ReleaseOrderListing;
+export default ClientModule;

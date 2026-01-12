@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-import NewsRateList from "@/components/client/newsratelist";
+import NoticeBoard from "@/components/client/noticeboard";
 
 import { Box, Divider } from "@mui/material";
 
@@ -11,7 +11,7 @@ function ClientModule() {
   return (
     <Box>
       <Box>
-        < NewsRateList/>
+       <NoticeBoard/>
       </Box>
     </Box>
   );

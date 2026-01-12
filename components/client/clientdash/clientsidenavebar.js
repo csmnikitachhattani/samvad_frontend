@@ -36,7 +36,7 @@ const ClientSideNavbar = ({ isCollapsed }) => {
       <List disablePadding sx={{ p: 1 }}>
         {[
           { label: "Dashboard", path: "/newrequest" },
-          { label: "Notice Board", path: "/notice" },
+          { label: "Notice Board", path: "/client/noticeboard" },
           {
             label: "Create New Request / Upload Your Work Order",
             path: "/newrequest",
@@ -48,8 +48,9 @@ const ClientSideNavbar = ({ isCollapsed }) => {
           { label: "Accepted Request", path: "/Forward-Request" },
           { label: "Published Advertisement", path: "/Forward-Request" },
           { label: "Report", path: "/client/report" },
+
           { label: "Check Status", path: "/client/newsratelist" },
-          { label: "News Paper Rate List", path: "/newsratelist" },
+          { label: "News Paper Rate List", path: "/client/newsratelist" },
           {
             label: "Generated Bill List / Outstanding / Payment Details",
             path: "/Forward-Request",
