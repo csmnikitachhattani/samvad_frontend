@@ -2,10 +2,10 @@ import axiosClient from "@/lib/axiosClient";
 
 const newspaperService = {
   getNewspapers: (user_id) =>
-    axiosClient.get(`/npuser/${user_id}`),
+    axiosClient.get(`/newspaper/npuser/${user_id}`),
 
   getNewspapersBankDetails: (user_id, action = "get") => {
-    return axiosClient.get(`/np/bank-detail/${user_id}`, {
+    return axiosClient.get(`/newspaper/np/bank-detail/${user_id}`, {
       payload: { action },
     });
   },
