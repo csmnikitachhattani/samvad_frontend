@@ -7,7 +7,7 @@ import {
   Divider,
 } from "@mui/material";
 
-function ReleaseOrderListing() {
+function OutdoorIndex() {
   return (
   <Box>
     <Box sx={{width: "100%"}}>
@@ -21,4 +21,4 @@ function ReleaseOrderListing() {
   );
 }
 
-export default ReleaseOrderListing;
+export default OutdoorIndex;

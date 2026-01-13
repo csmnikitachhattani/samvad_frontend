@@ -1,6 +1,6 @@
 "use client";
 import { Box } from "@mui/material";
-import Sidebar from "@/components/Newspaper/sidebar";
+import Sidebar from "@/components/admin/layout/sidebar";
 import Header from "@/components/Newspaper/header";
 
 export default function AdminLayout({ children }) {
@@ -13,7 +13,7 @@ export default function AdminLayout({ children }) {
           width: 260,
           flexShrink: 0,
           color: "#fff",
-          background: 'linear-gradient(135deg, #9A9A9A, #6F6F6F)',
+          background: "#030236",
           display: "flex",
           flexDirection: "column",
         }}

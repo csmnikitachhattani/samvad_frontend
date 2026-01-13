@@ -40,7 +40,7 @@ export default function Sidebar() {
       sx={{
         // width intentionally removed here — parent sets width
         color: "#fff",
-        background: "linear-gradient(180deg, #FF7A00 0%, #FF3D00 100%)",
+        background: "#030236",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -73,7 +73,7 @@ export default function Sidebar() {
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
             }}
           >
-            NP
+            AP
           </Avatar>
           <Typography variant="h6" sx={{ fontWeight: 700, fontSize: "1.15rem", textAlign: "center", mb: 0.5 }}>
             Admin Portal
