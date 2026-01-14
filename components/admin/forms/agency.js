@@ -13,7 +13,6 @@ import {
   MenuItem,
 } from "@mui/material";
 import adminServices from "@/services/adminServices";
-
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
 const AgencyForm = () => {
@@ -34,6 +33,7 @@ const AgencyForm = () => {
     isActive: true
   });
   const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -45,7 +45,7 @@ const AgencyForm = () => {
     "& .MuiOutlinedInput-root": {
       borderRadius: "10px",
       "&:hover": { backgroundColor: "#FFF8F1" },
-      "&.Mui-focused fieldset": { borderColor: "#FF7A00" },
+      "&.Mui-focused fieldset": { borderColor: "#030236" },
     },
   };
   const handleServiceChange = (id) => {
@@ -72,7 +72,17 @@ const AgencyForm = () => {
         console.error("Failed to fetch states", error);
       }
     }
+    async function fetchDistrict() {
+      try {
+        const response = await commonServices.getDistrict();
+        setDistricts(response.data?.data || []);
+        console.log(response.data?.data)
+      } catch (error) {
+        console.error("Failed to fetch states", error);
+      }
+    }
     fetchStates();
+    fetchDistrict();
   }, []);
   useEffect(() => {
     async function fetchServices() {
@@ -86,7 +96,7 @@ const AgencyForm = () => {
     }
     fetchServices();
   }, []);
-
+ 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f4f6f8", py: 6 }}>
       <Paper
@@ -118,15 +128,15 @@ const AgencyForm = () => {
         <Box component="form" onSubmit={handleSubmit} sx={{ p: 4 }}>
           <Grid container spacing={3}>
             <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth label="Agency Name" name="agencyName" sx={{height: "40px"}} />
+              <TextField fullWidth label="Agency Name" name="agencyName"   sx={inputStyle} />
             </Grid>
 
             <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth label="Owner Name" name="ownerName" />
+              <TextField fullWidth label="Owner Name" name="ownerName"  sx={inputStyle} />
             </Grid>
 
             <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth label="GSTIN" name="gstin" />
+              <TextField fullWidth label="GSTIN" name="gstin"  sx={inputStyle} />
             </Grid>
 
             <Grid item size={{ xs:12}}>
@@ -135,26 +145,16 @@ const AgencyForm = () => {
                 label="Address"
                 name="address"
                 multiline
+                sx={inputStyle}
                 rows={3}
               />
             </Grid>
-
-            <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth
-            
-            sx={inputStyle}label="City" name="city" />
-            </Grid>
-
-            <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth label="District" name="district" />
-            </Grid>
-
             <Grid item size={{ xs:12, md:4}}>
             <TextField
             select
             label="States"
             name="State_Code"
-            value={formData.State_Code}
+            value={formData.state}
             onChange={handleChange}
             fullWidth
             InputProps={{
@@ -173,19 +173,47 @@ const AgencyForm = () => {
             ))}
           </TextField>
             </Grid>
+            <Grid item size={{ xs:12, md:4}}>
+              <TextField fullWidth
+            
+            sx={inputStyle}label="City" name="city" />
+            </Grid>
+
+            <Grid item size={{ xs:12, md:4}}>
+              <TextField fullWidth label="District" 
+              select
+              name="district" 
+              value={formData.district}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LocationOnIcon sx={{ color: "#030236" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={inputStyle} >
+              {districts.map((s) => (
+              <MenuItem key={s.district_code} value={s.district_code}>
+                {s.district_name}
+              </MenuItem>
+            ))}
+              </TextField>
+            </Grid>
+
+           
 
             {/* <Divider flexItem sx={{ my: 2 }} /> */}
 
             <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth label="Contact Person" name="contactPerson" />
+              <TextField fullWidth label="Contact Person"  sx={inputStyle} name="contactPerson" />
             </Grid>
 
             <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth label="Phone" name="phone" />
+              <TextField fullWidth label="Phone"  sx={inputStyle} name="phone" />
             </Grid>
 
             <Grid item size={{ xs:12, md:4}}>
-              <TextField fullWidth label="Email" name="email" type="email" />
+              <TextField fullWidth label="Email"  sx={inputStyle} name="email" type="email" />
             </Grid>
 
             <Grid item size={{ xs:12, md:6}}>
@@ -195,6 +223,7 @@ const AgencyForm = () => {
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 name="validityFrom"
+                sx={inputStyle}
               />
             </Grid>
 
@@ -205,30 +234,35 @@ const AgencyForm = () => {
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 name="validityTo"
+                sx={inputStyle}
               />
             </Grid>
-
-            {/* Services */}
-            <Grid item size={{ xs:12,}}>
-              <Typography fontWeight={500} mb={1}>
-                Services
-              </Typography>
-              <Paper
-                variant="outlined"
-                sx={{ p: 2, borderRadius: 2, backgroundColor: "#fafafa" }}
-              >
-               
-                {services.map((service) => (
-                  <FormControlLabel
-                    key={service.serviceId}
-                    control={
-                      <Checkbox onChange={() => handleServiceChange(id)} />
-                    }
-                    label={`Service ${service.serviceName}`}
-                  />
-                ))}
-              </Paper>
+            <Grid item size={{ xs:12, md:4}}>
+            <TextField
+            select
+            label="Service ype"
+            name="serviceId"
+            value={formData.service_type}
+            onChange={handleChange}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationOnIcon sx={{ color: "#030236" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          >
+            {services.map((s) => (
+              <MenuItem key={s.serviceId} value={s.serviceId}>
+                {s.serviceName}
+              </MenuItem>
+            ))}
+          </TextField>
             </Grid>
+            {/* Services */}
+            
 
             {/* Status */}
             <Grid item xs={12}>
