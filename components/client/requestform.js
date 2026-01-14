@@ -1178,9 +1178,10 @@ const RequestForm = ({ category }) => {
   // ================= OK Redirect =================
   const handleOk = () => {
     setShowModal(false);
+   
     router.push(
-      `/client/upload-file/${savedRefId}`
-    );
+  `/client/upload-file/${savedRefId}?financial_year=${financial_year}`
+);
   };
 
   // ================= UI =================
