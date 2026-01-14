@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, {useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -6,11 +6,16 @@ import {
   Button,
   FormControlLabel,
   Typography,
+  InputAdornment,
   Grid,
   Paper,
-  Divider
+  Divider,
+  MenuItem,
 } from "@mui/material";
+import adminServices from "@/services/adminServices";
 
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import commonServices from "@/services/commonServices";
 const AgencyForm = () => {
   const [formData, setFormData] = useState({
     agencyName: "",
@@ -28,7 +33,7 @@ const AgencyForm = () => {
     serviceIds: [],
     isActive: true
   });
-
+  const [states, setStates] = useState([]);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -36,7 +41,13 @@ const AgencyForm = () => {
       [name]: type === "checkbox" ? checked : value
     });
   };
-
+  const inputStyle = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+      "&:hover": { backgroundColor: "#FFF8F1" },
+      "&.Mui-focused fieldset": { borderColor: "#FF7A00" },
+    },
+  };
   const handleServiceChange = (id) => {
     setFormData((prev) => ({
       ...prev,
@@ -50,6 +61,31 @@ const AgencyForm = () => {
     e.preventDefault();
     console.log(formData);
   };
+  const [services, setServices] = useState([]);
+  useEffect(() => {
+    async function fetchStates() {
+      try {
+        const response = await commonServices.getStates();
+        setStates(response.data?.data || []);
+        console.log(response.data?.data)
+      } catch (error) {
+        console.error("Failed to fetch states", error);
+      }
+    }
+    fetchStates();
+  }, []);
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const response = await adminServices.getServices();
+        setServices(response?.result || []);
+        console.log(response)
+      } catch (error) {
+        console.error("Failed to fetch states", error);
+      }
+    }
+    fetchServices();
+  }, []);
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f4f6f8", py: 6 }}>
@@ -81,19 +117,19 @@ const AgencyForm = () => {
         {/* Form */}
         <Box component="form" onSubmit={handleSubmit} sx={{ p: 4 }}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <TextField fullWidth label="Agency Name" name="agencyName" />
+            <Grid item size={{ xs:12, md:4}}>
+              <TextField fullWidth label="Agency Name" name="agencyName" sx={{height: "40px"}} />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ xs:12, md:4}}>
               <TextField fullWidth label="Owner Name" name="ownerName" />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ xs:12, md:4}}>
               <TextField fullWidth label="GSTIN" name="gstin" />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item size={{ xs:12}}>
               <TextField
                 fullWidth
                 label="Address"
@@ -103,33 +139,56 @@ const AgencyForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12} md={4}>
-              <TextField fullWidth label="City" name="city" />
+            <Grid item size={{ xs:12, md:4}}>
+              <TextField fullWidth
+            
+            sx={inputStyle}label="City" name="city" />
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item size={{ xs:12, md:4}}>
               <TextField fullWidth label="District" name="district" />
             </Grid>
 
-            <Grid item xs={12} md={4}>
-              <TextField fullWidth label="State" name="state" />
+            <Grid item size={{ xs:12, md:4}}>
+            <TextField
+            select
+            label="States"
+            name="State_Code"
+            value={formData.State_Code}
+            onChange={handleChange}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationOnIcon sx={{ color: "#030236" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={inputStyle}
+          >
+            {states.map((s) => (
+              <MenuItem key={s.state_code} value={s.state_code}>
+                {s.state_name}
+              </MenuItem>
+            ))}
+          </TextField>
             </Grid>
 
-            <Divider flexItem sx={{ my: 2 }} />
+            {/* <Divider flexItem sx={{ my: 2 }} /> */}
 
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ xs:12, md:4}}>
               <TextField fullWidth label="Contact Person" name="contactPerson" />
             </Grid>
 
-            <Grid item xs={12} md={3}>
+            <Grid item size={{ xs:12, md:4}}>
               <TextField fullWidth label="Phone" name="phone" />
             </Grid>
 
-            <Grid item xs={12} md={3}>
+            <Grid item size={{ xs:12, md:4}}>
               <TextField fullWidth label="Email" name="email" type="email" />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ xs:12, md:6}}>
               <TextField
                 fullWidth
                 label="Validity From"
@@ -139,7 +198,7 @@ const AgencyForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ xs:12, md:6}}>
               <TextField
                 fullWidth
                 label="Validity To"
@@ -150,7 +209,7 @@ const AgencyForm = () => {
             </Grid>
 
             {/* Services */}
-            <Grid item xs={12}>
+            <Grid item size={{ xs:12,}}>
               <Typography fontWeight={500} mb={1}>
                 Services
               </Typography>
@@ -158,13 +217,14 @@ const AgencyForm = () => {
                 variant="outlined"
                 sx={{ p: 2, borderRadius: 2, backgroundColor: "#fafafa" }}
               >
-                {[1, 2, 3].map((id) => (
+               
+                {services.map((service) => (
                   <FormControlLabel
-                    key={id}
+                    key={service.serviceId}
                     control={
                       <Checkbox onChange={() => handleServiceChange(id)} />
                     }
-                    label={`Service ${id}`}
+                    label={`Service ${service.serviceName}`}
                   />
                 ))}
               </Paper>

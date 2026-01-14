@@ -12,7 +12,7 @@ import {
   Avatar,
   Paper,
 } from "@mui/material";
-
+import { useRouter, usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -32,7 +32,8 @@ import {
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const router = useRouter();
+  const pathname = usePathname();
   const stats = [
     {
       title: "Total RO",
@@ -84,6 +85,7 @@ export default function Dashboard() {
         icon: Users,
         color: "#6366f1",
         btn: "Add Agency",
+        path: "/admin/agency"
       },
       {
         title: "Create Newspaper",
@@ -107,7 +109,7 @@ export default function Dashboard() {
         btn: "Create RO",
       },
     ].map((item, i) => (
-      <Grid item xs={12} sm={6} md={3} key={i}>
+      <Grid item size={{xs:12, sm:6, md:3}} key={i}>
         <Paper
           elevation={0}
           sx={{
@@ -163,7 +165,9 @@ export default function Dashboard() {
                 color: "white",
               },
             }}
+            onClick={() => router.push(item.path)}
             fullWidth
+            
           >
             {item.btn}
           </Button>

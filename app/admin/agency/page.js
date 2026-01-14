@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import Dashboard from "@/components/admin/dashboard"
-import NoticeBoard from "@/components/Newspaper/noticeboard"
+import Form from "@/components/admin/forms/agency"
 import {
   Box,
   Divider,
@@ -11,7 +10,7 @@ function AdminIndex() {
   return (
   <Box>
     <Box sx={{width: "100%"}}>
-      <Dashboard />
+      <Form />
     </Box>
   </Box>
   );

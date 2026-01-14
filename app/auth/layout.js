@@ -1,3 +1,4 @@
+"use client";
 import AuthLayout from "@/Layout/AuthLayout";
 
 export default function Layout({ children }) {
