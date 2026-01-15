@@ -16,7 +16,21 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  createAgency: async (updateData) => {
+    console.log("newspaper information", updateData)
+    try {
+      const payload = {
+        action: "update",
+        'financial_year': '2025-2026',
+        ...updateData,
+      };
 
+      const res = await axiosClient.post("/newspaper/np-profile", payload);
+      return res.data;
+    } catch (err) {
+      throw err; // interceptor will format it
+    }
+  },
 
 
 };

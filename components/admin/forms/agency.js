@@ -12,6 +12,11 @@ import {
   Divider,
   MenuItem,
 } from "@mui/material";
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import adminServices from "@/services/adminServices";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
@@ -32,6 +37,16 @@ const AgencyForm = () => {
     serviceIds: [],
     isActive: true
   });
+  const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const handleChange = (e) => {
@@ -62,6 +77,36 @@ const AgencyForm = () => {
     console.log(formData);
   };
   const [services, setServices] = useState([]);
+  const handleAddAgency = async () => {
+    try {
+      const updateObject = {
+        agencyName: formData.agencyName,
+        ownerName : formData.ownerName,
+        gstin:formData.gstin,
+        address: formData.address,
+        district: formData.district,
+        city : formData.city,
+        state: formData.state,
+        district:formData.district,
+        contact_person:formData.contact_person,
+        phone: formData.phone,
+        email: formData.email,
+        validityFrom: formData.validityFrom,
+        validityTo:formData.validityTo,
+        isActive: formData.isActive,
+        serviceIds: formData.serviceIds,
+        createdByUserId: formData.createdByUserId,
+        createdByUserName: formData.createdByUserName,
+        createdByUserTypeCd: formData.createdByUserTypeCd,
+        createdByUserTypeName: formData.createdByUserTypeName,
+        createdIpAddress: formData.createdIpAddress
+      };
+      const result = await adminService.createAgency(updateObject);
+      console.log("User Updated:", result);
+    } catch (err) {
+      console.log("Error:", err.message);
+    }
+  };
   useEffect(() => {
     async function fetchStates() {
       try {
@@ -239,9 +284,9 @@ const AgencyForm = () => {
             </Grid>
             <Grid item size={{ xs:12, md:4}}>
             <TextField
-            select
             label="Service ype"
             name="serviceId"
+            multiple
             value={formData.service_type}
             onChange={handleChange}
             fullWidth
@@ -260,6 +305,23 @@ const AgencyForm = () => {
               </MenuItem>
             ))}
           </TextField>
+          <Select
+          labelId="demo-multiple-checkbox-label"
+          id="demo-multiple-checkbox"
+          multiple
+          value={formData.serviceId}
+          onChange={handleChange}
+          input={<OutlinedInput label="Tag" />}
+          renderValue={(selected) => selected.join(', ')}
+          MenuProps={MenuProps}
+        >
+          {services.map((s) => (
+            <MenuItem key={s.serviceId} value={s.serviceId}>
+              <Checkbox checked={formData.serviceIds.includes(s.serviceId)} />
+              <ListItemText primary={s.serviceName} />
+            </MenuItem>
+          ))}
+        </Select>
             </Grid>
             {/* Services */}
             
@@ -283,6 +345,7 @@ const AgencyForm = () => {
               <Button
                 variant="contained"
                 size="large"
+                onClick={handleAddAgency}
                 sx={{
                   px: 4,
                   borderRadius: 2,
