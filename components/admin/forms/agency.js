@@ -43,7 +43,7 @@ const ITEM_PADDING_TOP = 8;
     PaperProps: {
       style: {
         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
+        width: 250,  
       },
     },
   };
@@ -64,6 +64,7 @@ const ITEM_PADDING_TOP = 8;
     },
   };
   const handleServiceChange = (id) => {
+    console.log(formData.serviceIds)
     setFormData((prev) => ({
       ...prev,
       serviceIds: prev.serviceIds.includes(id)
@@ -287,7 +288,7 @@ const ITEM_PADDING_TOP = 8;
             label="Service ype"
             name="serviceId"
             multiple
-            value={formData.service_type}
+            value={formData.serviceIds}
             onChange={handleChange}
             fullWidth
             InputProps={{
@@ -309,8 +310,8 @@ const ITEM_PADDING_TOP = 8;
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={formData.serviceId}
-          onChange={handleChange}
+          value={formData.serviceIds}
+          onChange={handleServiceChange}
           input={<OutlinedInput label="Tag" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
@@ -323,9 +324,6 @@ const ITEM_PADDING_TOP = 8;
           ))}
         </Select>
             </Grid>
-            {/* Services */}
-            
-
             {/* Status */}
             <Grid item xs={12}>
               <FormControlLabel

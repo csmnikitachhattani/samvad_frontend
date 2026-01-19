@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Table from "@/components/admin/table"
+import Form from "@/components/admin/forms/agency"
 import {
   Box,
   Divider,
@@ -10,7 +10,7 @@ function AdminIndex() {
   return (
   <Box>
     <Box sx={{width: "100%"}}>
-      <Table />
+      <Form />
     </Box>
   </Box>
   );

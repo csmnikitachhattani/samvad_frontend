@@ -16,6 +16,16 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getAgency: async () => {
+    console.log("get all agencncy")
+    try {
+      const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/allagency");
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   createAgency: async (updateData) => {
     console.log("newspaper information", updateData)
     try {
