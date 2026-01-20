@@ -5,7 +5,7 @@ import Report from "@/components/client/report";
 
 import { Box, Divider } from "@mui/material";
 
-function ClientModule() {
+function ReportPage() {
   // Mock data
 
   return (
@@ -17,4 +17,4 @@ function ClientModule() {
   );
 }
 
-export default ClientModule;
+export default ReportPage;

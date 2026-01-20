@@ -5,7 +5,7 @@ import NoticeBoard from "@/components/client/noticeboard";
 
 import { Box, Divider } from "@mui/material";
 
-function ClientModule() {
+function noticeBoard() {
   // Mock data
 
   return (
@@ -17,4 +17,4 @@ function ClientModule() {
   );
 }
 
-export default ClientModule;
+export default noticeBoard;
