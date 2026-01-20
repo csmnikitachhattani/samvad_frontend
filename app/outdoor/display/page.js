@@ -28,100 +28,170 @@ const DisplayBoardTable = () => {
         console.error("Failed to fetch display boards", error);
       }
     };
-
     fetchBoards();
   }, []);
 
   return (
-    <Box p={3}>
-      <Typography variant="h6" fontWeight={600} mb={2}>
-        Display Board List
+    <Box
+      sx={{
+        p: 4,
+        background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Header */}
+      <Typography
+        variant="h5"
+        fontWeight={700}
+        mb={3}
+        sx={{ letterSpacing: "0.3px" }}
+      >
+        📊 Display Boards Overview
       </Typography>
 
-      <TableContainer component={Paper} elevation={3}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Board No</TableCell>
-              <TableCell>Agency</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>State</TableCell>
-              <TableCell>District</TableCell>
-              <TableCell>Facing</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Timing</TableCell>
-              <TableCell>Rate / Month</TableCell>
-              <TableCell>Validity</TableCell>
-              <TableCell>Image</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {data.length === 0 ? (
+      {/* Card */}
+      <Paper
+        elevation={6}
+        sx={{
+          borderRadius: "22px",
+          overflow: "hidden",
+          p: 2,
+        }}
+      >
+        <TableContainer sx={{ maxHeight: "70vh" }}>
+          <Table stickyHeader>
+            {/* Table Header */}
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={12} align="center">
-                  No data found
-                </TableCell>
+                {[
+                  "ID",
+                  "Board No",
+                  "Agency",
+                  "Location",
+                  "State",
+                  "District",
+                  "Facing",
+                  "Status",
+                  "Timing",
+                  "Rate",
+                  "Validity",
+                  "Image",
+                ].map((head) => (
+                  <TableCell
+                    key={head}
+                    sx={{
+                      fontWeight: 700,
+                      background:
+                        "linear-gradient(135deg, #6366f1, #4f46e5)",
+                      color: "#fff",
+                      borderBottom: "none",
+                    }}
+                  >
+                    {head}
+                  </TableCell>
+                ))}
               </TableRow>
-            ) : (
-              data.map((item) => (
-                <TableRow hover key={item.displayBoardID}>
-                  <TableCell>{item.displayBoardID}</TableCell>
+            </TableHead>
 
-                  <TableCell>
-                    <Typography fontWeight={600} color="primary">
-                      {item.displayBoardNo}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell>{item.agencyName}</TableCell>
-                  <TableCell>{item.locationName}</TableCell>
-                  <TableCell>{item.stateName}</TableCell>
-                  <TableCell>{item.districtName}</TableCell>
-                  <TableCell>{item.facing}</TableCell>
-
-                  <TableCell>
-                    <Chip
-                      label={item.isAvailable ? "Available" : "Not Available"}
-                      color={item.isAvailable ? "success" : "error"}
-                      size="small"
-                    />
-                  </TableCell>
-
-                  <TableCell>
-                    {item.startTime} – {item.endTime}
-                  </TableCell>
-
-                  <TableCell>
-                    <Typography fontWeight={600} color="success.main">
-                      ₹ {item.ratePerMonth}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell>
-                    {item.validityFrom}
-                    <br />
-                    → {item.validityTo}
-                  </TableCell>
-
-                  <TableCell>
-                    {item.imagepath ? (
-                      <Avatar
-                        variant="rounded"
-                        src={item.imagepath}
-                        sx={{ width: 70, height: 45 }}
-                      />
-                    ) : (
-                      "-"
-                    )}
+            {/* Table Body */}
+            <TableBody>
+              {data.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={12} align="center">
+                    No data found
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              ) : (
+                data.map((item) => (
+                  <TableRow
+                    key={item.displayBoardID}
+                    hover
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "#f1f5f9",
+                      },
+                    }}
+                  >
+                    <TableCell>{item.displayBoardID}</TableCell>
+
+                    <TableCell>
+                      <Typography fontWeight={700} color="#4f46e5">
+                        {item.displayBoardNo}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>{item.agencyName}</TableCell>
+                    <TableCell>{item.locationName}</TableCell>
+                    <TableCell>{item.stateName}</TableCell>
+                    <TableCell>{item.districtName}</TableCell>
+                    <TableCell>{item.facing}</TableCell>
+
+                    {/* Status */}
+                    <TableCell>
+                      <Chip
+                        label={
+                          item.isAvailable ? "Available" : "Not Available"
+                        }
+                        sx={{
+                          borderRadius: "999px",
+                          px: 1.5,
+                          fontWeight: 600,
+                          backgroundColor: item.isAvailable
+                            ? "#dcfce7"
+                            : "#fee2e2",
+                          color: item.isAvailable ? "#166534" : "#991b1b",
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      {item.startTime} – {item.endTime}
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography fontWeight={700} color="#16a34a">
+                        ₹ {item.ratePerMonth}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      {item.validityFrom}
+                      <br />
+                      → {item.validityTo}
+                    </TableCell>
+
+                    {/* Image */}
+                    <TableCell>
+                      {item.imagepath ? (
+                        <Paper
+                          elevation={4}
+                          sx={{
+                            borderRadius: "14px",
+                            overflow: "hidden",
+                            width: 76,
+                            height: 50,
+                          }}
+                        >
+                          <Avatar
+                            src={item.imagepath}
+                            variant="square"
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </Paper>
+                      ) : (
+                        "-"
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     </Box>
   );
 };
