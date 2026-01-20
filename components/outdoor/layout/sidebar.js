@@ -14,22 +14,22 @@ export default function Sidebar() {
   const menuItems = [
     { 
       label: "Dashboard", 
-      path: "/newspaper",
+      path: "/outdoor",
       icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
     },
     {
       label: "Profile",
-      path: "/newspaper/profile",
+      path: "/profile",
       icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
-      label: "Release Order",
-      path: "/newspaper/release-order",
+      label: "Display Boards",
+      path: "/outdoor/display",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
-      label: "Bill Entry",
-      path: "/newspaper/bill-entry",
+      label: "Vehicle",
+      path: "/outdoor/vehicle",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     // Add more items here
@@ -40,8 +40,7 @@ export default function Sidebar() {
       sx={{
         // width intentionally removed here — parent sets width
         color: "#fff",
-        background: 'linear-gradient(180deg, #4A4A4A 0%, #1F1F1F 100%)',
-
+        background: "#031604",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",

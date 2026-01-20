@@ -22,7 +22,7 @@ const DisplayBoardTable = () => {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await outdoorService.getalldisplayboards();
+        const response = await outdoorService.getAllvehicle();
         setData(response?.result || []);
       } catch (error) {
         console.error("Failed to fetch display boards", error);
@@ -43,7 +43,7 @@ const DisplayBoardTable = () => {
           letterSpacing: "-0.02em"
         }}
       >
-        Display Boards
+        Vehicle Boards 
       </Typography>
 
       {/* Card */}
