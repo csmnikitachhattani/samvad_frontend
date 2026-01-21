@@ -712,11 +712,11 @@ const handleDragLeave = () => {
   setIsDragging(false);
 };
 
-const handleDrop = (e) => {
-  e.preventDefault();
-  setIsDragging(false);
-  handleFileSelect(e.dataTransfer.files[0]);
-};
+// const handleDrop = (e) => {
+//   e.preventDefault();
+//   setIsDragging(false);
+//   handleFileSelect(e.dataTransfer.files[0]);
+// };
 
 
 /*===================================*/
