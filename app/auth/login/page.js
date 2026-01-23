@@ -1,4 +1,6 @@
 "use client";
+
+import axios from "axios";
 import { useState, useEffect } from "react";
 import {
   Container,
@@ -16,13 +18,15 @@ import {
 } from "@mui/material";
 
 export default function LoginPage() {
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState({ id: "", code: "", name: "" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [captcha, setCaptcha] = useState("");
   const [userInput, setUserInput] = useState("");
   const [error, setError] = useState("");
+  const [userTypeList, setUserTypeList] = useState([]);
 
+  // Generate Captcha
   const generateCaptcha = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let result = "";
@@ -33,22 +37,67 @@ export default function LoginPage() {
     setUserInput("");
   };
 
+  // Fetch user types
+  const fetchUserTypes = async () => {
+    try {
+      const res = await axios.get("http://localhost:3080/api/usertype");
+      setUserTypeList(res.data || []);
+    } catch (err) {
+      console.error("Failed to load user types", err);
+    }
+  };
+
   useEffect(() => {
     generateCaptcha();
+    fetchUserTypes();
   }, []);
 
-  const handleLogin = () => {
-    if (!userType || !username || !password || !userInput) {
+  // Handle login
+  const handleLogin = async () => {
+    if (!userType.code || !username || !password || !userInput) {
       setError("Please fill all fields");
       return;
     }
+
     if (userInput !== captcha) {
       setError("Captcha is incorrect");
       generateCaptcha();
       return;
     }
+
     setError("");
-    alert("Login successful!");
+
+    try {
+      const res = await axios.post(
+        "http://103.79.34.50:8082/api/Login/cgsamvadlogin",
+        {
+          usertypecode: userType.code,
+          userid: username,
+          usrpassword: password,
+          usertypeid: userType.id.toString(),
+        },
+      );
+      console.log("Login Path from API:", res.data);
+      if (res.data?.status==200) {
+        // ✅ CHECK LOGIN PATH (DEBUG)
+
+        console.log("hhhh",res.data.result[0].loginpath
+
+        )
+
+        // ✅ External redirect (BEST)
+        setTimeout(() => {
+          window.location.href = res.data.result[0].loginpath;
+        }, 1000);
+      } else {
+        setError(res.data?.message || "Invalid credentials");
+        generateCaptcha();
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Server error. Please try again.");
+      generateCaptcha();
+    }
   };
 
   return (
@@ -72,7 +121,6 @@ export default function LoginPage() {
           }}
         >
           <CardContent sx={{ padding: "30px 20px" }}>
-            {/* Logo */}
             <Box
               sx={{
                 display: "flex",
@@ -111,7 +159,6 @@ export default function LoginPage() {
                 संवाद
               </Typography>
             </Box>
-
             {/* Header Text */}
             <Box sx={{ textAlign: "center", marginBottom: "20px" }}>
               <Typography
@@ -141,27 +188,41 @@ export default function LoginPage() {
               </Typography>
             </Box>
 
-            {/* Error Message */}
             {error && (
               <Alert
-                severity="error"
-                sx={{ marginBottom: "12px", fontSize: "11px" }}
+                severity={error.includes("successful") ? "success" : "error"}
+                sx={{ mb: 2, fontSize: "11px" }}
               >
                 {error}
               </Alert>
             )}
 
             {/* User Type Dropdown */}
-            <FormControl fullWidth sx={{ marginBottom: "12px" }}>
+            <FormControl fullWidth sx={{ mb: 2 }}>
               <Select
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
+                value={userType.code}
+                onChange={(e) => {
+                  const selected = userTypeList.find(
+                    (x) => x.login_user_type_code === e.target.value,
+                  );
+                  setUserType({
+                    id: selected?.id || "",
+                    code: selected?.login_user_type_code || "",
+                    name: selected?.login_user_type_name || "",
+                  });
+                }}
                 displayEmpty
+                renderValue={(selectedCode) => {
+                  const selected = userTypeList.find(
+                    (x) => x.login_user_type_code === selectedCode,
+                  );
+                  return selected
+                    ? selected.login_user_type_name
+                    : "Select User Type";
+                }}
                 sx={{
                   fontSize: "12px",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#ddd",
-                  },
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#ddd" },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
                     borderColor: "#999",
                   },
@@ -170,11 +231,17 @@ export default function LoginPage() {
                   },
                 }}
               >
-                <MenuItem value="">Select User Type</MenuItem>
-                <MenuItem value="Admin">Admin</MenuItem>
-                <MenuItem value="Officer">Officer</MenuItem>
-                <MenuItem value="Employee">Employee</MenuItem>
-                <MenuItem value="User">User</MenuItem>
+                <MenuItem disabled value="">
+                  Select User Type
+                </MenuItem>
+                {userTypeList.map((item) => (
+                  <MenuItem
+                    key={item.login_user_type_code}
+                    value={item.login_user_type_code}
+                  >
+                    {item.login_user_type_name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
@@ -184,26 +251,7 @@ export default function LoginPage() {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              sx={{
-                marginBottom: "12px",
-                fontSize: "12px",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#ddd",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#999",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#d32f2f",
-                  },
-                },
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start"></InputAdornment>
-                ),
-              }}
+              sx={{ mb: 2 }}
             />
 
             {/* Password */}
@@ -213,31 +261,11 @@ export default function LoginPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              sx={{
-                marginBottom: "15px",
-                fontSize: "12px",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#ddd",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#999",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#d32f2f",
-                  },
-                },
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start"></InputAdornment>
-                ),
-              }}
+              sx={{ mb: 2 }}
             />
 
             {/* Captcha */}
-            <Box sx={{ marginBottom: "12px" }}>
-              {/* Captcha Display */}
+            <Box sx={{ mb: 2 }}>
               <Box
                 sx={{
                   display: "flex",
@@ -247,7 +275,7 @@ export default function LoginPage() {
                   backgroundColor: "#f8f8f8",
                   border: "1px solid #ddd",
                   borderRadius: 1,
-                  marginBottom: "8px",
+                  mb: 1,
                 }}
               >
                 <Typography
@@ -264,87 +292,24 @@ export default function LoginPage() {
                 <Button
                   onClick={generateCaptcha}
                   variant="contained"
-                  sx={{
-                    padding: "4px 9px",
-                    backgroundColor: "#f0f0f0",
-                    color: "#666",
-                    fontSize: "10px",
-                    fontWeight: 600,
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "#e0e0e0",
-                    },
-                  }}
+                  sx={{ fontSize: "10px" }}
                 >
                   Refresh
                 </Button>
               </Box>
 
-              {/* Captcha Input */}
               <TextField
                 fullWidth
                 placeholder="Enter above text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value.toUpperCase())}
-                maxLength="6"
-                sx={{
-                  fontSize: "12px",
-                  "& .MuiOutlinedInput-root": {
-                    textAlign: "center",
-                    letterSpacing: "1px",
-                    "& fieldset": {
-                      borderColor: "#ddd",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#999",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#d32f2f",
-                    },
-                  },
-                }}
+                inputProps={{ maxLength: 6 }}
               />
             </Box>
 
-            {/* Login Button */}
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={handleLogin}
-              sx={{
-                padding: "11px",
-                backgroundColor: "#d32f2f",
-                color: "white",
-                fontSize: "13px",
-                fontWeight: "bold",
-                textTransform: "none",
-                marginTop: "10px",
-                "&:hover": {
-                  backgroundColor: "#b71c1c",
-                },
-              }}
-            >
+            <Button fullWidth variant="contained" onClick={handleLogin}>
               LOGIN
             </Button>
-
-            {/* Forgot Password Link */}
-            <Box sx={{ textAlign: "center", marginTop: "10px" }}>
-              <Typography
-                component="a"
-                href="#"
-                sx={{
-                  color: "#d32f2f",
-                  textDecoration: "none",
-                  fontSize: "11px",
-                  fontWeight: 500,
-                  "&:hover": {
-                    textDecoration: "underline",
-                  },
-                }}
-              >
-                Forgot Password?
-              </Typography>
-            </Box>
           </CardContent>
         </Card>
       </Container>
