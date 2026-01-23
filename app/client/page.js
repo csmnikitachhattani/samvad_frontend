@@ -21,10 +21,11 @@ function ClientModule() {
 
   return (
     <Box>
-        <Box><CreateNewRequest/><RequestForm/></Box>
+       
       <Box sx={{ width: "100%" }}>
         
             <NoticeBoard />
+            {/* <ClientFileUpload/> */}
 
       </Box>
       {/* <Box>

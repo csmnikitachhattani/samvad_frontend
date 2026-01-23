@@ -40,3 +40,15 @@ a {
     color-scheme: dark;
   }
 }
+body {
+  user-select:none;
+  cursor: default;
+}
+
+/* Allow cursor & selection ONLY in form fields */
+input,
+textarea,
+.MuiInputBase-input {
+  user-select: text;
+  cursor: text;
+}
