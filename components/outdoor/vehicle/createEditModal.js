@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 
-const BottleGreenDialog = ({open=true, onClose, onSubmit }) => {
+const VehicleModal = ({open=true, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     agencyId: "",
     vehicleNo: "",
@@ -76,7 +76,6 @@ const BottleGreenDialog = ({open=true, onClose, onSubmit }) => {
                 sx={fieldStyle}
               />
             </Grid>
-
             <Grid item size={{xs:12, md:6}}>
               <TextField
                 label="Vehicle Number"
@@ -89,7 +88,6 @@ const BottleGreenDialog = ({open=true, onClose, onSubmit }) => {
 
               />
             </Grid>
-
             <Grid item size={{xs:12, md:6}}>
               <TextField
                 label="Owner Name"
@@ -99,11 +97,8 @@ const BottleGreenDialog = ({open=true, onClose, onSubmit }) => {
                 value={formData.ownerName}
                 onChange={handleChange}
                 sx={fieldStyle}
-
               />
             </Grid>
-
-
             <Grid item size={{xs:12}}>
               <Button
                 variant="outlined"
@@ -128,9 +123,6 @@ const BottleGreenDialog = ({open=true, onClose, onSubmit }) => {
                 />
               </Button>
             </Grid>
-
-
-            
             <Grid item size={{xs:12, md:6}}>
               <TextField
                 label="Fitness Upto"
@@ -205,4 +197,4 @@ const BottleGreenDialog = ({open=true, onClose, onSubmit }) => {
   );
 };
 
-export default BottleGreenDialog;
+export default VehicleModal;
