@@ -19,44 +19,48 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useSelector, useDispatch } from "react-redux";
 import axiosClient from "@/lib/axiosClient";
 import { toggleUploadModal } from "@/store/modules/newspaper/realeaseSlice.js";
-export default function UploadProofDialog({ open, setOpen, onUpload }) {
-  const [file, setFile] = useState(null);
+export default function UploadProofDialog({ open, setOpen, }) {
+  const [docfile, setDocfile] = useState(null);
   const [remarks, setRemarks] = useState("");  
   const uploadModalShow = useSelector((state) => state.realease.uploadModalShow);
   const { financial_year, avak_ref_id, advt_no, ro_no, user_id, np_news_cd } = useSelector((state) => state.realease.roDetails);
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    console.log(e.target.files)
+    setDocfile(e.target.files[0]);
   };
 
   const handleUpload = () => {
-    if (!file) {
+    if (!docfile) {
       alert("Please select a file first.");
       return;
     }
     
 
     const uploadData = {
-      file,
+      docfile,
       remarks,
     };
 
-    onUpload(uploadData);
-    setOpen(false);
-    setFile(null);
-    setRemarks("");
+
   };
-  const uploadPublishProof = async (file) => {
+  const uploadPublishProof = async () => {
     const formData = new FormData();
   
-    formData.append("file", file); // 🔴 important
+    formData.append("file", docfile);
     formData.append("advt_no", advt_no);
     formData.append("fin_year", financial_year);
     formData.append("ro_no", ro_no);
     formData.append("ip_address", "127.0.0.1");
+    formData.append('avak_ref_id', avak_ref_id);
+    formData.append('user_id', '00020');
+    formData.append('np_news_cd', np_news_cd);
+    // reason: statusData.rejectReason,
+    // published_date: statusData.publishDate,
+
   
     try {
       const res = await axiosClient.post(
-        "/ro/publish-precheck/",
+        "/ro/uploadProof/",
         formData
       );
   
@@ -143,11 +147,11 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
             elevation={0}
             sx={{
               border: "2px dashed",
-              borderColor: file ? "#667eea" : "#e0e0e0",
+              borderColor: docfile ? "#667eea" : "#e0e0e0",
               borderRadius: 2,
               p: 3,
               textAlign: "center",
-              background: file ? "rgba(102, 126, 234, 0.05)" : "#fafafa",
+              background: docfile ? "rgba(102, 126, 234, 0.05)" : "#fafafa",
               transition: "all 0.3s ease",
               marginTop: "20px",
               cursor: "pointer",
@@ -165,7 +169,7 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
                 accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
               />
               
-              {!file ? (
+              {!docfile ? (
                 <>
                   <UploadFileIcon 
                     sx={{ 
@@ -191,7 +195,7 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
                     <Stack direction="row" spacing={1} alignItems="center">
                       <InsertDriveFileIcon sx={{ fontSize: 16, color: "#666" }} />
                       <Typography variant="caption" color="text.secondary">
-                        {file.name}
+                        {docfile.name}
                       </Typography>
                     </Stack>
                   </Box>
@@ -220,7 +224,7 @@ export default function UploadProofDialog({ open, setOpen, onUpload }) {
           variant="contained" 
           onClick={uploadPublishProof
           }
-          disabled={!file}
+          disabled={!docfile}
           sx={{ 
             textTransform: "none",
             background: "linear-gradient(135deg, #FF7043 0%, #F4511E 100%)",

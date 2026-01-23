@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  output: 'standalone', // <--- Add this line
+  // ... your other config
 };
 
 export default nextConfig;

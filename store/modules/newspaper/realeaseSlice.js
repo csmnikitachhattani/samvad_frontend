@@ -73,7 +73,6 @@ export const rejectRO = createAsyncThunk(
     }
   }
 );
-
 export const getRODetails = createAsyncThunk(
   "release/getRODetails",
   async (data, { rejectWithValue }) => {
@@ -127,8 +126,6 @@ export const PostPublishPrecheck = createAsyncThunk(
 
       // ✅ Proper check
       if (res?.data?.data == 1 && status_cd == '08/publish_status/07') {
-
-      
         await dispatch(
           publishRO({
             financial_year,

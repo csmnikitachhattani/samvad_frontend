@@ -1,9 +1,9 @@
 "use client";
 import { Box } from "@mui/material";
-import Sidebar from "@/components/outdoor/layout/sidebar";
-//import Header from "@/components/Newspaper/header";
+import Sidebar from "@/components/admin/layout/sidebar";
+import Header from "@/components/Newspaper/header";
 
-export default function OutdoorLayout({ children }) {
+export default function AdminLayout({ children }) {
   return (
   
     <Box sx={{ display: "flex", height: "100vh", bgcolor: "#F8FAFC" }}>
@@ -13,7 +13,7 @@ export default function OutdoorLayout({ children }) {
           width: 260,
           flexShrink: 0,
           color: "#fff",
-          background: 'linear-gradient(180deg, #B0B0B0 0%, #6E6E6E 100%)',
+          background: "#030236",
           display: "flex",
           flexDirection: "column",
         }}

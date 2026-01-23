@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Suspense } from "react";
 import NoticeBoard from "@/components/client/noticeboard";
 import Report from "@/components/client/report"
 import ForwardTo from "@/components/client/forwaded"
@@ -20,6 +21,7 @@ function ClientModule() {
   ];
 
   return (
+    <Suspense fallback={<div>Loading client module...</div>}>
     <Box>
        
       <Box sx={{ width: "100%" }}>
@@ -28,6 +30,7 @@ function ClientModule() {
             {/* <ClientFileUpload/> */}
 
       </Box>
+      
       {/* <Box>
         <Report/>
       </Box>
@@ -38,6 +41,7 @@ function ClientModule() {
       <Box><NewsRateList/></Box>
      */}
     </Box>
+    </Suspense>
   );
 }
 

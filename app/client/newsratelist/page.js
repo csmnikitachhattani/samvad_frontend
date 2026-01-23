@@ -5,7 +5,7 @@ import NewsRateList from "@/components/client/newsratelist";
 
 import { Box, Divider } from "@mui/material";
 
-function ClientModule() {
+function rateList() {
   // Mock data
 
   return (
@@ -17,4 +17,4 @@ function ClientModule() {
   );
 }
 
-export default ClientModule;
+export default rateList;

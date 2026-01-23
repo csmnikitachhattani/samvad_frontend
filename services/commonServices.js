@@ -2,10 +2,10 @@ import axiosClient from "@/lib/axiosClient";
 
 const commonService = {
   getStates: () =>
-    axiosClient.get(`/states`),
+    axiosClient.get(`/newspaper/states`),
     
   getDistrict: () =>
-     axiosClient.get(`/district`),
+     axiosClient.get(`/newspaper/district`),
 };
 
 
