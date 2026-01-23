@@ -15,7 +15,12 @@ import {
   Typography,
   Alert,
   InputAdornment,
+  IconButton
 } from "@mui/material";
+import Image from "next/image";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import LogiImg from "@/public/images/logo_samvad.png"
+
 
 export default function LoginPage() {
   const [userType, setUserType] = useState({ id: "", code: "", name: "" });
@@ -25,7 +30,7 @@ export default function LoginPage() {
   const [userInput, setUserInput] = useState("");
   const [error, setError] = useState("");
   const [userTypeList, setUserTypeList] = useState([]);
-
+const [showPassword, setShowPassword] = useState(false);
   // Generate Captcha
   const generateCaptcha = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -134,22 +139,26 @@ export default function LoginPage() {
                 sx={{
                   width: "45px",
                   height: "45px",
-                  border: "2.5px solid #d32f2f",
+               
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: "26px",
                   fontWeight: "bold",
-                  color: "#d32f2f",
+              
                 }}
               >
-                छ
+                <Image src={LogiImg}
+                            alt="NIC Logo"
+                            height={48}
+                            style={{ width: "auto" }}
+                            priority/>
               </Box>
               <Typography
                 sx={{
-                  fontSize: "14px",
-                  fontWeight: 700,
+                  fontSize: "19px",
+                  fontWeight: 750,
                   color: "#333",
                   lineHeight: "1.3",
                 }}
@@ -165,7 +174,7 @@ export default function LoginPage() {
                 sx={{
                   fontSize: "12px",
                   color: "#333",
-                  fontWeight: 500,
+                  fontWeight: 600,
                   marginBottom: "1px",
                 }}
               >
@@ -255,14 +264,36 @@ export default function LoginPage() {
             />
 
             {/* Password */}
-            <TextField
+            {/* <TextField
               fullWidth
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               sx={{ mb: 2 }}
-            />
+            /> */}
+
+            
+<TextField
+  fullWidth
+  type={showPassword ? "text" : "password"}
+  placeholder="Password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  sx={{ mb: 2 }}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() => setShowPassword(!showPassword)}
+          edge="end"
+        >
+          {showPassword ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
 
             {/* Captcha */}
             <Box sx={{ mb: 2 }}>
