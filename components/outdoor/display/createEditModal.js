@@ -49,11 +49,19 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Create Location</DialogTitle>
+        <DialogTitle
+        sx={{
+          backgroundColor: "#0f4c3a",
+          color: "#fff",
+          fontWeight: 600,
+        }}
+      >
+        Create Display Board 
+      </DialogTitle>
 
       <DialogContent>
-        <Grid container spacing={2} mt={1}>
-          <Grid item xs={12} sm={6}>
+        <Grid container spacing={2} mt={1} py={3}>
+          <Grid item size={{xs:12,sm:6}}>
             <TextField
               label="Country"
               name="country"
@@ -63,7 +71,7 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12,sm:6}}>
             <TextField
               label="State"
               name="state"
@@ -73,7 +81,7 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12,sm:6}}>
             <TextField
               label="City"
               name="city"
@@ -83,7 +91,7 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12,sm:6}}>
             <TextField
               label="Location Type"
               name="locationType"
@@ -93,7 +101,7 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12,sm:6}}>
             <TextField
               label="Pincode"
               name="pincode"
@@ -103,7 +111,7 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12,sm:6}}>
             <TextField
               label="Latitude"
               name="latitude"
@@ -113,7 +121,7 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12,sm:6}}>
             <TextField
               label="Longitude"
               name="longitude"
@@ -122,6 +130,51 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
               onChange={handleChange}
             />
           </Grid>
+          <Grid item size={{xs:12,sm:6}}>
+            <TextField
+              label="Longitude"
+              name="longitude"
+              fullWidth
+              value={formData.longitude}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item size={{xs:12, sm:6}}>
+            <TextField
+              label="Longitude"
+              name="longitude"
+              fullWidth
+              value={formData.longitude}
+              onChange={handleChange}
+            />
+          </Grid>
+
+          
+          <Grid item size={{xs:12}}>
+              <Button
+                variant="outlined"
+                component="label"
+                fullWidth
+                sx={{
+                  height: "40px",
+                  borderColor: "#0f4c3a",
+                  color: "#0f4c3a",
+                  "&:hover": {
+                    borderColor: "#1f7a63",
+                    backgroundColor: "#e6f3ef",
+                  },
+                }}
+              >
+                Upload RC Photo
+                <input
+                  type="file"
+                  hidden
+                  name="rcPhotoFile"
+                  onChange={handleChange}
+                />
+              </Button>
+            </Grid>
+
         </Grid>
       </DialogContent>
 
