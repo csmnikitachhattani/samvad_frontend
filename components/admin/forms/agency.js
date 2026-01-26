@@ -330,6 +330,7 @@ const AgencyForm = () => {
               <FormControlLabel
                 control={
                   <Checkbox
+                    type="hidden"
                     checked={formData.isActive}
                     name="isActive"
                     onChange={handleChange}

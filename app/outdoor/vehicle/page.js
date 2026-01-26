@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import outdoorService from "@/services/outdoorServices";
-
+import CreateEditModal from '@/components/outdoor/vehicle/createEditModal'
 import {
   Box,
   Paper,
@@ -233,6 +233,7 @@ const DisplayBoardTable = () => {
           </Table>
         </TableContainer>
       </Paper>
+      <CreateEditModal />
     </Box>
   );
 };

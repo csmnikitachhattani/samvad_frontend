@@ -15,7 +15,7 @@ import {
 
 
 const VehicleModal = ({open=true, onClose, onSubmit }) => {
-  const [formData, setFormData] = useState({
+  const [data, setData] = useState({
     agencyId: "",
     vehicleNo: "",
     ownerName: "",
@@ -26,10 +26,36 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
     createdBy: "",
     createdIpAddress: "",
   });
+  const createVehicle = async (payload) => {
+    const formData = new FormData();
+  
+    // Required fields
+    formData.append("AgencyId", data.agencyId);
+    formData.append("VehicleNo", data.vehicleNo);
+    formData.append("OwnerName", data.ownerName);
+    formData.append("FitnessUpto", data.fitnessUpto);
+    formData.append("InsuranceUpto", data.insuranceUpto);
+  
+    // File
+    if (payload.rcPhotoFile) {
+      formData.append("RcPhotoFile", data.rcPhotoFile);
+    }
+  
+    // Optional / audit fields
+    formData.append("CreatedBy", data.createdBy);
+    formData.append("CreatedIpAddress", data.createdIpAddress);
+  
+    return axios.post("/api/vehicle/create", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
+  
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData({
+    setData({
       ...formData,
       [name]: files ? files[0] : value,
     });
@@ -71,7 +97,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
                 name="agencyId"
                 fullWidth
                 size="small"
-                value={formData.agencyId}
+                value={data.agencyId}
                 onChange={handleChange}
                 sx={fieldStyle}
               />
@@ -82,7 +108,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
                 name="vehicleNo"
                 fullWidth
                 size="small"
-                value={formData.vehicleNo}
+                value={data.vehicleNo}
                 onChange={handleChange}
                 sx={fieldStyle}
 
@@ -94,7 +120,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
                 name="ownerName"
                 fullWidth
                 size="small"
-                value={formData.ownerName}
+                value={data.ownerName}
                 onChange={handleChange}
                 sx={fieldStyle}
               />
@@ -131,7 +157,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
                 fullWidth
                 size="small"
                 InputLabelProps={{ shrink: true }}
-                value={formData.fitnessUpto}
+                value={data.fitnessUpto}
                 onChange={handleChange}
               />
             </Grid>
@@ -144,7 +170,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
                 fullWidth
                 size="small"
                 InputLabelProps={{ shrink: true }}
-                value={formData.insuranceUpto}
+                value={data.insuranceUpto}
                 onChange={handleChange}
               />
             </Grid>
@@ -154,7 +180,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
                 name="createdBy"
                 fullWidth
                 size="small"
-                value={formData.createdBy}
+                value={data.createdBy}
                 onChange={handleChange}
               />
             </Grid>
@@ -165,7 +191,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
                 name="createdIpAddress"
                 fullWidth
                 size="small"
-                value={formData.createdIpAddress}
+                value={data.createdIpAddress}
                 onChange={handleChange}
               />
             </Grid>
