@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import axiosClient from "@/lib/axiosClient";
 import {
   Dialog,
   DialogTitle,
@@ -33,11 +34,11 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
     formData.append("AgencyId", data.agencyId);
     formData.append("VehicleNo", data.vehicleNo);
     formData.append("OwnerName", data.ownerName);
-    formData.append("FitnessUpto", data.fitnessUpto);
-    formData.append("InsuranceUpto", data.insuranceUpto);
+    formData.append("FitnessUpto", '2026-01-26T14:20:06.038Z');
+    formData.append("InsuranceUpto", '2026-01-26T14:20:06.038Z');
   
     // File
-    if (payload.rcPhotoFile) {
+    if (data.rcPhotoFile) {
       formData.append("RcPhotoFile", data.rcPhotoFile);
     }
   
@@ -45,7 +46,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
     formData.append("CreatedBy", data.createdBy);
     formData.append("CreatedIpAddress", data.createdIpAddress);
   
-    return axios.post("/api/vehicle/create", formData, {
+    return axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/createledVehicle", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -54,9 +55,10 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
   
 
   const handleChange = (e) => {
+    console.log("chnages")
     const { name, value, files } = e.target;
     setData({
-      ...formData,
+      ...data,
       [name]: files ? files[0] : value,
     });
   };
@@ -214,7 +216,7 @@ const VehicleModal = ({open=true, onClose, onSubmit }) => {
             backgroundColor: "#0f4c3a",
             "&:hover": { backgroundColor: "#1f7a63" },
           }}
-          onClick={() => onSubmit(formData)}
+          onClick={() => createVehicle()}
         >
           Submit
         </Button>
