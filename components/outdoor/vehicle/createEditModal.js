@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 
-const VehicleModal = ({open=true, onClose, onSubmit }) => {
+const VehicleModal = ({open, onClose, onSubmit }) => {
   const [data, setData] = useState({
     agencyId: "",
     vehicleNo: "",
