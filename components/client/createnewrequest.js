@@ -52,13 +52,13 @@ const CreateNewRequest = () => {
       </Typography>
 
       {/* ---------- Loader ---------- */}
-      {loading ? (
+      {/* {loading ? (
         <Stack alignItems="center" mt={6}>
           <CircularProgress />
           <Typography mt={2}>Loading categories...</Typography>
         </Stack>
       ) : (
-        <>
+        <> */}
           {/* ---------- Category Buttons ---------- */}
           <Stack
             direction="row"
@@ -131,8 +131,8 @@ const CreateNewRequest = () => {
               </CardContent>
             </Card>
           )}
-        </>
-      )}
+        {/* </>
+      )} */}
     </Box>
   );
 };

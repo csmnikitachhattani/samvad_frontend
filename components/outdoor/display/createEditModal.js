@@ -202,11 +202,11 @@ useEffect(() => {
             <Grid item size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                label="Validity From"
+                label="Start Time"
                 type="time"
                 InputLabelProps={{ shrink: true }}
-                name="validityFrom"
-                value={formData.validityFrom}     
+                name="StartTime"
+                value={formData.StartTime}     
                 onChange={handleChange}
                 sx={inputStyle}
               />
@@ -215,11 +215,11 @@ useEffect(() => {
             <Grid item size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                label="Validity To"
+                label="Start End"
                 type="time"
                 InputLabelProps={{ shrink: true }}
-                name="validityTo"
-                value={formData.validityTo}    
+                name="StartEnd"
+                value={formData.StartEnd}    
                  onChange={handleChange}
                 sx={inputStyle}
               />
