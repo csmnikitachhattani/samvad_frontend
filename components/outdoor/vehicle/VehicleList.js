@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import outdoorService from "@/services/outdoorServices";
-import CreateEditModal from "@/components/outdoor/display/createEditModal"
+import { Button, Stack } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 import {
   Box,
@@ -23,7 +24,7 @@ const DisplayBoardTable = () => {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await outdoorService.getalldisplayboards();
+        const response = await outdoorService.getAllvehicle();
         setData(response?.result || []);
       } catch (error) {
         console.error("Failed to fetch display boards", error);
@@ -35,7 +36,7 @@ const DisplayBoardTable = () => {
   return (
     <Box sx={{ p: 4, backgroundColor: "#fafafa", minHeight: "100vh" }}>
       {/* Header */}
-      <Typography 
+      {/* <Typography 
         variant="h5" 
         fontWeight={600} 
         mb={3}
@@ -44,8 +45,46 @@ const DisplayBoardTable = () => {
           letterSpacing: "-0.02em"
         }}
       >
-        Display Boards
-      </Typography>
+        Vehicle Boards 
+      </Typography> */}
+      <Box
+  sx={{
+    mb: 3,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }}
+>
+  <Typography
+    variant="h5"
+    fontWeight={600}
+    sx={{ color: "#111827", letterSpacing: "-0.02em" }}
+  >
+    Vehicle Boards
+  </Typography>
+
+  <Button
+    variant="contained"
+    startIcon={<AddIcon />}
+    sx={{
+      textTransform: "none",
+      fontWeight: 600,
+      borderRadius: 2,
+      px: 2.5,
+      backgroundColor: "#111827",
+      "&:hover": {
+        backgroundColor: "#000000",
+      },
+    }}
+    onClick={() => {
+      // open create vehicle dialog
+      console.log("Create Vehicle Clicked");
+    }}
+  >
+    Create Vehicle
+  </Button>
+</Box>
+
 
       {/* Card */}
       <Paper
@@ -64,14 +103,9 @@ const DisplayBoardTable = () => {
               <TableRow>
                 {[
                   "ID",
-                  "Board No",
+                  "Vehicle No",
                   "Agency",
-                  "Location",
-                  "State",
-                  "District",
-                  "Facing",
-                  "Status",
-                  "Timing",
+                  "Owner Name",
                   "Rate",
                   "Validity",
                   "Image",
@@ -124,7 +158,7 @@ const DisplayBoardTable = () => {
                     }}
                   >
                     <TableCell sx={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-                      {item.displayBoardID}
+                      {item.VehicleId}
                     </TableCell>
 
                     <TableCell sx={{ 
@@ -132,44 +166,13 @@ const DisplayBoardTable = () => {
                       color: "#111827",
                       fontSize: "0.875rem"
                     }}>
-                      {item.displayBoardNo}
+                      {item.VehicleNo}
                     </TableCell>
 
                     <TableCell sx={{ color: "#374151", fontSize: "0.875rem" }}>
-                      {item.agencyName}
+                      {item.AgencyName}
                     </TableCell>
                     
-                    <TableCell sx={{ color: "#374151", fontSize: "0.875rem" }}>
-                      {item.locationName}
-                    </TableCell>
-                    
-                    <TableCell sx={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                      {item.stateName}
-                    </TableCell>
-                    
-                    <TableCell sx={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                      {item.districtName}
-                    </TableCell>
-                    
-                    <TableCell sx={{ color: "#374151", fontSize: "0.875rem" }}>
-                      {item.facing}
-                    </TableCell>
-
-                    {/* Status */}
-                    <TableCell>
-                      <Chip
-                        size="small"
-                        label={item.isAvailable ? "Available" : "Unavailable"}
-                        sx={{
-                          backgroundColor: item.isAvailable ? "#f0fdf4" : "#f9fafb",
-                          color: item.isAvailable ? "#166534" : "#6b7280",
-                          border: `1px solid ${item.isAvailable ? "#bbf7d0" : "#e5e7eb"}`,
-                          fontWeight: 500,
-                          fontSize: "0.75rem",
-                          height: "24px",
-                        }}
-                      />
-                    </TableCell>
 
                     <TableCell sx={{ 
                       color: "#6b7280",
@@ -192,9 +195,9 @@ const DisplayBoardTable = () => {
                       color: "#6b7280",
                       lineHeight: 1.6
                     }}>
-                      {item.validityFrom}
+                      {item.FitnessUpto}
                       <br />
-                      {item.validityTo}
+                      {item.InsuranceUpto}
                     </TableCell>
 
                     {/* Image */}
@@ -234,7 +237,6 @@ const DisplayBoardTable = () => {
           </Table>
         </TableContainer>
       </Paper>
-      <CreateEditModal />
     </Box>
   );
 };

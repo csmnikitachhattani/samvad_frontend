@@ -1,25 +1,25 @@
+
 // "use client";
 
 // import React, { useEffect, useState, useRef } from "react";
 // import axios from "axios";
-// import { useRouter, useSearchParams } from "next/navigation";
+// import { useRouter, useParams, useSearchParams } from "next/navigation";
 
 // import {
+//   Container,
 //   Box,
 //   Card,
 //   CardContent,
 //   Typography,
-//   Button,
-//   Grid,
-//   Stack,
-//   Select,
-//   MenuItem,
 //   TextField,
+//   Button,
+
 //   Table,
+//   TableBody,
+//   TableCell,
 //   TableHead,
 //   TableRow,
-//   TableCell,
-//   TableBody,
+//   Paper,
 //   Dialog,
 //   DialogTitle,
 //   DialogContent,
@@ -27,104 +27,114 @@
 // } from "@mui/material";
 
 // import {
-//   Upload,
-//   Delete,
-//   Download,
-//   Edit,
-//   CheckCircle,
-// } from "@mui/icons-material";
+//   FaTrash,
+//       FaFileAlt, 
+//   FaDownload,
+//   FaUpload,
+//   FaFolder,
+//   FaPencilAlt,
+//   FaCheckCircle,
+// } from "react-icons/fa";
 
 // const ClientFileUpload = () => {
 //   const router = useRouter();
-//   const params = useSearchParams();
+//   const params = useParams();
+//   const searchParams = useSearchParams();
 
-//   const ref_id = params.get("ref_id");
-//   const financial_year = params.get("financial_year");
-//   const user_id = params.get("user_id");
-//   const user_name = params.get("user_name");
+//   /* ---------------- URL PARAM ---------------- */
+//   const savedRefId = params?.savedRefId;
 
+//   /* ---------------- QUERY PARAMS ---------------- */
+//   const financial_year = searchParams.get("financial_year");
+ 
+//   /* ---------------- REFS ---------------- */
 //   const fileInputRef = useRef(null);
 //   const editFileInputRef = useRef(null);
 
-//   const [categories, setCategories] = useState([]);
-//   const [selectedCategory, setSelectedCategory] = useState("");
-//   const [letterCategoryCode, setLetterCategoryCode] = useState("");
-//   const [letterUploaded, setLetterUploaded] = useState(0);
-
+//   /* ---------------- STATE ---------------- */
+//   const [fileToReplaceSno, setFileToReplaceSno] = useState(null);
 //   const [fileList, setFileList] = useState([]);
 //   const [file, setFile] = useState(null);
 //   const [linkName, setLinkName] = useState("");
-
 //   const [previewURL, setPreviewURL] = useState(null);
 //   const [previewType, setPreviewType] = useState("");
+//   const [showModal, setShowModal] = useState(false);
 
-//   const [replaceSno, setReplaceSno] = useState(null);
-//   const [showSuccess, setShowSuccess] = useState(false);
+//   /* ---------------- EFFECT ---------------- */
 
-//   // ================= FETCH CATEGORIES =================
-//   const fetchCategories = async () => {
-//     if (!ref_id || !financial_year) return;
+// /*===========================*/
+// const [isDragging, setIsDragging] = useState(false);
+// const [filePreviewUrl, setFilePreviewUrl] = useState(null);
+// const handleFileSelect = (selectedFile) => {
+//   if (!selectedFile) return;
 
-//     const res = await axios.get(
-//       "http://localhost:3080/api/upload-categories",
-//       { params: { ref_id, financial_year } }
-//     );
+//   setFile(selectedFile);
+//   setLinkName(selectedFile.name);
 
-//     const data = res.data?.data || [];
-//     setCategories(data);
+//   if (selectedFile.type.startsWith("image/")) {
+//     setFilePreviewUrl(URL.createObjectURL(selectedFile));
+//   } else {
+//     setFilePreviewUrl(null);
+//   }
+// };
 
-//     const letter = data.find(c =>
-//       c.cat_name.toLowerCase().includes("letter")
-//     );
+// const handleDragOver = (e) => {
+//   e.preventDefault();
+//   setIsDragging(true);
+// };
 
-//     if (letter) {
-//       setLetterCategoryCode(letter.cat_cd);
+// const handleDragLeave = () => {
+//   setIsDragging(false);
+// };
 
-//       const check = await axios.get(
-//         `http://localhost:3080/api/files/${ref_id}/${financial_year}/${letter.cat_cd}`
-//       );
+// const handleDrop = (e) => {
+//   e.preventDefault();
+//   setIsDragging(false);
+//   handleFileSelect(e.dataTransfer.files[0]);
+// };
 
-//       const count = check.data?.data?.length || 0;
-//       setLetterUploaded(count);
 
-//       if (count === 0) setSelectedCategory(letter.cat_cd);
-//       else setSelectedCategory(data.find(c => c.cat_cd !== letter.cat_cd)?.cat_cd);
-//     }
-//   };
+// /*===================================*/
 
-//   useEffect(() => {
-//     fetchCategories();
-//   }, []);
 
-//   // ================= FETCH FILES =================
-//   const fetchFiles = async () => {
-//     if (!selectedCategory) return;
-
-//     const res = await axios.get(
-//       `http://localhost:3080/api/files/${ref_id}/${financial_year}/${selectedCategory}`
-//     );
-//     setFileList(res.data?.data || []);
-//   };
 
 //   useEffect(() => {
-//     fetchFiles();
-//   }, [selectedCategory, letterUploaded]);
+//     if (!savedRefId) return;
 
-//   // ================= UPLOAD =================
-//   const handleUpload = async () => {
-//     if (!file) return;
+//     console.log("savedRefId:", savedRefId);
+//     console.log("financial_year:", financial_year);
 
-//     const categoryToUse =
-//       letterUploaded === 0 ? letterCategoryCode : selectedCategory;
+//     // fetchFiles(savedRefId);
+//   }, [savedRefId, financial_year, ]);
 
-//     const formData = new FormData();
-//     formData.append("ref_id", ref_id);
-//     formData.append("financial_year", financial_year);
-//     formData.append("categary_cd", categoryToUse);
-//     formData.append("user_id", user_id);
-//     formData.append("user_name", user_name);
-//     formData.append("file", file);
+//   /* ---------------- HANDLERS (PLACEHOLDER) ---------------- */
+//   // const handleUpload = async () => {
+//   //   // keep your existing upload logic here
+//   //   setShowModal(true);
+//   // };
 
+
+
+//   const handleUpload = async (e) => {
+//   e.preventDefault();
+//   if (!file) return;
+
+//   const categoryToUse =
+//     letterUploaded === 0 ? letterCategoryCode : selectedCategory;
+
+//   const nextCount =
+//     fileList.filter(f => f.categary_cd === categoryToUse).length + 1;
+
+//   const formData = new FormData();
+//   formData.append("ref_id", ref_id);
+//   formData.append("financial_year", financial_year);
+//   formData.append("categary_cd", categoryToUse);
+//   formData.append("nextCount", nextCount);
+//   formData.append("user_id", user_id);
+//   formData.append("user_name", user_name);
+//   formData.append("file", file);
+
+//   try {
 //     await axios.post(
 //       "http://localhost:3080/api/post-files",
 //       formData,
@@ -133,234 +143,272 @@
 
 //     setFile(null);
 //     setPreviewURL(null);
-//     setLinkName("");
-//     setShowSuccess(true);
+//     setFileSize(null);
+//     fileInputRef.current.value = "";
 
-//     fetchCategories();
+//     setShowModal(true);
+//     await fetchCategories();
 //     fetchFiles();
-//   };
 
-//   // ================= DELETE =================
+//   } catch (err) {
+//     console.error("Upload failed:", err);
+//   }
+// };
+
+//   /* ========================delete================================ */
 //   const deleteFile = async (sno) => {
-//     if (!confirm("Delete this file?")) return;
-
-//     await axios.delete(
-//       `http://localhost:3080/api/files/delete/${ref_id}/${financial_year}/${sno}`,
-//       { data: { user_id } }
-//     );
-
-//     fetchCategories();
-//     fetchFiles();
+//     // keep your existing delete logic here
+//     console.log("delete sno:", sno);
 //   };
 
-//   // ================= EDIT =================
-//   const handleEditFile = async (e) => {
-//     const newFile = e.target.files[0];
-//     if (!newFile || !replaceSno) return;
-
-//     const original = fileList.find(f => f.sno === replaceSno);
-//     if (!original) return;
-
-//     const formData = new FormData();
-//     formData.append("ref_id", ref_id);
-//     formData.append("financial_year", financial_year);
-//     formData.append("sno", replaceSno);
-//     formData.append("link_name", original.link_name);
-//     formData.append("user_id", user_id);
-//     formData.append("user_name", user_name);
-//     formData.append("file", newFile);
-
-//     await axios.put("http://localhost:3080/api/files", formData);
-
-//     setReplaceSno(null);
-//     fetchFiles();
-//   };
-
-//   // ================= FILE SELECT =================
-//   const onFileSelect = (e) => {
-//     const selected = e.target.files[0];
-//     if (!selected) return;
-
-//     setFile(selected);
-//     setPreviewURL(URL.createObjectURL(selected));
-//     setPreviewType(selected.type);
-//     setLinkName(`${ref_id}_${Date.now()}`);
-//   };
+//   /* ======================================================== */
 
 //   return (
-//     <Box p={4} bgcolor="#f5f5f5">
-//       {/* SUCCESS DIALOG */}
-//       <Dialog open={showSuccess} onClose={() => setShowSuccess(false)}>
-//         <DialogTitle>
-//           <CheckCircle color="success" /> Upload Successful
-//         </DialogTitle>
-//         <DialogActions>
-//           <Button onClick={() => setShowSuccess(false)}>OK</Button>
-//         </DialogActions>
-//       </Dialog>
-
-//       {/* UPLOAD CARD */}
-//       <Card sx={{ mb: 4 }}>
+//     <Container maxWidth="lg" sx={{ py: 4 }}>
+//       {/* HEADER */}
+//       <Card
+//         sx={{
+//           mb: 4,
+//           background: "linear-gradient(135deg,#667eea,#764ba2)",
+//           color: "#fff",
+//           borderRadius: 3,
+//         }}
+//       >
 //         <CardContent>
-//           <Typography variant="h6" textAlign="center" mb={3}>
-//             {letterUploaded === 0 ? "Upload Letter" : "Upload Documents"}
-//           </Typography>
-
-//           <Grid container spacing={2} justifyContent="center">
-//             <Grid item xs={12} md={4}>
-//               {letterUploaded === 0 ? (
-//                 <TextField value="Letter" fullWidth disabled />
-//               ) : (
-//                 <Select
-//                   fullWidth
-//                   value={selectedCategory}
-//                   onChange={(e) => setSelectedCategory(e.target.value)}
-//                 >
-//                   {categories.map(c => (
-//                     <MenuItem key={c.cat_cd} value={c.cat_cd}>
-//                       {c.cat_name}
-//                     </MenuItem>
-//                   ))}
-//                 </Select>
-//               )}
-//             </Grid>
-
-//             <Grid item xs={12} md={4}>
-//               <TextField
-//                 fullWidth
-//                 label="File Name"
-//                 value={linkName}
-//                 onChange={(e) => setLinkName(e.target.value)}
-//               />
-//             </Grid>
-
-//             <Grid item xs={12} md={8}>
-//               <input
-//                 type="file"
-//                 hidden
-//                 ref={fileInputRef}
-//                 onChange={onFileSelect}
-//               />
-//               <Button
-//                 fullWidth
-//                 variant="contained"
-//                 startIcon={<Upload />}
-//                 onClick={() => fileInputRef.current.click()}
-//               >
-//                 Browse File
-//               </Button>
-//             </Grid>
-//           </Grid>
-
-//           {previewURL && (
-//             <Box mt={3} textAlign="center">
-//               {previewType.startsWith("image/") ? (
-//                 <img src={previewURL} height={200} />
-//               ) : (
-//                 <Typography>{file?.name}</Typography>
-//               )}
+//           <Box display="flex" alignItems="center" gap={2}>
+//             <FaFolder size={32} />
+//             <Box>
+//               <Typography variant="h5" fontWeight="bold">
+//                 File Management
+//               </Typography>
+//               <Typography variant="body2" opacity={0.8}>
+//                 Upload and manage your documents
+//               </Typography>
 //             </Box>
-//           )}
+//           </Box>
 
-//           <Stack alignItems="center" mt={3}>
+//           <Box mt={3} display="flex" gap={3}>
+//             <Paper sx={{ p: 2, flex: 1 }}>
+//               <Typography variant="caption">Reference ID</Typography>
+//               <Typography fontWeight="bold">{savedRefId}</Typography>
+//             </Paper>
+
+//             <Paper sx={{ p: 2 }}>
+//               <Typography variant="caption">Financial Year</Typography>
+//               <Typography fontWeight="bold">{financial_year}</Typography>
+//             </Paper>
+//           </Box>
+//         </CardContent>
+//       </Card>
+
+//       {/* UPLOAD */}
+//       <Card sx={{ mb: 4, borderRadius: 3 }}>
+//         <CardContent>
+//           <Box textAlign="center" mb={3}>
+//             <FaUpload size={26} />
+//             <Typography variant="h6" fontWeight="bold">
+//               Upload Initial Letter
+//             </Typography>
+//           </Box>
+
+//           <Box display="flex" gap={3} mb={3}>
+//             <TextField label="Category" value="Letter" disabled fullWidth />
+//             <TextField
+//               label="File Name"
+//               value={linkName}
+//               onChange={(e) => setLinkName(e.target.value)}
+//               fullWidth
+//             />
+//           </Box>
+
+//           <Button
+//             fullWidth
+//             variant="contained"
+//             size="large"
+//             sx={{ mb: 3 }}
+//             onClick={() => fileInputRef.current.click()}
+//           >
+//             Browse
+//           </Button>
+//  {/* <input
+//             type="file"
+//             hidden
+//             ref={fileInputRef}
+//             onChange={(e) => {
+//               const f = e.target.files[0];
+//               if (!f) return;
+//               setFile(f);
+//               setPreviewURL(URL.createObjectURL(f));
+//               setPreviewType(f.type);
+//             }}
+//           />  */}
+
+//           <input
+//   type="file"
+//   hidden
+//   ref={fileInputRef}
+//   onChange={(e) => handleFileSelect(e.target.files[0])}
+// /> 
+
+
+// <Paper
+//   onClick={() => fileInputRef.current.click()}
+//   onDragOver={handleDragOver}
+//   onDragLeave={handleDragLeave}
+//   onDrop={handleDrop}
+//   sx={{
+//     height: 240,
+//     border: "2px dashed",
+//     borderColor: file
+//       ? "success.main"
+//       : isDragging
+//       ? "primary.main"
+//       : "#ccc",
+//     backgroundColor: file
+//       ? "rgba(46,125,50,0.08)"
+//       : isDragging
+//       ? "rgba(25,118,210,0.08)"
+//       : "transparent",
+//     display: "flex",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     cursor: "pointer",
+//     transition: "all 0.3s ease",
+//   }}
+// >
+//   <Box textAlign="center">
+//     {!file && (
+//       <>
+//         <FaUpload size={40} />
+//         <Typography fontWeight="bold">
+//           Drag & Drop file here
+//         </Typography>
+//         <Typography variant="caption">
+//           or click to browse
+//         </Typography>
+//       </>
+//     )}
+
+//     {file && (
+//       <>
+//         {filePreviewUrl ? (
+//           <img
+//             src={filePreviewUrl}
+//             alt="preview"
+//             style={{
+//               maxHeight: 120,
+//               marginBottom: 8,
+//               borderRadius: 6,
+//             }}
+//           />
+//         ) : (
+//           <FaFileAlt size={40} color="green" />
+//         )}
+
+//         <Typography fontWeight="bold">{file.name}</Typography>
+//         <Typography variant="caption">
+//           {(file.size / 1024 / 1024).toFixed(2)} MB
+//         </Typography>
+//       </>
+//     )}
+
+
+
+//   </Box>
+// </Paper>
+
+
+//           <Box textAlign="center" mt={3}>
 //             <Button
 //               variant="contained"
-//               color="success"
 //               size="large"
-//               disabled={!file}
+//               disabled={!file || !linkName}
 //               onClick={handleUpload}
 //             >
 //               Upload
 //             </Button>
-//           </Stack>
+//           </Box>
 //         </CardContent>
 //       </Card>
 
 //       {/* FILE TABLE */}
-//       <Card>
-//         <CardContent>
-//           <Typography variant="h6" mb={2}>
-//             Uploaded Files
-//           </Typography>
+//       <Paper>
+//         <Typography sx={{ p: 2, background: "#222", color: "#fff" }}>
+//           Uploaded Files
+//         </Typography>
 
-//           <Table>
-//             <TableHead>
-//               <TableRow>
-//                 <TableCell>#</TableCell>
-//                 <TableCell>Name</TableCell>
-//                 <TableCell>Size (MB)</TableCell>
-//                 <TableCell>Type</TableCell>
-//                 <TableCell>Action</TableCell>
+//         <Table>
+//           <TableHead>
+//             <TableRow>
+//               <TableCell>S.No</TableCell>
+//               <TableCell>File Name</TableCell>
+//               <TableCell>Size</TableCell>
+//               <TableCell>Type</TableCell>
+//               <TableCell>Action</TableCell>
+//             </TableRow>
+//           </TableHead>
+
+//           <TableBody>
+//             {fileList.map((f, i) => (
+//               <TableRow key={f.sno}>
+//                 <TableCell>{i + 1}</TableCell>
+//                 <TableCell>{f.link_name}</TableCell>
+//                 <TableCell>
+//                   {(f.file_size_in_bytes / 1024 / 1024).toFixed(2)} MB
+//                 </TableCell>
+//                 <TableCell>{f.content_type}</TableCell>
+//                 <TableCell>
+//                   <Button
+//                     color="success"
+//                     href={`http://localhost:3080/${f.file_path}`}
+//                     target="_blank"
+//                   >
+//                     <FaDownload />
+//                   </Button>
+//                   <Button color="error" onClick={() => deleteFile(f.sno)}>
+//                     <FaTrash />
+//                   </Button>
+//                   <Button
+//                     color="warning"
+//                     onClick={() => {
+//                       setFileToReplaceSno(f.sno);
+//                       editFileInputRef.current.click();
+//                     }}
+//                   >
+//                     <FaPencilAlt />
+//                   </Button>
+//                 </TableCell>
 //               </TableRow>
-//             </TableHead>
+//             ))}
+//           </TableBody>
+//         </Table>
 
-//             <TableBody>
-//               {fileList.map((f, i) => (
-//                 <TableRow key={f.sno}>
-//                   <TableCell>{i + 1}</TableCell>
-//                   <TableCell>{f.link_name}</TableCell>
-//                   <TableCell>
-//                     {(f.file_size_in_bytes / 1024 / 1024).toFixed(2)}
-//                   </TableCell>
-//                   <TableCell>{f.content_type}</TableCell>
-//                   <TableCell>
-//                     <Stack direction="row" spacing={1}>
-//                       <Button
-//                         href={`http://localhost:3080/${f.file_path}`}
-//                         target="_blank"
-//                       >
-//                         <Download />
-//                       </Button>
-//                       <Button
-//                         color="error"
-//                         onClick={() => deleteFile(f.sno)}
-//                       >
-//                         <Delete />
-//                       </Button>
-//                       <Button
-//                         color="warning"
-//                         onClick={() => {
-//                           setReplaceSno(f.sno);
-//                           editFileInputRef.current.click();
-//                         }}
-//                       >
-//                         <Edit />
-//                       </Button>
-//                     </Stack>
-//                   </TableCell>
-//                 </TableRow>
-//               ))}
-//             </TableBody>
-//           </Table>
-//         </CardContent>
-//       </Card>
+//         {fileList.length === 0 && (
+//           <Typography textAlign="center" py={3} color="text.secondary">
+//             No files uploaded.
+//           </Typography>
+//         )}
+//       </Paper>
 
-//       {/* EDIT INPUT */}
-//       <input
-//         type="file"
-//         hidden
-//         ref={editFileInputRef}
-//         onChange={handleEditFile}
-//       />
-
-//       {/* NAV BUTTONS */}
-//       <Stack direction="row" justifyContent="center" mt={4} spacing={2}>
-//         <Button variant="contained" color="error" onClick={() => router.back()}>
-//           Back
-//         </Button>
-//         <Button
-//           variant="contained"
-//           onClick={() => router.push("/forwardto")}
-//         >
-//           Next
-//         </Button>
-//       </Stack>
-//     </Box>
+//       {/* SUCCESS MODAL */}
+//       <Dialog open={showModal} onClose={() => setShowModal(false)}>
+//         <DialogTitle>
+//           <FaCheckCircle color="green" /> Success
+//         </DialogTitle>
+//         <DialogContent>
+//           <Typography>File Uploaded Successfully!</Typography>
+//         </DialogContent>
+//         <DialogActions>
+//           <Button onClick={() => setShowModal(false)}>Continue</Button>
+//         </DialogActions>
+//       </Dialog>
+//     </Container>
 //   );
 // };
 
 // export default ClientFileUpload;
 
+// // ========================================================
 
 
 
@@ -368,98 +416,113 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 
 import {
+  Container,
   Box,
   Card,
   CardContent,
   Typography,
-  Button,
-  Grid,
-  Stack,
-  Select,
-  MenuItem,
   TextField,
+  Button,
+
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
+  Paper,
   Dialog,
   DialogTitle,
+  DialogContent,
   DialogActions,
-  CircularProgress,
 } from "@mui/material";
 
 import {
-  Upload,
-  Delete,
-  Download,
-  Edit,
-  CheckCircle,
-} from "@mui/icons-material";
+  FaTrash,
+      FaFileAlt, 
+  FaDownload,
+  FaUpload,
+  FaFolder,
+  FaPencilAlt,
+  FaCheckCircle,
+} from "react-icons/fa";
 
 const ClientFileUpload = () => {
   const router = useRouter();
-  const params = useSearchParams();
+  const params = useParams();
+  const searchParams = useSearchParams();
 
-  const ref_id = params.get("ref_id");
-  const financial_year = params.get("financial_year");
-  const user_id = params.get("user_id");
-  const user_name = params.get("user_name");
+  /* ---------------- URL PARAM ---------------- */
+  const savedRefId = params?.savedRefId;
 
+  /* ---------------- QUERY PARAMS ---------------- */
+  const financial_year = searchParams.get("financial_year");
+ 
+  /* ---------------- REFS ---------------- */
   const fileInputRef = useRef(null);
   const editFileInputRef = useRef(null);
 
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [letterCategoryCode, setLetterCategoryCode] = useState("");
-  const [letterUploaded, setLetterUploaded] = useState(0);
-
+  /* ---------------- STATE ---------------- */
+  const [fileToReplaceSno, setFileToReplaceSno] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [file, setFile] = useState(null);
   const [linkName, setLinkName] = useState("");
-
   const [previewURL, setPreviewURL] = useState(null);
   const [previewType, setPreviewType] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
-  const [replaceSno, setReplaceSno] = useState(null);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  /* ---------------- EFFECT ---------------- */
 
-  // ================= FETCH CATEGORIES =================
+  // ---------------- FETCH CATEGORIES ----------------
   const fetchCategories = async () => {
     if (!ref_id || !financial_year) return;
 
-    const res = await axios.get(
-      "http://localhost:3080/api/upload-categories",
-      { params: { ref_id, financial_year } }
-    );
-
-    const data = res.data?.data || [];
-    setCategories(data);
-
-    const letter = data.find((c) =>
-      c.cat_name.toLowerCase().includes("letter")
-    );
-
-    if (letter) {
-      setLetterCategoryCode(letter.cat_cd);
-
-      const check = await axios.get(
-        `http://localhost:3080/api/files/${ref_id}/${financial_year}/${letter.cat_cd}`
+    try {
+      const res = await axios.get(
+        "http://localhost:3080/api/upload-categories",
+        {
+          params: { ref_id, financial_year },
+        }
       );
 
-      const count = check.data?.data?.length || 0;
-      setLetterUploaded(count);
+      const data = res.data.data || [];
+      setCategories(data);
 
-      if (count === 0) {
-        setSelectedCategory(letter.cat_cd);
-      } else {
-        const next = data.find((c) => c.cat_cd !== letter.cat_cd);
-        setSelectedCategory(next?.cat_cd || "");
+      const letter = data.find((c) =>
+        c.cat_name.toLowerCase().includes("letter")
+      );
+      if (letter) {
+        setLetterCategoryCode(letter.cat_cd);
+
+        // Check if letter has been uploaded
+        const check = await axios.get(
+          `http://localhost:3080/api/files/${ref_id}/${financial_year}/${letter.cat_cd}`
+        );
+        const uploadedCount = check?.data.data.length || 0;
+        setLetterUploaded(uploadedCount);
+
+        // Set initial selected category after checking upload status
+        if (uploadedCount > 0 && data.length > 0) {
+          // If letter is uploaded, select the first *other* category (or the first one if all are "matter")
+          const firstOtherCategory = data.find(c => c.cat_cd !== letter.cat_cd);
+          setSelectedCategory(firstOtherCategory ? firstOtherCategory.cat_cd : data[0].cat_cd);
+        } else if (uploadedCount === 0) {
+          // If letter is not uploaded, set the selection to letter code
+          setSelectedCategory(letter.cat_cd);
+        }
+
       }
+      
+      const matter = data.find((c) =>
+        c.cat_name.toLowerCase().includes("matter")
+      );
+      if (matter) setMatterCategoryCode(matter.cat_cd);
+
+
+    } catch (err) {
+      console.error("Fetch categories error:", err);
     }
   };
 
@@ -467,267 +530,505 @@ const ClientFileUpload = () => {
     fetchCategories();
   }, []);
 
-  // ================= FETCH FILES =================
+  // ---------------- FETCH FILES ----------------
   const fetchFiles = async () => {
+    // Only fetch files for the selected category
     if (!selectedCategory) return;
 
-    const res = await axios.get(
-      `http://localhost:3080/api/files/${ref_id}/${financial_year}/${selectedCategory}`
-    );
-    setFileList(res.data?.data || []);
+    try {
+      const res = await axios.get(
+        `http://localhost:3080/api/files/${ref_id}/${financial_year}/${selectedCategory}`
+      );
+      setFileList(res.data.data || []);
+    } catch (err) {
+      console.error("Fetch files error:", err);
+    }
   };
 
   useEffect(() => {
+    // Re-fetch files whenever selectedCategory changes
     fetchFiles();
   }, [selectedCategory, letterUploaded]);
 
-  // ================= FILE SELECT =================
-  const onFileSelect = (e) => {
+
+
+    const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const selected = e.dataTransfer.files[0];
+      setFile(selected);
+      
+      if (selected) {
+        setPreviewURL(URL.createObjectURL(selected));
+        setPreviewType(selected.type);
+      }
+      // Auto-generate next file name
+      setLinkName(generateNextFileName(letterUploaded === 0 ? letterCategoryCode : selectedCategory)); 
+      setFileSize((selected.size / (1024 * 1024)).toFixed(2));
+    }
+  };
+
+
+  const handleFileChange = (e) => {
     const selected = e.target.files[0];
+
     if (!selected) return;
 
-    // 5MB validation
-    if (selected.size > 5 * 1024 * 1024) {
-      alert("File size should be under 5MB");
+    // Save file 
+    setFile(selected);
+
+    // Preview
+    setPreviewURL(URL.createObjectURL(selected));
+    setPreviewType(selected.type);
+
+    // File size in MB
+    // setFileSize((selected.size / (1024 * 1024)).toFixed(2));
+
+    // Auto-generate next file name based on current context
+    setLinkName(generateNextFileName(letterUploaded === 0 ? letterCategoryCode : selectedCategory));
+
+  };
+
+
+  // ⬅️ CORRECTED EDIT LOGIC: Triggered by file selection from the hidden input
+  const handleEditFileChange = async (e) => {
+    const newFile = e.target.files[0];
+
+    // Ensure we have a file and a record to replace
+    if (!newFile || !fileToReplaceSno) {
+      // Reset the hidden input value to allow the same file to be selected again
+      if (editFileInputRef.current) editFileInputRef.current.value = ""; 
       return;
     }
 
-    setFile(selected);
-    setPreviewURL(URL.createObjectURL(selected));
-    setPreviewType(selected.type);
-    setLinkName(`${ref_id}_${Date.now()}`);
+    // console.log("dekhon",fileList);
+    // Find the original file data to get its link_name for the update payload
+    const originalFile = fileList.find(f => f.sno === fileToReplaceSno);
+
+    if (!originalFile) {
+        console.error("Original file data not found for SNO:", fileToReplaceSno);
+        if (editFileInputRef.current) editFileInputRef.current.value = "";
+        return;
+    }
+console.log(originalFile.linkName)
+    try {
+      const formData = new FormData();
+
+      // REQUIRED FIELDS for the backend API to identify and log the update
+      formData.append("ref_id", ref_id); // Use ref_id from component state
+      formData.append("financial_year", financial_year); // Use financial_year from component state
+      formData.append("sno", fileToReplaceSno); // The SNO of the record to update
+      formData.append("link_name", originalFile.link_name); // The existing link_name
+      formData.append("user_id", user_id);
+      formData.append("user_name", user_name);
+
+      // THE NEW FILE
+      formData.append("file", newFile);
+
+      const res = await axios.put(
+        "http://localhost:3080/api/files",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      if (res.data.status === 1) {
+        alert("File updated successfully!");
+        fetchFiles(); // Refresh the file list
+      } else {
+        alert(res.data.message || "Failed to update file.");
+      }
+
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("Error updating file.");
+    } finally {
+      // Reset the file-specific states after the attempt
+      setFileToReplaceSno(null);
+      if (editFileInputRef.current) editFileInputRef.current.value = "";
+    }
   };
 
-  // ================= UPLOAD =================
-  const handleUpload = async () => {
-    if (!file || !linkName) return;
+  // ---------------- Auto File Name ----------------
+  const generateNextFileName = (cat_cd) => {
+    // Filter fileList by the category code that the *new* file will be uploaded to
+    const filesInCurrentCat = fileList.filter(f => f.categary_cd === cat_cd);
+    const count = filesInCurrentCat.length + 1;
 
-    setLoading(true);
+    // Use a category name prefix for better naming (optional, but good practice)
+    const categoryName = categories.find(c => c.cat_cd === cat_cd)?.cat_name || 'DOC';
 
-    const categoryToUse =
-      letterUploaded === 0 ? letterCategoryCode : selectedCategory;
+    return `${ref_id}_${categoryName.toUpperCase()}_${count}`;
+  };
 
-    const formData = new FormData();
-    formData.append("ref_id", ref_id);
-    formData.append("financial_year", financial_year);
-    formData.append("categary_cd", categoryToUse);
-    formData.append("link_name", linkName); // ✅ FIXED
-    formData.append("user_id", user_id);
-    formData.append("user_name", user_name);
-    formData.append("file", file);
+  // ---------------- UI Handlers ----------------
+  const handleCategoryChange = (e) => {
+      setSelectedCategory(e.target.value);
+      setFile(null); // Clear file and link name when category changes
+      setLinkName("");
+      setPreviewURL(null);
+      setPreviewType("");
+      setFileSize(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+  }
 
-    await axios.post("http://localhost:3080/api/post-files", formData);
+  // Determine the current file/link state to display in the input fields
+  const currentFile = file;
+  const currentLinkName = linkName;
+  const currentFileInputRef = fileInputRef;
+
+  // ⬅️ NEW FUNCTION to trigger the edit process
+  const startEditProcess = (sno) => {
+    setFileToReplaceSno(sno);
+    editFileInputRef.current.click(); // This will trigger the file selection dialog
+  };
+
+/*===========================*/
+const [isDragging, setIsDragging] = useState(false);
+const [filePreviewUrl, setFilePreviewUrl] = useState(null);
+const handleFileSelect = (selectedFile) => {
+  if (!selectedFile) return;
+
+  setFile(selectedFile);
+  setLinkName(selectedFile.name);
+
+  if (selectedFile.type.startsWith("image/")) {
+    setFilePreviewUrl(URL.createObjectURL(selectedFile));
+  } else {
+    setFilePreviewUrl(null);
+  }
+};
+
+const handleDragOver = (e) => {
+  e.preventDefault();
+  setIsDragging(true);
+};
+
+const handleDragLeave = () => {
+  setIsDragging(false);
+};
+
+// const handleDrop = (e) => {
+//   e.preventDefault();
+//   setIsDragging(false);
+//   handleFileSelect(e.dataTransfer.files[0]);
+// };
+
+
+/*===================================*/
+
+
+
+  useEffect(() => {
+    if (!savedRefId) return;
+
+    console.log("savedRefId:", savedRefId);
+    console.log("financial_year:", financial_year);
+
+    // fetchFiles(savedRefId);
+  }, [savedRefId, financial_year, ]);
+
+  /* ---------------- HANDLERS (PLACEHOLDER) ---------------- */
+ 
+
+  const handleUpload = async (e) => {
+  e.preventDefault();
+  if (!file) return;
+
+  const categoryToUse =
+    letterUploaded === 0 ? letterCategoryCode : selectedCategory;
+
+  const nextCount =
+    fileList.filter(f => f.categary_cd === categoryToUse).length + 1;
+
+  const formData = new FormData();
+  formData.append("ref_id", ref_id);
+  formData.append("financial_year", financial_year);
+  formData.append("categary_cd", categoryToUse);
+  formData.append("nextCount", nextCount);
+  formData.append("user_id", user_id);
+  formData.append("user_name", user_name);
+  formData.append("file", file);
+  formData.append("linkName",linkName);
+
+  try {
+    await axios.post(
+      "http://localhost:3080/api/post-files",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
 
     setFile(null);
     setPreviewURL(null);
-    setLinkName("");
-    setShowSuccess(true);
-    setLoading(false);
+    setFileSize(null);
+    fileInputRef.current.value = "";
 
-    fetchCategories();
+    setShowModal(true);
+    await fetchCategories();
     fetchFiles();
-  };
 
-  // ================= DELETE =================
+  } catch (err) {
+    console.error("Upload failed:", err);
+  }
+};
+
+  /* ========================delete================================ */
   const deleteFile = async (sno) => {
-    if (!confirm("Delete this file?")) return;
-
-    await axios.delete(
-      `http://localhost:3080/api/files/delete/${ref_id}/${financial_year}/${sno}`,
-      { data: { user_id } }
-    );
-
-    fetchCategories();
-    fetchFiles();
+    // keep your existing delete logic here
+    console.log("delete sno:", sno);
   };
 
-  // ================= EDIT =================
-  const handleEditFile = async (e) => {
-    const newFile = e.target.files[0];
-    if (!newFile || !replaceSno) return;
-
-    const original = fileList.find((f) => f.sno === replaceSno);
-    if (!original) return;
-
-    const formData = new FormData();
-    formData.append("ref_id", ref_id);
-    formData.append("financial_year", financial_year);
-    formData.append("sno", replaceSno);
-    formData.append("link_name", original.link_name);
-    formData.append("user_id", user_id);
-    formData.append("user_name", user_name);
-    formData.append("file", newFile);
-
-    await axios.put("http://localhost:3080/api/files", formData);
-
-    setReplaceSno(null);
-    fetchFiles();
-  };
+  /* ======================================================== */
 
   return (
-    <Box p={4} bgcolor="#f5f5f5">
-      {/* SUCCESS DIALOG */}
-      <Dialog open={showSuccess} onClose={() => setShowSuccess(false)}>
-        <DialogTitle>
-          <CheckCircle color="success" /> Upload Successful
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={() => setShowSuccess(false)}>OK</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* UPLOAD CARD */}
-      <Card sx={{ mb: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* HEADER */}
+      <Card
+        sx={{
+          mb: 4,
+          background: "linear-gradient(135deg,#667eea,#764ba2)",
+          color: "#fff",
+          borderRadius: 3,
+        }}
+      >
         <CardContent>
-          <Typography variant="h6" align="center" mb={3}>
-            {letterUploaded === 0 ? "Upload Letter" : "Upload Documents"}
-          </Typography>
-
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} md={4}>
-              {letterUploaded === 0 ? (
-                <TextField value="Letter" fullWidth disabled />
-              ) : (
-                <Select
-                  fullWidth
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                  {categories.map((c) => (
-                    <MenuItem key={c.cat_cd} value={c.cat_cd}>
-                      {c.cat_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                label="File Name"
-                value={linkName}
-                onChange={(e) => setLinkName(e.target.value)}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={8}>
-              <input
-                type="file"
-                hidden
-                ref={fileInputRef}
-                onChange={onFileSelect}
-              />
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<Upload />}
-                onClick={() => fileInputRef.current.click()}
-              >
-                Browse File
-              </Button>
-            </Grid>
-          </Grid>
-
-          {previewURL && (
-            <Box mt={3} textAlign="center">
-              {previewType.startsWith("image/") ? (
-                <img src={previewURL} height={200} />
-              ) : (
-                <Typography>{file?.name}</Typography>
-              )}
+          <Box display="flex" alignItems="center" gap={2}>
+            <FaFolder size={32} />
+            <Box>
+              <Typography variant="h5" fontWeight="bold">
+                File Management
+              </Typography>
+              <Typography variant="body2" opacity={0.8}>
+                Upload and manage your documents
+              </Typography>
             </Box>
-          )}
+          </Box>
 
-          <Stack alignItems="center" mt={3}>
+          <Box mt={3} display="flex" gap={3}>
+            <Paper sx={{ p: 2, flex: 1 }}>
+              <Typography variant="caption">Reference ID</Typography>
+              <Typography fontWeight="bold">{savedRefId}</Typography>
+            </Paper>
+
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="caption">Financial Year</Typography>
+              <Typography fontWeight="bold">{financial_year}</Typography>
+            </Paper>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* UPLOAD */}
+      <Card sx={{ mb: 4, borderRadius: 3 }}>
+        <CardContent>
+          <Box textAlign="center" mb={3}>
+            <FaUpload size={26} />
+            <Typography variant="h6" fontWeight="bold">
+              Upload Initial Letter
+            </Typography>
+          </Box>
+
+          <Box display="flex" gap={3} mb={3}>
+            <TextField label="Category" value="Letter" disabled fullWidth />
+            <TextField
+              label="File Name"
+              value={linkName}
+              onChange={(e) => setLinkName(e.target.value)}
+              fullWidth
+            />
+          </Box>
+
+          <Button
+            fullWidth
+            variant="contained"
+            size="large"
+            sx={{ mb: 3 }}
+            onClick={() => fileInputRef.current.click()}
+          >
+            Browse
+          </Button>
+ {/* <input
+            type="file"
+            hidden
+            ref={fileInputRef}
+            onChange={(e) => {
+              const f = e.target.files[0];
+              if (!f) return;
+              setFile(f);
+              setPreviewURL(URL.createObjectURL(f));
+              setPreviewType(f.type);
+            }}
+          />  */}
+
+          <input
+  type="file"
+  hidden
+  ref={fileInputRef}
+  onChange={(e) => handleFileSelect(e.target.files[0])}
+/> 
+
+
+
+
+<Paper
+  onClick={() => fileInputRef.current.click()}
+  onDragOver={handleDragOver}
+  onDragLeave={handleDragLeave}
+  onDrop={handleDrop}
+  sx={{
+    height: 240,
+    border: "2px dashed",
+    borderColor: file
+      ? "success.main"
+      : isDragging
+      ? "primary.main"
+      : "#ccc",
+    backgroundColor: file
+      ? "rgba(46,125,50,0.08)"
+      : isDragging
+      ? "rgba(25,118,210,0.08)"
+      : "transparent",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+  }}
+>
+  <Box textAlign="center">
+    {!file && (
+      <>
+        <FaUpload size={40} />
+        <Typography fontWeight="bold">
+          Drag & Drop file here
+        </Typography>
+        <Typography variant="caption">
+          or click to browse
+        </Typography>
+      </>
+    )}
+
+    {file && (
+      <>
+        {filePreviewUrl ? (
+          <img
+            src={filePreviewUrl}
+            alt="preview"
+            style={{
+              maxHeight: 120,
+              marginBottom: 8,
+              borderRadius: 6,
+            }}
+          />
+        ) : (
+          <FaFileAlt size={40} color="green" />
+        )}
+
+        <Typography fontWeight="bold">{file.name}</Typography>
+        <Typography variant="caption">
+          {(file.size / 1024 / 1024).toFixed(2)} MB
+        </Typography>
+      </>
+    )}
+
+
+
+  </Box>
+</Paper>
+
+
+          <Box textAlign="center" mt={3}>
             <Button
               variant="contained"
-              color="success"
               size="large"
-              disabled={!file || loading}
+              disabled={!file || !linkName}
               onClick={handleUpload}
             >
-              {loading ? <CircularProgress size={24} /> : "Upload"}
+              Upload
             </Button>
-          </Stack>
+          </Box>
         </CardContent>
       </Card>
 
       {/* FILE TABLE */}
-      <Card>
-        <CardContent>
-          <Typography variant="h6" mb={2}>
-            Uploaded Files
-          </Typography>
+      <Paper>
+        <Typography sx={{ p: 2, background: "#222", color: "#fff" }}>
+          Uploaded Files
+        </Typography>
 
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>#</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Size (MB)</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Action</TableCell>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>S.No</TableCell>
+              <TableCell>File Name</TableCell>
+              <TableCell>Size</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {fileList.map((f, i) => (
+              <TableRow key={f.sno}>
+                <TableCell>{i + 1}</TableCell>
+                <TableCell>{f.link_name}</TableCell>
+                <TableCell>
+                  {(f.file_size_in_bytes / 1024 / 1024).toFixed(2)} MB
+                </TableCell>
+                <TableCell>{f.content_type}</TableCell>
+                <TableCell>
+                  <Button
+                    color="success"
+                    href={`http://localhost:3080/${f.file_path}`}
+                    target="_blank"
+                  >
+                    <FaDownload />
+                  </Button>
+                  <Button color="error" onClick={() => deleteFile(f.sno)}>
+                    <FaTrash />
+                  </Button>
+                  <Button
+                    color="warning"
+                    onClick={() => {
+                      setFileToReplaceSno(f.sno);
+                      editFileInputRef.current.click();
+                    }}
+                  >
+                    <FaPencilAlt />
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHead>
+            ))}
+          </TableBody>
+        </Table>
 
-            <TableBody>
-              {fileList.map((f, i) => (
-                <TableRow key={f.sno}>
-                  <TableCell>{i + 1}</TableCell>
-                  <TableCell>{f.link_name}</TableCell>
-                  <TableCell>
-                    {(f.file_size_in_bytes / 1024 / 1024).toFixed(2)}
-                  </TableCell>
-                  <TableCell>{f.content_type}</TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        href={`http://localhost:3080/${f.file_path}`}
-                        target="_blank"
-                      >
-                        <Download />
-                      </Button>
-                      <Button color="error" onClick={() => deleteFile(f.sno)}>
-                        <Delete />
-                      </Button>
-                      <Button
-                        color="warning"
-                        onClick={() => {
-                          setReplaceSno(f.sno);
-                          editFileInputRef.current.click();
-                        }}
-                      >
-                        <Edit />
-                      </Button>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+        {fileList.length === 0 && (
+          <Typography textAlign="center" py={3} color="text.secondary">
+            No files uploaded.
+          </Typography>
+        )}
+      </Paper>
 
-      {/* EDIT FILE INPUT */}
-      <input
-        type="file"
-        hidden
-        ref={editFileInputRef}
-        onChange={handleEditFile}
-      />
-
-      {/* NAV BUTTONS */}
-      <Stack direction="row" justifyContent="center" mt={4} spacing={2}>
-        <Button variant="contained" color="error" onClick={() => router.back()}>
-          Back
-        </Button>
-        <Button variant="contained" onClick={() => router.push("/forwardto")}>
-          Next
-        </Button>
-      </Stack>
-    </Box>
+      {/* SUCCESS MODAL */}
+      <Dialog open={showModal} onClose={() => setShowModal(false)}>
+        <DialogTitle>
+          <FaCheckCircle color="green" /> Success
+        </DialogTitle>
+        <DialogContent>
+          <Typography>File Uploaded Successfully!</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowModal(false)}>Continue</Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
   );
 };
 
 export default ClientFileUpload;
+
+// // ========================================================

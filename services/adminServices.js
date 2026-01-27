@@ -30,12 +30,11 @@ const adminService = {
     console.log("newspaper information", updateData)
     try {
       const payload = {
-        action: "update",
-        'financial_year': '2025-2026',
+        
         ...updateData,
       };
 
-      const res = await axiosClient.post("/newspaper/np-profile", payload);
+      const res = await axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/createagency", payload);
       return res.data;
     } catch (err) {
       throw err; // interceptor will format it
