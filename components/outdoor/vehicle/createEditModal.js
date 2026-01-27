@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from "react";
+<<<<<<< HEAD
+=======
 import axiosClient from "@/lib/axiosClient";
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
 import {
   Dialog,
   DialogTitle,
@@ -13,8 +16,15 @@ import {
   Typography,
   InputAdornment,
 } from "@mui/material";
+<<<<<<< HEAD
+
+
+const VehicleModal = ({open=true, onClose, onSubmit }) => {
+  const [formData, setFormData] = useState({
+=======
 const VehicleModal = ({open, onClose, onSubmit }) => {
   const [data, setData] = useState({
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
     agencyId: "",
     vehicleNo: "",
     ownerName: "",
@@ -25,6 +35,13 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
     createdBy: "",
     createdIpAddress: "",
   });
+<<<<<<< HEAD
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData({
+      ...formData,
+=======
   const createVehicle = async (payload) => {
     const formData = new FormData();
   
@@ -57,6 +74,7 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
     const { name, value, files } = e.target;
     setData({
       ...data,
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
       [name]: files ? files[0] : value,
     });
   };
@@ -97,7 +115,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
                 name="agencyId"
                 fullWidth
                 size="small"
+<<<<<<< HEAD
+                value={formData.agencyId}
+=======
                 value={data.agencyId}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
                 onChange={handleChange}
                 sx={fieldStyle}
               />
@@ -108,7 +130,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
                 name="vehicleNo"
                 fullWidth
                 size="small"
+<<<<<<< HEAD
+                value={formData.vehicleNo}
+=======
                 value={data.vehicleNo}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
                 onChange={handleChange}
                 sx={fieldStyle}
 
@@ -120,7 +146,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
                 name="ownerName"
                 fullWidth
                 size="small"
+<<<<<<< HEAD
+                value={formData.ownerName}
+=======
                 value={data.ownerName}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
                 onChange={handleChange}
                 sx={fieldStyle}
               />
@@ -157,7 +187,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
                 fullWidth
                 size="small"
                 InputLabelProps={{ shrink: true }}
+<<<<<<< HEAD
+                value={formData.fitnessUpto}
+=======
                 value={data.fitnessUpto}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
                 onChange={handleChange}
               />
             </Grid>
@@ -170,7 +204,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
                 fullWidth
                 size="small"
                 InputLabelProps={{ shrink: true }}
+<<<<<<< HEAD
+                value={formData.insuranceUpto}
+=======
                 value={data.insuranceUpto}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
                 onChange={handleChange}
               />
             </Grid>
@@ -180,7 +218,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
                 name="createdBy"
                 fullWidth
                 size="small"
+<<<<<<< HEAD
+                value={formData.createdBy}
+=======
                 value={data.createdBy}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
                 onChange={handleChange}
               />
             </Grid>
@@ -191,7 +233,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
                 name="createdIpAddress"
                 fullWidth
                 size="small"
+<<<<<<< HEAD
+                value={formData.createdIpAddress}
+=======
                 value={data.createdIpAddress}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
                 onChange={handleChange}
               />
             </Grid>
@@ -214,7 +260,11 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
             backgroundColor: "#0f4c3a",
             "&:hover": { backgroundColor: "#1f7a63" },
           }}
+<<<<<<< HEAD
+          onClick={() => onSubmit(formData)}
+=======
           onClick={() => createVehicle()}
+>>>>>>> 8041c6cd433059a7319010c5b33f3f88022ef1a7
         >
           Submit
         </Button>
