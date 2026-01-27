@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,9 +8,13 @@ import {
   DialogActions,
   TextField,
   Button,
+  InputAdornment,
   Grid,
+  MenuItem,
 } from "@mui/material";
 import axios from "axios";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import commonServices from "@/services/commonServices";
 
 const initialState = {
   country: "",
@@ -26,12 +30,43 @@ const initialState = {
 const CreateLocationDialog = ({ open = true, onClose }) => {
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
-
+  
+const [states, setStates] = useState([]);
+const [districts, setDistricts] = useState([]);
+ 
+useEffect(() => {
+  async function fetchStates() {
+    try {
+      const response = await commonServices.getStates();
+      setStates(response.data?.data || []);
+      console.log(response.data?.data)
+    } catch (error) {
+      console.error("Failed to fetch states", error);
+    }
+  }
+  async function fetchDistrict() {
+    try {
+      const response = await commonServices.getDistrict();
+      setDistricts(response.data?.data || []);
+      console.log(response.data?.data)
+    } catch (error) {
+      console.error("Failed to fetch states", error);
+    }
+  }
+  fetchStates();
+  fetchDistrict();
+}, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+  const inputStyle = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+      "&:hover": { backgroundColor: "#FFF8F1" },
+      "&.Mui-focused fieldset": { borderColor: "#030236" },
+    },
+  };
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -61,35 +96,63 @@ const CreateLocationDialog = ({ open = true, onClose }) => {
 
       <DialogContent>
         <Grid container spacing={2} mt={1} py={3}>
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="Country"
-              name="country"
-              fullWidth
-              value={formData.country}
-              onChange={handleChange}
-            />
-          </Grid>
+        <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField fullWidth label="Agency ID" onChange={handleChange} value={formData.agencyID} name="agencyID" sx={inputStyle} />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField fullWidth label="Location Name" onChange={handleChange} value={formData.LocationName} name="LocationName" sx={inputStyle} />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                label="States"
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LocationOnIcon sx={{ color: "#030236" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={inputStyle}
+              >
+                {states.map((s) => (
+                  <MenuItem key={s.state_code} value={s.state_code}>
+                    {s.state_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField fullWidth
 
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="State"
-              name="state"
-              fullWidth
-              value={formData.state}
-              onChange={handleChange}
-            />
-          </Grid>
+                sx={inputStyle} label="City" onChange={handleChange} value={formData.city} name="city" />
+            </Grid>
 
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="City"
-              name="city"
-              fullWidth
-              value={formData.city}
-              onChange={handleChange}
-            />
-          </Grid>
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField fullWidth label="District"
+                select
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LocationOnIcon sx={{ color: "#030236" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={inputStyle} >
+                {districts.map((s) => (
+                  <MenuItem key={s.district_code} value={s.district_code}>
+                    {s.district_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
           <Grid item size={{xs:12,sm:6}}>
             <TextField

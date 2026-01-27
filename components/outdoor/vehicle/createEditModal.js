@@ -13,8 +13,6 @@ import {
   Typography,
   InputAdornment,
 } from "@mui/material";
-
-
 const VehicleModal = ({open, onClose, onSubmit }) => {
   const [data, setData] = useState({
     agencyId: "",
