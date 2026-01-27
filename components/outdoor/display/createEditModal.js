@@ -96,10 +96,10 @@ useEffect(() => {
 
       <DialogContent>
         <Grid container spacing={2} mt={1} py={3}>
-        <Grid item size={{ xs: 12, md: 4 }}>
+        <Grid item size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="Agency ID" onChange={handleChange} value={formData.agencyID} name="agencyID" sx={inputStyle} />
         </Grid>
-        <Grid item size={{ xs: 12, md: 4 }}>
+        <Grid item size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="Location Name" onChange={handleChange} value={formData.LocationName} name="LocationName" sx={inputStyle} />
         </Grid>
         <Grid item size={{ xs: 12, md: 4 }}>
@@ -154,65 +154,76 @@ useEffect(() => {
               </TextField>
             </Grid>
 
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="Location Type"
-              name="locationType"
-              fullWidth
-              value={formData.locationType}
-              onChange={handleChange}
-            />
-          </Grid>
+          <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField fullWidth label="Location Type" onChange={handleChange} value={formData.LocationType} name="LocationType" sx={inputStyle} />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField fullWidth label="Display Landmark" onChange={handleChange} value={formData.DisplayLandmark} name="DisplayLandmark" sx={inputStyle} />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField fullWidth label="Display Board Size" onChange={handleChange} value={formData.DisplayBoardSize} name="DisplayBoardSize" sx={inputStyle} />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField fullWidth label="Board Latitude" onChange={handleChange} value={formData.BoardLatitude} name="BoardLatitude" sx={inputStyle} />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField fullWidth label="Board Longitude" onChange={handleChange} value={formData.BoardLongitude} name="BoardLongitude" sx={inputStyle} />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField fullWidth label="Facing" onChange={handleChange} value={formData.Facing} name="Facing" sx={inputStyle} />
+        </Grid>
+        
+        <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                label="Validity From"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                name="validityFrom"
+                value={formData.validityFrom}     
+                onChange={handleChange}
+                sx={inputStyle}
+              />
+            </Grid>
 
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="Pincode"
-              name="pincode"
-              fullWidth
-              value={formData.pincode}
-              onChange={handleChange}
-            />
-          </Grid>
+            <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                label="Validity To"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                name="validityTo"
+                value={formData.validityTo}    
+                 onChange={handleChange}
+                sx={inputStyle}
+              />
+            </Grid>
+            
+            <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                label="Validity From"
+                type="time"
+                InputLabelProps={{ shrink: true }}
+                name="validityFrom"
+                value={formData.validityFrom}     
+                onChange={handleChange}
+                sx={inputStyle}
+              />
+            </Grid>
 
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="Latitude"
-              name="latitude"
-              fullWidth
-              value={formData.latitude}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="Longitude"
-              name="longitude"
-              fullWidth
-              value={formData.longitude}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item size={{xs:12,sm:6}}>
-            <TextField
-              label="Longitude"
-              name="longitude"
-              fullWidth
-              value={formData.longitude}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item size={{xs:12, sm:6}}>
-            <TextField
-              label="Longitude"
-              name="longitude"
-              fullWidth
-              value={formData.longitude}
-              onChange={handleChange}
-            />
-          </Grid>
-
-          
+            <Grid item size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                label="Validity To"
+                type="time"
+                InputLabelProps={{ shrink: true }}
+                name="validityTo"
+                value={formData.validityTo}    
+                 onChange={handleChange}
+                sx={inputStyle}
+              />
+            </Grid>
           <Grid item size={{xs:12}}>
               <Button
                 variant="outlined"
