@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import outdoorService from "@/services/outdoorServices";
-import CreateEditModal from "@/components/outdoor/display/createEditModal"
 
 import {
   Box,
@@ -23,7 +22,7 @@ const DisplayBoardTable = () => {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await outdoorService.getalldisplayboards();
+        const response = await outdoorService.getAllvehicle();
         setData(response?.result || []);
       } catch (error) {
         console.error("Failed to fetch display boards", error);
@@ -44,7 +43,7 @@ const DisplayBoardTable = () => {
           letterSpacing: "-0.02em"
         }}
       >
-        Display Boards
+        Vehicle Boards 
       </Typography>
 
       {/* Card */}
@@ -234,7 +233,6 @@ const DisplayBoardTable = () => {
           </Table>
         </TableContainer>
       </Paper>
-      <CreateEditModal />
     </Box>
   );
 };

@@ -38,45 +38,81 @@ const ClientHeader = ({ toggleSidebar }) => {
   };
 
   const handleLogout = () => {
-    // TODO: clear auth/session
     router.push("/loginpage");
   };
 
   return (
     <AppBar
       position="sticky"
-      elevation={1}
-      sx={{ backgroundColor: "#272757", zIndex: 1201 }}
+      elevation={2}
+      sx={{
+        background: "linear-gradient(90deg, #0F2027, #203A43)",
+        zIndex: 1201,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+      }}
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          minHeight: 64,
+        }}
+      >
         {/* Left Side */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {/* Sidebar Toggle (Mobile) */}
+          {/* Sidebar Toggle */}
           <IconButton
             edge="start"
             onClick={toggleSidebar}
-            sx={{ color: "#fff", display: { lg: "none" } }}
+            sx={{
+              color: "#E6EDF3",
+              display: { lg: "none" },
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.1)",
+              },
+            }}
           >
             <MenuIcon />
           </IconButton>
 
           {/* Title */}
-          <Typography variant="h6" fontWeight="bold">
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              letterSpacing: "0.5px",
+              color: "#F4C430",
+            }}
+          >
             Dashboard
           </Typography>
         </Box>
 
         {/* Right Side */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
           {/* Notifications */}
-          <IconButton sx={{ color: "#fff" }}>
+          <IconButton
+            sx={{
+              color: "#E6EDF3",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.1)",
+              },
+            }}
+          >
             <Badge badgeContent={1} color="error">
               <NotificationsNoneIcon />
             </Badge>
           </IconButton>
 
           {/* Messages */}
-          <IconButton sx={{ color: "#fff" }}>
+          <IconButton
+            sx={{
+              color: "#E6EDF3",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.1)",
+              },
+            }}
+          >
             <Badge badgeContent={1} color="primary">
               <MailOutlineIcon />
             </Badge>
@@ -86,17 +122,32 @@ const ClientHeader = ({ toggleSidebar }) => {
           <Button
             onClick={handleMenuOpen}
             sx={{
-              color: "#fff",
+              color: "#E6EDF3",
               textTransform: "none",
               display: "flex",
               alignItems: "center",
               gap: 1,
+              px: 1.5,
+              borderRadius: "8px",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.12)",
+              },
             }}
           >
-            <Avatar src={user.avatar} sx={{ width: 30, height: 30 }} />
+            <Avatar
+              src={user.avatar}
+              sx={{
+                width: 32,
+                height: 32,
+                border: "2px solid rgba(255,255,255,0.4)",
+              }}
+            />
             <Typography
               variant="body2"
-              sx={{ display: { xs: "none", md: "block" } }}
+              sx={{
+                display: { xs: "none", md: "block" },
+                fontWeight: 500,
+              }}
             >
               {user.name}
             </Typography>
@@ -108,6 +159,14 @@ const ClientHeader = ({ toggleSidebar }) => {
             onClose={handleMenuClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "right" }}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                borderRadius: "10px",
+                minWidth: 160,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+              },
+            }}
           >
             <MenuItem onClick={() => router.push("/profile")}>
               Profile
@@ -116,7 +175,12 @@ const ClientHeader = ({ toggleSidebar }) => {
               Settings
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem
+              onClick={handleLogout}
+              sx={{ color: "#d32f2f", fontWeight: 500 }}
+            >
+              Logout
+            </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

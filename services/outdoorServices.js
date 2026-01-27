@@ -20,6 +20,20 @@ const outdoorService = {
       throw err; // interceptor will format it
     }
   },
+
+  createVehicle: async (updateData) => {
+    console.log("newspaper information", updateData)
+    try {
+      const payload = {
+        ...updateData,
+      };
+      const res = await axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/createledVehicle", payload);
+      return res.data;
+    } catch (err) {
+      throw err; // interceptor will format it
+    }
+  },
+
 };
 
 export default outdoorService;

@@ -17,11 +17,26 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 const navItemStyle = {
-  color: "#fff",
+  color: "#E6EDF3",
   fontSize: "13px",
-  borderBottom: "1px solid wheat",
-  "&.active": {
-    backgroundColor: "rgba(255,255,255,0.1)",
+  borderRadius: "8px",
+  mx: 0.5,
+  my: 0.3,
+  transition: "all 0.25s ease",
+  "&:hover": {
+    backgroundColor: "rgba(255,255,255,0.08)",
+    paddingLeft: "18px",
+  },
+  "&.Mui-selected": {
+    background:
+      "linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))",
+    color: "#FFFFFF",
+    fontWeight: 600,
+    borderLeft: "3px solid #F4C430",
+  },
+  "&.Mui-selected:hover": {
+    background:
+      "linear-gradient(90deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08))",
   },
 };
 
@@ -32,7 +47,14 @@ const ClientSideNavbar = ({ isCollapsed }) => {
   const isActive = (path) => pathname === path;
 
   return (
-    <Box>
+    <Box
+      sx={{
+        height: "100vh",
+        background:
+          "linear-gradient(180deg, #0F2027, #203A43, #2C5364)",
+        boxShadow: "4px 0 12px rgba(0,0,0,0.35)",
+      }}
+    >
       <List disablePadding sx={{ p: 1 }}>
         {[
           { label: "Dashboard", path: "/newrequest" },
@@ -66,21 +88,31 @@ const ClientSideNavbar = ({ isCollapsed }) => {
             {!isCollapsed && (
               <ListItemText
                 primary={item.label}
-                primaryTypographyProps={{ fontSize: "13px" }}
+                primaryTypographyProps={{
+                  fontSize: "13px",
+                  letterSpacing: "0.3px",
+                  lineHeight: 1.4,
+                }}
               />
             )}
           </ListItemButton>
         ))}
 
-        {/* Profile Dropdown (Optional – enabled) */}
-        {/* 
+        {/* Optional Profile Dropdown (kept same, design improved) */}
+        {/*
         <ListItemButton
           onClick={() => setOpenProfile(!openProfile)}
-          sx={{ ...navItemStyle, display: "flex", justifyContent: "space-between" }}
+          sx={{
+            ...navItemStyle,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <PersonIcon fontSize="small" />
-            {!isCollapsed && <Typography fontSize="13px">Profile</Typography>}
+            {!isCollapsed && (
+              <Typography fontSize="13px">Profile</Typography>
+            )}
           </Box>
           {!isCollapsed &&
             (openProfile ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
@@ -99,12 +131,12 @@ const ClientSideNavbar = ({ isCollapsed }) => {
                 component={Link}
                 href={item.path}
                 selected={isActive(item.path)}
-                sx={{ ...navItemStyle, borderBottom: "none" }}
+                sx={{ ...navItemStyle, borderLeft: "none" }}
               >
                 {!isCollapsed && (
                   <ListItemText
                     primary={item.label}
-                    primaryTypographyProps={{ fontSize: "13px" }}
+                    primaryTypographyProps={{ fontSize: "12px" }}
                   />
                 )}
               </ListItemButton>
@@ -113,30 +145,34 @@ const ClientSideNavbar = ({ isCollapsed }) => {
         </Collapse>
         */}
 
-        <Divider sx={{ borderColor: "wheat" }} />
+        <Divider
+          sx={{
+            my: 1.5,
+            borderColor: "rgba(255,255,255,0.15)",
+          }}
+        />
 
-        {[
-          { label: "About Us", path: "/aboutus" },
-          { label: "Help Desk", path: "/helpdesk" },
-        ].map((item, index) => (
-          <ListItemButton
-            key={index}
-            component={Link}
-            href={item.path}
-            selected={isActive(item.path)}
-            sx={{
-              ...navItemStyle,
-              borderTop: "1px solid wheat",
-            }}
-          >
-            {!isCollapsed && (
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{ fontSize: "13px" }}
-              />
-            )}
-          </ListItemButton>
-        ))}
+        {[{ label: "About Us", path: "/aboutus" }, { label: "Help Desk", path: "/helpdesk" }].map(
+          (item, index) => (
+            <ListItemButton
+              key={index}
+              component={Link}
+              href={item.path}
+              selected={isActive(item.path)}
+              sx={navItemStyle}
+            >
+              {!isCollapsed && (
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontSize: "13px",
+                    letterSpacing: "0.3px",
+                  }}
+                />
+              )}
+            </ListItemButton>
+          )
+        )}
       </List>
     </Box>
   );
