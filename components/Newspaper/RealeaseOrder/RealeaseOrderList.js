@@ -155,6 +155,7 @@ export default function ReleaseOrderListing() {
               <TableCell>Publish Date</TableCell>
               <TableCell>Total Rate</TableCell>
               <TableCell>Content Size(L*W)</TableCell>
+              <TableCell>RO Status</TableCell>
               <TableCell>Published Proof</TableCell>
               <TableCell align="right">Update Publish Status</TableCell>
             </TableRow>
@@ -216,6 +217,12 @@ export default function ReleaseOrderListing() {
                     <TableCell>
                       <Typography>
                         {row.size_row} X {row.size_col}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography>
+                        {row.ro_status}
                       </Typography>
                     </TableCell>
 
