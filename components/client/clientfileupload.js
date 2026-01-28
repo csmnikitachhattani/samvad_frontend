@@ -738,9 +738,11 @@ import {
   DialogContent,
   DialogActions,
   MenuItem,
+ 
 } from "@mui/material";
 
 import {
+   FaUpload,
   FaFolder,
   FaDownload,
   FaCheckCircle,
@@ -855,7 +857,11 @@ const ClientFileUpload = () => {
       console.error(err);
     }
   };
-
+   const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFileSelect(e.dataTransfer.files[0]);
+  };
   const handleUpload = async () => {
     if (!file || !userId) return;
 
@@ -925,17 +931,61 @@ const ClientFileUpload = () => {
   /* ========= UI ========= */
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Card sx={{ mb: 4, background: "linear-gradient(135deg,#667eea,#764ba2)", color: "#fff", borderRadius: 3 }}>
+      {/* <Card sx={{ mb: 4, background: "linear-gradient(135deg,#667eea,#764ba2)", color: "#fff", borderRadius: 3 }}>
         <CardContent>
           <Box display="flex" alignItems="center" gap={2}>
             <FaFolder size={32} />
             <Typography variant="h5" fontWeight="bold">File Management</Typography>
           </Box>
         </CardContent>
+      </Card> */}
+
+
+       <Card
+        sx={{
+          mb: 4,
+          background: "linear-gradient(135deg,#667eea,#764ba2)",
+          color: "#fff",
+          borderRadius: 3,
+        }}
+      >
+        <CardContent>
+          <Box display="flex" alignItems="center" gap={2}>
+            <FaFolder size={32} />
+            <Box>
+              <Typography variant="h5" fontWeight="bold">
+                File Management
+              </Typography>
+              <Typography variant="body2" opacity={0.8}>
+                Upload and manage your documents
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box mt={3} display="flex" gap={3}>
+            <Paper sx={{ p: 2, flex: 1 }}>
+              <Typography variant="caption">Reference ID</Typography>
+              <Typography fontWeight="bold">{savedRefId}</Typography>
+            </Paper>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="caption">Financial Year</Typography>
+              <Typography fontWeight="bold">{financial_year}</Typography>
+            </Paper>
+          </Box>
+        </CardContent>
       </Card>
 
       <Card sx={{ mb: 4, borderRadius: 3 }}>
         <CardContent>
+
+ <Box textAlign="center" mb={3}>
+            <FaUpload size={26} />
+            <Typography variant="h6" fontWeight="bold">
+              Upload Documents
+            </Typography>
+          </Box>
+
+
           <Box display="flex" gap={3} mb={3}>
             {/* Category */}
             {letterUploaded === 0 ? (
@@ -965,7 +1015,44 @@ const ClientFileUpload = () => {
           <Button fullWidth variant="contained" onClick={() => fileInputRef.current.click()}>
             Browse
           </Button>
-
+ <Paper
+            onClick={() => fileInputRef.current.click()}
+            onDragOver={e => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+            sx={{
+              height: 240,
+              border: "2px dashed",
+              borderColor: file ? "success.main" : "#ccc",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <Box textAlign="center">
+              {!file ? (
+                <>
+                  <FaUpload size={40} />
+                  <Typography fontWeight="bold">
+                    Drag & Drop file here
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  {filePreviewUrl ? (
+                    <img src={filePreviewUrl} height={120} />
+                  ) : (
+                    <FaFileAlt size={40} />
+                  )}
+                  <Typography fontWeight="bold">{file.name}</Typography>
+                </>
+              )}
+            </Box>
+          </Paper>
           <Box textAlign="center" mt={3}>
             <Button variant="contained" disabled={!file} onClick={handleUpload}>
               Upload
@@ -984,7 +1071,7 @@ const ClientFileUpload = () => {
                 <TableCell>{i + 1}</TableCell>
                 <TableCell>{f.link_name}</TableCell>
                 <TableCell>
-                  <Button href={`http://localhost:3080/${f.file_path}`} target="_blank">
+                  <Button href={`http://localhost:3080/api/${f.file_path}`} target="_blank">
                     <FaDownload />
                   </Button>
                 </TableCell>
