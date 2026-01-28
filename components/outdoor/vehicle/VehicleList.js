@@ -22,6 +22,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 const DisplayBoardTable = () => {
   
+const ModalShow = useSelector((state) => state.vehicle.ModalShow);
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const toggleUploadDialog = () =>{
@@ -39,7 +40,7 @@ const DisplayBoardTable = () => {
       }
     };
     fetchBoards();
-  }, []);
+  }, [ModalShow]);
 
   return (
     <Box sx={{ p: 4, backgroundColor: "#fafafa", minHeight: "100vh" }}>
