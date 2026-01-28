@@ -50,7 +50,7 @@ const ForwardTo = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3080/api/get-client-advt-request",
+        "http://103.79.34.50:8090/api/get-client-advt-request",
         {
           params: {
             financial_year,
@@ -75,7 +75,7 @@ const ForwardTo = () => {
   const handleEdit = async (ref_id) => {
     try {
       const res = await axios.get(
-        `http://localhost:3080/api/get-client-advt-request/${ref_id}`,
+        `http://103.79.34.50:8090/api/get-client-advt-request/${ref_id}`,
         {
           params: {
             financial_year,
@@ -100,7 +100,7 @@ const ForwardTo = () => {
 
     try {
       const res = await axios.delete(
-        `http://localhost:3080/api/client-advt-request/${ref_id}`,
+        `http://103.79.34.50:8090/api/client-advt-request/${ref_id}`,
         {
           data: {
             ref_id,

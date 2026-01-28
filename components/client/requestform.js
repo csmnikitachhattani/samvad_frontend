@@ -139,7 +139,7 @@
 // //       };
 
 // //       const res = await axios.post(
-// //         "http://localhost:3080/api/client-advt-request",
+// //         "http://103.79.34.50:8090/api/client-advt-request",
 // //         payload
 // //       );
 
@@ -156,7 +156,7 @@
 // //     setLoading(true);
 // //     try {
 // //       await axios.put(
-// //         `http://localhost:3080/api/client-advt-request/${rowData.ref_id}`,
+// //         `http://103.79.34.50:8090/api/client-advt-request/${rowData.ref_id}`,
 // //         {
 // //           ...formData,
 // //           financial_year,
@@ -469,7 +469,7 @@
 // //       };
 
 // //       const res = await axios.post(
-// //         "http://localhost:3080/api/client-advt-request",
+// //         "http://103.79.34.50:8090/api/client-advt-request",
 // //         payload
 // //       );
 
@@ -775,7 +775,7 @@
 //       };
 
 //       const res = await axios.post(
-//         "http://localhost:3080/api/client-advt-request",
+//         "http://103.79.34.50:8090/api/client-advt-request",
 //         payload
 //       );
 
@@ -1132,7 +1132,7 @@ const RequestForm = ({ category }) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3080/api/client-advt-request",
+        "http://103.79.34.50:8090/api/client-advt-request",
         {
           ...formData,
           financial_year,
@@ -1157,7 +1157,7 @@ const RequestForm = ({ category }) => {
 
     try {
       await axios.put(
-        `http://localhost:3080/api/client-advt-request/${rowData.ref_id}`,
+        `http://103.79.34.50:8090/api/client-advt-request/${rowData.ref_id}`,
         {
           ...formData,
           financial_year,

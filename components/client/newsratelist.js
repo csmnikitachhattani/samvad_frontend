@@ -35,7 +35,7 @@ const NewsRatesList = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:3080/api/get-news-rate"
+        "http://103.79.34.50:8090/api/get-news-rate"
       );
       setData(res.data || []);
     } catch (err) {
@@ -295,7 +295,7 @@ export default NewsRatesList;
 //   const fetchData = async () => {
 //     try {
 //       setLoading(true);
-//       const res = await axios.get("http://localhost:3080/api/get-news-rate");
+//       const res = await axios.get("http://103.79.34.50:8090/api/get-news-rate");
 //       setData(res.data || []);
 //       setFilteredData(res.data || []);
 //     } catch (err) {

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import axiosClient from "@/lib/axiosClient";
 
 import {
   Box,
@@ -24,8 +25,10 @@ const CreateNewRequest = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3080/api/createnewrequest"
+
+    
+        const res = await axiosClient.get(
+          "http://103.79.34.50:8090/api/createnewrequest"
         );
         setCategories(res.data || []);
       } catch (error) {

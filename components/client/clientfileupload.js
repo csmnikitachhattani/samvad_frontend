@@ -808,7 +808,7 @@ const ClientFileUpload = () => {
 
     try {
       const res = await axios.get(
-        "http://localhost:3080/api/upload-categories",
+        "http://103.79.34.50:8090/api/upload-categories",
         { params: { savedRefId, financial_year } }
       );
 
@@ -827,7 +827,7 @@ const ClientFileUpload = () => {
       setLetterCategoryCode(letter.cat_cd);
 
       const check = await axios.get(
-        `http://localhost:3080/api/files/${savedRefId}/${financial_year}/${letter.cat_cd}`
+        `http://103.79.34.50:8090/api/files/${savedRefId}/${financial_year}/${letter.cat_cd}`
       );
 
       const uploadedCount = check?.data?.data?.length || 0;
@@ -850,7 +850,7 @@ const ClientFileUpload = () => {
 
     try {
       const res = await axios.get(
-        `http://localhost:3080/api/files/${savedRefId}/${financial_year}/${category}`
+        `http://103.79.34.50:8090/api/files/${savedRefId}/${financial_year}/${category}`
       );
       setFileList(res.data.data || []);
     } catch (err) {
@@ -881,7 +881,7 @@ const ClientFileUpload = () => {
     formData.append("file", file);
 
     await axios.post(
-      "http://localhost:3080/api/post-files",
+      "http://103.79.34.50:8090/api/post-files",
       formData,
       { headers: { "Content-Type": "multipart/form-data" } }
     );
@@ -1071,7 +1071,7 @@ const ClientFileUpload = () => {
                 <TableCell>{i + 1}</TableCell>
                 <TableCell>{f.link_name}</TableCell>
                 <TableCell>
-                  <Button href={`http://localhost:3080/api/${f.file_path}`} target="_blank">
+                  <Button href={`http://103.79.34.50:8090/api/${f.file_path}`} target="_blank">
                     <FaDownload />
                   </Button>
                 </TableCell>
