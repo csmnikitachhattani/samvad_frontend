@@ -28,9 +28,7 @@ const ForwardTo = () => {
   const router = useRouter();
 
   const financial_year =
-    typeof window !== "undefined"
-      ? localStorage.getItem("financial_year")
-      : "";
+    typeof window !== "undefined" ? localStorage.getItem("financial_year") : "";
   const user_id =
     typeof window !== "undefined" ? localStorage.getItem("user_id") : "";
   const user_name =
@@ -50,7 +48,7 @@ const ForwardTo = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "http://103.79.34.50:8090/api/get-client-advt-request",
+        "http://103.79.34.50:3080/api/get-client-advt-request",
         {
           params: {
             financial_year,
@@ -59,7 +57,7 @@ const ForwardTo = () => {
             action: "get_not_forwarded",
             category: "",
           },
-        }
+        },
       );
       setData(res.data.data || []);
     } catch (err) {
@@ -75,7 +73,7 @@ const ForwardTo = () => {
   const handleEdit = async (ref_id) => {
     try {
       const res = await axios.get(
-        `http://103.79.34.50:8090/api/get-client-advt-request/${ref_id}`,
+        `http://103.79.34.50:3080/api/get-client-advt-request/${ref_id}`,
         {
           params: {
             financial_year,
@@ -83,7 +81,7 @@ const ForwardTo = () => {
             user_name,
             action: "get_by_id",
           },
-        }
+        },
       );
 
       router.push(`/?action=update&ref_id=${ref_id}`, {
@@ -100,7 +98,7 @@ const ForwardTo = () => {
 
     try {
       const res = await axios.delete(
-        `http://103.79.34.50:8090/api/client-advt-request/${ref_id}`,
+        `http://103.79.34.50:3080/api/client-advt-request/${ref_id}`,
         {
           data: {
             ref_id,
@@ -109,7 +107,7 @@ const ForwardTo = () => {
             user_name,
             action: "delete",
           },
-        }
+        },
       );
 
       if (res.data.status === 1) {
@@ -148,15 +146,33 @@ const ForwardTo = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell><b>Ref ID</b></TableCell>
-              <TableCell><b>Subject</b></TableCell>
-              <TableCell><b>Letter No</b></TableCell>
-              <TableCell><b>Category</b></TableCell>
-              <TableCell><b>Letter Date</b></TableCell>
-              <TableCell><b>Scheduled Date</b></TableCell>
-              <TableCell><b>Tender Amt</b></TableCell>
-              <TableCell><b>Attachment</b></TableCell>
-              <TableCell><b>Action</b></TableCell>
+              <TableCell>
+                <b>Ref ID</b>
+              </TableCell>
+              <TableCell>
+                <b>Subject</b>
+              </TableCell>
+              <TableCell>
+                <b>Letter No</b>
+              </TableCell>
+              <TableCell>
+                <b>Category</b>
+              </TableCell>
+              <TableCell>
+                <b>Letter Date</b>
+              </TableCell>
+              <TableCell>
+                <b>Scheduled Date</b>
+              </TableCell>
+              <TableCell>
+                <b>Tender Amt</b>
+              </TableCell>
+              <TableCell>
+                <b>Attachment</b>
+              </TableCell>
+              <TableCell>
+                <b>Action</b>
+              </TableCell>
               <TableCell align="center">
                 <b>Forward</b>
               </TableCell>

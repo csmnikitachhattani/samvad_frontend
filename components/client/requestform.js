@@ -139,7 +139,7 @@
 // //       };
 
 // //       const res = await axios.post(
-// //         "http://103.79.34.50:8090/api/client-advt-request",
+// //         "http://103.79.34.50:3080/api/client-advt-request",
 // //         payload
 // //       );
 
@@ -156,7 +156,7 @@
 // //     setLoading(true);
 // //     try {
 // //       await axios.put(
-// //         `http://103.79.34.50:8090/api/client-advt-request/${rowData.ref_id}`,
+// //         `http://103.79.34.50:3080/api/client-advt-request/${rowData.ref_id}`,
 // //         {
 // //           ...formData,
 // //           financial_year,
@@ -357,7 +357,6 @@
 
 // // export default RequestForm;
 
-
 // // "use client";
 
 // // import React, { useEffect, useState, useRef } from "react";
@@ -469,7 +468,7 @@
 // //       };
 
 // //       const res = await axios.post(
-// //         "http://103.79.34.50:8090/api/client-advt-request",
+// //         "http://103.79.34.50:3080/api/client-advt-request",
 // //         payload
 // //       );
 
@@ -657,8 +656,6 @@
 
 // // export default RequestForm;
 
-
-
 // "use client";
 
 // import React, { useEffect, useState, useRef } from "react";
@@ -775,7 +772,7 @@
 //       };
 
 //       const res = await axios.post(
-//         "http://103.79.34.50:8090/api/client-advt-request",
+//         "http://103.79.34.50:3080/api/client-advt-request",
 //         payload
 //       );
 
@@ -977,12 +974,7 @@
 
 // export default RequestForm;
 
-
 // ====================================
-
-
-
-
 
 "use client";
 
@@ -1051,13 +1043,19 @@ const RequestForm = ({ category }) => {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    localStorage.setItem("financial_year", localStorage.getItem("financial_year") || "2024-2025");
+    localStorage.setItem(
+      "financial_year",
+      localStorage.getItem("financial_year") || "2024-2025",
+    );
     localStorage.setItem("user_id", localStorage.getItem("user_id") || "00100");
-    localStorage.setItem("ref_Category_id", localStorage.getItem("ref_Category_id") || "02");
+    localStorage.setItem(
+      "ref_Category_id",
+      localStorage.getItem("ref_Category_id") || "02",
+    );
     localStorage.setItem(
       "user_name",
       localStorage.getItem("user_name") ||
-        "SUPERINTENDING ENGINEER, City Circle-II CSPDCL,Raipur, रायपुर"
+        "SUPERINTENDING ENGINEER, City Circle-II CSPDCL,Raipur, रायपुर",
     );
 
     setFinancialYear(localStorage.getItem("financial_year"));
@@ -1083,7 +1081,7 @@ const RequestForm = ({ category }) => {
   const cat_id = category?.cat_id || "";
 
   const form_option = ["classified", "display"].includes(
-    category_option.toLowerCase()
+    category_option.toLowerCase(),
   );
 
   // ================= Autofill Category =================
@@ -1132,13 +1130,13 @@ const RequestForm = ({ category }) => {
 
     try {
       const res = await axios.post(
-        "http://103.79.34.50:8090/api/client-advt-request",
+        "http://103.79.34.50:3080/api/client-advt-request",
         {
           ...formData,
           financial_year,
           user_id,
           user_name,
-        }
+        },
       );
 
       setSavedRefId(res.data.ref_id);
@@ -1157,13 +1155,13 @@ const RequestForm = ({ category }) => {
 
     try {
       await axios.put(
-        `http://103.79.34.50:8090/api/client-advt-request/${rowData.ref_id}`,
+        `http://103.79.34.50:3080/api/client-advt-request/${rowData.ref_id}`,
         {
           ...formData,
           financial_year,
           user_id,
           ref_id: rowData.ref_id,
-        }
+        },
       );
 
       setSavedRefId(rowData.ref_id);
@@ -1178,10 +1176,10 @@ const RequestForm = ({ category }) => {
   // ================= OK Redirect =================
   const handleOk = () => {
     setShowModal(false);
-   
+
     router.push(
-  `/client/upload-file/${savedRefId}?financial_year=${financial_year}`
-);
+      `/client/upload-file/${savedRefId}?financial_year=${financial_year}`,
+    );
   };
 
   // ================= UI =================
@@ -1208,23 +1206,20 @@ const RequestForm = ({ category }) => {
         </DialogActions>
       </Dialog>
 
-     <form>
+      <form>
         <Card>
           <CardContent>
-     
-
             <Typography
-  align="center"
-  fontWeight="bold"
-  mb={2}
-  sx={{
-    userSelect: "none",
-    cursor: "default",
-  }}
->
-  Financial Year: {financial_year}
-</Typography>
-
+              align="center"
+              fontWeight="bold"
+              mb={2}
+              sx={{
+                userSelect: "none",
+                cursor: "default",
+              }}
+            >
+              Financial Year: {financial_year}
+            </Typography>
 
             <Grid container spacing={2}>
               <Grid item md={3}>
@@ -1237,35 +1232,35 @@ const RequestForm = ({ category }) => {
                 />
               </Grid>
 
-
-<Grid item md={5}>
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <DatePicker
-      label="Letter Date"
-      value={formData.letter_date ? dayjs(formData.letter_date) : null}
-      minDate={dayjs().subtract(7, "day")} // ✅ today - 7
-      maxDate={dayjs()}                   // ✅ today
-      onChange={(newValue) => {
-        setFormData((prev) => ({
-          ...prev,
-          letter_date: newValue
-            ? newValue.format("YYYY-MM-DD")
-            : "",
-        }));
-      }}
-      slotProps={{
-        textField: {
-          fullWidth: true,
-          required: true,
-          InputProps: {
-            readOnly: true, // 🚫 no typing
-          },
-        },
-      }}
-    />
-  </LocalizationProvider>
-</Grid>
-
+              <Grid item md={5}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Letter Date"
+                    value={
+                      formData.letter_date ? dayjs(formData.letter_date) : null
+                    }
+                    minDate={dayjs().subtract(7, "day")} // ✅ today - 7
+                    maxDate={dayjs()} // ✅ today
+                    onChange={(newValue) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        letter_date: newValue
+                          ? newValue.format("YYYY-MM-DD")
+                          : "",
+                      }));
+                    }}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        required: true,
+                        InputProps: {
+                          readOnly: true, // 🚫 no typing
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </Grid>
 
               <Grid item md={5}>
                 <TextField
@@ -1278,67 +1273,64 @@ const RequestForm = ({ category }) => {
                 />
               </Grid>
 
+              <Grid item md={5}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Schedule Date"
+                    value={
+                      formData.schedule_date
+                        ? dayjs(formData.schedule_date)
+                        : null
+                    }
+                    minDate={dayjs().add(1, "day")} // ✅ tomorrow only
+                    onChange={(newValue) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        schedule_date: newValue
+                          ? newValue.format("YYYY-MM-DD")
+                          : "",
+                      }));
+                    }}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        required: true,
+                        InputProps: {
+                          readOnly: true, // 🚫 typing blocked
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </Grid>
 
               <Grid item md={5}>
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <DatePicker
-      label="Schedule Date"
-      value={formData.schedule_date ? dayjs(formData.schedule_date) : null}
-      minDate={dayjs().add(1, "day")}   // ✅ tomorrow only
-      onChange={(newValue) => {
-        setFormData((prev) => ({
-          ...prev,
-          schedule_date: newValue
-            ? newValue.format("YYYY-MM-DD")
-            : "",
-        }));
-      }}
-      slotProps={{
-        textField: {
-          fullWidth: true,
-          required: true,
-          InputProps: {
-            readOnly: true, // 🚫 typing blocked
-          },
-        },
-      }}
-    />
-  </LocalizationProvider>
-</Grid>
+                <TextField
+                  fullWidth
+                  placeholder="Tender Amount"
+                  name="tender_amt"
+                  value={formData.tender_amt}
+                  required
+                  inputMode="decimal"
+                  onChange={(e) => {
+                    const value = e.target.value;
 
-
-<Grid item md={5}>
-  <TextField
-    fullWidth
-    placeholder="Tender Amount"
-    name="tender_amt"
-    value={formData.tender_amt}
-    required
-    inputMode="decimal"         
-    onChange={(e) => {
-      const value = e.target.value;
-
-      // Allow only digits and ONE decimal point
-      if (/^\d*\.?\d{0,2}$/.test(value)) {
-        setFormData((prev) => ({
-          ...prev,
-          tender_amt: value,
-        }));
-      }
-    }}
-    onKeyDown={(e) => {
-      // Block invalid keys
-      if (
-        ["e", "E", "+", "-", ","].includes(e.key)
-      ) {
-        e.preventDefault();
-      }
-    }}
-  />
-</Grid>
-
-
-
+                    // Allow only digits and ONE decimal point
+                    if (/^\d*\.?\d{0,2}$/.test(value)) {
+                      setFormData((prev) => ({
+                        ...prev,
+                        tender_amt: value,
+                      }));
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    // Block invalid keys
+                    if (["e", "E", "+", "-", ","].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              </Grid>
 
               <Grid item md={3}>
                 <Select fullWidth value={formData.ref_Category_id}>
@@ -1399,8 +1391,8 @@ const RequestForm = ({ category }) => {
             {loading
               ? "Processing..."
               : action === "update"
-              ? "Update Request"
-              : "Submit Request"}
+                ? "Update Request"
+                : "Submit Request"}
           </Button>
         </Box>
       </form>

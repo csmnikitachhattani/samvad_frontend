@@ -1,5 +1,3 @@
-
-
 // "use client";
 
 // import React, { useEffect, useState, useRef } from "react";
@@ -129,7 +127,6 @@
 //       // }
 // // ===========================
 
-
 // console.log("📦 Categories data:", data);
 
 // const letter = data.find(c =>
@@ -174,7 +171,6 @@
 //   console.log("✅ No letter uploaded → selecting LETTER");
 //   setSelectedCategory(letter.cat_cd);
 // }
-
 
 // // ====================
 
@@ -412,8 +408,6 @@
 
 // ========================================================
 
-
-
 // "use client";
 
 // import React, { useEffect, useState, useRef } from "react";
@@ -485,8 +479,6 @@
 
 //   const [filePreviewUrl, setFilePreviewUrl] = useState(null);
 
-
-  
 // const VIRTUAL_MATTER = {
 //   cat_cd: "MATTER",
 //   cat_name: "Matter",
@@ -505,9 +497,6 @@
 //   };
 // console.log("ALL CATEGORIES 👉", categories);
 //   /* ========= API ========= */
-
-
-
 
 //   const fetchCategories = async () => {
 //     if (!savedRefId || !financial_year) return;
@@ -612,7 +601,6 @@
 //     if (selectedCategory) fetchFiles(selectedCategory);
 //   }, [selectedCategory]);
 
-
 // const normalizedCategories = React.useMemo(() => {
 //   const list = [...categories];
 
@@ -710,9 +698,6 @@
 
 //==================================
 
-
-
-
 // ========================USE STATIC MATTER===================
 "use client";
 
@@ -738,15 +723,9 @@ import {
   DialogContent,
   DialogActions,
   MenuItem,
- 
 } from "@mui/material";
 
-import {
-   FaUpload,
-  FaFolder,
-  FaDownload,
-  FaCheckCircle,
-} from "react-icons/fa";
+import { FaUpload, FaFolder, FaDownload, FaCheckCircle } from "react-icons/fa";
 
 const ClientFileUpload = () => {
   const router = useRouter();
@@ -808,18 +787,18 @@ const ClientFileUpload = () => {
 
     try {
       const res = await axios.get(
-        "http://103.79.34.50:8090/api/upload-categories",
-        { params: { savedRefId, financial_year } }
+        "http://103.79.34.50:3080/api/upload-categories",
+        { params: { savedRefId, financial_year } },
       );
 
       const data = res.data.data || [];
       setCategories(data);
 
-      const letter = data.find(c =>
-        c.cat_name?.toLowerCase().includes("letter")
+      const letter = data.find((c) =>
+        c.cat_name?.toLowerCase().includes("letter"),
       );
-      const matter = data.find(c =>
-        c.cat_name?.toLowerCase().includes("matter")
+      const matter = data.find((c) =>
+        c.cat_name?.toLowerCase().includes("matter"),
       );
 
       if (!letter) return;
@@ -827,7 +806,7 @@ const ClientFileUpload = () => {
       setLetterCategoryCode(letter.cat_cd);
 
       const check = await axios.get(
-        `http://103.79.34.50:8090/api/files/${savedRefId}/${financial_year}/${letter.cat_cd}`
+        `http://103.79.34.50:3080/api/files/${savedRefId}/${financial_year}/${letter.cat_cd}`,
       );
 
       const uploadedCount = check?.data?.data?.length || 0;
@@ -839,7 +818,6 @@ const ClientFileUpload = () => {
       } else {
         setSelectedCategory(letter.cat_cd);
       }
-
     } catch (err) {
       console.error(err);
     }
@@ -850,14 +828,14 @@ const ClientFileUpload = () => {
 
     try {
       const res = await axios.get(
-        `http://103.79.34.50:8090/api/files/${savedRefId}/${financial_year}/${category}`
+        `http://103.79.34.50:3080/api/files/${savedRefId}/${financial_year}/${category}`,
       );
       setFileList(res.data.data || []);
     } catch (err) {
       console.error(err);
     }
   };
-   const handleDrop = (e) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     handleFileSelect(e.dataTransfer.files[0]);
@@ -869,7 +847,7 @@ const ClientFileUpload = () => {
       letterUploaded === 0 ? letterCategoryCode : selectedCategory;
 
     const nextCount =
-      fileList.filter(f => f.categary_cd === categoryToUse).length + 1;
+      fileList.filter((f) => f.categary_cd === categoryToUse).length + 1;
 
     const formData = new FormData();
     formData.append("ref_id", savedRefId);
@@ -880,17 +858,15 @@ const ClientFileUpload = () => {
     formData.append("user_name", userName);
     formData.append("file", file);
 
-    await axios.post(
-      "http://103.79.34.50:8090/api/post-files",
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
+    await axios.post("http://103.79.34.50:3080/api/post-files", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     // If uploaded Letter, mark as uploaded and auto-select Matter
     if (categoryToUse === letterCategoryCode) {
       setLetterUploaded(1);
-      const matter = categories.find(c =>
-        c.cat_name?.toLowerCase().includes("matter")
+      const matter = categories.find((c) =>
+        c.cat_name?.toLowerCase().includes("matter"),
       );
       if (matter) setSelectedCategory(matter.cat_cd);
       else setSelectedCategory(VIRTUAL_MATTER.cat_cd);
@@ -917,8 +893,8 @@ const ClientFileUpload = () => {
   const normalizedCategories = React.useMemo(() => {
     const list = [...categories];
 
-    const hasMatter = list.some(
-      c => c.cat_name?.toLowerCase().includes("matter")
+    const hasMatter = list.some((c) =>
+      c.cat_name?.toLowerCase().includes("matter"),
     );
 
     if (letterUploaded > 0 && !hasMatter) {
@@ -940,8 +916,7 @@ const ClientFileUpload = () => {
         </CardContent>
       </Card> */}
 
-
-       <Card
+      <Card
         sx={{
           mb: 4,
           background: "linear-gradient(135deg,#667eea,#764ba2)",
@@ -977,14 +952,12 @@ const ClientFileUpload = () => {
 
       <Card sx={{ mb: 4, borderRadius: 3 }}>
         <CardContent>
-
- <Box textAlign="center" mb={3}>
+          <Box textAlign="center" mb={3}>
             <FaUpload size={26} />
             <Typography variant="h6" fontWeight="bold">
               Upload Documents
             </Typography>
           </Box>
-
 
           <Box display="flex" gap={3} mb={3}>
             {/* Category */}
@@ -998,7 +971,7 @@ const ClientFileUpload = () => {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 fullWidth
               >
-                {normalizedCategories.map(cat => (
+                {normalizedCategories.map((cat) => (
                   <MenuItem key={cat.cat_cd} value={cat.cat_cd}>
                     {cat.cat_name}
                   </MenuItem>
@@ -1010,14 +983,23 @@ const ClientFileUpload = () => {
             <TextField label="File Name" value={linkName} fullWidth />
           </Box>
 
-          <input hidden type="file" ref={fileInputRef} onChange={e => handleFileSelect(e.target.files[0])} />
+          <input
+            hidden
+            type="file"
+            ref={fileInputRef}
+            onChange={(e) => handleFileSelect(e.target.files[0])}
+          />
 
-          <Button fullWidth variant="contained" onClick={() => fileInputRef.current.click()}>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => fileInputRef.current.click()}
+          >
             Browse
           </Button>
- <Paper
+          <Paper
             onClick={() => fileInputRef.current.click()}
-            onDragOver={e => {
+            onDragOver={(e) => {
               e.preventDefault();
               setIsDragging(true);
             }}
@@ -1063,7 +1045,9 @@ const ClientFileUpload = () => {
 
       {/* Uploaded Files Table */}
       <Paper>
-        <Typography sx={{ p: 2, background: "#222", color: "#fff" }}>Uploaded Files</Typography>
+        <Typography sx={{ p: 2, background: "#222", color: "#fff" }}>
+          Uploaded Files
+        </Typography>
         <Table>
           <TableBody>
             {fileList.map((f, i) => (
@@ -1071,7 +1055,10 @@ const ClientFileUpload = () => {
                 <TableCell>{i + 1}</TableCell>
                 <TableCell>{f.link_name}</TableCell>
                 <TableCell>
-                  <Button href={`http://103.79.34.50:8090/api/${f.file_path}`} target="_blank">
+                  <Button
+                    href={`http://103.79.34.50:3080/api/${f.file_path}`}
+                    target="_blank"
+                  >
                     <FaDownload />
                   </Button>
                 </TableCell>
@@ -1083,7 +1070,9 @@ const ClientFileUpload = () => {
 
       {/* Success Modal */}
       <Dialog open={showModal} onClose={() => setShowModal(false)}>
-        <DialogTitle><FaCheckCircle color="green" /> Success</DialogTitle>
+        <DialogTitle>
+          <FaCheckCircle color="green" /> Success
+        </DialogTitle>
         <DialogContent>File Uploaded Successfully!</DialogContent>
         <DialogActions>
           <Button onClick={() => setShowModal(false)}>Continue</Button>
@@ -1096,4 +1085,3 @@ const ClientFileUpload = () => {
 export default ClientFileUpload;
 // ===============================
 // ===============================
-
