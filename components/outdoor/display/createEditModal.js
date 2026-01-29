@@ -17,13 +17,24 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
 
 const initialState = {
-  country: "",
+  agencyID: "",
+  LocationName: "",
+  district: "",
   state: "",
   city: "",
-  locationType: "",
+  LocationType: "",
+  DisplayLandmark:"",
+  DisplayBoardSize: "",
+  BoardLatitude: "",
+  BoardLongitude: '',
+  Facing: '',
   pincode: "",
   latitude: "",
   longitude: "",
+  validityFrom:"",
+  validityTo:"",
+  StartTime:'',
+  EndTime: "", 
   isActive: true,
 };
 
@@ -67,6 +78,7 @@ useEffect(() => {
       "&.Mui-focused fieldset": { borderColor: "#030236" },
     },
   };
+
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -126,13 +138,13 @@ useEffect(() => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item size={{ xs: 12, md: 4 }}>
+        <Grid item size={{ xs: 12, md: 4 }}>
               <TextField fullWidth
 
                 sx={inputStyle} label="City" onChange={handleChange} value={formData.city} name="city" />
             </Grid>
 
-            <Grid item size={{ xs: 12, md: 4 }}>
+        <Grid item size={{ xs: 12, md: 4 }}>
               <TextField fullWidth label="District"
                 select
                 name="district"

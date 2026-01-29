@@ -1,25 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import ROService from "@/services/ROServices";
-//import axios from "axios";
-import axiosClient from "@/lib/axiosClient";
 
 const vehicleSlice = createSlice({
-  name: "realease",
+  name: "vehicle",
   initialState: {
     value: 0,
-    uploadModalShow: false,
+    ModalShow: false,
     statusModalShow: false,
-    roDetails:{
-      financial_year:'',
-      avak_ref_id:'',
-      advt_no:'',
-    }
+    
   },
   reducers: {
-    toggleUploadModal: (state, action) =>{
-      state.uploadModalShow = !state.uploadModalShow
-      state.roDetails= action?.payload || {}
+    toggleCreateModal: (state, action) =>{
+      console.log("calling store function ")
+      state.ModalShow= action?.payload?.show 
+      console.log(state.ModalShow)
+
     },
     toggleStatusModal: (state, action) =>{
       state.statusModalShow = !state.statusModalShow
@@ -39,5 +34,5 @@ const vehicleSlice = createSlice({
 
 
 
-export const { increment, decrement, toggleUploadModal, toggleStatusModal } = vehicleSlice.actions;
+export const { toggleCreateModal, } = vehicleSlice.actions;
 export default vehicleSlice.reducer;

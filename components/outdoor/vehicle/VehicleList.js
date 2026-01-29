@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import outdoorService from "@/services/outdoorServices";
 import { Button, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { toggleCreateModal } from "@/store/modules/outdoor/vehicleSlice.js";
 
 import {
   Box,
@@ -18,9 +19,17 @@ import {
   Avatar,
 } from "@mui/material";
 
+import { useSelector, useDispatch } from "react-redux";
 const DisplayBoardTable = () => {
+  
+const ModalShow = useSelector((state) => state.vehicle.ModalShow);
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
-
+  const toggleUploadDialog = () =>{
+    dispatch(toggleCreateModal({
+      show: true,  
+    }))
+  }
   useEffect(() => {
     const fetchBoards = async () => {
       try {
@@ -31,7 +40,7 @@ const DisplayBoardTable = () => {
       }
     };
     fetchBoards();
-  }, []);
+  }, [ModalShow]);
 
   return (
     <Box sx={{ p: 4, backgroundColor: "#fafafa", minHeight: "100vh" }}>
@@ -78,7 +87,7 @@ const DisplayBoardTable = () => {
     }}
     onClick={() => {
       // open create vehicle dialog
-      console.log("Create Vehicle Clicked");
+      toggleUploadDialog()
     }}
   >
     Create Vehicle
