@@ -15,12 +15,11 @@ import {
   Typography,
   Alert,
   InputAdornment,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import Image from "next/image";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import LogiImg from "@/public/images/logo_samvad.png"
-
+import LogiImg from "@/public/images/logo_samvad.png";
 
 export default function LoginPage() {
   const [userType, setUserType] = useState({ id: "", code: "", name: "" });
@@ -30,7 +29,7 @@ export default function LoginPage() {
   const [userInput, setUserInput] = useState("");
   const [error, setError] = useState("");
   const [userTypeList, setUserTypeList] = useState([]);
-const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   // Generate Captcha
   const generateCaptcha = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -74,7 +73,7 @@ const [showPassword, setShowPassword] = useState(false);
 
     try {
       const res = await axios.post(
-        "http://103.79.34.50:8082/api/Login/cgsamvadlogin",
+        "http://103.79.34.50:8083/api/Login/cgsamvadlogin",
         {
           usertypecode: userType.code,
           userid: username,
@@ -83,12 +82,10 @@ const [showPassword, setShowPassword] = useState(false);
         },
       );
       console.log("Login Path from API:", res.data);
-      if (res.data?.status==200) {
+      if (res.data?.status == 200) {
         // ✅ CHECK LOGIN PATH (DEBUG)
 
-        console.log("hhhh",res.data.result[0].loginpath
-
-        )
+        console.log("hhhh", res.data.result[0].loginpath);
 
         // ✅ External redirect (BEST)
         setTimeout(() => {
@@ -139,21 +136,22 @@ const [showPassword, setShowPassword] = useState(false);
                 sx={{
                   width: "45px",
                   height: "45px",
-               
+
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: "26px",
                   fontWeight: "bold",
-              
                 }}
               >
-                <Image src={LogiImg}
-                            alt="NIC Logo"
-                            height={48}
-                            style={{ width: "auto" }}
-                            priority/>
+                <Image
+                  src={LogiImg}
+                  alt="NIC Logo"
+                  height={48}
+                  style={{ width: "auto" }}
+                  priority
+                />
               </Box>
               <Typography
                 sx={{
@@ -273,27 +271,26 @@ const [showPassword, setShowPassword] = useState(false);
               sx={{ mb: 2 }}
             /> */}
 
-            
-<TextField
-  fullWidth
-  type={showPassword ? "text" : "password"}
-  placeholder="Password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  sx={{ mb: 2 }}
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton
-          onClick={() => setShowPassword(!showPassword)}
-          edge="end"
-        >
-          {showPassword ? <VisibilityOff /> : <Visibility />}
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-/>
+            <TextField
+              fullWidth
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
 
             {/* Captcha */}
             <Box sx={{ mb: 2 }}>

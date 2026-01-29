@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import axiosClient from "@/lib/axiosClient";
 
 import {
   Box,
@@ -24,8 +25,8 @@ const CreateNewRequest = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3080/api/createnewrequest"
+        const res = await axiosClient.get(
+          "http://103.79.34.50:3080/api/createnewrequest",
         );
         setCategories(res.data || []);
       } catch (error) {
@@ -59,79 +60,78 @@ const CreateNewRequest = () => {
         </Stack>
       ) : (
         <> */}
-          {/* ---------- Category Buttons ---------- */}
-          <Stack
-            direction="row"
-            justifyContent="center"
-            flexWrap="wrap"
-            gap={1.5}
-            mb={4}
-          >
-            {categories.map((item) => {
-              const isSelected =
-                selectedCategory?.cat_id === item.cat_id;
+      {/* ---------- Category Buttons ---------- */}
+      <Stack
+        direction="row"
+        justifyContent="center"
+        flexWrap="wrap"
+        gap={1.5}
+        mb={4}
+      >
+        {categories.map((item) => {
+          const isSelected = selectedCategory?.cat_id === item.cat_id;
 
-              const displayText = item.cat_text
-                ? item.cat_text.split("-")[0].trim()
-                : "";
+          const displayText = item.cat_text
+            ? item.cat_text.split("-")[0].trim()
+            : "";
 
-              return (
-                <Button
-                  key={item.cat_id}
-                  variant={isSelected ? "contained" : "outlined"}
-                  color={isSelected ? "inherit" : "secondary"}
-                  sx={{
-                    borderRadius: "999px",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    px: 2.5,
-                    py: 0.8,
-                    textTransform: "none",
-                    bgcolor: isSelected ? "#000" : "transparent",
-                    color: isSelected ? "#fff" : "inherit",
-                    "&:hover": {
-                      bgcolor: isSelected ? "#000" : "rgba(0,0,0,0.04)",
-                    },
-                  }}
-                  onClick={() => setSelectedCategory(item)}
-                >
-                  {displayText}
-                </Button>
-              );
-            })}
-          </Stack>
-
-          {/* ---------- Selected Category & Form ---------- */}
-          {selectedCategory && (
-            <Card
-              elevation={3}
+          return (
+            <Button
+              key={item.cat_id}
+              variant={isSelected ? "contained" : "outlined"}
+              color={isSelected ? "inherit" : "secondary"}
               sx={{
-                maxWidth: "100%",
-                borderRadius: 2,
+                borderRadius: "999px",
+                fontSize: "14px",
+                fontWeight: 600,
+                px: 2.5,
+                py: 0.8,
+                textTransform: "none",
+                bgcolor: isSelected ? "#000" : "transparent",
+                color: isSelected ? "#fff" : "inherit",
+                "&:hover": {
+                  bgcolor: isSelected ? "#000" : "rgba(0,0,0,0.04)",
+                },
               }}
+              onClick={() => setSelectedCategory(item)}
             >
-              <Box
-                textAlign="center"
-                py={1.5}
-                sx={{
-                  backgroundColor: "#000",
-                  color: "#fff",
-                  borderRadius: "16px",
-                  mx: 2,
-                  mt: 2,
-                }}
-              >
-                <Typography fontWeight="bold" fontSize="14px">
-                  {selectedCategory.cat_text}
-                </Typography>
-              </Box>
+              {displayText}
+            </Button>
+          );
+        })}
+      </Stack>
 
-              <CardContent>
-                <RequestForm category={selectedCategory} />
-              </CardContent>
-            </Card>
-          )}
-        {/* </>
+      {/* ---------- Selected Category & Form ---------- */}
+      {selectedCategory && (
+        <Card
+          elevation={3}
+          sx={{
+            maxWidth: "100%",
+            borderRadius: 2,
+          }}
+        >
+          <Box
+            textAlign="center"
+            py={1.5}
+            sx={{
+              backgroundColor: "#000",
+              color: "#fff",
+              borderRadius: "16px",
+              mx: 2,
+              mt: 2,
+            }}
+          >
+            <Typography fontWeight="bold" fontSize="14px">
+              {selectedCategory.cat_text}
+            </Typography>
+          </Box>
+
+          <CardContent>
+            <RequestForm category={selectedCategory} />
+          </CardContent>
+        </Card>
+      )}
+      {/* </>
       )} */}
     </Box>
   );

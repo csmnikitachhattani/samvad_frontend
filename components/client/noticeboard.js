@@ -22,7 +22,7 @@ const ClientNotices = () => {
     const fetchNotices = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3080/api/get-clientnotices"
+          "http://103.79.34.50:3080/api/get-clientnotices",
         );
         setNotices(res.data.data || []);
       } catch (err) {

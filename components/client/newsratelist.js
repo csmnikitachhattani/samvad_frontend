@@ -34,9 +34,7 @@ const NewsRatesList = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        "http://localhost:3080/api/get-news-rate"
-      );
+      const res = await axios.get("http://103.79.34.50:3080/api/get-news-rate");
       setData(res.data || []);
     } catch (err) {
       console.error(err);
@@ -55,11 +53,11 @@ const NewsRatesList = () => {
         rows.push({
           "Sr No.": np.sr_no,
           "NP Name": np.NP,
-          "Sno": i + 1,
-          "Category": r.rate_category_name,
+          Sno: i + 1,
+          Category: r.rate_category_name,
           "CC Rate ₹": r.cc_rate,
           "SC Rate ₹": r.sc_rate,
-          "Circulation": r.no_of_circulation,
+          Circulation: r.no_of_circulation,
           "From Date": r.from_date,
           "To Date": r.to_date,
         });
@@ -127,11 +125,7 @@ const NewsRatesList = () => {
           Total {data.length}
         </Typography>
 
-        <Button
-          variant="outlined"
-          color="success"
-          onClick={exportToExcel}
-        >
+        <Button variant="outlined" color="success" onClick={exportToExcel}>
           Export Excel
         </Button>
       </Stack>
@@ -163,8 +157,7 @@ const NewsRatesList = () => {
                 {currentData.map((np, idx) => (
                   <React.Fragment key={np.np_cd}>
                     {np.rates.map((r, i) => {
-                      const bg =
-                        idx % 2 === 0 ? "#ffffff" : "#f5f5f5";
+                      const bg = idx % 2 === 0 ? "#ffffff" : "#f5f5f5";
 
                       return (
                         <TableRow key={i} sx={{ background: bg }}>
@@ -228,7 +221,7 @@ const NewsRatesList = () => {
                 >
                   {num}
                 </Button>
-              )
+              ),
             )}
 
             <Button
@@ -295,7 +288,7 @@ export default NewsRatesList;
 //   const fetchData = async () => {
 //     try {
 //       setLoading(true);
-//       const res = await axios.get("http://localhost:3080/api/get-news-rate");
+//       const res = await axios.get("http://103.79.34.50:3080/api/get-news-rate");
 //       setData(res.data || []);
 //       setFilteredData(res.data || []);
 //     } catch (err) {

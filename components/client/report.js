@@ -33,10 +33,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 // 🔴 IMPORT HERE
-import {
-  initLocalStorage,
-  fetchClientIP,
-} from "@/app/utils/initClientStorage";
+import { initLocalStorage, fetchClientIP } from "@/app/utils/initClientStorage";
 
 const RECORDS_PER_PAGE = 20;
 
@@ -46,9 +43,7 @@ const Report = () => {
 
   // 🔴 SAFE LOCALSTORAGE READ
   const financial_year =
-    typeof window !== "undefined"
-      ? localStorage.getItem("financial_year")
-      : "";
+    typeof window !== "undefined" ? localStorage.getItem("financial_year") : "";
 
   const user_id =
     typeof window !== "undefined" ? localStorage.getItem("user_id") : "";
@@ -79,7 +74,7 @@ const Report = () => {
   const loadCategory = useCallback(async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3080/api/createnewrequest"
+        "http://103.79.34.50:3080/api/createnewrequest",
       );
       setCategoryList(res.data?.data || res.data || []);
     } catch {
@@ -93,7 +88,7 @@ const Report = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:3080/api/get-client-advt-request",
+        "http://103.79.34.50:3080/api/get-client-advt-request",
         {
           params: {
             financial_year,
@@ -102,7 +97,7 @@ const Report = () => {
             category,
             ip_address: ipAddress, // 🔴 OPTIONAL USE
           },
-        }
+        },
       );
       setData(res.data?.data || []);
     } finally {
