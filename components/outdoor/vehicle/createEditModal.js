@@ -1,6 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import axiosClient from "@/lib/axiosClient";
+
+import { toggleCreateModal } from "@/store/modules/outdoor/vehicleSlice.js";
+
+import { useSelector, useDispatch } from "react-redux";
 import {
   Dialog,
   DialogTitle,
@@ -13,7 +17,17 @@ import {
   Typography,
   InputAdornment,
 } from "@mui/material";
-const VehicleModal = ({open, onClose, onSubmit }) => {
+
+const VehicleModal = ({open=true, onClose, onSubmit }) => {
+
+  
+const dispatch = useDispatch();
+const ModalShow = useSelector((state) => state.vehicle.ModalShow);
+const closeUploadDialog = () =>{
+  dispatch(toggleCreateModal({
+    show: false,  
+  }))
+}
   const [data, setData] = useState({
     agencyId: "",
     vehicleNo: "",
@@ -25,31 +39,46 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
     createdBy: "",
     createdIpAddress: "",
   });
-  const createVehicle = async (payload) => {
-    const formData = new FormData();
+  const createVehicle = async () => {
+    try {
+      const formData = new FormData();
   
-    // Required fields
-    formData.append("AgencyId", data.agencyId);
-    formData.append("VehicleNo", data.vehicleNo);
-    formData.append("OwnerName", data.ownerName);
-    formData.append("FitnessUpto", '2026-01-26T14:20:06.038Z');
-    formData.append("InsuranceUpto", '2026-01-26T14:20:06.038Z');
+      // Required fields
+      formData.append("AgencyId", data.agencyId);
+      formData.append("VehicleNo", data.vehicleNo);
+      formData.append("OwnerName", data.ownerName);
+      formData.append("FitnessUpto", "2026-01-26T14:20:06.038Z");
+      formData.append("InsuranceUpto", "2026-01-26T14:20:06.038Z");
   
-    // File
-    if (data.rcPhotoFile) {
-      formData.append("RcPhotoFile", data.rcPhotoFile);
+      // File
+      if (data.rcPhotoFile) {
+        formData.append("RcPhotoFile", data.rcPhotoFile);
+      }
+  
+      // Optional / audit fields
+      formData.append("CreatedBy", data.createdBy);
+      formData.append("CreatedIpAddress", data.createdIpAddress);
+  
+      const response = await axiosClient.post(
+        "http://103.79.34.50:8083/api/ManageMaster/createledVehicle",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      // ✅ Close dialog ONLY after successful API call
+      closeUploadDialog();
+  
+      return response;
+    } catch (error) {
+      console.error("Create vehicle failed:", error);
+      throw error; // rethrow so caller can handle toast/snackbar
     }
-  
-    // Optional / audit fields
-    formData.append("CreatedBy", data.createdBy);
-    formData.append("CreatedIpAddress", data.createdIpAddress);
-  
-    return axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/createledVehicle", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
   };
+  
   
 
   const handleChange = (e) => {
@@ -77,7 +106,7 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={ModalShow} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle
         sx={{
           backgroundColor: "#0f4c3a",
@@ -85,7 +114,7 @@ const VehicleModal = ({open, onClose, onSubmit }) => {
           fontWeight: 600,
         }}
       >
-        Vehicle Registration Details
+        Vehicle Registration Details {ModalShow}
       </DialogTitle>
 
       <DialogContent sx={{ backgroundColor: "#f4fbf9", mt: 1 }}>
