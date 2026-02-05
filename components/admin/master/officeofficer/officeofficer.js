@@ -66,16 +66,6 @@ const OfficerMappingUI = () => {
   const [showTable, setShowTable] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
 
-  // Sample data
-  // const baseDepartments = ['जनसंपर्क विभाग/B024'];
-  // const districts = ['रायपुर/11'];
-  // const officeLevels = ['जिला कार्यालय/03'];
-  // const offices = ['जनसंपर्क संचालनालय/2211030356'];
-  // const sections = ['--Select Section--', 'जनसंपर्क विभाग', 'जनसंपर्क संचालनालय', 'रायपुर'];
-  // const officers = ['--Select Officer--'];
-  // const designations = ['--Select Designation--', 'जनसंपर्क संचालनालय'];
-  // const statuses = ['Active', 'Inactive'];
-
   const [baseDepartments, setBaseDepartments] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [officeLevels, setOfficeLevels] = useState([]);
@@ -83,68 +73,7 @@ const OfficerMappingUI = () => {
   const [sections, setSections] = useState([]);
   const [officers, setOfficers] = useState([]);
   const [designations, setDesignations] = useState([]);
-  const [fachdata, setFetchData] = useState([]);
-
-  // const fetchOfficeLevels = async () => {
-  //   const res = await axios.get(`/api/ManageMaster/getofficelevel/${deptcode}`);
-  //   setOfficeLevels(res.data);
-  // };
-
-  // const fetchOffices = async () => {
-  //   const res = await axios.get(`/api/ManageMaster/getofficename/${distcode}/${deptcode}`);
-  //   setOffices(res.data);
-  // };
-
-  // const fetchSections = async () => {
-  //   const res = await axios.get(`/api/ManageMaster/getclientsection/${distcode}/${deptcode}`);
-  //   setSections(["--Select Section--", ...res.data]);
-  // };
-
-  // const fetchOfficers = async () => {
-  //   const res = await axios.get(`/api/ManageMaster/getofficer/${distcode}/${deptcode}`);
-  //   setOfficers(["--Select Officer--", ...res.data]);
-  // };
-
-  // const fetchDesignations = async () => {
-  //   const res = await axios.get("/api/ManageMaster/getclientdesignation");
-  //   setDesignations(["--Select Designation--", ...res.data]);
-  // };
-
-  // const fatchData=async()=>{
-  //   const res =await axios.get(`/api/ManageMaster/getofficeofficerdata`);
-  // setFetchData(res.data.data);
-  // }
-
-  // const mappedOfficers = [
-  //   {
-  //     id: 1,
-  //     officeName: 'Chhattisgarh Samvad / (2211020419)',
-  //     chiefOfficer: 'Chief Executive Officer, Chhattisgarh Samvad, रायपुर',
-  //     code: '1411000658',
-  //     status: 'Active',
-  //   },
-  //   {
-  //     id: 2,
-  //     officeName: 'जनसंपर्क संचालनालय / (2211030356)',
-  //     chiefOfficer: 'मुख्य कार्यपालन अधिकारी, छत्तीसगढ़ संवाद, रायपुर',
-  //     code: '1411000623',
-  //     status: 'Active',
-  //   },
-  //   {
-  //     id: 3,
-  //     officeName: 'जनसंपर्क संचालनालय / (2211030356)',
-  //     chiefOfficer: 'संचालक मुरादाबाद संवाद आयुक्त, जनसंपर्क संचालनालय, रायपुर',
-  //     code: '1411000596',
-  //     status: 'Active',
-  //   },
-  //   {
-  //     id: 4,
-  //     officeName: 'जनसंपर्क संचालनालय / (2211030356)',
-  //     chiefOfficer: 'उप संचालक (डी.पी.), जनसंपर्क संचालनालय, रायपुर',
-  //     code: '1411000612',
-  //     status: 'Active',
-  //   },
-  // ];
+  const [fetchofficeofficerdata, setFetchOfficeOfficerData] = useState([]);
 
   // ==================base department fetching========================
   useEffect(() => {
@@ -227,14 +156,14 @@ const OfficerMappingUI = () => {
     fatchOffices(formData.district, formData.baseDepartment);
   }, [formData.district, formData.baseDepartment]);
 
-// =======================Section fetching========================
-useEffect(() => {
-  const fetchSections = async (districtid, deptId) => { 
-    if (!districtid || !deptId) {
-      setSections([]);
-      return;
-    }
-   try {
+  // =======================Section fetching========================
+  useEffect(() => {
+    const fetchSections = async (districtid, deptId) => {
+      if (!districtid || !deptId) {
+        setSections([]);
+        return;
+      }
+      try {
         const res = await axios.get(
           `http://103.79.34.50:8083/api/ManageMaster/getclientsection/${districtid}/${deptId}`,
         );
@@ -247,18 +176,18 @@ useEffect(() => {
         console.error("Error fetching Sections", error);
       }
     };
-  fetchSections(formData.district, formData.baseDepartment);
-},[formData.district, formData.baseDepartment])
+    fetchSections(formData.district, formData.baseDepartment);
+  }, [formData.district, formData.baseDepartment]);
 
-// =================================officer fetching========================
+  // =================================officer fetching========================
 
-useEffect(() => {
-  const fetchOfficer = async (districtid, deptId) => { 
-    if (!districtid || !deptId) {
-      setOfficers([]);
-      return;
-    }
-   try {
+  useEffect(() => {
+    const fetchOfficer = async (districtid, deptId) => {
+      if (!districtid || !deptId) {
+        setOfficers([]);
+        return;
+      }
+      try {
         const res = await axios.get(
           `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
         );
@@ -266,17 +195,15 @@ useEffect(() => {
           "Sections:",
           `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
         );
-    setOfficers(res.data.result || []);
+        setOfficers(res.data.result || []);
       } catch (error) {
         console.error("Error fetching Officer", error);
       }
     };
- fetchOfficer(formData.district, formData.baseDepartment);
-},[formData.district, formData.baseDepartment])
+    fetchOfficer(formData.district, formData.baseDepartment);
+  }, [formData.district, formData.baseDepartment]);
 
-
-// =====================Designations======================
-
+  // =====================Designations======================
 
   useEffect(() => {
     const fetchDesignation = async () => {
@@ -291,31 +218,188 @@ useEffect(() => {
         console.error("Error fetching Designations", error);
       }
     };
-   fetchDesignation();
+    fetchDesignation();
   }, []);
 
+  // =================Fetch OfficeOfficer Data==================
+  // useEffect(() => {
+  //   const fetchOfficeOfficerData = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata")
+  //          console.log("officeofficer:", res);
+  //       }
+  //         catch (error) {
+  //       console.error("Error fetching Office Officer data", error);
+  //     }
+  //       }
+  //     fetchOfficeOfficerData();
+  //     },[])
+  // =============================
+  // useEffect(() => {
+  //   console.group("🔄 OfficeOfficer useEffect Triggered");
 
+  //   console.log("FormData Snapshot 👉", formData);
+
+  //   // 🔒 minimum required fields
+  //   if (!formData.baseDepartment || !formData.district) {
+  //     console.warn(
+  //       "⏳ Waiting for required fields:",
+  //       "baseDepartment =", formData.baseDepartment,
+  //       "district =", formData.district
+  //     );
+  //     console.groupEnd();
+  //     return;
+  //   }
+
+  //   let isMounted = true;
+
+  //   const fetchOfficeOfficerData = async () => {
+  //     const payload = {
+  //       baseDepartment: formData.baseDepartment,
+  //       district: formData.district,
+  //       officeLevel: formData.officeLevel || "",
+  //       office: formData.office || "",
+  //       section: formData.section || "",
+  //       officer: formData.officer || "",
+  //     };
+
+  //     try {
+  //       console.log("📤 API REQUEST BODY 👉", payload);
+
+  //       const res = await axios.post(
+  //         "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata",
+  //         payload
+  //       );
+
+  //       console.log("📥 RAW API RESPONSE 👉", res);
+
+  //       if (isMounted) {
+  //         console.log("✅ API RESULT 👉", res.data?.result);
+  //         setFetchOfficeOfficerData(res.data?.result || []);
+  //       } else {
+  //         console.warn("⚠️ Component unmounted, skipping state update");
+  //       }
+  //     } catch (error) {
+  //       console.error(
+  //         "❌ OfficeOfficer API ERROR",
+  //         error.response?.data || error.message
+  //       );
+  //     } finally {
+  //       console.groupEnd();
+  //     }
+  //   };
+
+  //   fetchOfficeOfficerData();
+
+  //   return () => {
+  //     isMounted = false;
+  //     console.log("🧹 Cleanup: useEffect unmounted");
+  //   };
+  // }, [
+  //   formData.baseDepartment,
+  //   formData.district,
+  //   formData.officeLevel,
+  //   formData.office,
+  //   formData.section,
+  //   formData.officer,
+  // ]);
+
+  // table Header=======================
+
+  useEffect(() => {
+    // ✅ minimum requirement
+    if (!formData.baseDepartment || !formData.district) {
+      console.log("Waiting for baseDepartment & district...");
+      return;
+    }
+
+    const fetchOfficeOfficerData = async () => {
+      try {
+        console.log("API HIT with params 👉", {
+          baseDeptCode: formData.baseDepartment,
+          districtCode: formData.district,
+          officeLevel: formData.officeLevel,
+          office: formData.office,
+          section: formData.section,
+          officer: formData.officer,
+        });
+
+        const res = await axios.post(
+          "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata",
+          {
+            params: {
+              baseDepartment: formData.baseDepartment,
+              district: formData.district,
+              officeLevel: formData.officeLevel || null,
+              office: formData.office || null,
+              section: formData.section || null,
+              officer: formData.officer || null,
+            },
+          },
+        );
+
+        console.log("officeofficer RESULT 👉", res.data);
+        setFetchOfficeOfficerData(res.data.result || []);
+      } catch (error) {
+        console.error("OfficeOfficer API ERROR ❌", error);
+      }
+    };
+
+    fetchOfficeOfficerData();
+  }, [
+    formData.baseDepartment, // first trigger
+    formData.district, // first trigger
+    formData.officeLevel, // later triggers
+    formData.office,
+    formData.section,
+    formData.officer,
+  ]);
+
+  // ====================================================================
+  const selectedDepartment = baseDepartments.find(
+    (dept) => dept.deptid === formData.baseDepartment,
+  );
+
+  const selectedDistrict = districts.find(
+    (dist) => dist.dstrictid === formData.district,
+  );
 
   // =========================handleChange===========
 
+  // const handleChange = (name, value) => {
+  //   console.log("Changed:", name, value);
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+
+  //   // when base department changes
+  //   if (name === "baseDepartment") {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       baseDepartment: value,
+  //       officeLevel: "", // reset office level
+  //     }));
+
+  //     setOfficeLevels(value);
+  //   }
+  // };
+
   const handleChange = (name, value) => {
-    console.log("Changed:", name, value);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "baseDepartment" && {
+        officeLevel: "",
+        office: "",
+        section: "",
+        officer: "",
+      }),
     }));
-
-    // when base department changes
-    if (name === "baseDepartment") {
-      setFormData((prev) => ({
-        ...prev,
-        baseDepartment: value,
-        officeLevel: "", // reset office level
-      }));
-
-      setOfficeLevels(value);
-    }
+    console.log("Dropdown changed:", name, value);
   };
+  // =============================
 
   const handleSubmit = () => {
     setShowAlert(true);
@@ -339,23 +423,6 @@ useEffect(() => {
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f5f7fa" }}>
-      {/* App Bar */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: "#1976d2" }}>
-        <Toolbar>
-          <Dashboard sx={{ mr: 2 }} />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: 600 }}
-          >
-            Office Officer Mapping System
-          </Typography>
-          <IconButton color="inherit">
-            <Settings />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Alert */}
         <Collapse in={showAlert}>
@@ -440,32 +507,29 @@ useEffect(() => {
                 </Grid>
 
                 {/*==================== Office Level */}
-               <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
-  <TextField
-    select
-    fullWidth
-    label="Office Level"
-    required
-    value={formData.officeLevel || ""}
-    onChange={(e) => handleChange("officeLevel", e.target.value)}
-    disabled={!formData.baseDepartment}
-  >
-    {/* ALWAYS present */}
-    <MenuItem value="">
-      Select Office Level
-    </MenuItem>
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Office Level"
+                    required
+                    value={formData.officeLevel || ""}
+                    onChange={(e) =>
+                      handleChange("officeLevel", e.target.value)
+                    }
+                    disabled={!formData.baseDepartment}
+                  >
+                    {/* ALWAYS present */}
+                    <MenuItem value="">Select Office Level</MenuItem>
 
-    {Array.isArray(officeLevels) &&
-      officeLevels.map((offLevel, index) => (
-        <MenuItem
-          key={index}
-          value={offLevel.officeLevelCode}
-        >
-          {offLevel.officeLevelName}
-        </MenuItem>
-      ))}
-  </TextField>
-</Grid>
+                    {Array.isArray(officeLevels) &&
+                      officeLevels.map((offLevel, index) => (
+                        <MenuItem key={index} value={offLevel.officeLevelCode}>
+                          {offLevel.officeLevelName}
+                        </MenuItem>
+                      ))}
+                  </TextField>
+                </Grid>
 
                 {/* ====================Office========= */}
                 <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
@@ -478,20 +542,16 @@ useEffect(() => {
                     onChange={(e) => handleChange("office", e.target.value)}
                     disabled={!formData.baseDepartment || !formData.district}
                   >
-
-                     {Array.isArray(offices) &&
-      offices.map((offic, index) => (
-        <MenuItem
-          key={index}
-             value={offic.newOfficeCode}
-        >
-          {offic.officeName}
-        </MenuItem>
-      ))}
+                    {Array.isArray(offices) &&
+                      offices.map((offic, index) => (
+                        <MenuItem key={index} value={offic.newOfficeCode}>
+                          {offic.officeName}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 </Grid>
 
- {/* ====================Section========= */}
+                {/* ====================Section========= */}
                 <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
                     select
@@ -502,21 +562,16 @@ useEffect(() => {
                     onChange={(e) => handleChange("section", e.target.value)}
                     disabled={!formData.baseDepartment || !formData.district}
                   >
-
-      {Array.isArray(sections) &&
-     sections.map((clirntsec,index) => (
-        <MenuItem
-          key={index}
-                        value={clirntsec.sectionCode}
-        >
-       {clirntsec.sectionName}
-        </MenuItem>
-      ))}
-
+                    {Array.isArray(sections) &&
+                      sections.map((clirntsec, index) => (
+                        <MenuItem key={index} value={clirntsec.sectionCode}>
+                          {clirntsec.sectionName}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 </Grid>
-{/* ==============================officer================ */}
-  <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+                {/* ==============================officer================ */}
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
                     select
                     fullWidth
@@ -526,21 +581,16 @@ useEffect(() => {
                     onChange={(e) => handleChange("officer", e.target.value)}
                     disabled={!formData.baseDepartment || !formData.district}
                   >
-
-      {Array.isArray(officers) &&
-  officers.map((officr,index) => (
-        <MenuItem
-          key={index}
-                        value={officr.employeeId}
-        >
-       {officr.employeeName}
-        </MenuItem>
-      ))}
-
+                    {Array.isArray(officers) &&
+                      officers.map((officr, index) => (
+                        <MenuItem key={index} value={officr.employeeId}>
+                          {officr.employeeName}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 </Grid>
 
- {/*================ Designations================== */}
+                {/*================ Designations================== */}
 
                 <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
@@ -555,7 +605,7 @@ useEffect(() => {
                     variant="outlined"
                   >
                     {Array.isArray(designations) &&
-                     designations.map((desig, index) => (
+                      designations.map((desig, index) => (
                         <MenuItem key={index} value={desig.designationId}>
                           {desig.designationName}
                         </MenuItem>
@@ -563,12 +613,10 @@ useEffect(() => {
                   </TextField>
                 </Grid>
 
-  
-                {/* Status */}
-                {/*================ status ================== */}
+                {/*================ commission ================== */}
 
-                {/* <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
-                  <TextField
+               
+                  {/* <TextField
                     select
                     fullWidth
                     label="Base Department"
@@ -582,51 +630,63 @@ useEffect(() => {
                     {Array.isArray(baseDepartments) &&
                       baseDepartments.map((dept, index) => (
                         <MenuItem key={index} value={dept.deptid}>
-                          {dept.deptname}
+                          {dept.commisionPercentage}
                         </MenuItem>
                       ))}
-                  </TextField>
-                </Grid>
+                  </TextField> */}
 
-                  {/*================ Base Department================== */}
+                  <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+  <Typography variant="subtitle2" color="text.secondary">
+    Commision Percentage
+  </Typography>
 
-                {/* <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
-                  <TextField
-                    select
-                    fullWidth
-                    label="Base Department"
-                    required
-                    value={formData.baseDepartment}
-                    onChange={(e) =>
-                      handleChange("baseDepartment", e.target.value)
-                    }
-                    variant="outlined"
-                  >
-                    {Array.isArray(baseDepartments) &&
-                      baseDepartments.map((dept, index) => (
-                        <MenuItem key={index} value={dept.deptid}>
-                          {dept.deptname}
-                        </MenuItem>
-                      ))}
-                  </TextField>
-                </Grid> */} 
+  <Typography variant="body1" fontWeight={600}>
+    {
+      baseDepartments.find(
+        (dept) => dept.deptid === formData.baseDepartment
+      )?.commisionPercentage ||""
+    }
+  </Typography>
+</Grid>
 
+             
 
+                      {/* discountPercentage================== */}
+ <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+  <Typography variant="subtitle2" color="text.secondary">
+    Discount Percentage
+  </Typography>
+
+  <Typography variant="body1" fontWeight={600}>
+    {
+      baseDepartments.find(
+        (dept) => dept.deptid === formData.baseDepartment
+      )?.discountPercent ||"0"
+    }
+  </Typography>
+</Grid>
 
               </Grid>
 
               {/* Action Buttons */}
-              <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 2,
+                  mt: 4,
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button
                   variant="outlined"
                   startIcon={<Clear />}
                   onClick={handleClear}
                   sx={{
-                    borderColor: '#667eea',
-                    color: '#667eea',
-                    '&:hover': {
-                      borderColor: '#764ba2',
-                      bgcolor: 'rgba(102, 126, 234, 0.04)',
+                    borderColor: "#667eea",
+                    color: "#667eea",
+                    "&:hover": {
+                      borderColor: "#764ba2",
+                      bgcolor: "rgba(102, 126, 234, 0.04)",
                     },
                   }}
                 >
@@ -637,9 +697,11 @@ useEffect(() => {
                   startIcon={<CheckCircle />}
                   onClick={handleSubmit}
                   sx={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #764ba2 0%, #667eea 100%)",
                     },
                   }}
                 >
@@ -663,13 +725,15 @@ useEffect(() => {
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                List Of Mapped Office In जनसंपर्क विभाग/B024, रायपुर/11
+              <Typography variant="h7" sx={{ fontWeight: 600 }}>
+                {selectedDepartment && selectedDistrict
+                  ? `${selectedDepartment.deptname}/${selectedDepartment.deptid}, ${selectedDistrict.districtname}/${selectedDistrict.dstrictid}`
+                  : "List Of Mapped Office"}
               </Typography>
             </Box>
 
-            <Collapse in={showTable}>
-              {/* <TableContainer>
+            {/* <Collapse in={showTable}>
+              <TableContainer>
                 <Table sx={{ minWidth: 650 }}>
                   <TableHead>
                     <TableRow sx={{ bgcolor: '#f8f9fa' }}>
@@ -713,8 +777,8 @@ useEffect(() => {
                     ))}
                   </TableBody>
                 </Table>
-              </TableContainer> */}
-            </Collapse>
+              </TableContainer>
+            </Collapse> */}
 
             <Box sx={{ p: 2, bgcolor: "#f8f9fa", textAlign: "center" }}>
               <Typography variant="body2" color="text.secondary">
