@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from "react";
 
 import axios from "axios";
 
@@ -31,7 +31,8 @@ import {
   Alert,
   Fade,
   Zoom,
-} from '@mui/material';
+} from "@mui/material";
+
 import {
   Search,
   Clear,
@@ -44,21 +45,22 @@ import {
   CheckCircle,
   Settings,
   Dashboard,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
+import { Section } from "lucide-react";
 
 const OfficerMappingUI = () => {
   const [formData, setFormData] = useState({
-    baseDepartment: '',
-    district: '',
-    officeLevel: '',
-    office: '',
-    section: '',
-    officer: '',
-    designation: '',
-    commission: '',
-    discountPercentage: '',
-    status: '',
-    fatchData:[],
+    baseDepartment: "",
+    district: "",
+    officeLevel: "",
+    office: "",
+    section: "",
+    officer: "",
+    designation: "",
+    commission: "",
+    discountPercentage: "",
+    status: "",
+    fatchData: [],
   });
 
   const [showTable, setShowTable] = useState(true);
@@ -75,59 +77,43 @@ const OfficerMappingUI = () => {
   // const statuses = ['Active', 'Inactive'];
 
   const [baseDepartments, setBaseDepartments] = useState([]);
-const [districts, setDistricts] = useState([]);
-const [officeLevels, setOfficeLevels] = useState([]);
-const [offices, setOffices] = useState([]);
-const [sections, setSections] = useState([]);
-const [officers, setOfficers] = useState([]);
-const [designations, setDesignations] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [officeLevels, setOfficeLevels] = useState([]);
+  const [offices, setOffices] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [officers, setOfficers] = useState([]);
+  const [designations, setDesignations] = useState([]);
+  const [fachdata, setFetchData] = useState([]);
 
-const [officerData, setOfficerData] = useState([]);
+  // const fetchOfficeLevels = async () => {
+  //   const res = await axios.get(`/api/ManageMaster/getofficelevel/${deptcode}`);
+  //   setOfficeLevels(res.data);
+  // };
 
+  // const fetchOffices = async () => {
+  //   const res = await axios.get(`/api/ManageMaster/getofficename/${distcode}/${deptcode}`);
+  //   setOffices(res.data);
+  // };
 
+  // const fetchSections = async () => {
+  //   const res = await axios.get(`/api/ManageMaster/getclientsection/${distcode}/${deptcode}`);
+  //   setSections(["--Select Section--", ...res.data]);
+  // };
 
+  // const fetchOfficers = async () => {
+  //   const res = await axios.get(`/api/ManageMaster/getofficer/${distcode}/${deptcode}`);
+  //   setOfficers(["--Select Officer--", ...res.data]);
+  // };
 
+  // const fetchDesignations = async () => {
+  //   const res = await axios.get("/api/ManageMaster/getclientdesignation");
+  //   setDesignations(["--Select Designation--", ...res.data]);
+  // };
 
-const fetchBaseDepartments = async () => {
-  const res = await axios.get("/api/ManageMaster/getdepartmentname");
-  setBaseDepartments(res.data);
-};
-
-
-
-const fetchDistricts = async () => {
-  const res = await axios.get("/api/ManageMaster/getdistrictname");
-  setDistricts(res.data);
-};
-
-const fetchOfficeLevels = async () => {
-  const res = await axios.get(`/api/ManageMaster/getofficelevel/${deptcode}`);
-  setOfficeLevels(res.data);
-};
-
-const fetchOffices = async () => {
-  const res = await axios.get(`/api/ManageMaster/getofficename/${distcode}/${deptcode}`);
-  setOffices(res.data);
-};
-
-const fetchSections = async () => {
-  const res = await axios.get(`/api/ManageMaster/getclientsection/${distcode}/${deptcode}`);
-  setSections(["--Select Section--", ...res.data]);
-};
-
-const fetchOfficers = async () => {
-  const res = await axios.get(`/api/ManageMaster/getofficer/${distcode}/${deptcode}`);
-  setOfficers(["--Select Officer--", ...res.data]);
-};
-
-const fetchDesignations = async () => {
-  const res = await axios.get("/api/ManageMaster/getclientdesignation");
-  setDesignations(["--Select Designation--", ...res.data]);
-};
-
-
-
-
+  // const fatchData=async()=>{
+  //   const res =await axios.get(`/api/ManageMaster/getofficeofficerdata`);
+  // setFetchData(res.data.data);
+  // }
 
   // const mappedOfficers = [
   //   {
@@ -160,8 +146,175 @@ const fetchDesignations = async () => {
   //   },
   // ];
 
-  const handleChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+  // ==================base department fetching========================
+  useEffect(() => {
+    const fetchBaseDepartments = async () => {
+      try {
+        const res = await axios.get(
+          "http://103.79.34.50:8083/api/ManageMaster/getdepartmentname",
+        );
+        console.log("Base Departments:", res);
+        setBaseDepartments(res.data.result || []);
+      } catch (error) {
+        console.error("Error fetching base departments", error);
+      }
+    };
+    fetchBaseDepartments();
+  }, []);
+
+  // ==================district fetching========================
+
+  useEffect(() => {
+    const fatchdistricts = async () => {
+      try {
+        const res = await axios.get(
+          "http://103.79.34.50:8083/api/ManageMaster/getdistrictname",
+        );
+        console.log("district:", res);
+        setDistricts(res.data.result || []);
+      } catch (error) {
+        console.error("Error fetching base departments", error);
+      }
+    };
+    fatchdistricts();
+  }, []);
+
+  // =================Office Level fetching based on selected base department========================
+  useEffect(() => {
+    const fetchOfficeLevels = async (deptId) => {
+      if (!deptId) {
+        setOfficeLevels([]);
+
+        return;
+      }
+
+      try {
+        const res = await axios.get(
+          `http://103.79.34.50:8083/api/ManageMaster/getofficelevel/${deptId}`,
+        );
+
+        setOfficeLevels(res.data.result || []);
+      } catch (error) {
+        console.error("Error fetching office levels", error);
+      }
+    };
+    fetchOfficeLevels(formData.baseDepartment);
+  }, [formData.baseDepartment]);
+
+  // ==================fatch offices======================
+
+  useEffect(() => {
+    const fatchOffices = async (districtid, deptId) => {
+      if (!districtid || !deptId) {
+        setOffices([]);
+
+        return;
+      }
+
+      try {
+        const res = await axios.get(
+          `http://103.79.34.50:8083/api/ManageMaster/getofficename/${districtid}/${deptId}`,
+        );
+        console.log(
+          "offices:",
+          `http://103.79.34.50:8083/api/ManageMaster/getofficename/${districtid}/${deptId}`,
+        );
+        setOffices(res.data.result || []);
+      } catch (error) {
+        console.error("Error fetching office levels", error);
+      }
+    };
+    fatchOffices(formData.district, formData.baseDepartment);
+  }, [formData.district, formData.baseDepartment]);
+
+// =======================Section fetching========================
+useEffect(() => {
+  const fetchSections = async (districtid, deptId) => { 
+    if (!districtid || !deptId) {
+      setSections([]);
+      return;
+    }
+   try {
+        const res = await axios.get(
+          `http://103.79.34.50:8083/api/ManageMaster/getclientsection/${districtid}/${deptId}`,
+        );
+        console.log(
+          "Sections:",
+          `http://103.79.34.50:8083/api/ManageMaster/getclientsection/${districtid}/${deptId}`,
+        );
+        setSections(res.data.result || []);
+      } catch (error) {
+        console.error("Error fetching Sections", error);
+      }
+    };
+  fetchSections(formData.district, formData.baseDepartment);
+},[formData.district, formData.baseDepartment])
+
+// =================================officer fetching========================
+
+useEffect(() => {
+  const fetchOfficer = async (districtid, deptId) => { 
+    if (!districtid || !deptId) {
+      setOfficers([]);
+      return;
+    }
+   try {
+        const res = await axios.get(
+          `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
+        );
+        console.log(
+          "Sections:",
+          `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
+        );
+    setOfficers(res.data.result || []);
+      } catch (error) {
+        console.error("Error fetching Officer", error);
+      }
+    };
+ fetchOfficer(formData.district, formData.baseDepartment);
+},[formData.district, formData.baseDepartment])
+
+
+// =====================Designations======================
+
+
+  useEffect(() => {
+    const fetchDesignation = async () => {
+      try {
+        const res = await axios.get(
+          "http://103.79.34.50:8083/api/ManageMaster/getclientdesignation",
+        );
+        console.log("Designation:", res);
+
+        setDesignations(res.data.result || []);
+      } catch (error) {
+        console.error("Error fetching Designations", error);
+      }
+    };
+   fetchDesignation();
+  }, []);
+
+
+
+  // =========================handleChange===========
+
+  const handleChange = (name, value) => {
+    console.log("Changed:", name, value);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // when base department changes
+    if (name === "baseDepartment") {
+      setFormData((prev) => ({
+        ...prev,
+        baseDepartment: value,
+        officeLevel: "", // reset office level
+      }));
+
+      setOfficeLevels(value);
+    }
   };
 
   const handleSubmit = () => {
@@ -171,26 +324,30 @@ const fetchDesignations = async () => {
 
   const handleClear = () => {
     setFormData({
-      baseDepartment: '',
-      district: '',
-      officeLevel: '',
-      office: '',
-      section: '',
-      officer: '',
-      designation: '',
-      commission: '5',
-      discountPercentage: '10.00',
-      status: 'Active',
+      baseDepartment: "",
+      district: "",
+      officeLevel: "",
+      office: "",
+      section: "",
+      officer: "",
+      designation: "",
+      commission: "",
+      discountPercentage: "",
+      status: " ",
     });
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f7fa' }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "#f5f7fa" }}>
       {/* App Bar */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: '#1976d2' }}>
+      <AppBar position="static" elevation={0} sx={{ bgcolor: "#1976d2" }}>
         <Toolbar>
           <Dashboard sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 600 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: 600 }}
+          >
             Office Officer Mapping System
           </Typography>
           <IconButton color="inherit">
@@ -202,22 +359,32 @@ const fetchDesignations = async () => {
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Alert */}
         <Collapse in={showAlert}>
-          <Alert severity="success" sx={{ mb: 3 }} onClose={() => setShowAlert(false)}>
+          <Alert
+            severity="success"
+            sx={{ mb: 3 }}
+            onClose={() => setShowAlert(false)}
+          >
             Officer mapping saved successfully!
           </Alert>
         </Collapse>
 
         {/* Form Card */}
         <Zoom in={true}>
-          <Card elevation={3} sx={{ mb: 4, borderRadius: 3, overflow: 'visible' }}>
+          <Card
+            elevation={3}
+            sx={{ mb: 4, borderRadius: 3, overflow: "visible" }}
+          >
             <Box
               sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                 p: 3,
-                color: 'white',
+                color: "white",
               }}
             >
-              <Typography variant="h5" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center' }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 600, display: "flex", alignItems: "center" }}
+              >
                 <FilterList sx={{ mr: 1 }} />
                 Officer Mapping Form
               </Typography>
@@ -228,267 +395,224 @@ const fetchDesignations = async () => {
 
             <CardContent sx={{ p: 4 }}>
               <Grid container spacing={3}>
-                {/* Base Department */}
-                <Grid item size={{xs:12, md:6,lg:4}}>
+                {/*================ Base Department================== */}
+
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
                     select
                     fullWidth
                     label="Base Department"
                     required
                     value={formData.baseDepartment}
-                    onChange={(e) => handleChange('baseDepartment', e.target.value)}
+                    onChange={(e) =>
+                      handleChange("baseDepartment", e.target.value)
+                    }
                     variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
                   >
-                    {baseDepartments.map((dept) => (
-                      <MenuItem key={dept} value={dept}>
-                        {dept}
-                      </MenuItem>
-                    ))}
+                    {Array.isArray(baseDepartments) &&
+                      baseDepartments.map((dept, index) => (
+                        <MenuItem key={index} value={dept.deptid}>
+                          {dept.deptname}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 </Grid>
 
-                {/* District */}
-                <Grid item size={{xs:12, md:6,lg:4}}>
+                {/* ========================District============= */}
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
                     select
                     fullWidth
                     label="District"
                     required
                     value={formData.district}
-                    onChange={(e) => handleChange('district', e.target.value)}
+                    onChange={(e) => handleChange("district", e.target.value)}
                     variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
                   >
-                    {districts.map((dist) => (
-                      <MenuItem key={dist} value={dist}>
-                        {dist}
-                      </MenuItem>
-                    ))}
+                    {Array.isArray(districts) &&
+                      districts.map((dist, index) => (
+                        // <MenuItem key={index} value={String(dist.districtid)}>
+                        <MenuItem key={index} value={dist.dstrictid}>
+                          {dist.districtname}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 </Grid>
 
-                {/* Office Level */}
-                <Grid item size={{xs:12, md:6,lg:4}}>
-                  <TextField
-                    select
-                    fullWidth
-                    label="Office Level"
-                    required
-                    value={formData.officeLevel}
-                    onChange={(e) => handleChange('officeLevel', e.target.value)}
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
-                  >
-                    {officeLevels.map((level) => (
-                      <MenuItem key={level} value={level}>
-                        {level}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
+                {/*==================== Office Level */}
+               <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+  <TextField
+    select
+    fullWidth
+    label="Office Level"
+    required
+    value={formData.officeLevel || ""}
+    onChange={(e) => handleChange("officeLevel", e.target.value)}
+    disabled={!formData.baseDepartment}
+  >
+    {/* ALWAYS present */}
+    <MenuItem value="">
+      Select Office Level
+    </MenuItem>
 
-                {/* Office */}
-                <Grid item size= {{xs:12, md:6, lg:4}}>
+    {Array.isArray(officeLevels) &&
+      officeLevels.map((offLevel, index) => (
+        <MenuItem
+          key={index}
+          value={offLevel.officeLevelCode}
+        >
+          {offLevel.officeLevelName}
+        </MenuItem>
+      ))}
+  </TextField>
+</Grid>
+
+                {/* ====================Office========= */}
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
                     select
                     fullWidth
                     label="Office"
                     required
                     value={formData.office}
-                    onChange={(e) => handleChange('office', e.target.value)}
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
+                    onChange={(e) => handleChange("office", e.target.value)}
+                    disabled={!formData.baseDepartment || !formData.district}
                   >
-                    {offices.map((office) => (
-                      <MenuItem key={office} value={office}>
-                        {office}
-                      </MenuItem>
-                    ))}
+
+                     {Array.isArray(offices) &&
+      offices.map((offic, index) => (
+        <MenuItem
+          key={index}
+             value={offic.newOfficeCode}
+        >
+          {offic.officeName}
+        </MenuItem>
+      ))}
                   </TextField>
                 </Grid>
 
-                {/* Section */}
-                <Grid item size={{xs:12, md:6, lg:4}}>
+ {/* ====================Section========= */}
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
                     select
                     fullWidth
                     label="Section"
+                    required
                     value={formData.section}
-                    onChange={(e) => handleChange('section', e.target.value)}
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
+                    onChange={(e) => handleChange("section", e.target.value)}
+                    disabled={!formData.baseDepartment || !formData.district}
                   >
-                    {sections.map((section) => (
-                      <MenuItem key={section} value={section}>
-                        {section}
-                      </MenuItem>
-                    ))}
+
+      {Array.isArray(sections) &&
+     sections.map((clirntsec,index) => (
+        <MenuItem
+          key={index}
+                        value={clirntsec.sectionCode}
+        >
+       {clirntsec.sectionName}
+        </MenuItem>
+      ))}
+
                   </TextField>
                 </Grid>
-
-                {/* Officer */}
-                <Grid item size={{ xs:12, md:6,lg:4}}>
-                    <TextField
+{/* ==============================officer================ */}
+  <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+                  <TextField
                     select
                     fullWidth
                     label="Officer"
                     required
                     value={formData.officer}
-                    onChange={(e) => handleChange('officer', e.target.value)}
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
+                    onChange={(e) => handleChange("officer", e.target.value)}
+                    disabled={!formData.baseDepartment || !formData.district}
                   >
-                    {officers.map((officer) => (
-                      <MenuItem key={officer} value={officer}>
-                        {officer}
-                      </MenuItem>
-                    ))}
+
+      {Array.isArray(officers) &&
+  officers.map((officr,index) => (
+        <MenuItem
+          key={index}
+                        value={officr.employeeId}
+        >
+       {officr.employeeName}
+        </MenuItem>
+      ))}
+
                   </TextField>
                 </Grid>
 
-                {/* Designation */}
-                <Grid item size={{xs:12, md:6, lg:4}}>
+ {/*================ Designations================== */}
+
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
                   <TextField
                     select
                     fullWidth
                     label="Designation"
+                    required
                     value={formData.designation}
-                    onChange={(e) => handleChange('designation', e.target.value)}
+                    onChange={(e) =>
+                      handleChange("designation", e.target.value)
+                    }
                     variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
                   >
-                    {designations.map((designation) => (
-                      <MenuItem key={designation} value={designation}>
-                        {designation}
-                      </MenuItem>
-                    ))}
+                    {Array.isArray(designations) &&
+                     designations.map((desig, index) => (
+                        <MenuItem key={index} value={desig.designationId}>
+                          {desig.designationName}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 </Grid>
 
-                {/* Commission Percentage */}
-                <Grid item size={{xs:12, md:6, lg:4}}>
-                  <TextField
-                    fullWidth
-                    label="Commission Percentage"
-                    required
-                    type="number"
-                    value={formData.commission}
-                    onChange={(e) => handleChange('commission', e.target.value)}
-                    variant="outlined"
-                    InputProps={{
-                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                    }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
-                  />
-                </Grid>
-
-                {/* Discount Percentage */}
-                <Grid item xs={12} md={6} lg={4}>
-                  <TextField
-                    fullWidth
-                    label="Discount Percentage"
-                    type="number"
-                    value={formData.discountPercentage}
-                    onChange={(e) => handleChange('discountPercentage', e.target.value)}
-                    variant="outlined"
-                    InputProps={{
-                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                    }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
-                  />
-                </Grid>
-
+  
                 {/* Status */}
-                <Grid item xs={12} md={6} lg={4}>
-                  {/* <TextField
+                {/*================ status ================== */}
+
+                {/* <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+                  <TextField
                     select
                     fullWidth
-                    label="Status"
-                    value={formData.status}
-                    onChange={(e) => handleChange('status', e.target.value)}
+                    label="Base Department"
+                    required
+                    value={formData.baseDepartment}
+                    onChange={(e) =>
+                      handleChange("baseDepartment", e.target.value)
+                    }
                     variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '&:hover fieldset': { borderColor: '#667eea' },
-                        '&.Mui-focused fieldset': { borderColor: '#667eea' },
-                      },
-                    }}
                   >
-                    {fat.map((status) => (
-                      <MenuItem key={status} value={status}>
-                        {status}
-                      </MenuItem>
-                    ))}
-                  </TextField> */}
-
-                  <TextField
-  select
-  fullWidth
-  label="Status"
-  value={formData.status}
-  onChange={(e) => handleChange('status', e.target.value)}
-  variant="outlined"
-  sx={{
-    '& .MuiOutlinedInput-root': {
-      '&:hover fieldset': { borderColor: '#667eea' },
-      '&.Mui-focused fieldset': { borderColor: '#667eea' },
-    },
-  }}
->
-  {[...new Set(fachdata.map(item => item.status))].map((status) => (
-    <MenuItem key={status} value={status}>
-      {status}
-    </MenuItem>
-  ))}
-</TextField>
-
+                    {Array.isArray(baseDepartments) &&
+                      baseDepartments.map((dept, index) => (
+                        <MenuItem key={index} value={dept.deptid}>
+                          {dept.deptname}
+                        </MenuItem>
+                      ))}
+                  </TextField>
                 </Grid>
+
+                  {/*================ Base Department================== */}
+
+                {/* <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Base Department"
+                    required
+                    value={formData.baseDepartment}
+                    onChange={(e) =>
+                      handleChange("baseDepartment", e.target.value)
+                    }
+                    variant="outlined"
+                  >
+                    {Array.isArray(baseDepartments) &&
+                      baseDepartments.map((dept, index) => (
+                        <MenuItem key={index} value={dept.deptid}>
+                          {dept.deptname}
+                        </MenuItem>
+                      ))}
+                  </TextField>
+                </Grid> */} 
+
+
+
               </Grid>
 
               {/* Action Buttons */}
@@ -531,22 +655,21 @@ const fetchDesignations = async () => {
           <Card elevation={3} sx={{ borderRadius: 3 }}>
             <Box
               sx={{
-                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
                 p: 3,
-                color: 'white',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                color: "white",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 List Of Mapped Office In जनसंपर्क विभाग/B024, रायपुर/11
               </Typography>
-             
             </Box>
 
             <Collapse in={showTable}>
-              <TableContainer>
+              {/* <TableContainer>
                 <Table sx={{ minWidth: 650 }}>
                   <TableHead>
                     <TableRow sx={{ bgcolor: '#f8f9fa' }}>
@@ -590,10 +713,10 @@ const fetchDesignations = async () => {
                     ))}
                   </TableBody>
                 </Table>
-              </TableContainer>
+              </TableContainer> */}
             </Collapse>
 
-            <Box sx={{ p: 2, bgcolor: '#f8f9fa', textAlign: 'center' }}>
+            <Box sx={{ p: 2, bgcolor: "#f8f9fa", textAlign: "center" }}>
               <Typography variant="body2" color="text.secondary">
                 Prarup Code: <strong>10340</strong>
               </Typography>
