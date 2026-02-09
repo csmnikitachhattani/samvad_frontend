@@ -191,10 +191,10 @@ const OfficerMappingUI = () => {
         const res = await axios.get(
           `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
         );
-        console.log(
-          "Sections:",
-          `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
-        );
+        // console.log(
+        //   "Sections:",
+        //   `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
+        // );
         setOfficers(res.data.result || []);
       } catch (error) {
         console.error("Error fetching Officer", error);
@@ -211,7 +211,7 @@ const OfficerMappingUI = () => {
         const res = await axios.get(
           "http://103.79.34.50:8083/api/ManageMaster/getclientdesignation",
         );
-        console.log("Designation:", res);
+        // console.log("Designation:", res);
 
         setDesignations(res.data.result || []);
       } catch (error) {
@@ -236,125 +236,128 @@ const OfficerMappingUI = () => {
   //     fetchOfficeOfficerData();
   //     },[])
   // =============================
-  // useEffect(() => {
-  //   console.group("🔄 OfficeOfficer useEffect Triggered");
-
-  //   console.log("FormData Snapshot 👉", formData);
-
-  //   // 🔒 minimum required fields
-  //   if (!formData.baseDepartment || !formData.district) {
-  //     console.warn(
-  //       "⏳ Waiting for required fields:",
-  //       "baseDepartment =", formData.baseDepartment,
-  //       "district =", formData.district
-  //     );
-  //     console.groupEnd();
-  //     return;
-  //   }
-
-  //   let isMounted = true;
-
-  //   const fetchOfficeOfficerData = async () => {
-  //     const payload = {
-  //       baseDepartment: formData.baseDepartment,
-  //       district: formData.district,
-  //       officeLevel: formData.officeLevel || "",
-  //       office: formData.office || "",
-  //       section: formData.section || "",
-  //       officer: formData.officer || "",
-  //     };
-
-  //     try {
-  //       console.log("📤 API REQUEST BODY 👉", payload);
-
-  //       const res = await axios.post(
-  //         "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata",
-  //         payload
-  //       );
-
-  //       console.log("📥 RAW API RESPONSE 👉", res);
-
-  //       if (isMounted) {
-  //         console.log("✅ API RESULT 👉", res.data?.result);
-  //         setFetchOfficeOfficerData(res.data?.result || []);
-  //       } else {
-  //         console.warn("⚠️ Component unmounted, skipping state update");
-  //       }
-  //     } catch (error) {
-  //       console.error(
-  //         "❌ OfficeOfficer API ERROR",
-  //         error.response?.data || error.message
-  //       );
-  //     } finally {
-  //       console.groupEnd();
-  //     }
-  //   };
-
-  //   fetchOfficeOfficerData();
-
-  //   return () => {
-  //     isMounted = false;
-  //     console.log("🧹 Cleanup: useEffect unmounted");
-  //   };
-  // }, [
-  //   formData.baseDepartment,
-  //   formData.district,
-  //   formData.officeLevel,
-  //   formData.office,
-  //   formData.section,
-  //   formData.officer,
-  // ]);
-
-  // table Header=======================
-
   useEffect(() => {
-    // ✅ minimum requirement
+    console.group("🔄 OfficeOfficer useEffect Triggered");
+
+    console.log("FormData Snapshot 👉", formData);
+
+    // 🔒 minimum required fields
     if (!formData.baseDepartment || !formData.district) {
-      console.log("Waiting for baseDepartment & district...");
+      console.warn(
+        "⏳ Waiting for required fields:",
+        "baseDepartment =", formData.baseDepartment,
+        "district =", formData.district
+      );
+      console.groupEnd();
       return;
     }
 
+    let isMounted = true;
+
     const fetchOfficeOfficerData = async () => {
+      const payload = {
+        baseDepartment: formData.baseDepartment,
+        sno: "",
+        district: formData.district,
+        officeLevel: formData.officeLevel || "",
+        office: formData.office || "",
+        section: formData.section || "",
+        officer: formData.officer || "",
+      };
+
       try {
-        console.log("API HIT with params 👉", {
-          baseDeptCode: formData.baseDepartment,
-          districtCode: formData.district,
-          officeLevel: formData.officeLevel,
-          office: formData.office,
-          section: formData.section,
-          officer: formData.officer,
-        });
+        console.log("📤 API REQUEST BODY 👉", payload);
 
         const res = await axios.post(
           "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata",
-          {
-            params: {
-              baseDepartment: formData.baseDepartment,
-              district: formData.district,
-              officeLevel: formData.officeLevel || null,
-              office: formData.office || null,
-              section: formData.section || null,
-              officer: formData.officer || null,
-            },
-          },
+          payload
         );
 
-        console.log("officeofficer RESULT 👉", res.data);
-        setFetchOfficeOfficerData(res.data.result || []);
+        console.log("📥 RAW API RESPONSE 👉", res);
+
+        if (isMounted) {
+          console.log("✅ API RESULT 👉", res.data?.result);
+          setFetchOfficeOfficerData(res.data?.result || []);
+        } else {
+          console.warn("⚠️ Component unmounted, skipping state update");
+        }
       } catch (error) {
-        console.error("OfficeOfficer API ERROR ❌", error);
+        console.error(
+          "❌ OfficeOfficer API ERROR",
+          error.response?.data || error.message
+        );
+      } finally {
+        console.groupEnd();
       }
     };
 
     fetchOfficeOfficerData();
+
+    return () => {
+      isMounted = false;
+      console.log("🧹 Cleanup: useEffect unmounted");
+    };
   }, [
-    formData.baseDepartment, // first trigger
-    formData.district, // first trigger
-    formData.officeLevel, // later triggers
+    formData.baseDepartment,
+    formData.district,
+    formData.officeLevel,
     formData.office,
     formData.section,
     formData.officer,
   ]);
+
+  // table Header=======================
+
+  // useEffect(() => {
+
+  //   if (!formData.baseDepartment || !formData.district) {
+  //     console.log("Waiting for baseDepartment & district...");
+  //     return;
+  //   }
+
+  //   const fetchOfficeOfficerData = async () => {
+  //     try {
+  //       console.log("API HIT with params 👉", {
+  //         baseDeptCode: formData.baseDepartment,
+  //         districtCode: formData.district,
+  //         officeLevel: formData.officeLevel,
+  //         office: formData.office,
+  //         section: formData.section,
+  //         officer: formData.officer,
+  //       });
+
+  //       const res = await axios.post(
+  //         "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata",
+  //         {
+  //           params: {
+  //             baseDepartment: formData.baseDepartment,
+  //             sno: "",
+  //             district: formData.district,
+  //             officeLevel: formData.officeLevel || null,
+  //             office: formData.office || null,
+  //             section: formData.section || null,
+  //             officer: formData.officer || null,
+  //           },
+  //         },
+  //       );
+
+  //       console.log("officeofficer RESULT 👉", res.data);
+  //       setFetchOfficeOfficerData(res.data.result || []);
+   
+  //     } catch (error) {
+  //       console.error("OfficeOfficer API ERROR ❌", error);
+  //     }
+  //   };
+
+  //   fetchOfficeOfficerData();
+  // }, [
+  //   formData.baseDepartment, // first trigger
+  //   formData.district, // first trigger
+  //   formData.officeLevel, // later triggers
+  //   formData.office,
+  //   formData.section,
+  //   formData.officer,
+  // ]);
 
   // ====================================================================
   const selectedDepartment = baseDepartments.find(
@@ -650,8 +653,7 @@ const OfficerMappingUI = () => {
 </Grid>
 
              
-
-                      {/* discountPercentage================== */}
+ {/* ===================discountPercentage================== */}
  <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
   <Typography variant="subtitle2" color="text.secondary">
     Discount Percentage
