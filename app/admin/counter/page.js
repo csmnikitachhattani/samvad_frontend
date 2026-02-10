@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Table from "@/components/admin/table"
+import Table from "@/components/admin/counter/table"
 import {
   Box,
   Divider,

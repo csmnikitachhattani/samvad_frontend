@@ -40,6 +40,16 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getcounter: async () => {
+    console.log("get all agencncy")
+    try {
+      const res = await axiosClient.get("http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoorcounter");
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
 
 
 };
