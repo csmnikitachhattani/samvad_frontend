@@ -9,10 +9,13 @@ import {
     TextField,
     Typography,
     Paper,
+    MenuItem
 } from "@mui/material";
 
 export default function WorkOrderForm() {
     const { id } = useParams();
+    
+    const [vendors, setVendors] = useState([])
     useEffect(() => {
         async function fetchCounters() {
             try {
@@ -54,6 +57,7 @@ export default function WorkOrderForm() {
         async function fetchServiceTypes(id) {
             try {
                 const response = await adminServices.getVendorList(id);
+                setVendors(response.result)
                 console.log(response)
             } catch (error) {
                 console.error("Failed to fetch ", error);
@@ -61,7 +65,6 @@ export default function WorkOrderForm() {
         }
 
     }, []);
-    const [vendors, setVendors] = useState([])
     const [formData, setFormData] = useState({
         main_id: 0,
         financial_year: "",
@@ -169,6 +172,37 @@ export default function WorkOrderForm() {
                 {/* <Grid item xs={3}>
                     <TextField fullWidth label="Vendor Name" name="vendor_name" value={formData.vendor_name} onChange={handleChange} />
                 </Grid> */}
+                <Grid item size={{xs:3}}>
+  <TextField
+    select
+    fullWidth
+    multiple
+    label="Vendor"
+    name="vendor_id"
+    value={formData.vendor_id}
+    onChange={(e) => {
+      const selectedVendor = vendors.find(
+        (v) => v.vendor_id === e.target.value
+      );
+
+      setFormData({
+        ...formData,
+        vendor_id: e.target.value,
+        vendor_name: selectedVendor?.vendor_name || "",
+      });
+    }}
+  >
+    {vendors.map((vendor) => (
+      <MenuItem
+        key={vendor.AgencyID}
+        value={vendor.AgencyID}
+      >
+        {vendor.AgencyName}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
+
                 <Grid item xs={3}>
                     <TextField fullWidth label="Client Code" name="client_cd" value={formData.client_cd} onChange={handleChange} />
                 </Grid>
