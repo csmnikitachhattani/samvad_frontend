@@ -13,7 +13,6 @@ import {
 
 export default function WorkOrderForm() {
     const { id } = useParams();
-    console.log(id)
     useEffect(() => {
         async function fetchCounters() {
             try {
@@ -41,9 +40,11 @@ export default function WorkOrderForm() {
                     gst_percentage: response.gst_percentage ?? "",
                     gst_amount: response.gst_amount ?? 0,
                     toatl_amount: response.toatl_amount ?? 0,
+                    detailList:
+                    response.detailList?.length > 0
+                      ? response.detailList
+                      : prev.detailList,
                 })),
-                    console.log(formData.od_servicetype)
-                console.log(response)
                 fetchServiceTypes(response.od_servicetype_id)
             } catch (error) {
                 console.error("Failed to fetch states", error);
@@ -60,6 +61,7 @@ export default function WorkOrderForm() {
         }
 
     }, []);
+    const [vendors, setVendors] = useState([])
     const [formData, setFormData] = useState({
         main_id: 0,
         financial_year: "",
@@ -190,7 +192,7 @@ export default function WorkOrderForm() {
                 Detail List
       </Typography>
 
-            {/* {formData.detailList.map((row, index) => (
+            {formData.detailList.map((row, index) => (
                 <Grid container spacing={2} key={index} mb={1}>
                     <Grid item xs={3}>
                         <TextField fullWidth label="Description" name="description" value={row.description} onChange={(e) => handleDetailChange(index, e)} />
@@ -215,7 +217,7 @@ export default function WorkOrderForm() {
 
             <Button variant="outlined" onClick={addRow} sx={{ mt: 2 }}>
                 + Add Row
-      </Button> */}
+      </Button>
 
             <Box mt={3}>
                 <Button variant="contained" onClick={handleSubmit}>
