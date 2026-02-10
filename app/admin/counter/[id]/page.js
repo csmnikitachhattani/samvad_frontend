@@ -1,6 +1,7 @@
 "use client";
-
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import adminServices from "@/services/adminServices";
 import {
   Box,
   Button,
@@ -11,6 +12,20 @@ import {
 } from "@mui/material";
 
 export default function WorkOrderForm() {
+  const { id } = useParams();
+  console.log(id)
+  useEffect(() => {
+    async function fetchCounters() {
+        try {
+            const response = await adminServices.getcounterDetail(id);
+            setData(response || []);
+            console.log(response)
+        } catch (error) {
+            console.error("Failed to fetch states", error);
+        }
+    }
+    fetchCounters();
+}, []);
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
