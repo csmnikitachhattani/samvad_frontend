@@ -39,7 +39,7 @@ import {
   Refresh,
   Visibility,
   VisibilityOff,
-  ArrowUpward,
+  ArrowCircleUp,
   ArrowDownward,
   FilterList,
   CheckCircle,
@@ -65,6 +65,9 @@ const OfficerMappingUI = () => {
 
   const [showTable, setShowTable] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
 
   const [baseDepartments, setBaseDepartments] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -73,7 +76,9 @@ const OfficerMappingUI = () => {
   const [sections, setSections] = useState([]);
   const [officers, setOfficers] = useState([]);
   const [designations, setDesignations] = useState([]);
-  const [fetchofficeofficerdata, setFetchOfficeOfficerData] = useState([]);
+  const [officeofficerdatas, setOfficeOfficerData] = useState([]);
+  const [prarupMaster, setPrarupMaster] = useState([]);
+  const [officerPrarupDetails, setOfficerPrarupDetail] = useState([]);
 
   // ==================base department fetching========================
   useEffect(() => {
@@ -144,10 +149,10 @@ const OfficerMappingUI = () => {
         const res = await axios.get(
           `http://103.79.34.50:8083/api/ManageMaster/getofficename/${districtid}/${deptId}`,
         );
-        console.log(
-          "offices:",
-          `http://103.79.34.50:8083/api/ManageMaster/getofficename/${districtid}/${deptId}`,
-        );
+        // console.log(
+        //   "offices:",
+        //   `http://103.79.34.50:8083/api/ManageMaster/getofficename/${districtid}/${deptId}`,
+        // );
         setOffices(res.data.result || []);
       } catch (error) {
         console.error("Error fetching office levels", error);
@@ -191,10 +196,10 @@ const OfficerMappingUI = () => {
         const res = await axios.get(
           `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
         );
-        // console.log(
-        //   "Sections:",
-        //   `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
-        // );
+        console.log(
+          "Sections:",
+          `http://103.79.34.50:8083/api/ManageMaster/getofficer/${districtid}/${deptId}`,
+        );
         setOfficers(res.data.result || []);
       } catch (error) {
         console.error("Error fetching Officer", error);
@@ -211,7 +216,7 @@ const OfficerMappingUI = () => {
         const res = await axios.get(
           "http://103.79.34.50:8083/api/ManageMaster/getclientdesignation",
         );
-        // console.log("Designation:", res);
+        console.log("Designation:", res.data.result);
 
         setDesignations(res.data.result || []);
       } catch (error) {
@@ -221,82 +226,80 @@ const OfficerMappingUI = () => {
     fetchDesignation();
   }, []);
 
-  // =================Fetch OfficeOfficer Data==================
-  // useEffect(() => {
-  //   const fetchOfficeOfficerData = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata")
-  //          console.log("officeofficer:", res);
-  //       }
-  //         catch (error) {
-  //       console.error("Error fetching Office Officer data", error);
-  //     }
-  //       }
-  //     fetchOfficeOfficerData();
-  //     },[])
-  // =============================
+  // ============================
+
   useEffect(() => {
-    console.group("🔄 OfficeOfficer useEffect Triggered");
-
-    console.log("FormData Snapshot 👉", formData);
-
-    // 🔒 minimum required fields
     if (!formData.baseDepartment || !formData.district) {
-      console.warn(
-        "⏳ Waiting for required fields:",
-        "baseDepartment =", formData.baseDepartment,
-        "district =", formData.district
-      );
-      console.groupEnd();
+      console.log("Waiting for baseDepartment & district...");
       return;
     }
 
-    let isMounted = true;
-
     const fetchOfficeOfficerData = async () => {
-      const payload = {
-        baseDepartment: formData.baseDepartment,
+      console.log("📌 fetchOfficeOfficerData called with params 👉");
+
+      const rawPayload = {
+        baseDeptCode: formData.baseDepartment,
         sno: "",
-        district: formData.district,
-        officeLevel: formData.officeLevel || "",
-        office: formData.office || "",
-        section: formData.section || "",
-        officer: formData.officer || "",
+        districtCode: formData.district,
+        officeLevel: formData.officeLevel,
+        officeCode: formData.office,
+        sectionCode: formData.section,
+        employeeCode: formData.officer,
+        designationId: formData.designation,
       };
+
+      // Remove null, undefined, empty string, whitespace
+      const payload = Object.fromEntries(
+        Object.entries(rawPayload).filter(
+          ([_, value]) =>
+            value !== null &&
+            value !== undefined &&
+            String(value).trim() !== "",
+        ),
+      );
+
+      console.log("Clean Payload 👉", payload);
 
       try {
         console.log("📤 API REQUEST BODY 👉", payload);
 
         const res = await axios.post(
           "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata",
-          payload
+          payload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
         );
 
-        console.log("📥 RAW API RESPONSE 👉", res);
+        // console.log("📥 RAW API RESPONSE 👉", res.data.result.officerList);
 
-        if (isMounted) {
-          console.log("✅ API RESULT 👉", res.data?.result);
-          setFetchOfficeOfficerData(res.data?.result || []);
-        } else {
-          console.warn("⚠️ Component unmounted, skipping state update");
-        }
+        setOfficeOfficerData(res.data?.result.officerList || []);
+        // setPrarupMaster(res.data?.result.prarupMaster|| []);
+
+        setPrarupMaster(
+          (res.data?.result.prarupMaster || []).map((item) => ({
+            ...item,
+            isVisible: true, // default visible
+          })),
+        );
+
+        setOfficerPrarupDetail(res.data?.result.officerPrarupDetail || []);
+        console.log(
+          "✅ Processed Office Officer Data 👉",
+          setOfficeOfficerData,
+        );
       } catch (error) {
         console.error(
-          "❌ OfficeOfficer API ERROR",
-          error.response?.data || error.message
+          " OfficeOfficer API ERROR",
+          error.response?.data || error.message,
         );
-      } finally {
-        console.groupEnd();
       }
     };
 
+    //  Call the function here (outside definition)
     fetchOfficeOfficerData();
-
-    return () => {
-      isMounted = false;
-      console.log("🧹 Cleanup: useEffect unmounted");
-    };
   }, [
     formData.baseDepartment,
     formData.district,
@@ -304,60 +307,8 @@ const OfficerMappingUI = () => {
     formData.office,
     formData.section,
     formData.officer,
+    formData.designation,
   ]);
-
-  // table Header=======================
-
-  // useEffect(() => {
-
-  //   if (!formData.baseDepartment || !formData.district) {
-  //     console.log("Waiting for baseDepartment & district...");
-  //     return;
-  //   }
-
-  //   const fetchOfficeOfficerData = async () => {
-  //     try {
-  //       console.log("API HIT with params 👉", {
-  //         baseDeptCode: formData.baseDepartment,
-  //         districtCode: formData.district,
-  //         officeLevel: formData.officeLevel,
-  //         office: formData.office,
-  //         section: formData.section,
-  //         officer: formData.officer,
-  //       });
-
-  //       const res = await axios.post(
-  //         "http://103.79.34.50:8083/api/ManageMaster/getofficeofficerdata",
-  //         {
-  //           params: {
-  //             baseDepartment: formData.baseDepartment,
-  //             sno: "",
-  //             district: formData.district,
-  //             officeLevel: formData.officeLevel || null,
-  //             office: formData.office || null,
-  //             section: formData.section || null,
-  //             officer: formData.officer || null,
-  //           },
-  //         },
-  //       );
-
-  //       console.log("officeofficer RESULT 👉", res.data);
-  //       setFetchOfficeOfficerData(res.data.result || []);
-   
-  //     } catch (error) {
-  //       console.error("OfficeOfficer API ERROR ❌", error);
-  //     }
-  //   };
-
-  //   fetchOfficeOfficerData();
-  // }, [
-  //   formData.baseDepartment, // first trigger
-  //   formData.district, // first trigger
-  //   formData.officeLevel, // later triggers
-  //   formData.office,
-  //   formData.section,
-  //   formData.officer,
-  // ]);
 
   // ====================================================================
   const selectedDepartment = baseDepartments.find(
@@ -368,28 +319,61 @@ const OfficerMappingUI = () => {
     (dist) => dist.dstrictid === formData.district,
   );
 
-  // =========================handleChange===========
+  // =======up down==================================
 
-  // const handleChange = (name, value) => {
-  //   console.log("Changed:", name, value);
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
+  const moveRowUp = (index) => {
+    if (index === 0) return;
 
-  //   // when base department changes
-  //   if (name === "baseDepartment") {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       baseDepartment: value,
-  //       officeLevel: "", // reset office level
-  //     }));
+    const updatedData = [...prarupMaster];
 
-  //     setOfficeLevels(value);
-  //   }
-  // };
+    // Swap rows
+    [updatedData[index - 1], updatedData[index]] = [
+      updatedData[index],
+      updatedData[index - 1],
+    ];
 
+    // Re-assign sequence to ALL rows
+    const reSequencedData = updatedData.map((item, i) => ({
+      ...item,
+      seq: i + 1,
+    }));
+
+    setPrarupMaster(reSequencedData);
+  };
+
+  const moveRowDown = (index) => {
+    if (index === prarupMaster.length - 1) return;
+
+    const updatedData = [...prarupMaster];
+
+    // Swap rows
+    [updatedData[index + 1], updatedData[index]] = [
+      updatedData[index],
+      updatedData[index + 1],
+    ];
+
+    // Re-assign sequence to ALL rows
+    const reSequencedData = updatedData.map((item, i) => ({
+      ...item,
+      seq: i + 1,
+    }));
+
+    setPrarupMaster(reSequencedData);
+  };
+
+  // =====================hide show========================
+  const toggleVisibility = (index) => {
+    const updatedData = [...prarupMaster];
+    updatedData[index].isVisible = !updatedData[index].isVisible;
+    setPrarupMaster(updatedData);
+  };
+  const prarupCode = Array.isArray(prarupMaster)
+    ? prarupMaster.map((item) => (item.isVisible ? item.DisplayID : 0)).join("")
+    : "";
+
+  // =========================================================
   const handleChange = (name, value) => {
+    console.log("Changed:", name, value);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -400,15 +384,61 @@ const OfficerMappingUI = () => {
         officer: "",
       }),
     }));
-    console.log("Dropdown changed:", name, value);
+    console.log("Dropdown changed:", name, value, formData.district);
   };
-  // =============================
+  // ===============handel submit ==============
 
-  const handleSubmit = () => {
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      baseDeptCode: formData.baseDepartment,
+      districtCode: formData.district,
+      officeLevel: formData.officeLevel,
+      officeCode: formData.office,
+      sectionCode: formData.section,
+      employeeCode: formData.officer,
+      designationId: formData.designation,
+
+      prarupCode: prarupCode,
+
+      prarupDetails: prarupMaster.map((item, index) => ({
+        seq: index + 1,
+        displayId: item.DisplayID,
+        isVisible: item.isVisible ? 1 : 0,
+      })),
+    };
+
+    try {
+      setLoading(true);
+
+      console.log("📤 FINAL SUBMIT PAYLOAD:", payload);
+
+      const response = await axios.post(
+        "http://103.79.34.50:8083/api/ManageMaster/saveofficeofficer",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      setAlertMessage(response.data?.message || "Saved successfully!");
+      setAlertType("success");
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Submit error:", error);
+
+      setAlertMessage(error.response?.data?.message || "Failed to save data!");
+      setAlertType("error");
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+      setTimeout(() => setShowAlert(false), 3000);
+    }
   };
-
+  // =================================================
   const handleClear = () => {
     setFormData({
       baseDepartment: "",
@@ -430,11 +460,11 @@ const OfficerMappingUI = () => {
         {/* Alert */}
         <Collapse in={showAlert}>
           <Alert
-            severity="success"
+            severity={alertType}
             sx={{ mb: 3 }}
             onClose={() => setShowAlert(false)}
           >
-            Officer mapping saved successfully!
+            {alertMessage}
           </Alert>
         </Collapse>
 
@@ -496,7 +526,9 @@ const OfficerMappingUI = () => {
                     label="District"
                     required
                     value={formData.district}
-                    onChange={(e) => handleChange("district", e.target.value)}
+                    onChange={(e) => {
+                      handleChange("district", e.target.value);
+                    }}
                     variant="outlined"
                   >
                     {Array.isArray(districts) &&
@@ -618,56 +650,30 @@ const OfficerMappingUI = () => {
 
                 {/*================ commission ================== */}
 
-               
-                  {/* <TextField
-                    select
-                    fullWidth
-                    label="Base Department"
-                    required
-                    value={formData.baseDepartment}
-                    onChange={(e) =>
-                      handleChange("baseDepartment", e.target.value)
-                    }
-                    variant="outlined"
-                  >
-                    {Array.isArray(baseDepartments) &&
-                      baseDepartments.map((dept, index) => (
-                        <MenuItem key={index} value={dept.deptid}>
-                          {dept.commisionPercentage}
-                        </MenuItem>
-                      ))}
-                  </TextField> */}
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Commision Percentage
+                  </Typography>
 
-                  <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
-  <Typography variant="subtitle2" color="text.secondary">
-    Commision Percentage
-  </Typography>
+                  <Typography variant="body1" fontWeight={600}>
+                    {baseDepartments.find(
+                      (dept) => dept.deptid === formData.baseDepartment,
+                    )?.commisionPercentage || ""}
+                  </Typography>
+                </Grid>
 
-  <Typography variant="body1" fontWeight={600}>
-    {
-      baseDepartments.find(
-        (dept) => dept.deptid === formData.baseDepartment
-      )?.commisionPercentage ||""
-    }
-  </Typography>
-</Grid>
+                {/* ===================discountPercentage================== */}
+                <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Discount Percentage
+                  </Typography>
 
-             
- {/* ===================discountPercentage================== */}
- <Grid item size={{ xs: 12, md: 6, lg: 4 }}>
-  <Typography variant="subtitle2" color="text.secondary">
-    Discount Percentage
-  </Typography>
-
-  <Typography variant="body1" fontWeight={600}>
-    {
-      baseDepartments.find(
-        (dept) => dept.deptid === formData.baseDepartment
-      )?.discountPercent ||"0"
-    }
-  </Typography>
-</Grid>
-
+                  <Typography variant="body1" fontWeight={600}>
+                    {baseDepartments.find(
+                      (dept) => dept.deptid === formData.baseDepartment,
+                    )?.discountPercent || "0"}
+                  </Typography>
+                </Grid>
               </Grid>
 
               {/* Action Buttons */}
@@ -715,80 +721,275 @@ const OfficerMappingUI = () => {
         </Zoom>
 
         {/* Mapped Officers Table */}
-        <Fade in={true}>
-          <Card elevation={3} sx={{ borderRadius: 3 }}>
-            <Box
-              sx={{
-                background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                p: 3,
-                color: "white",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h7" sx={{ fontWeight: 600 }}>
-                {selectedDepartment && selectedDistrict
-                  ? `${selectedDepartment.deptname}/${selectedDepartment.deptid}, ${selectedDistrict.districtname}/${selectedDistrict.dstrictid}`
-                  : "List Of Mapped Office"}
-              </Typography>
-            </Box>
 
-            {/* <Collapse in={showTable}>
+        {formData.baseDepartment && formData.district && (
+          <Fade in={true}>
+            <Card elevation={3} sx={{ borderRadius: 3 }}>
+              <Box
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                  p: 3,
+                  color: "white",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography variant="h7" sx={{ fontWeight: 600 }}>
+                  {selectedDepartment && selectedDistrict
+                    ? `${selectedDepartment.deptname}/${selectedDepartment.deptid}, ${selectedDistrict.districtname}/${selectedDistrict.dstrictid}`
+                    : "List Of Mapped Office"}
+                </Typography>
+              </Box>
+
+              <Collapse in={showTable}>
+                <TableContainer>
+                  <Table sx={{ minWidth: 650 }}>
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: "#f8f9fa" }}>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Office Name
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Officer Name
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Officer Code
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Status
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Array.isArray(officeofficerdatas) &&
+                        officeofficerdatas.map((officer, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{
+                              "&:hover": { bgcolor: "#f8f9fa" },
+                              transition: "all 0.2s",
+                            }}
+                          >
+                            <TableCell>{officer.OfficeName}</TableCell>
+                            <TableCell>{officer.OfficerName}</TableCell>
+                            <TableCell>
+                              <Chip
+                                label={officer.OfficerCode}
+                                size="small"
+                                sx={{
+                                  bgcolor: "#e3f2fd",
+                                  color: "#1976d2",
+                                  fontWeight: 500,
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                label={officer.status}
+                                size="small"
+                                color="success"
+                                icon={<CheckCircle />}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Collapse>
+            </Card>
+          </Fade>
+        )}
+        {/* ===================prarupMaster============================== */}
+        {formData.baseDepartment &&
+          formData.district &&
+          formData.officeLevel &&
+          formData.office && (
+            <Fade in={true}>
+              <Card elevation={3} sx={{ borderRadius: 3 }}>
+                <TableContainer>
+                  <Table sx={{ minWidth: 650 }}>
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: "#f8f9fa" }}>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Name
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Seq.
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Pearup Type Name
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Display Seq.
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Up-Down
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                          Hide Show
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {Array.isArray(prarupMaster) &&
+                        prarupMaster.map((prpmaster, index) => (
+                          <TableRow
+                            key={prpmaster.SeqID}
+                            sx={{
+                              "&:hover": { bgcolor: "#f8f9fa" },
+                              transition: "all 0.2s",
+                            }}
+                          >
+                            <TableCell>{prpmaster.OfficeName}</TableCell>
+
+                            {/* ✅ Seq column fixed by index */}
+                            <TableCell>{index + 1}</TableCell>
+
+                            <TableCell>
+                              <Chip
+                                label={prpmaster.Prarup_type_name}
+                                size="small"
+                                sx={{
+                                  bgcolor: "#e3f2fd",
+                                  color: "#1976d2",
+                                  fontWeight: 500,
+                                }}
+                              />
+                            </TableCell>
+
+                            <TableCell>
+                              <Chip
+                                label={prpmaster.DisplayID}
+                                size="small"
+                                sx={{
+                                  bgcolor: "#e3f2fd",
+                                  color: "#1976d2",
+                                  fontWeight: 500,
+                                }}
+                              />
+                            </TableCell>
+
+                            {/* UP DOWN */}
+                            <TableCell>
+                              <Button
+                                size="small"
+                                variant="contained"
+                                onClick={() => moveRowUp(index)}
+                                disabled={index === 0}
+                                sx={{ mr: 1 }}
+                              >
+                                ↑ Up
+                              </Button>
+
+                              <Button
+                                size="small"
+                                variant="contained"
+                                onClick={() => moveRowDown(index)}
+                                disabled={index === prarupMaster.length - 1}
+                              >
+                                ↓ Down
+                              </Button>
+                            </TableCell>
+
+                            {/* SHOW / HIDE */}
+                            <TableCell>
+                              <Button
+                                size="small"
+                                variant="contained"
+                                onClick={() => toggleVisibility(index)}
+                                sx={{
+                                  backgroundColor: prpmaster.isVisible
+                                    ? "#2e7d32"
+                                    : "#d32f2f",
+                                  "&:hover": {
+                                    backgroundColor: prpmaster.isVisible
+                                      ? "#1b5e20"
+                                      : "#9a0007",
+                                  },
+                                }}
+                              >
+                                {prpmaster.isVisible ? "👁 Show" : "🚫 Hide"}
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+
+                  <Box sx={{ p: 2, bgcolor: "#f8f9fa", textAlign: "center" }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Prarup Code: <strong>{prarupCode}</strong>
+                    </Typography>
+                  </Box>
+                </TableContainer>
+              </Card>
+            </Fade>
+          )}
+
+        {/* =======================officerPrarupDetail============================== */}
+        {formData.baseDepartment &&
+          formData.district &&
+          formData.officeLevel &&
+          formData.office && (
+            <Card elevation={3} sx={{ borderRadius: 3 }}>
               <TableContainer>
                 <Table sx={{ minWidth: 650 }}>
                   <TableHead>
-                    <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                      <TableCell sx={{ fontWeight: 600, color: '#667eea' }}>Office Name</TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: '#667eea' }}>Officer Name</TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: '#667eea' }}>Officer Code</TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: '#667eea' }}>Status</TableCell>
+                    <TableRow sx={{ bgcolor: "#f8f9fa" }}>
+                      <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                        Unit id
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                        Base Depatment
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                        District
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                        Office
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                        Officer
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                        Prarup Code
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: "#667eea" }}>
+                        Prarup
+                      </TableCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody>
-                  {fatchData.map((officer, index) => (
-                      <TableRow
-                        key={officer.id}
-                        sx={{
-                          '&:hover': { bgcolor: '#f8f9fa' },
-                          transition: 'all 0.2s',
-                        }}
-                      >
-                        <TableCell>{officer.officeName}</TableCell>
-                        <TableCell>{officer.chiefOfficer}</TableCell>
-                        <TableCell>
-                          <Chip
-                            label={officer.code}
-                            size="small"
-                            sx={{
-                              bgcolor: '#e3f2fd',
-                              color: '#1976d2',
-                              fontWeight: 500,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={officer.status}
-                            size="small"
-                            color="success"
-                            icon={<CheckCircle />}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {Array.isArray(officerPrarupDetails) &&
+                      officerPrarupDetails.map((prpmaster, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:hover": { bgcolor: "#f8f9fa" },
+                            transition: "all 0.2s",
+                          }}
+                        >
+                          <TableCell>{prpmaster.sno}</TableCell>
+
+                          {/* ✅ Seq column fixed by index */}
+                          <TableCell>{prpmaster.dept_name}</TableCell>
+                          <TableCell>{prpmaster.District_Name}</TableCell>
+                          <TableCell>{prpmaster.OfficeName}</TableCell>
+                          <TableCell>{prpmaster.OfficerName}</TableCell>
+                          <TableCell>{prpmaster.praup}</TableCell>
+                          <TableCell>{prpmaster.prarup_code}</TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Collapse> */}
-
-            <Box sx={{ p: 2, bgcolor: "#f8f9fa", textAlign: "center" }}>
-              <Typography variant="body2" color="text.secondary">
-                Prarup Code: <strong>10340</strong>
-              </Typography>
-            </Box>
-          </Card>
-        </Fade>
+            </Card>
+          )}
       </Container>
     </Box>
   );
