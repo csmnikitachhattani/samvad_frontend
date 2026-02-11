@@ -49,10 +49,11 @@ const ClientSideNavbar = ({ isCollapsed }) => {
   return (
     <Box
       sx={{
-        height: "100vh",
         background:
           "linear-gradient(180deg, #0F2027, #203A43, #2C5364)",
         boxShadow: "4px 0 12px rgba(0,0,0,0.35)",
+        height: "100%", 
+        overflow: "hidden"
       }}
     >
       <List disablePadding sx={{ p: 1 }}>
@@ -97,54 +98,6 @@ const ClientSideNavbar = ({ isCollapsed }) => {
             )}
           </ListItemButton>
         ))}
-
-        {/* Optional Profile Dropdown (kept same, design improved) */}
-        {/*
-        <ListItemButton
-          onClick={() => setOpenProfile(!openProfile)}
-          sx={{
-            ...navItemStyle,
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <PersonIcon fontSize="small" />
-            {!isCollapsed && (
-              <Typography fontSize="13px">Profile</Typography>
-            )}
-          </Box>
-          {!isCollapsed &&
-            (openProfile ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
-        </ListItemButton>
-
-        <Collapse in={openProfile} timeout="auto" unmountOnExit>
-          <Box sx={{ ml: 2 }}>
-            {[
-              { label: "View Profile", path: "/view-profile" },
-              { label: "Update Profile", path: "/update-profile" },
-              { label: "Verify Mobile Number", path: "/verify-mobile" },
-              { label: "Change Password", path: "/change-password" },
-            ].map((item, index) => (
-              <ListItemButton
-                key={index}
-                component={Link}
-                href={item.path}
-                selected={isActive(item.path)}
-                sx={{ ...navItemStyle, borderLeft: "none" }}
-              >
-                {!isCollapsed && (
-                  <ListItemText
-                    primary={item.label}
-                    primaryTypographyProps={{ fontSize: "12px" }}
-                  />
-                )}
-              </ListItemButton>
-            ))}
-          </Box>
-        </Collapse>
-        */}
-
         <Divider
           sx={{
             my: 1.5,

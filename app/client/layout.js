@@ -9,12 +9,11 @@ import Header from "@/components/client/clientdash/clientheader";
 export default function DashboardLayout({ children }) {
   return (
     <Box>
-    <Header/>
+    {/* <Header/> */}
     <Box
       sx={{
         display: "flex",
-        // ✅ ensures full screen height
-        // overflow: "hidden", // ✅ prevents layout shifting
+
       }}
     >
       {/*  */}
@@ -28,14 +27,14 @@ export default function DashboardLayout({ children }) {
           flexGrow: 1,
           p: 3,
           bgcolor: "#f9fafb",
-          overflowY: "auto", // ✅ allows scrolling only inside main content
+          overflowY: "scroll", // ✅ allows scrolling only inside main content
         }}
       >
         {children}
       </Box>
       
     </Box>
-    <ClientFooter/>
+    {/* <ClientFooter/> */}
     </Box>
   );
 }

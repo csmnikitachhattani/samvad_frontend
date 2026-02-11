@@ -14,17 +14,22 @@ export default function Sidebar() {
   const menuItems = [
     { 
       label: "Dashboard", 
-      path: "/newspaper",
+      path: "/admin",
       icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
     },
     {
-      label: "Profile",
-      path: "/newspaper/profile",
+      label: "Master",
+      path: "/admin/profile",
       icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
-      label: "Release Order",
-      path: "/newspaper/release-order",
+      label: "Agency",
+      path: "/admin/agency",
+      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Counter",
+      path: "/admin/counter",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
