@@ -44,7 +44,7 @@ export default function LoginPage() {
   // Fetch user types
   const fetchUserTypes = async () => {
     try {
-      const res = await axios.get("http://localhost:3080/api/usertype");
+      const res = await axios.get("http://103.79.34.50:3080/api/usertype");
       setUserTypeList(res.data || []);
     } catch (err) {
       console.error("Failed to load user types", err);

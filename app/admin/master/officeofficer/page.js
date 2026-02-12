@@ -1,18 +1,16 @@
 "use client";
 import React from "react";
-import Form from "@/components/admin/forms/agency"
-
+import OfficeOfficer from "@/components/admin/master/officeofficer/officeofficer"
 import {
   Box,
-  Divider,
+ 
 } from "@mui/material";
 
 function AdminIndex() {
   return (
   <Box>
     <Box sx={{width: "100%"}}>
-      <Form />
-     
+      <OfficeOfficer />
     </Box>
   </Box>
   );
