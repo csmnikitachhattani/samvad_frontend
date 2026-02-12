@@ -21,26 +21,10 @@ function ClientModule() {
   ];
 
   return (
-    <Suspense fallback={<div>Loading client module...</div>}>
-    <Box>
-       
+    <Suspense fallback={<div>Loading client module...</div>}>       
       <Box sx={{ width: "100%" }}>
-        
             <NoticeBoard />
-            {/* <ClientFileUpload/> */}
-
       </Box>
-      
-      {/* <Box>
-        <Report/>
-      </Box>
-      <Box><ForwardTo/></Box>
-      
-    
-      <Box><ClientFileUpload/></Box>
-      <Box><NewsRateList/></Box>
-     */}
-    </Box>
     </Suspense>
   );
 }
