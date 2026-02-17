@@ -74,26 +74,26 @@ export default function WorkOrderForm() {
   const transformAgencyToDetails = (agencies) => {
     console.log(agencies)
     if (!Array.isArray(agencies)) return [];
-  
+
     return agencies.map((agency) => ({
-      vendorId: agency.AgencyID?.toString() || "",
+      vendorId: agency.AgencyId?.toString() || "",
       vendorName: agency.AgencyName || "",
       vendorCateId: agency.ServiceId?.toString() || "", // if relevant
-      vendorCate: "", // fill if you have category name
-      ledVehicleId: agency.VehicleId?.toString || "",
+      vendorCate: 'outdoor media', // fill if you have category name
+      ledVehicleId: agency.VehicleId,
       description: "",
-      rate: 0,
-      noOfVehicle: agency.VehicleNo,
-      noOfProgramme: 0,
-      totalRate: 0,
+      rate: 12,
+      noOfVehicle: 1,
+      noOfProgramme: 4,
+      totalRate: 12,
       startDate: new Date().toISOString(),
-      endDate :new Date(
+      endDate: new Date(
         new Date().setMonth(new Date().getMonth() + 1)
       ).toISOString(),
-      
+
     }));
   };
-  
+
   async function fetchVehicle() {
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
@@ -212,7 +212,28 @@ export default function WorkOrderForm() {
   };
 
   const handleSubmit = () => {
-    console.log("Payload:", formData);
+  const payload = {
+    "financialYear": formData.financial_year,
+    "avakRefId": formData.avak_ref_id,
+    "jobNo": formData.job_id,
+    "dprJobRefNo": "",
+    "woDate": new Date().toISOString(),
+    "entryIpAddress": "string",
+    "entryByUserId": "string",
+    "entryByUsername": "nikita",
+    'details': vehicles
+  }
+
+
+    setFormData({
+      ...formData,
+      detailList: vehicles,
+    });
+    axiosClient.post("http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails", payload,{
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
+    });
   };
 
   return (
@@ -263,39 +284,39 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{xs:3}}>
+        <Grid item size={{ xs: 3 }}>
           <TextField
-  select
-  fullWidth
-  label="Vendor"
-  name="vendor_id"
-  SelectProps={{ multiple: true }}
-  value={formData.vendor_id || []}
-  onChange={(e) => {
-    const selectedIds = e.target.value; // array
+            select
+            fullWidth
+            label="Vendor"
+            name="vendor_id"
+            SelectProps={{ multiple: true }}
+            value={formData.vendor_id || []}
+            onChange={(e) => {
+              const selectedIds = e.target.value; // array
 
-    const selectedVendors = vendors.filter((v) =>
-      selectedIds.includes(v.AgencyID)
-    );
+              const selectedVendors = vendors.filter((v) =>
+                selectedIds.includes(v.AgencyID)
+              );
 
-    setFormData({
-      ...formData,
-      vendor_id: selectedIds,
-      vendor_name: selectedVendors.map(v => v.AgencyName), // array of names
-    });
+              setFormData({
+                ...formData,
+                vendor_id: selectedIds,
+                vendor_name: selectedVendors.map(v => v.AgencyName), // array of names
+              });
 
-    fetchVehicle(selectedIds); // optional: pass selected vendors
-  }}
->
-  {vendors.map((vendor) => (
-    <MenuItem
-      key={vendor.AgencyID}
-      value={vendor.AgencyID}
-    >
-      <ListItemText primary={vendor.AgencyName} />
-    </MenuItem>
-  ))}
-</TextField>
+              fetchVehicle(selectedIds); // optional: pass selected vendors
+            }}
+          >
+            {vendors.map((vendor) => (
+              <MenuItem
+                key={vendor.AgencyID}
+                value={vendor.AgencyID}
+              >
+                <ListItemText primary={vendor.AgencyName} />
+              </MenuItem>
+            ))}
+          </TextField>
 
         </Grid>
 
@@ -403,11 +424,12 @@ export default function WorkOrderForm() {
                   />
                 </TableCell>
               </TableRow>
+
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
+      {selected}
       <Box mt={3}>
         <Button variant="contained" onClick={handleSubmit}>
           Submit
