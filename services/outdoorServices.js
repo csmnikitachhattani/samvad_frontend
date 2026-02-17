@@ -16,7 +16,6 @@ const outdoorService = {
       const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/get-all-ledVehicle");
       return res.data;
     } catch (err) {
-      console.log("answer")
       throw err; // interceptor will format it
     }
   },
@@ -29,7 +28,6 @@ const outdoorService = {
       const res = await axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/get-all-led-vehicle", payload);
       return res.data;
     } catch (err) {
-      console.log("answer")
       throw err; // interceptor will format it
     }
   },

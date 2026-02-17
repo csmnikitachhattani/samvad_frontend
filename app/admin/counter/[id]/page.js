@@ -2,9 +2,10 @@
 
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-
+import axiosClient from "@/lib/axiosClient";
 import adminServices from "@/services/adminServices";
 import outdoorServices from "@/services/outdoorServices";
+
 
 import {
   Box,
@@ -70,11 +71,35 @@ export default function WorkOrderForm() {
       },
     ],
   });
-
+  const transformAgencyToDetails = (agencies) => {
+    console.log(agencies)
+    if (!Array.isArray(agencies)) return [];
+  
+    return agencies.map((agency) => ({
+      vendorId: agency.AgencyID?.toString() || "",
+      vendorName: agency.AgencyName || "",
+      vendorCateId: agency.ServiceId?.toString() || "", // if relevant
+      vendorCate: "", // fill if you have category name
+      ledVehicleId: agency.VehicleId?.toString || "",
+      description: "",
+      rate: 0,
+      noOfVehicle: agency.VehicleNo,
+      noOfProgramme: 0,
+      totalRate: 0,
+      startDate: new Date().toISOString(),
+      endDate :new Date(
+        new Date().setMonth(new Date().getMonth() + 1)
+      ).toISOString(),
+      
+    }));
+  };
+  
   async function fetchVehicle() {
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
-      setVehicles(response.result);
+      const Array = transformAgencyToDetails(response.result)
+      console.log(Array)
+      setVehicles(Array);
       console.log(response);
     } catch (error) {
       console.error("Failed to fetch vehicles", error);
@@ -239,36 +264,6 @@ export default function WorkOrderForm() {
         </Grid>
 
         <Grid item size={{xs:3}}>
-          {/* <TextField
-            select
-            fullWidth
-            multiple
-            label="Vendor"
-            name="vendor_id"
-            value={formData.vendor_id}
-            onChange={(e) => {
-              const selectedVendor = vendors.find(
-                (v) => v.vendor_id === e.target.value
-              );
-
-              setFormData({
-                ...formData,
-                vendor_id: e.target.value,
-                vendor_name: selectedVendor?.vendor_name || "",
-              });
-
-              fetchVehicle();
-            }}
-          >
-            {vendors.map((vendor) => (
-              <MenuItem
-                key={vendor.AgencyID}
-                value={vendor.AgencyID}
-              >
-                {vendor.AgencyName}
-              </MenuItem>
-            ))}
-          </TextField> */}
           <TextField
   select
   fullWidth
@@ -389,8 +384,8 @@ export default function WorkOrderForm() {
           <TableBody>
             {vehicles.map((row) => (
               <TableRow key={row.VehicleId} hover>
-                <TableCell>{row.VehicleNo}</TableCell>
-                <TableCell>{row.OwnerName}</TableCell>
+                <TableCell>{row.noOfVehicle}</TableCell>
+                <TableCell>{row.vendorName}</TableCell>
                 <TableCell>{row.AgencyName}</TableCell>
                 <TableCell>
                   {row.FitnessUpto?.split("T")[0]}
