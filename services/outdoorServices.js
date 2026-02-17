@@ -20,6 +20,19 @@ const outdoorService = {
       throw err; // interceptor will format it
     }
   },
+  getAgencyVehicle : async (selected)=>{
+    console.log("get all VehicleS", selected)
+    try {
+      const payload = {
+        "agencyIds": selected
+      }
+      const res = await axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/get-all-led-vehicle", payload);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
 
   createVehicle: async (updateData) => {
     console.log("newspaper information", updateData)

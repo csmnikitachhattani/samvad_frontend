@@ -21,6 +21,7 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  ListItemText
 } from "@mui/material";
 
 export default function WorkOrderForm() {
@@ -72,7 +73,7 @@ export default function WorkOrderForm() {
 
   async function fetchVehicle() {
     try {
-      const response = await outdoorServices.getAllvehicle();
+      const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
       setVehicles(response.result);
       console.log(response);
     } catch (error) {
@@ -185,11 +186,6 @@ export default function WorkOrderForm() {
     });
   };
 
-  const removeRow = (index) => {
-    const updated = formData.detailList.filter((_, i) => i !== index);
-    setFormData({ ...formData, detailList: updated });
-  };
-
   const handleSubmit = () => {
     console.log("Payload:", formData);
   };
@@ -242,8 +238,8 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
-          <TextField
+        <Grid item size={{xs:3}}>
+          {/* <TextField
             select
             fullWidth
             multiple
@@ -272,7 +268,40 @@ export default function WorkOrderForm() {
                 {vendor.AgencyName}
               </MenuItem>
             ))}
-          </TextField>
+          </TextField> */}
+          <TextField
+  select
+  fullWidth
+  label="Vendor"
+  name="vendor_id"
+  SelectProps={{ multiple: true }}
+  value={formData.vendor_id || []}
+  onChange={(e) => {
+    const selectedIds = e.target.value; // array
+
+    const selectedVendors = vendors.filter((v) =>
+      selectedIds.includes(v.AgencyID)
+    );
+
+    setFormData({
+      ...formData,
+      vendor_id: selectedIds,
+      vendor_name: selectedVendors.map(v => v.AgencyName), // array of names
+    });
+
+    fetchVehicle(selectedIds); // optional: pass selected vendors
+  }}
+>
+  {vendors.map((vendor) => (
+    <MenuItem
+      key={vendor.AgencyID}
+      value={vendor.AgencyID}
+    >
+      <ListItemText primary={vendor.AgencyName} />
+    </MenuItem>
+  ))}
+</TextField>
+
         </Grid>
 
         <Grid item xs={3}>
