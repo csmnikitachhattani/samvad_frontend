@@ -244,7 +244,7 @@ export default function WorkOrderForm() {
 
       {/* MAIN DETAILS */}
       <Grid container spacing={2}>
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             fullWidth
             label="Financial Year"
@@ -254,7 +254,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             fullWidth
             label="AVAK Ref ID"
@@ -264,7 +264,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             fullWidth
             label="Job No"
@@ -274,7 +274,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             fullWidth
             label="WO Subject"
@@ -284,7 +284,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{ xs: 3 }}>
+        <Grid item size={{ xs: 2 }}>
           <TextField
             select
             fullWidth
@@ -320,7 +320,7 @@ export default function WorkOrderForm() {
 
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             fullWidth
             label="Client Code"
@@ -330,7 +330,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             fullWidth
             label="Billing Client Code"
@@ -340,7 +340,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             type="number"
             fullWidth
@@ -351,7 +351,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             type="number"
             fullWidth
@@ -362,7 +362,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item size={{md:2}}>
           <TextField
             type="number"
             fullWidth
@@ -386,8 +386,12 @@ export default function WorkOrderForm() {
               <TableCell>Vehicle No</TableCell>
               <TableCell>Owner Name</TableCell>
               <TableCell>Agency</TableCell>
-              <TableCell>Fitness Upto</TableCell>
-              <TableCell>Insurance Upto</TableCell>
+              <TableCell>Rate</TableCell>
+              <TableCell>Total Rate</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+              
+              
 
               <TableCell padding="checkbox">
                 <Checkbox
@@ -409,11 +413,42 @@ export default function WorkOrderForm() {
                 <TableCell>{row.vendorName}</TableCell>
                 <TableCell>{row.AgencyName}</TableCell>
                 <TableCell>
-                  {row.FitnessUpto?.split("T")[0]}
-                </TableCell>
-                <TableCell>
-                  {row.InsuranceUpto?.split("T")[0]}
-                </TableCell>
+                <TextField
+                  variant="outlined"
+                  value={row.totalRate}
+                  onChange={(e) =>
+                    handleChange(row.id, "name", e.target.value)
+                  }
+                />
+              </TableCell>
+              <TableCell>
+              <TextField
+                  variant="outlined"
+                  value={row.rate}
+                  onChange={(e) =>
+                    handleChange(row.id, "name", e.target.value)
+                  }
+                />
+              </TableCell>
+              <TableCell>
+              <TextField
+                  variant="outlined"
+                  name="start"
+                  value={row.startDate}
+                  onChange={(e) =>
+                    handleChange(row.id, "name", e.target.value)
+                  }
+                />
+              </TableCell>
+              <TableCell>
+              <TextField
+                  variant="outlined"
+                  value={row.endDate}
+                  onChange={(e) =>
+                    handleChange(row.id, "name", e.target.value)
+                  }
+                />
+              </TableCell>
 
                 <TableCell padding="checkbox">
                   <Checkbox
