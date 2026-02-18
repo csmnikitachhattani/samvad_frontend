@@ -1,3 +1,4 @@
+
 "use client";
 
 import axios from "axios";
@@ -23,7 +24,7 @@ import LogiImg from "@/public/images/logo_samvad.png";
 
 export default function LoginPage() {
   const [userType, setUserType] = useState({ id: "", code: "", name: "" });
-  const [username, setUsername] = useState("");
+  const [userid, setUserid] = useState("");
   const [password, setPassword] = useState("");
   const [captcha, setCaptcha] = useState("");
   const [userInput, setUserInput] = useState("");
@@ -56,51 +57,66 @@ export default function LoginPage() {
     fetchUserTypes();
   }, []);
 
-  // Handle login
-  const handleLogin = async () => {
-    if (!userType.code || !username || !password || !userInput) {
-      setError("Please fill all fields");
-      return;
-    }
+// Handle login
+const handleLogin = async () => {
+  if (!userType.code || !userid || !password || !userInput) {
+    setError("Please fill all fields");
+    return;
+  }
 
-    if (userInput !== captcha) {
-      setError("Captcha is incorrect");
-      generateCaptcha();
-      return;
-    }
+  if (userInput !== captcha) {
+    setError("Captcha is incorrect");
+    generateCaptcha();
+    return;
+  }
 
-    setError("");
+  setError("");
 
-    try {
-      const res = await axios.post(
-        "http://103.79.34.50:8083/api/Login/cgsamvadlogin",
-        {
-          usertypecode: userType.code,
-          userid: username,
-          usrpassword: password,
-          usertypeid: userType.id.toString(),
-        },
-      );
-      console.log("Login Path from API:", res.data);
-      if (res.data?.status == 200) {
-        // ✅ CHECK LOGIN PATH (DEBUG)
-
-        console.log("hhhh", res.data.result[0].loginpath);
-
-        // ✅ External redirect (BEST)
-        setTimeout(() => {
-          window.location.href = res.data.result[0].loginpath;
-        }, 1000);
-      } else {
-        setError(res.data?.message || "Invalid credentials");
-        generateCaptcha();
+  try {
+    const res = await axios.post(
+      "http://103.79.34.50:8083/api/Login/cgsamvadlogin",
+      {
+        usertypecode: userType.code,
+        userid: userid,
+        usrpassword: password,
+        usertypeid: userType.id.toString(),
       }
-    } catch (err) {
-      console.error(err);
-      setError("Server error. Please try again.");
+    );
+
+    console.log("Full Login Response:", res.data);
+
+    if (res.data?.status === 200) {
+      const result = res.data.result?.[0];
+
+      const usertypecode = result?.usertypecode; 
+      const loginPath = result?.loginpath;
+
+      // console.log("Login Path:", loginPath);
+      // console.log("user type code:", usertypecode);
+
+      // ✅ SAVE usertypecode to localStorage for later use in menu rendering
+      if (usertypecode) {
+        localStorage.setItem("usertypecode", usertypecode);
+      }
+
+      // Optional: store user info if needed
+      localStorage.setItem("userType", userType.code);
+      localStorage.setItem("userid", userid);
+      // localStorage.setItem("usertypecode", usertypecode);
+
+      // ✅ Redirect to dashboard / external path
+      window.location.href = loginPath;
+    } else {
+      setError(res.data?.message || "Invalid credentials");
       generateCaptcha();
     }
-  };
+  } catch (err) {
+    console.error("Login Error:", err);
+    setError("Server error. Please try again.");
+    generateCaptcha();
+  }
+};
+
 
   return (
     <Box
@@ -252,24 +268,15 @@ export default function LoginPage() {
               </Select>
             </FormControl>
 
-            {/* Username */}
+            {/* Userid */}
             <TextField
               fullWidth
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Userid"
+              value={userid}
+              onChange={(e) => setUserid(e.target.value)}
               sx={{ mb: 2 }}
             />
 
-            {/* Password */}
-            {/* <TextField
-              fullWidth
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              sx={{ mb: 2 }}
-            /> */}
 
             <TextField
               fullWidth
@@ -344,3 +351,7 @@ export default function LoginPage() {
     </Box>
   );
 }
+
+
+
+

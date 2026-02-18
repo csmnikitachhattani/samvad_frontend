@@ -52,3 +52,39 @@ textarea,
   user-select: text;
   cursor: text;
 }
+
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #030236;
+  color: white;
+  padding: 18px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.submenu {
+  margin-left: 28px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.submenu.open {
+  max-height: 500px;
+}
