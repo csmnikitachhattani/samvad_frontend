@@ -70,5 +70,15 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getAllocationRecord: async (job_id, ) =>{
+    console.log("get counter detail")
+    try {
+      const res = await axiosClient.get(`http://103.79.34.50:8083/api/ManageMaster/getagencybyserviceid/${id}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  }
 };
 export default adminService;

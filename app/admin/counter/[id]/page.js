@@ -31,7 +31,6 @@ export default function WorkOrderForm() {
   const [vendors, setVendors] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [selected, setSelected] = useState([]);
-
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -294,17 +293,14 @@ export default function WorkOrderForm() {
             value={formData.vendor_id || []}
             onChange={(e) => {
               const selectedIds = e.target.value; // array
-
               const selectedVendors = vendors.filter((v) =>
                 selectedIds.includes(v.AgencyID)
               );
-
               setFormData({
                 ...formData,
                 vendor_id: selectedIds,
                 vendor_name: selectedVendors.map(v => v.AgencyName), // array of names
               });
-
               fetchVehicle(selectedIds); // optional: pass selected vendors
             }}
           >
