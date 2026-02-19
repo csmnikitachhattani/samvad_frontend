@@ -21,8 +21,8 @@ import {
 
 const DataSetUI = () => {
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const finYear = searchParams.get("fin_year");
+  const job_id = searchParams.get("job_id");
+  const avak_ref = searchParams.get("avak_ref");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -34,8 +34,9 @@ const DataSetUI = () => {
   const fetchRecords = async () => {
     try {
       setLoading(true);
-
-      const response = await axios.get("/api/records"); 
+      const response = await adminServices.getAllocationRecord();
+      //setData(response || []);
+      //const response = await axios.get("/api/records"); 
       // replace with your actual endpoint
 
       setData(response.data);
