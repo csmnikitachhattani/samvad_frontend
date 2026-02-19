@@ -135,8 +135,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                 Move to Allocation</Button>
                                             <Button
                                                 variant="contained"
-                                                //onClick={() => setShowAction(true)}
-                                                onClick={() => router.push(`/admin/counter/notesheet?id=${row.job_id}&fin_year=${row.financial_year}`)}
+                                                onClick={() => router.push(`/admin/counter/notesheet?id=${row.job_id}&avak_ref=${row.avak_ref_id}`)}
                                                 sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
                                             >
                                                 Generate NoteSheet</Button>

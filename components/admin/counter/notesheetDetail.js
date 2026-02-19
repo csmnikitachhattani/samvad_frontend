@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import adminServices from "@/services/adminServices";
 import {
   Box,
   Card,
@@ -19,6 +20,7 @@ import {
 } from "@mui/material";
 
 const DataSetUI = () => {
+  const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const finYear = searchParams.get("fin_year");
   const [data, setData] = useState(null);
