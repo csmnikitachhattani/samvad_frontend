@@ -12,7 +12,6 @@ function AdminIndex() {
   <Box>
     <Box sx={{width: "100%"}}>
       <Form />
-     
     </Box>
   </Box>
   );

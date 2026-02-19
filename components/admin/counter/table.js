@@ -41,9 +41,18 @@ const AdvtDownloadTable = ({ rows = [] }) => {
         }
         fetchCounters();
     }, []);
-    async function Approved() {
+    async function Approved(job_id, avak_ref_id, fin_year) {
         try {
-            const response = await adminServices.getcounter();
+            const payload = {
+                "financialYear": fin_year,
+                "avakRefId": avak_ref_id,
+                "jobNo": job_id,
+                "approvalAction": "A",
+                "approvedByUserId": "000078",
+                "approvedByUsername": "string",
+                "approvedByIp": "103.79.34.50"
+            }
+            const response = await adminServices.ApprovedNotesheet(payload);
             setData(response || []);
             console.log(response)
         } catch (error) {
@@ -147,7 +156,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                 Generate NoteSheet</Button>
                                                 <Button
                                                 variant="contained"
-                                                onClick={() => router.push(`/admin/counter/notesheet?id=${row.job_id}&avak_ref=${row.avak_ref_id}`)}
+                                                onClick={()=>Approved(row.job_id,row.avak_ref_id,row.financial_year)}
                                                 sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
                                             >
                                              Proceed To Work order</Button>

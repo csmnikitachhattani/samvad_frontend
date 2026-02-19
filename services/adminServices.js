@@ -83,6 +83,16 @@ const adminService = {
       console.log("answer")
       throw err; // interceptor will format it
     }
+  },
+  ApprovedNotesheet: async (payload) =>{
+    console.log("post notesheet detail")
+    try {
+      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/approveledvehicle`, payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
   }
 };
 export default adminService;
