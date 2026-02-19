@@ -68,7 +68,7 @@ const adminService = {
     console.log("get Allocation detail")
     try {
       const res = await axiosClient.get(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/getsubrecordswithtotals?avakRefId=${avakRefId}&jobNo=${job_id}`);
-      return res.data;
+      return res;
     } catch (err) {
       console.log("answer")
       throw err; // interceptor will format it

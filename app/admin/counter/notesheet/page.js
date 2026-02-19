@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-
+import NotesheetForm from "@/components/admin/counter/notesheetDetail"
 export default function CounterPage() {
   const searchParams = useSearchParams();
 
@@ -11,8 +11,9 @@ export default function CounterPage() {
   return (
     <div>
       <h1>Counter Page</h1>
-      <p>ID: {id}</p>
-      <p>Financial Year: {finYear}</p>
+      {/* <p>ID: {id}</p>
+      <p>Financial Year: {finYear}</p> */}
+      <NotesheetForm />
     </div>
   );
 }
