@@ -19,10 +19,7 @@ import {
     Stack,
     InputAdornment
 } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
 import SearchIcon from "@mui/icons-material/Search";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
 import adminServices from "@/services/adminServices";
 
 const AdvtDownloadTable = ({ rows = [] }) => {
@@ -44,6 +41,15 @@ const AdvtDownloadTable = ({ rows = [] }) => {
         }
         fetchCounters();
     }, []);
+    async function Approved() {
+        try {
+            const response = await adminServices.getcounter();
+            setData(response || []);
+            console.log(response)
+        } catch (error) {
+            console.error("Failed to fetch states", error);
+        }
+    }
     return (
         <Paper elevation={3} sx={{ p: 2, mt: 3 }}>
             {/* Header */}
@@ -139,6 +145,12 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                 sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
                                             >
                                                 Generate NoteSheet</Button>
+                                                <Button
+                                                variant="contained"
+                                                onClick={() => router.push(`/admin/counter/notesheet?id=${row.job_id}&avak_ref=${row.avak_ref_id}`)}
+                                                sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
+                                            >
+                                             Proceed To Work order</Button>
 
                                         </TableCell>
                                     </TableRow>

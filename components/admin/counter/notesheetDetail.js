@@ -23,6 +23,7 @@ const DataSetUI = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [records, setRecords]= useState([]);
 
   useEffect(() => {
     if (job_id && avak_ref) fetchRecords(job_id, avak_ref);
@@ -33,6 +34,9 @@ const DataSetUI = () => {
       setLoading(true);
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
+      const Array =  transformAgencyToDetails(response?.data?.records)
+      console.log(Array)
+      setRecords(Array)
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -40,18 +44,39 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
+  const transformAgencyToDetails = (agencies) => {
+    console.log("fgudee",agencies)
+    if (!Array.isArray(agencies)) return [];
 
+    return agencies.map((agency) => ({
+      vendorId: agency.vendor_id?.toString() || "",
+      vendorName: agency.vendor_name || "",
+      vendorCateId: agency.vendor_cate_id?.toString() || "", // if relevant
+      vendorCate: 'outdoor media', // fill if you have category name
+      ledVehicleId: agency.led_vehicle_id,
+      description: agency.description,
+      rate: agency.rate,
+      noOfVehicle: 1,
+      noOfProgramme: 4,
+      totalRate: agency.total_rate,
+      startDate: agency.start_date,
+      endDate: agency.end_date,
+
+    }));
+  };
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
       setError("");
       setSuccess("");
       const payload = { 
-        JobNo:job_id, 
-        AvakRefId:avak_ref,  
-        FinancialYear: '2024-2025',
-        NotesheetByUserId: '00078',
-        records: data?.records };
+        jobNo:job_id, 
+        avakRefId:avak_ref,  
+        financialYear: '2024-2025',
+        notesheetByUserId: '00078',
+        notesheetByUserName: "Nikita",
+        notesheetByIp: '103.79.34.50',
+        details: records };
       await adminServices.submitNotesheet(payload);
       setSuccess("Allocation submitted successfully.");
     } catch (err) {
@@ -86,11 +111,11 @@ const DataSetUI = () => {
 
   if (!data) return null;
 
-  const { records = [], summary = {} } = data;
+  const { summary = {} } = data;
 
   const columns = [
-    { label: "Alloc ID",   key: "allocation_id",  mono: true },
-    { label: "Vehicle ID", key: "led_vehicle_id",  mono: true },
+    //{ label: "Alloc ID",   key: "allocation_id",  mono: true },
+    { label: "Vehicle ID", key: "led_vehicleId",  mono: true },
     { label: "Rate",       key: "rate",             fmt: true },
     { label: "Vehicles",   key: "no_of_vehicle" },
     { label: "Programme",  key: "no_of_programme" },

@@ -238,7 +238,7 @@ export default function WorkOrderForm() {
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h6" mb={2}>
-        Work Order Form
+       Allocation Form
       </Typography>
 
       {/* MAIN DETAILS */}
