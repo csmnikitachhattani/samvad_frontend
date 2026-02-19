@@ -44,11 +44,6 @@ const DataSetUI = () => {
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [records, setRecords]= useState([]);
-  const [wosubject, setWosubject]= useState('');
-  const [startDate, setStartDate]= useState('');
-  const [endDate, setEndDate] = useState('');
-  const [commissionPercentage, setCommissionPercentage] = useState('');
-  const [gstPercentage, setGstPercentage] = useState('');
 
 
   useEffect(() => {
@@ -153,44 +148,7 @@ const DataSetUI = () => {
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
       {/* Header */}
-      <Grid container spacing={2}>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="WO Subject"
-            name="wosubject"
-            value={wosubject}
-          
-          />
-        </Grid>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Start Date"
-            name="startDate"
-            value={startDate}
-           
-          />
-        </Grid>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="End Date"
-            name="endDate"
-            value={endDate}
-            
-          />
-        </Grid>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Commission Percentage"
-            name="commissionPercentage"
-            value={commissionPercentage}
-           
-          />
-        </Grid>
-        </Grid>
+      
       <div style={s.header}>
         <div>
           <h1 style={s.title}>Allocation Summary</h1>
