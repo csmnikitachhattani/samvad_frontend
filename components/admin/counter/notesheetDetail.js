@@ -46,8 +46,13 @@ const DataSetUI = () => {
       setSubmitting(true);
       setError("");
       setSuccess("");
-      const payload = { job_id, avak_ref, records: data?.records };
-      await adminServices.submitAllocation(payload);
+      const payload = { 
+        JobNo:job_id, 
+        AvakRefId:avak_ref,  
+        FinancialYear: '2024-2025',
+        NotesheetByUserId: '00078',
+        records: data?.records };
+      await adminServices.submitNotesheet(payload);
       setSuccess("Allocation submitted successfully.");
     } catch (err) {
       setError("Submission failed. Please try again.");
@@ -119,7 +124,7 @@ const DataSetUI = () => {
             cursor: submitting || records.length === 0 ? "not-allowed" : "pointer",
           }}
         >
-          {submitting ? "Submitting…" : "Submit Allocation"}
+          {submitting ? "Generating…" : "Generate Notesheet"}
         </button>
       </div>
 
