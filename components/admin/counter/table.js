@@ -11,13 +11,11 @@ import {
     TableRow,
     TablePagination,
     TextField,
-    Chip,
-    IconButton,
     Button,
-    Tooltip,
     Typography,
     Stack,
-    InputAdornment
+    InputAdornment,
+    Divider
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import adminServices from "@/services/adminServices";
@@ -28,39 +26,57 @@ const AdvtDownloadTable = ({ rows = [] }) => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState("");
     const [data, setData] = useState([]);
-    const filteredRows = data
+
+    // ✅ Fixed: search actually filters now
+    const filteredRows = data.filter((row) => {
+        const term = search.toLowerCase();
+        return (
+            String(row.job_id).toLowerCase().includes(term) ||
+            (row.subject || "").toLowerCase().includes(term) ||
+            (row.client_name || "").toLowerCase().includes(term)
+        );
+    });
+
     useEffect(() => {
         async function fetchCounters() {
             try {
                 const response = await adminServices.getcounter();
                 setData(response || []);
-                console.log(response)
             } catch (error) {
-                console.error("Failed to fetch states", error);
+                console.error("Failed to fetch counters", error);
             }
         }
         fetchCounters();
     }, []);
+
     async function Approved(job_id, avak_ref_id, fin_year) {
         try {
             const payload = {
-                "financialYear": fin_year,
-                "avakRefId": avak_ref_id,
-                "jobNo": job_id,
-                "approvalAction": "A",
-                "approvedByUserId": "000078",
-                "approvedByUsername": "string",
-                "approvedByIp": "103.79.34.50"
-            }
+                financialYear: fin_year,
+                avakRefId: avak_ref_id,
+                jobNo: job_id,
+                approvalAction: "A",
+                approvedByUserId: "000078",
+                approvedByUsername: "string",
+                approvedByIp: "103.79.34.50"
+            };
             const response = await adminServices.ApprovedNotesheet(payload);
             setData(response || []);
-            console.log(response)
         } catch (error) {
-            console.error("Failed to fetch states", error);
+            console.error("Failed to approve notesheet", error);
         }
     }
+
+    const btnStyle = {
+        background: "#010a2a",
+        color: "#fff",
+        textTransform: "capitalize",
+        fontSize: "0.72rem",
+        whiteSpace: "nowrap"
+    };
+
     return (
-        <Paper elevation={3} sx={{ p: 2, mt: 3 }}>
+        <Paper elevation={3} sx={{ p: 2, mt: 3, borderRadius: 2 }}>
             {/* Header */}
             <Stack
                 direction={{ xs: "column", sm: "row" }}
@@ -71,13 +87,17 @@ const AdvtDownloadTable = ({ rows = [] }) => {
             >
                 <Typography variant="h6" fontWeight={600}>
                     Advertisement Downloads
-        </Typography>
+                </Typography>
 
                 <TextField
                     size="small"
-                    placeholder="Search by Advt No / Description"
+                    placeholder="Search by Job No / Subject / Client"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(0); // reset to first page on search
+                    }}
+                    sx={{ minWidth: 280 }}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
@@ -88,6 +108,8 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                 />
             </Stack>
 
+            <Divider sx={{ mb: 1 }} />
+
             {/* Table */}
             <TableContainer sx={{ maxHeight: 420 }}>
                 <Table stickyHeader size="small">
@@ -95,14 +117,12 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                         <TableRow>
                             <TableCell><b>#</b></TableCell>
                             <TableCell><b>Client</b></TableCell>
-                            <TableCell><b>Avak/ref Id</b></TableCell>
+                            <TableCell><b>Avak / Ref ID</b></TableCell>
                             <TableCell><b>Subject</b></TableCell>
-
                             <TableCell align="center"><b>Receipt Date</b></TableCell>
-                            {/* <TableCell align="center"><b>Status</b></TableCell> */}
-                            <TableCell><b>Start - End Date</b></TableCell>
+                            <TableCell><b>Start – End Date</b></TableCell>
                             <TableCell><b>Service Type</b></TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell align="center"><b>Actions</b></TableCell>
                         </TableRow>
                     </TableHead>
 
@@ -112,67 +132,95 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => (
                                     <TableRow hover key={index}>
+                                        {/* # */}
                                         <TableCell>{row.job_id}</TableCell>
 
-                                        <TableCell><div>{row.client_name}</div>
-                                            <div>{row.client_ref_id}</div>
-                                            <div>{row.office_address}</div>
-                                            <div>{row.section_code}</div>
-                                        </TableCell>
+                                        {/* Client */}
                                         <TableCell>
-                                            <div>Avak Id:{row.avak_ref_id}</div>
-                                            <div>ref no:{row.ref_no}</div>
+                                            <Typography variant="body2" fontWeight={600}>{row.client_name}</Typography>
+                                            <Typography variant="caption" color="text.secondary">{row.client_ref_id}</Typography><br />
+                                            <Typography variant="caption" color="text.secondary">{row.office_address}</Typography><br />
+                                            <Typography variant="caption" color="text.secondary">{row.section_code}</Typography>
                                         </TableCell>
 
+                                        {/* Avak / Ref */}
                                         <TableCell>
-                                            <div>
-                                                {new Date(row.receipt_date).toLocaleDateString()}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell >
-                                            {row.subject}
-                                        </TableCell>
-                                        <TableCell>
-                                            {new Date(row.startDate).toLocaleDateString()}
-                      -  {new Date(row.endDate).toLocaleDateString()}
+                                            <Typography variant="caption">Avak: {row.avak_ref_id}</Typography><br />
+                                            <Typography variant="caption">Ref: {row.ref_no}</Typography>
                                         </TableCell>
 
+                                        {/* ✅ Fixed: Subject now under Subject column */}
                                         <TableCell>
-                                            <div>{row.od_servicetype_id}</div>
+                                            <Typography variant="body2">{row.subject}</Typography>
                                         </TableCell>
+
+                                        {/* ✅ Fixed: Receipt Date now under Receipt Date column */}
+                                        <TableCell align="center">
+                                            <Typography variant="body2">
+                                                {row.receipt_date
+                                                    ? new Date(row.receipt_date).toLocaleDateString()
+                                                    : "—"}
+                                            </Typography>
+                                        </TableCell>
+
+                                        {/* Start – End Date */}
                                         <TableCell>
-                                            <Button
-                                                variant="contained"
-                                                //onClick={() => setShowAction(true)}
-                                                onClick={() => router.push(`/admin/counter/${row.job_id}`)}
-                                                sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
-                                            >
-                                                Move to Allocation</Button>
-                                            <Button
-                                                variant="contained"
-                                                onClick={() => router.push(`/admin/counter/notesheet?id=${row.job_id}&avak_ref=${row.avak_ref_id}`)}
-                                                sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
-                                            >
-                                                Generate NoteSheet</Button>
+                                            <Typography variant="body2">
+                                                {row.startDate ? new Date(row.startDate).toLocaleDateString() : "—"}
+                                                {" – "}
+                                                {row.endDate ? new Date(row.endDate).toLocaleDateString() : "—"}
+                                            </Typography>
+                                        </TableCell>
+
+                                        {/* Service Type */}
+                                        <TableCell>
+                                            <Typography variant="body2">{row.od_servicetype_id}</Typography>
+                                        </TableCell>
+
+                                        {/* Actions — vertical stack, evenly spaced */}
+                                        <TableCell align="center">
+                                            <Stack spacing={0.75} alignItems="stretch">
                                                 <Button
-                                                variant="contained"
-                                                onClick={()=>Approved(row.job_id,row.avak_ref_id,row.financial_year)}
-                                                sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
-                                            >
-                                             Proceed To Work order</Button>
-
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() => router.push(`/admin/counter/${row.job_id}`)}
+                                                    sx={btnStyle}
+                                                >
+                                                    Move to Allocation
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `/admin/counter/notesheet?id=${row.job_id}&avak_ref=${row.avak_ref_id}`
+                                                        )
+                                                    }
+                                                    sx={btnStyle}
+                                                >
+                                                    Generate NoteSheet
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() => Approved(row.job_id, row.avak_ref_id, row.financial_year)}
+                                                    sx={btnStyle}
+                                                >
+                                                    Proceed to Work Order
+                                                </Button>
+                                            </Stack>
                                         </TableCell>
                                     </TableRow>
                                 ))
                         ) : (
-                                <TableRow>
-                                    <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
-                                        <Typography color="text.secondary">
-                                            No agencies found
-                  </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            )}
+                            <TableRow>
+                                <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
+                                    <Typography color="text.secondary">
+                                        {search ? `No results for "${search}"` : "No records found"}
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

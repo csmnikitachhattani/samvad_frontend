@@ -15,5 +15,4 @@ function AdminIndex() {
   </Box>
   );
 }
-
 export default AdminIndex;

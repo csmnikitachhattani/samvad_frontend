@@ -61,7 +61,6 @@ const DataSetUI = () => {
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
       const Array =  transformAgencyToDetails(response?.data?.records)
-      console.log(Array)
       setRecords(Array)
     } catch (err) {
       setError("Failed to load allocation records");
@@ -71,7 +70,6 @@ const DataSetUI = () => {
     }
   };
   const transformAgencyToDetails = (agencies) => {
-    console.log("fgudee",agencies)
     if (!Array.isArray(agencies)) return [];
 
     return agencies.map((agency) => ({
