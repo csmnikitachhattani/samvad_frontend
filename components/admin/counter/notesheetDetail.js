@@ -3,27 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
-import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    TextField,
-    Chip,
-    IconButton,
-    Button,
-    Tooltip,
-    Typography,
-    Stack,
-    InputAdornment,
-    Grid,
-} from "@mui/material";
-
 
 const PRIMARY = "#030236";
 const PRIMARY_LIGHT = "#eeeef8";
@@ -43,8 +22,7 @@ const DataSetUI = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [records, setRecords]= useState([]);
-
+  const [records, setRecords] = useState([]);
 
   useEffect(() => {
     if (job_id && avak_ref) fetchRecords(job_id, avak_ref);
@@ -55,8 +33,7 @@ const DataSetUI = () => {
       setLoading(true);
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
-      const Array =  transformAgencyToDetails(response?.data?.records)
-      setRecords(Array)
+      setRecords(transformAgencyToDetails(response?.data?.records));
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -64,14 +41,14 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
+
   const transformAgencyToDetails = (agencies) => {
     if (!Array.isArray(agencies)) return [];
-
     return agencies.map((agency) => ({
       vendorId: agency.vendor_id?.toString() || "",
       vendorName: agency.vendor_name || "",
-      vendorCateId: agency.vendor_cate_id?.toString() || "", // if relevant
-      vendorCate: 'outdoor media', // fill if you have category name
+      vendorCateId: agency.vendor_cate_id?.toString() || "",
+      vendorCate: "outdoor media",
       ledVehicleId: agency.led_vehicle_id,
       description: agency.description,
       rate: agency.rate,
@@ -80,22 +57,23 @@ const DataSetUI = () => {
       totalRate: agency.total_rate,
       startDate: agency.start_date,
       endDate: agency.end_date,
-
     }));
   };
+
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
       setError("");
       setSuccess("");
-      const payload = { 
-        jobNo:job_id, 
-        avakRefId:avak_ref,  
-        financialYear: '2024-2025',
-        notesheetByUserId: '00078',
+      const payload = {
+        jobNo: job_id,
+        avakRefId: avak_ref,
+        financialYear: "2024-2025",
+        notesheetByUserId: "00078",
         notesheetByUserName: "Nikita",
-        notesheetByIp: '103.79.34.50',
-        details: records };
+        notesheetByIp: "103.79.34.50",
+        details: records,
+      };
       await adminServices.submitNotesheet(payload);
       setSuccess("Allocation submitted successfully.");
     } catch (err) {
@@ -112,9 +90,9 @@ const DataSetUI = () => {
   if (loading)
     return (
       <div style={s.centered}>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         <div style={s.spinner} />
         <p style={{ color: MUTED, fontSize: 14, marginTop: 12 }}>Loading records…</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
 
@@ -133,27 +111,23 @@ const DataSetUI = () => {
   const { summary = {} } = data;
 
   const columns = [
-    //{ label: "Alloc ID",   key: "allocation_id",  mono: true },
-    { label: "Vehicle ID", key: "ledVehicleId",  mono: true },
-    { label: "Rate",       key: "rate",             fmt: true },
+    { label: "Vehicle ID", key: "ledVehicleId", mono: true },
+    { label: "Rate",       key: "rate",         fmt: true },
     { label: "Vehicles",   key: "no_of_vehicle" },
     { label: "Programme",  key: "no_of_programme" },
-    { label: "Total",      key: "total_rate",       fmt: true, bold: true },
-    { label: "Start Date", key: "start_date",       date: true },
-    { label: "End Date",   key: "end_date",         date: true },
+    { label: "Total",      key: "total_rate",   fmt: true, bold: true },
+    { label: "Start Date", key: "start_date",   date: true },
+    { label: "End Date",   key: "end_date",     date: true },
   ];
 
   return (
     <div style={s.page}>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
-      {/* Header */}
-      
+      {/* ── Header ── */}
       <div style={s.header}>
         <div>
           <h1 style={s.title}>Allocation Summary</h1>
-
-          
           <div style={s.meta}>
             <span style={s.metaLabel}>Job ID</span>
             <span style={s.metaVal}>{job_id}</span>
@@ -162,21 +136,11 @@ const DataSetUI = () => {
             <span style={s.metaVal}>{avak_ref}</span>
           </div>
         </div>
-        <button
-          onClick={handleSubmit}
-          disabled={submitting || records.length === 0}
-          style={{
-            ...s.btn,
-            opacity: submitting || records.length === 0 ? 0.5 : 1,
-            cursor: submitting || records.length === 0 ? "not-allowed" : "pointer",
-          }}
-        >
-          {submitting ? "Generating…" : "Generate Notesheet"}
-        </button>
       </div>
 
-      {/* Body */}
+      {/* ── Body ── */}
       <div style={s.body}>
+
         {/* Alerts */}
         {success && (
           <div style={{ ...s.alert, borderColor: SUCCESS, background: "#f0fdf4", color: SUCCESS }}>
@@ -240,6 +204,22 @@ const DataSetUI = () => {
             </div>
           )}
         </div>
+
+        {/* ── Submit Button — bottom left ── */}
+        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || records.length === 0}
+            style={{
+              ...s.submitBtn,
+              opacity: submitting || records.length === 0 ? 0.5 : 1,
+              cursor: submitting || records.length === 0 ? "not-allowed" : "pointer",
+            }}
+          >
+            {submitting ? "Generating…" : "Generate Notesheet"}
+          </button>
+        </div>
+
       </div>
     </div>
   );
@@ -250,7 +230,11 @@ function BodyRow({ row, columns, fmt }) {
   const [hovered, setHovered] = useState(false);
   return (
     <tr
-      style={{ background: hovered ? PRIMARY_LIGHT : "transparent", borderBottom: `1px solid ${BORDER}`, transition: "background 0.12s" }}
+      style={{
+        background: hovered ? PRIMARY_LIGHT : "transparent",
+        borderBottom: `1px solid ${BORDER}`,
+        transition: "background 0.12s",
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -285,27 +269,58 @@ function StatCard({ label, value, primary }) {
       style={{
         flex: 1,
         minWidth: 200,
-        background: primary ? PRIMARY : "#fff",
-        color: primary ? "#fff" : TEXT,
-        border: `1px solid ${primary ? "transparent" : BORDER}`,
-        borderRadius: 10,
+        background: "#fff",
+        borderRadius: 12,
         padding: "20px 24px",
+        border: `1px solid ${BORDER}`,
+        borderLeft: `4px solid ${primary ? PRIMARY : BORDER}`,
         boxShadow: primary
-          ? "0 4px 18px rgba(3,2,54,0.20)"
-          : "0 1px 3px rgba(0,0,0,0.05)",
+          ? "0 4px 16px rgba(3,2,54,0.10)"
+          : "0 1px 3px rgba(0,0,0,0.04)",
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
       }}
     >
-      <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: primary ? "rgba(255,255,255,0.6)" : MUTED }}>
-        {label}
-      </p>
-      <p style={{ margin: "8px 0 0", fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em" }}>
+      {/* Dot accent */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: primary ? PRIMARY : BORDER,
+            flexShrink: 0,
+          }}
+        />
+        <p style={{
+          margin: 0,
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: MUTED,
+        }}>
+          {label}
+        </p>
+      </div>
+
+      {/* Value */}
+      <p style={{
+        margin: 0,
+        fontSize: 28,
+        fontWeight: 800,
+        letterSpacing: "-0.03em",
+        color: primary ? PRIMARY : TEXT,
+        lineHeight: 1.1,
+      }}>
         {value}
       </p>
     </div>
   );
 }
 
-// ── Style object ──────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
 const s = {
   page: {
     minHeight: "100vh",
@@ -346,17 +361,6 @@ const s = {
     borderRadius: 4,
   },
   sep: { color: "rgba(255,255,255,0.2)", margin: "0 4px" },
-  btn: {
-    background: "#fff",
-    color: PRIMARY,
-    border: "none",
-    borderRadius: 8,
-    padding: "10px 22px",
-    fontSize: 14,
-    fontWeight: 700,
-    fontFamily: "inherit",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-  },
   body: {
     maxWidth: 1280,
     margin: "0 auto",
@@ -441,6 +445,18 @@ const s = {
     border: `3px solid ${BORDER}`,
     borderTop: `3px solid ${PRIMARY}`,
     animation: "spin 0.75s linear infinite",
+  },
+  submitBtn: {
+    background: PRIMARY,
+    color: "#fff",
+    border: "none",
+    borderRadius: 8,
+    padding: "11px 28px",
+    fontSize: 14,
+    fontWeight: 700,
+    fontFamily: "inherit",
+    boxShadow: "0 2px 8px rgba(3,2,54,0.25)",
+    transition: "opacity 0.15s",
   },
 };
 

@@ -3,27 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
-import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    TextField,
-    Chip,
-    IconButton,
-    Button,
-    Tooltip,
-    Typography,
-    Stack,
-    InputAdornment,
-    Grid,
-} from "@mui/material";
-
+import { Grid, TextField } from "@mui/material";
 
 const PRIMARY = "#030236";
 const PRIMARY_LIGHT = "#eeeef8";
@@ -43,13 +23,12 @@ const DataSetUI = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [records, setRecords]= useState([]);
-  const [wosubject, setWosubject]= useState('');
-  const [startDate, setStartDate]= useState('');
-  const [endDate, setEndDate] = useState('');
-  const [commissionPercentage, setCommissionPercentage] = useState('');
-  const [gstPercentage, setGstPercentage] = useState('');
-
+  const [records, setRecords] = useState([]);
+  const [wosubject, setWosubject] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [commissionPercentage, setCommissionPercentage] = useState("");
+  const [gstPercentage, setGstPercentage] = useState("");
 
   useEffect(() => {
     if (job_id && avak_ref) fetchRecords(job_id, avak_ref);
@@ -60,8 +39,7 @@ const DataSetUI = () => {
       setLoading(true);
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
-      const Array =  transformAgencyToDetails(response?.data?.records)
-      setRecords(Array)
+      setRecords(transformAgencyToDetails(response?.data?.records));
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -69,14 +47,14 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
+
   const transformAgencyToDetails = (agencies) => {
     if (!Array.isArray(agencies)) return [];
-
     return agencies.map((agency) => ({
       vendorId: agency.vendor_id?.toString() || "",
       vendorName: agency.vendor_name || "",
-      vendorCateId: agency.vendor_cate_id?.toString() || "", // if relevant
-      vendorCate: 'outdoor media', // fill if you have category name
+      vendorCateId: agency.vendor_cate_id?.toString() || "",
+      vendorCate: "outdoor media",
       ledVehicleId: agency.led_vehicle_id,
       description: agency.description,
       rate: agency.rate,
@@ -85,23 +63,33 @@ const DataSetUI = () => {
       totalRate: agency.total_rate,
       startDate: agency.start_date,
       endDate: agency.end_date,
-
     }));
   };
+
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
       setError("");
       setSuccess("");
-      const payload = { 
-        jobNo:job_id, 
-        avakRefId:avak_ref,  
-        financialYear: '2024-2025',
-        notesheetByUserId: '00078',
-        notesheetByUserName: "Nikita",
-        notesheetByIp: '103.79.34.50',
-        details: records };
-      await adminServices.submitNotesheet(payload);
+      const payload = {
+        jobNo: job_id,
+        avakRefId: avak_ref,
+        financialYear: "2024-2025",
+        woSubject: wosubject,
+        "clientCd": "000019",
+        "billingClientCd": "000019",
+        "billingOfficeCode": "00020",
+        "clientGrpCd": "00002",
+        "odServiceTypeId": 2,
+        "startDate": startDate,
+        "endDate": endDate,
+        "commissionPercentage": commissionPercentage,
+        "gstPercentage": gstPercentage,
+        "entryIpAddress": "103.79.34.50/",
+        "entryByUserId": "string",
+        "entryByUsername": "string"
+      };
+      await adminServices.proceedWorkload(payload);
       setSuccess("Allocation submitted successfully.");
     } catch (err) {
       setError("Submission failed. Please try again.");
@@ -117,9 +105,9 @@ const DataSetUI = () => {
   if (loading)
     return (
       <div style={s.centered}>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         <div style={s.spinner} />
         <p style={{ color: MUTED, fontSize: 14, marginTop: 12 }}>Loading records…</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
 
@@ -138,64 +126,36 @@ const DataSetUI = () => {
   const { summary = {} } = data;
 
   const columns = [
-    //{ label: "Alloc ID",   key: "allocation_id",  mono: true },
-    { label: "Vehicle ID", key: "ledVehicleId",  mono: true },
-    { label: "Rate",       key: "rate",             fmt: true },
+    { label: "Vehicle ID", key: "ledVehicleId", mono: true },
+    { label: "Rate",       key: "rate",          fmt: true },
     { label: "Vehicles",   key: "no_of_vehicle" },
     { label: "Programme",  key: "no_of_programme" },
-    { label: "Total",      key: "total_rate",       fmt: true, bold: true },
-    { label: "Start Date", key: "start_date",       date: true },
-    { label: "End Date",   key: "end_date",         date: true },
+    { label: "Total",      key: "total_rate",    fmt: true, bold: true },
+    { label: "Start Date", key: "start_date",    date: true },
+    { label: "End Date",   key: "end_date",      date: true },
   ];
+
+  const fieldSx = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
+      background: "#fff",
+      fontSize: 13,
+      "& fieldset": { borderColor: BORDER },
+      "&:hover fieldset": { borderColor: "#a0a8c0" },
+      "&.Mui-focused fieldset": { borderColor: PRIMARY },
+    },
+    "& .MuiInputLabel-root": { fontSize: 13, color: MUTED },
+    "& .MuiInputLabel-root.Mui-focused": { color: PRIMARY },
+  };
 
   return (
     <div style={s.page}>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
-      {/* Header */}
-      <Grid container spacing={2}>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="WO Subject"
-            name="wosubject"
-            value={wosubject}
-          
-          />
-        </Grid>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Start Date"
-            name="startDate"
-            value={startDate}
-           
-          />
-        </Grid>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="End Date"
-            name="endDate"
-            value={endDate}
-            
-          />
-        </Grid>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Commission Percentage"
-            name="commissionPercentage"
-            value={commissionPercentage}
-           
-          />
-        </Grid>
-        </Grid>
+      {/* ── 1. Dark header bar ── */}
       <div style={s.header}>
         <div>
           <h1 style={s.title}>Allocation Summary</h1>
-
-          
           <div style={s.meta}>
             <span style={s.metaLabel}>Job ID</span>
             <span style={s.metaVal}>{job_id}</span>
@@ -204,21 +164,67 @@ const DataSetUI = () => {
             <span style={s.metaVal}>{avak_ref}</span>
           </div>
         </div>
-        <button
-          onClick={handleSubmit}
-          disabled={submitting || records.length === 0}
-          style={{
-            ...s.btn,
-            opacity: submitting || records.length === 0 ? 0.5 : 1,
-            cursor: submitting || records.length === 0 ? "not-allowed" : "pointer",
-          }}
-        >
-          {submitting ? "Generating…" : "Generate Notesheet"}
-        </button>
       </div>
 
-      {/* Body */}
+      {/* ── 2. Form card — sits flush below header ── */}
+      <div style={s.formCard}>
+        <p style={s.formTitle}>Work Order Details</p>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth size="small"
+              label="WO Subject"
+              value={wosubject}
+              onChange={(e) => setWosubject(e.target.value)}
+              sx={fieldSx}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2}>
+            <TextField
+              fullWidth size="small"
+              label="Start Date"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              sx={fieldSx}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2}>
+            <TextField
+              fullWidth size="small"
+              label="End Date"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              sx={fieldSx}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2}>
+            <TextField
+              fullWidth size="small"
+              label="Commission %"
+              value={commissionPercentage}
+              onChange={(e) => setCommissionPercentage(e.target.value)}
+              sx={fieldSx}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2}>
+            <TextField
+              fullWidth size="small"
+              label="GST %"
+              value={gstPercentage}
+              onChange={(e) => setGstPercentage(e.target.value)}
+              sx={fieldSx}
+            />
+          </Grid>
+        </Grid>
+      </div>
+
+      {/* ── 3. Body ── */}
       <div style={s.body}>
+
         {/* Alerts */}
         {success && (
           <div style={{ ...s.alert, borderColor: SUCCESS, background: "#f0fdf4", color: SUCCESS }}>
@@ -282,6 +288,22 @@ const DataSetUI = () => {
             </div>
           )}
         </div>
+
+        {/* ── Submit — bottom left ── */}
+        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || records.length === 0}
+            style={{
+              ...s.submitBtn,
+              opacity: submitting || records.length === 0 ? 0.5 : 1,
+              cursor: submitting || records.length === 0 ? "not-allowed" : "pointer",
+            }}
+          >
+            {submitting ? "Generating…" : "Generate Notesheet"}
+          </button>
+        </div>
+
       </div>
     </div>
   );
@@ -292,7 +314,11 @@ function BodyRow({ row, columns, fmt }) {
   const [hovered, setHovered] = useState(false);
   return (
     <tr
-      style={{ background: hovered ? PRIMARY_LIGHT : "transparent", borderBottom: `1px solid ${BORDER}`, transition: "background 0.12s" }}
+      style={{
+        background: hovered ? PRIMARY_LIGHT : "transparent",
+        borderBottom: `1px solid ${BORDER}`,
+        transition: "background 0.12s",
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -347,7 +373,7 @@ function StatCard({ label, value, primary }) {
   );
 }
 
-// ── Style object ──────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
 const s = {
   page: {
     minHeight: "100vh",
@@ -388,17 +414,23 @@ const s = {
     borderRadius: 4,
   },
   sep: { color: "rgba(255,255,255,0.2)", margin: "0 4px" },
-  btn: {
+
+  /* ── Form card sits between header and body ── */
+  formCard: {
     background: "#fff",
-    color: PRIMARY,
-    border: "none",
-    borderRadius: 8,
-    padding: "10px 22px",
-    fontSize: 14,
-    fontWeight: 700,
-    fontFamily: "inherit",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+    borderBottom: `1px solid ${BORDER}`,
+    padding: "20px 40px 24px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
   },
+  formTitle: {
+    margin: "0 0 14px",
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: "0.07em",
+    textTransform: "uppercase",
+    color: MUTED,
+  },
+
   body: {
     maxWidth: 1280,
     margin: "0 auto",
@@ -483,6 +515,18 @@ const s = {
     border: `3px solid ${BORDER}`,
     borderTop: `3px solid ${PRIMARY}`,
     animation: "spin 0.75s linear infinite",
+  },
+  submitBtn: {
+    background: PRIMARY,
+    color: "#fff",
+    border: "none",
+    borderRadius: 8,
+    padding: "11px 28px",
+    fontSize: 14,
+    fontWeight: 700,
+    fontFamily: "inherit",
+    boxShadow: "0 2px 8px rgba(3,2,54,0.25)",
+    transition: "opacity 0.15s",
   },
 };
 

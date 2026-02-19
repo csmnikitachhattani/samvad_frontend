@@ -93,6 +93,18 @@ const adminService = {
       console.log("answer")
       throw err; // interceptor will format it
     }
+  },
+  proceedWorkload: async (payload) =>{
+    console.log("post notesheet detail")
+    try {
+      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/lvworkorder`, payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
   }
+
+ 
 };
 export default adminService;
