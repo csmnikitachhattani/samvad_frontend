@@ -3,6 +3,27 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
+import {
+    Box,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TablePagination,
+    TextField,
+    Chip,
+    IconButton,
+    Button,
+    Tooltip,
+    Typography,
+    Stack,
+    InputAdornment,
+    Grid,
+} from "@mui/material";
+
 
 const PRIMARY = "#030236";
 const PRIMARY_LIGHT = "#eeeef8";
@@ -17,13 +38,18 @@ const DataSetUI = () => {
   const searchParams = useSearchParams();
   const job_id = searchParams.get("id");
   const avak_ref = searchParams.get("avak_ref");
-
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [records, setRecords]= useState([]);
+  const [wosubject, setWosubject]= useState('');
+  const [startDate, setStartDate]= useState('');
+  const [endDate, setEndDate] = useState('');
+  const [commissionPercentage, setCommissionPercentage] = useState('');
+  const [gstPercentage, setGstPercentage] = useState('');
+
 
   useEffect(() => {
     if (job_id && avak_ref) fetchRecords(job_id, avak_ref);
@@ -35,7 +61,6 @@ const DataSetUI = () => {
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
       const Array =  transformAgencyToDetails(response?.data?.records)
-      console.log(Array)
       setRecords(Array)
     } catch (err) {
       setError("Failed to load allocation records");
@@ -45,7 +70,6 @@ const DataSetUI = () => {
     }
   };
   const transformAgencyToDetails = (agencies) => {
-    console.log("fgudee",agencies)
     if (!Array.isArray(agencies)) return [];
 
     return agencies.map((agency) => ({
@@ -129,9 +153,49 @@ const DataSetUI = () => {
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
       {/* Header */}
+      <Grid container spacing={2}>
+        <Grid item size={{md:2}}>
+          <TextField
+            fullWidth
+            label="WO Subject"
+            name="wosubject"
+            value={wosubject}
+          
+          />
+        </Grid>
+        <Grid item size={{md:2}}>
+          <TextField
+            fullWidth
+            label="Start Date"
+            name="startDate"
+            value={startDate}
+           
+          />
+        </Grid>
+        <Grid item size={{md:2}}>
+          <TextField
+            fullWidth
+            label="End Date"
+            name="endDate"
+            value={endDate}
+            
+          />
+        </Grid>
+        <Grid item size={{md:2}}>
+          <TextField
+            fullWidth
+            label="Commission Percentage"
+            name="commissionPercentage"
+            value={commissionPercentage}
+           
+          />
+        </Grid>
+        </Grid>
       <div style={s.header}>
         <div>
           <h1 style={s.title}>Allocation Summary</h1>
+
+          
           <div style={s.meta}>
             <span style={s.metaLabel}>Job ID</span>
             <span style={s.metaVal}>{job_id}</span>

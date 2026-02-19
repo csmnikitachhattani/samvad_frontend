@@ -144,7 +144,11 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                             <Button
                                                 variant="contained"
                                                 //onClick={() => setShowAction(true)}
-                                                onClick={() => router.push(`/admin/counter/${row.job_id}`)}
+                                                onClick={() =>
+                                                    router.push(
+                                                        `/admin/workorder/create?id=${row.job_id}&avak_ref=${row.avak_ref_id}`
+                                                    )
+                                                }
                                                 sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
                                             >
                                                 Move to Allocation</Button>
