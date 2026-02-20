@@ -404,7 +404,7 @@ export default function WorkOrderForm() {
 
           <TableBody>
             {vehicles.map((row) => (
-              <TableRow key={row.VehicleId} hover>
+              <TableRow key={row.ledVehicleId} hover>
                 <TableCell>{row.noOfVehicle}</TableCell>
                 <TableCell>{row.vendorName}</TableCell>
                 <TableCell>{row.AgencyName}</TableCell>
@@ -448,9 +448,9 @@ export default function WorkOrderForm() {
 
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selected.includes(row.VehicleId)}
+                    checked={selected.includes(row.ledVehicleId)}
                     onChange={() =>
-                      handleSelectOne(row.VehicleId)
+                      handleSelectOne(row.ledVehicleId)
                     }
                   />
                 </TableCell>

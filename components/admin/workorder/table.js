@@ -22,7 +22,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import adminServices from "@/services/adminServices";
 
-const AdvtDownloadTable = ({ rows = [] }) => {
+const CounterTable = ({ rows = [] }) => {
     const router = useRouter();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -41,24 +41,6 @@ const AdvtDownloadTable = ({ rows = [] }) => {
         }
         fetchCounters();
     }, []);
-    async function Approved(job_id, avak_ref_id, fin_year) {
-        try {
-            const payload = {
-                "financialYear": fin_year,
-                "avakRefId": avak_ref_id,
-                "jobNo": job_id,
-                "approvalAction": "A",
-                "approvedByUserId": "000078",
-                "approvedByUsername": "string",
-                "approvedByIp": "103.79.34.50"
-            }
-            const response = await adminServices.ApprovedNotesheet(payload);
-            setData(response || []);
-            console.log(response)
-        } catch (error) {
-            console.error("Failed to fetch states", error);
-        }
-    }
     return (
         <Paper elevation={3} sx={{ p: 2, mt: 3 }}>
             {/* Header */}
@@ -187,4 +169,4 @@ const AdvtDownloadTable = ({ rows = [] }) => {
     );
 };
 
-export default AdvtDownloadTable;
+export default CounterTable;
