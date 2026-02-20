@@ -13,7 +13,7 @@ const outdoorService = {
   getAllvehicle : async ()=>{
     console.log("get all VehicleS")
     try {
-      const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/get-all-ledVehicle");
+      const res = await axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/get-all-led-vehicle", {});
       return res.data;
     } catch (err) {
       throw err; // interceptor will format it

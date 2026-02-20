@@ -97,17 +97,22 @@ export default function WorkOrderForm() {
   };
 
   async function fetchVehicle() {
-
+   
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
       const Array = transformAgencyToDetails(response.result, formData.start_date, formData.end_date)
-      console.log(Array)
       setVehicles(Array);
-      console.log("fgfgfghfhg",response, formData.start_date, formData.end_date);
     } catch (error) {
       console.error("Failed to fetch vehicles", error);
     }
   }
+
+  useEffect(()=>{
+    if(formData.vendor_id.length>0){
+     fetchVehicle() 
+      
+    }
+  }, [formData.vendor_id])
 
   useEffect(() => {
     async function fetchCounters() {
@@ -232,7 +237,7 @@ export default function WorkOrderForm() {
       "entryIpAddress": "string",
       "entryByUserId": "string",
       "entryByUsername": "nikita",
-      'details': vehicles
+      'details': vehicles.filter(item => item.selected === true)
     }
 
 
@@ -313,7 +318,7 @@ export default function WorkOrderForm() {
                 vendor_id: selectedIds,
                 vendor_name: selectedVendors.map(v => v.AgencyName), // array of names
               });
-              fetchVehicle(selectedIds); // optional: pass selected vendors
+              ///fetchVehicle(selectedIds); // optional: pass selected vendors
             }}
           >
             {vendors.map((vendor) => (
