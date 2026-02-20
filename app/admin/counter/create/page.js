@@ -11,8 +11,12 @@ import {
   MenuItem,
   Paper,
 } from "@mui/material";
+import {  useDispatch } from "react-redux";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
+
 
 export default function JobForm() {
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     job_id: "2",
     financial_year: "",
@@ -94,7 +98,7 @@ export default function JobForm() {
           },
         }
       );
-  
+      dispatch(showNotification({ message: "Saved!", severity: "success" }))
       console.log("SUCCESS:", response.data);
     } catch (error) {
       console.error(

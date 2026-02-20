@@ -1,53 +1,43 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
 import { Snackbar, Alert } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import { closeNotification } from "@/store/modules/Snackbar/notificationSlice";
 
-const SnackbarContext = createContext();
-
-export const useSnackbar = () => useContext(SnackbarContext);
-
-export default function SnackbarProvider({ children }) {
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info", // success | error | warning | info
-  });
-
-  const showSnackbar = useCallback((message, severity = "info") => {
-    setSnackbar({
-      open: true,
-      message,
-      severity,
-    });
-  }, []);
+export default function GlobalSnackbar() {
+  const dispatch = useDispatch();
+  const { open, message, severity } = useSelector(
+    (state) => state.notification
+  );
 
   const handleClose = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
+    dispatch(closeNotification());
   };
 
   return (
-    <SnackbarContext.Provider value={{ showSnackbar }}>
-      {children}
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
+    <Snackbar
+      open={open}
+      autoHideDuration={3000}
+      onClose={handleClose}
+      sx={{
+        "&.MuiSnackbar-root": {
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)", // ✅ center block
+        },
+      }}
+    >
+      <Alert
         onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }} // ✅ Center
+        severity={severity}
+        variant="filled"
+        sx={{
+          minWidth: 320,
+          textAlign: "center",
+        }}
       >
-        <Alert
-          onClose={handleClose}
-          severity={snackbar.severity}
-          variant="filled"
-          sx={{
-            minWidth: 320,
-            textAlign: "center",
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </SnackbarContext.Provider>
+        {message}
+      </Alert>
+    </Snackbar>
   );
 }
