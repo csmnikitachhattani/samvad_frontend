@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Dashboard from "@/components/admin/dashboard"
-import NoticeBoard from "@/components/Newspaper/noticeboard"
+// import NoticeBoard from "@/components/Newspaper/noticeboard"
 import {
   Box,
   Divider,

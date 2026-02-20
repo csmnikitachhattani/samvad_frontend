@@ -27,7 +27,7 @@ export default function JobForm() {
     endDate: "",
     ref_date: "",
     receipt_date: "",
-    client_cd: "00100",
+    client_cd: "02",
     client_name: "",
     office_address: "",
     billing_client_cd: "",
