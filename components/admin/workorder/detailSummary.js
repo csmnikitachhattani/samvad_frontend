@@ -85,7 +85,7 @@ const DataSetUI = () => {
         "endDate": endDate,
         "commissionPercentage": commissionPercentage,
         "gstPercentage": gstPercentage,
-        "entryIpAddress": "103.79.34.50/",
+        "entryIpAddress": "103.79.34.50",
         "entryByUserId": "string",
         "entryByUsername": "string"
       };
