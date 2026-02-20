@@ -12,10 +12,12 @@ import {
   Paper,
 } from "@mui/material";
 import {  useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 
 
 export default function JobForm() {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [data, setData] = useState({
     job_id: "2",
@@ -99,6 +101,7 @@ export default function JobForm() {
         }
       );
       dispatch(showNotification({ message: "Saved!", severity: "success" }))
+      router.push(`/admin/counter`)
       console.log("SUCCESS:", response.data);
     } catch (error) {
       console.error(
