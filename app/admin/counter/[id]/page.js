@@ -70,8 +70,12 @@ export default function WorkOrderForm() {
       },
     ],
   });
-  const transformAgencyToDetails = (agencies) => {
-    console.log(agencies)
+  const formatDateForInput = (dateString) => {
+  console.log(dateString, dateString?.split("T")[0])
+  return dateString?.split("T")[0];
+  }
+  const transformAgencyToDetails = (agencies, startDate, endDate) => {
+    console.log(agencies, startDate, endDate)
     if (!Array.isArray(agencies)) return [];
 
     return agencies.map((agency) => ({
@@ -85,21 +89,21 @@ export default function WorkOrderForm() {
       noOfVehicle: 1,
       noOfProgramme: 4,
       totalRate: 12,
-      startDate: new Date().toISOString(),
-      endDate: new Date(
-        new Date().setMonth(new Date().getMonth() + 1)
-      ).toISOString(),
+      startDate: formatDateForInput(startDate),
+      endDate: formatDateForInput(endDate),
+      selected: false,
 
     }));
   };
 
   async function fetchVehicle() {
+
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
-      const Array = transformAgencyToDetails(response.result)
+      const Array = transformAgencyToDetails(response.result, formData.start_date, formData.end_date)
       console.log(Array)
       setVehicles(Array);
-      console.log(response);
+      console.log("fgfgfghfhg",response, formData.start_date, formData.end_date);
     } catch (error) {
       console.error("Failed to fetch vehicles", error);
     }
@@ -126,8 +130,8 @@ export default function WorkOrderForm() {
           billing_Client_cd: response.billing_Client_cd ?? "",
           billing_office_code: response.billing_office_code ?? "",
           client_grp_cd: response.client_grp_cd ?? "",
-          start_date: response.start_date ?? "",
-          end_date: response.end_date ?? "",
+          start_date: response.startDate ?? "",
+          end_date: response.endDate ?? "",
           commision_Percentage: response.commision_Percentage ?? 0,
           commission_amount: response.commission_amount ?? 0,
           amount_with_commission: response.amount_with_commission ?? 0,
@@ -209,26 +213,34 @@ export default function WorkOrderForm() {
       ],
     });
   };
-
+  const handleVehicleChange = (vehicleId, field, value) => {
+    setVehicles((prev) =>
+      prev.map((row) =>
+        row.ledVehicleId === vehicleId
+          ? { ...row, [field]: value }
+          : row
+      )
+    );
+  };
   const handleSubmit = () => {
-  const payload = {
-    "financialYear": formData.financial_year,
-    "avakRefId": formData.avak_ref_id,
-    "jobNo": formData.job_id,
-    "dprJobRefNo": "",
-    "woDate": new Date().toISOString(),
-    "entryIpAddress": "string",
-    "entryByUserId": "string",
-    "entryByUsername": "nikita",
-    'details': vehicles
-  }
+    const payload = {
+      "financialYear": formData.financial_year,
+      "avakRefId": formData.avak_ref_id,
+      "jobNo": formData.job_id,
+      "dprJobRefNo": "",
+      "woDate": new Date().toISOString(),
+      "entryIpAddress": "string",
+      "entryByUserId": "string",
+      "entryByUsername": "nikita",
+      'details': vehicles
+    }
 
 
     setFormData({
       ...formData,
       detailList: vehicles,
     });
-    axiosClient.post("http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails", payload,{
+    axiosClient.post("http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails", payload, {
       // headers: {
       //   "Content-Type": "multipart/form-data",
       // },
@@ -238,12 +250,12 @@ export default function WorkOrderForm() {
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h6" mb={2}>
-       Allocation Form
+        Allocation Form
       </Typography>
 
       {/* MAIN DETAILS */}
       <Grid container spacing={2}>
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             fullWidth
             label="Financial Year"
@@ -253,7 +265,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             fullWidth
             label="AVAK Ref ID"
@@ -263,7 +275,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             fullWidth
             label="Job No"
@@ -273,7 +285,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             fullWidth
             label="WO Subject"
@@ -316,7 +328,7 @@ export default function WorkOrderForm() {
 
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             fullWidth
             label="Client Code"
@@ -326,7 +338,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             fullWidth
             label="Billing Client Code"
@@ -336,7 +348,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             type="number"
             fullWidth
@@ -347,7 +359,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             type="number"
             fullWidth
@@ -358,7 +370,7 @@ export default function WorkOrderForm() {
           />
         </Grid>
 
-        <Grid item size={{md:2}}>
+        <Grid item size={{ md: 2 }}>
           <TextField
             type="number"
             fullWidth
@@ -386,8 +398,8 @@ export default function WorkOrderForm() {
               <TableCell>Total Rate</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>End Date</TableCell>
-              
-              
+
+
 
               <TableCell padding="checkbox">
                 <Checkbox
@@ -409,48 +421,49 @@ export default function WorkOrderForm() {
                 <TableCell>{row.vendorName}</TableCell>
                 <TableCell>{row.AgencyName}</TableCell>
                 <TableCell>
-                <TextField
-                  variant="outlined"
-                  value={row.totalRate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
-              <TableCell>
-              <TextField
-                  variant="outlined"
-                  value={row.rate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
-              <TableCell>
-              <TextField
-                  variant="outlined"
-                  name="start"
-                  value={row.startDate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
-              <TableCell>
-              <TextField
-                  variant="outlined"
-                  value={row.endDate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
+                  <TextField
+                    value={row.rate}
+                    onChange={(e) =>
+                      handleVehicleChange(row.ledVehicleId, "rate", e.target.value)
+                    }
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <TextField
+                    value={row.totalRate}
+                    onChange={(e) =>
+                      handleVehicleChange(row.ledVehicleId, "totalRate", e.target.value)
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    type="date"
+                    variant="outlined"
+                    value={row.startDate}
+                    onChange={(e) =>
+                      handleVehicleChange(row.ledVehicleId, "startDate", e.target.value)
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    type="date"
+                    variant="outlined"
+                    value={row.endDate}
+                    onChange={(e) =>
+                      handleVehicleChange(row.ledVehicleId, "endDate", e.target.value)
+                    }
+                  />
+
+                </TableCell>
 
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selected.includes(row.ledVehicleId)}
-                    onChange={() =>
-                      handleSelectOne(row.ledVehicleId)
+                    checked={row.selected}
+                    onChange={(e) =>
+                      handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)
                     }
                   />
                 </TableCell>
