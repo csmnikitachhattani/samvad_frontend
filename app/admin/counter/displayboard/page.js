@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -32,7 +31,6 @@ import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 
 /* ─── Theme ─── */
 
-
 const theme = createTheme({
   palette: {
     mode: "dark",
@@ -45,7 +43,6 @@ const theme = createTheme({
   },
   shape: { borderRadius: 12 },
 });
-
 
 /* ─── Columns (UNCHANGED) ─── */
 const COLUMNS = [
@@ -63,7 +60,7 @@ const COLUMNS = [
   //   { id: "endDate", label: "End Date" },
   //   { id: "ref_date", label: "Ref Date" },
   //   { id: "receipt_date", label: "Receipt Date" },
-    { id: "action", label: "Action" },
+  { id: "action", label: "Action" },
 ];
 
 const DATE_FIELDS = ["startDate", "endDate", "ref_date", "receipt_date"];
@@ -110,6 +107,7 @@ const truncateText = (text, maxLength = 10) => {
 };
 
 export default function JobDataTable() {
+  const router = useRouter();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -161,26 +159,19 @@ export default function JobDataTable() {
     return sorted.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }, [sorted, page, rowsPerPage]);
 
+  const handleEdit = (row) => {
+    console.log("Edit clicked:", row);
 
+    // Navigate to edit page with job_id
+    router.push(`/admin/counter/edit/${row.job_id}`);
+  };
 
+  const handleAllocation = (row) => {
+    console.log("Allocation clicked:", row);
 
-
-const handleEdit = (row) => {
-  console.log("Edit clicked:", row);
-
-  // Navigate to edit page with job_id
-  router.push(`/admin/counter/edit/${row.job_id}`);
-};
-
-const handleAllocation = (row) => {
-  console.log("Allocation clicked:", row);
-
-  // Navigate to allocation page
-  router.push(`/admin/counter/allocation/${row.job_id}`);
-};
-
-
-
+    // Navigate to allocation page
+    router.push(`/admin/counter/allocation/${row.job_id}`);
+  };
 
   const handleSort = (col) => {
     if (orderBy === col) {
@@ -348,7 +339,7 @@ const handleAllocation = (row) => {
                     SN
                   </TableCell>
 
-                  {/* {COLUMNS.map((col) => (
+                  {COLUMNS.map((col) => (
                     <TableCell
                       key={col.id}
                       sx={{
@@ -357,57 +348,29 @@ const handleAllocation = (row) => {
                         fontWeight: 800,
                         fontSize: "0.8rem",
                         letterSpacing: "0.6px",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      <TableSortLabel
-                        active={orderBy === col.id}
-                        direction={orderBy === col.id ? order : "asc"}
-                        onClick={() => handleSort(col.id)}
-                        sx={{
-                          color: "#f2f3f4 !important",
-                          fontWeight: 800,
-                        }}
-                      >
-                        {col.label}
-                      </TableSortLabel>
+                      {col.id === "action" ? (
+                        col.label
+                      ) : (
+                        <TableSortLabel
+                          active={orderBy === col.id}
+                          direction={orderBy === col.id ? order : "asc"}
+                          onClick={() => handleSort(col.id)}
+                          sx={{
+                            color: "#f2f3f4 !important",
+                            fontWeight: 800,
+                            "& .MuiTableSortLabel-icon": {
+                              color: "#f2f3f4 !important",
+                            },
+                          }}
+                        >
+                          {col.label}
+                        </TableSortLabel>
+                      )}
                     </TableCell>
-                  ))} */}
-
-
-
-                  {COLUMNS.map((col) => (
-  <TableCell
-    key={col.id}
-    sx={{
-      background: "black",
-      color: "#f0f0f0",
-      fontWeight: 800,
-      fontSize: "0.8rem",
-      letterSpacing: "0.6px",
-      whiteSpace: "nowrap",
-    }}
-  >
-    {col.id === "action" ? (
-      
-      col.label
-    ) : (
-      <TableSortLabel
-        active={orderBy === col.id}
-        direction={orderBy === col.id ? order : "asc"}
-        onClick={() => handleSort(col.id)}
-        sx={{
-          color: "#f2f3f4 !important",
-          fontWeight: 800,
-          "& .MuiTableSortLabel-icon": {
-            color: "#f2f3f4 !important",
-          },
-        }}
-      >
-        {col.label}
-      </TableSortLabel>
-    )}
-  </TableCell>
-))}
+                  ))}
                 </TableRow>
               </TableHead>
 
@@ -443,9 +406,63 @@ const handleAllocation = (row) => {
                     >
                       <TableCell>{page * rowsPerPage + idx + 1}</TableCell>
 
-                      {/* {COLUMNS.map((col) => (
-                        <TableCell key={col.id}>
-                          {DATE_FIELDS.includes(col.id) ? (
+                      {COLUMNS.map((col) => (
+                        <TableCell
+                          key={col.id}
+                          sx={{
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {col.id === "action" ? (
+                            <Stack direction="row" spacing={1}>
+                              {/* Edit Button */}
+                              <Tooltip title="Edit Job" arrow>
+                                <Chip
+                                  label="Edit"
+                                  size="small"
+                                  clickable
+                                  onClick={() => handleEdit(row)}
+                                  sx={{
+                                    bgcolor: "#facc15", // premium yellow
+                                    color: "#000",
+                                    fontWeight: 600,
+                                    borderRadius: "999px",
+                                    px: 1,
+                                    transition: "all 0.2s ease",
+                                    "&:hover": {
+                                      bgcolor: "#eab308",
+                                      transform: "scale(1.05)",
+                                      boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
+                                    },
+                                  }}
+                                />
+                              </Tooltip>
+
+                              {/* Allocation Button */}
+                              <Tooltip title="Go to Allocation" arrow>
+                                <Chip
+                                  label=" Go to Allocation"
+                                  size="small"
+                                  clickable
+                                  onClick={() => handleAllocation(row)}
+                                  sx={{
+                                    bgcolor: "#6366f1", // primary premium
+                                    color: "#fff",
+                                    fontWeight: 600,
+                                    borderRadius: "999px",
+                                    px: 1,
+                                    transition: "all 0.2s ease",
+                                    "&:hover": {
+                                      bgcolor: "#4f46e5",
+                                      transform: "scale(1.05)",
+                                      boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
+                                    },
+                                  }}
+                                />
+                              </Tooltip>
+                            </Stack>
+                          ) : DATE_FIELDS.includes(col.id) ? (
                             formatDate(row[col.id])
                           ) : col.id === "subject" ? (
                             <Tooltip title={row?.[col.id] || ""} arrow>
@@ -455,6 +472,7 @@ const handleAllocation = (row) => {
                                   whiteSpace: "nowrap",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
+                                  fontWeight: 500,
                                 }}
                               >
                                 {truncateText(row?.[col.id], 10)}
@@ -464,85 +482,7 @@ const handleAllocation = (row) => {
                             (row?.[col.id] ?? "—")
                           )}
                         </TableCell>
-                      ))} */}
-
-                      {COLUMNS.map((col) => (
-  <TableCell
-    key={col.id}
-    sx={{
-      cursor: "pointer",
-      whiteSpace: "nowrap",
-    }}
-  >
-    {col.id === "action" ? (
-      <Stack direction="row" spacing={1}>
-        {/* Edit Button */}
-        <Tooltip title="Edit Job" arrow>
-          <Chip
-            label="Edit"
-            size="small"
-            clickable
-            onClick={() => handleEdit(row)}
-            sx={{
-              bgcolor: "#facc15", // premium yellow
-              color: "#000",
-              fontWeight: 600,
-              borderRadius: "999px",
-              px: 1,
-              transition: "all 0.2s ease",
-              "&:hover": {
-                bgcolor: "#eab308",
-                transform: "scale(1.05)",
-                boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
-              },
-            }}
-          />
-        </Tooltip>
-
-        {/* Allocation Button */}
-        <Tooltip title="Go to Allocation" arrow>
-          <Chip
-            label=" Go to Allocation"
-            size="small"
-            clickable
-            onClick={() => handleAllocation(row)}
-            sx={{
-              bgcolor: "#6366f1", // primary premium
-              color: "#fff",
-              fontWeight: 600,
-              borderRadius: "999px",
-              px: 1,
-              transition: "all 0.2s ease",
-              "&:hover": {
-                bgcolor: "#4f46e5",
-                transform: "scale(1.05)",
-                boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
-              },
-            }}
-          />
-        </Tooltip>
-      </Stack>
-    ) : DATE_FIELDS.includes(col.id) ? (
-      formatDate(row[col.id])
-    ) : col.id === "subject" ? (
-      <Tooltip title={row?.[col.id] || ""} arrow>
-        <Typography
-          sx={{
-            maxWidth: 160,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            fontWeight: 500,
-          }}
-        >
-          {truncateText(row?.[col.id], 10)}
-        </Typography>
-      </Tooltip>
-    ) : (
-      row?.[col.id] ?? "—"
-    )}
-  </TableCell>
-))}
+                      ))}
                     </TableRow>
                   ))
                 )}

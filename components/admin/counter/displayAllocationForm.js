@@ -1,475 +1,271 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import axiosClient from "@/lib/axiosClient";
-import adminServices from "@/services/adminServices";
-import outdoorServices from "@/services/outdoorServices";
-
 
 import {
   Box,
-  Button,
+  Card,
+  CardContent,
+  Typography,
   Grid,
   TextField,
-  Typography,
+  Chip,
+  CircularProgress,
+  Alert,
+  Divider,
   Paper,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Checkbox,
-  ListItemText
 } from "@mui/material";
 
-export default function WorkOrderForm() {
+export default function AllocationPage() {
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [data, setData] = useState(null);
 
-  const [vendors, setVendors] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
-  const [selected, setSelected] = useState([]);
 
-  const [formData, setFormData] = useState({
-    main_id: 0,
-    financial_year: "",
-    avak_ref_id: "",
-    job_id: "",
-    subject: "",
-    dpr_job_ref_no: "",
-    wo_date: "",
-    vendor_id: [],
-    vendor_name: [],
-    client_cd: "",
-    billing_Client_cd: "",
-    billing_office_code: "",
-    client_grp_cd: "",
-    od_servicetype_id: 0,
-    start_date: "",
-    end_date: "",
-    commision_Percentage: 0,
-    commission_amount: 0,
-    amount_with_commission: 0,
-    gst_percentage: "",
-    gst_amount: 0,
-    toatl_amount: 0,
-    entry_ip_address: "",
-    entry_by_user_id: "",
-    entry_by_username: "",
-    detailList: [
-      {
-        display_board_id: 0,
-        description: "",
-        rate: 0,
-        media_unit_count: 0,
-        no_of_spot: 0,
-        total_rate: 0,
-        start_date: "",
-        end_date: "",
-      },
-    ],
-  });
-  const transformAgencyToDetails = (agencies) => {
-    console.log(agencies)
-    if (!Array.isArray(agencies)) return [];
-
-    return agencies.map((agency) => ({
-      vendorId: agency.AgencyId?.toString() || "",
-      vendorName: agency.AgencyName || "",
-      vendorCateId: agency.ServiceId?.toString() || "", // if relevant
-      vendorCate: 'outdoor media', // fill if you have category name
-      ledVehicleId: agency.VehicleId,
-      description: "",
-      rate: 12,
-      noOfVehicle: 1,
-      noOfProgramme: 4,
-      totalRate: 12,
-      startDate: new Date().toISOString(),
-      endDate: new Date(
-        new Date().setMonth(new Date().getMonth() + 1)
-      ).toISOString(),
-
-    }));
-  };
-
-  async function fetchVehicle() {
-    try {
-      const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
-      const Array = transformAgencyToDetails(response.result)
-      console.log(Array)
-      setVehicles(Array);
-      console.log(response);
-    } catch (error) {
-      console.error("Failed to fetch vehicles", error);
-    }
-  }
+  const formatDate = (date) => {
+  if (!date) return "";
+  return date.split("T")[0];
+};
 
   useEffect(() => {
-    async function fetchCounters() {
+    if (!id) return;
+
+    const fetchData = async () => {
       try {
-        const response = await adminServices.getcounterDetail(id);
+        setLoading(true);
+        setError("");
 
-        setFormData((prev) => ({
-          ...prev,
-          main_id: response.main_id ?? 0,
-          financial_year: response.financial_year ?? "",
-          avak_ref_id: response.avak_ref_id ?? "",
-          job_id: response.job_id ?? "",
-          subject: response.subject ?? "",
-          ref_no: response.ref_no ?? "",
-          od_servicetype_id: response.od_servicetype_id,
-          receipt_date: response.receipt_date ?? "",
-          vendor_id: response.vendor_id ?? [],
-          vendor_name: response.vendor_name ?? [],
-          client_cd: response.client_cd ?? "",
-          billing_Client_cd: response.billing_Client_cd ?? "",
-          billing_office_code: response.billing_office_code ?? "",
-          client_grp_cd: response.client_grp_cd ?? "",
-          start_date: response.start_date ?? "",
-          end_date: response.end_date ?? "",
-          commision_Percentage: response.commision_Percentage ?? 0,
-          commission_amount: response.commission_amount ?? 0,
-          amount_with_commission: response.amount_with_commission ?? 0,
-          gst_percentage: response.gst_percentage ?? "",
-          gst_amount: response.gst_amount ?? 0,
-          toatl_amount: response.toatl_amount ?? 0,
-          detailList:
-            response.detailList?.length > 0
-              ? response.detailList
-              : prev.detailList,
-        }));
+        const res = await axiosClient.get(
+          `http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoordbcounter?id=${id}`
+        );
 
-        fetchServiceTypes(response.od_servicetype_id);
-      } catch (error) {
-        console.error("Failed to fetch counters", error);
+
+        const apiData = res?.data?.data || res?.data;
+        console.log("ffhjkldata",apiData)
+        const job = Array.isArray(apiData) ? apiData[0] : apiData;
+
+        setData(job);
+      } catch (err) {
+        console.error("API Error:", err);
+        setError(err.message || "Failed to fetch allocation data");
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
-    async function fetchServiceTypes(serviceTypeId) {
-      try {
-        const response = await adminServices.getVendorList(serviceTypeId);
-        setVendors(response.result);
-        console.log(response);
-      } catch (error) {
-        console.error("Failed to fetch vendors", error);
-      }
-    }
-
-    fetchCounters();
+    fetchData();
   }, [id]);
 
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelected(vehicles.map((v) => v.VehicleId));
-    } else {
-      setSelected([]);
-    }
-  };
-
-  const handleSelectOne = (vehicleId) => {
-    setSelected((prev) =>
-      prev.includes(vehicleId)
-        ? prev.filter((id) => id !== vehicleId)
-        : [...prev, vehicleId]
+  // 🔄 Loading UI
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        height="70vh"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <CircularProgress size={60} />
+      </Box>
     );
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleDetailChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedDetails = [...formData.detailList];
-    updatedDetails[index][name] = value;
-
-    setFormData({
-      ...formData,
-      detailList: updatedDetails,
-    });
-  };
-
-  const addRow = () => {
-    setFormData({
-      ...formData,
-      detailList: [
-        ...formData.detailList,
-        {
-          display_board_id: 0,
-          description: "",
-          rate: 0,
-          media_unit_count: 0,
-          no_of_spot: 0,
-          total_rate: 0,
-          start_date: "",
-          end_date: "",
-        },
-      ],
-    });
-  };
-
-  const handleSubmit = () => {
-  const payload = {
-    "financialYear": formData.financial_year,
-    "avakRefId": formData.avak_ref_id,
-    "jobNo": formData.job_id,
-    "dprJobRefNo": "",
-    "woDate": new Date().toISOString(),
-    "entryIpAddress": "string",
-    "entryByUserId": "string",
-    "entryByUsername": "nikita",
-    'details': vehicles
   }
 
-
-    setFormData({
-      ...formData,
-      detailList: vehicles,
-    });
-    axiosClient.post("http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails", payload,{
-      // headers: {
-      //   "Content-Type": "multipart/form-data",
-      // },
-    });
-  };
+  // ❌ Error UI (important for your HTML issue)
+  if (error) {
+    return (
+      <Box p={3}>
+        <Alert severity="error" variant="filled">
+          {error}
+        </Alert>
+      </Box>
+    );
+  }
 
   return (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" mb={2}>
-        Work Order Form
-      </Typography>
+    <Box p={{ xs: 2, md: 4 }} bgcolor="#f4f6f8" minHeight="100vh">
+      {/* Header */}
+      <Paper
+        elevation={3}
+        sx={{
+          p: 3,
+          mb: 3,
+          borderRadius: 3,
+          background: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
+          color: "#fff",
+        }}
+      >
+        <Typography variant="h4" fontWeight="bold">
+          Allocation Dashboard
+        </Typography>
+        <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
+          Job ID: {data?.job_id || id}
+        </Typography>
+      </Paper>
 
-      {/* MAIN DETAILS */}
-      <Grid container spacing={2}>
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Financial Year"
-            name="financial_year"
-            value={formData.financial_year}
-            onChange={handleChange}
-          />
-        </Grid>
+      {/* Main Card */}
+      <Card
+        elevation={4}
+        sx={{
+          borderRadius: 4,
+          boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
+        }}
+      >
+        <CardContent>
+          <Typography variant="h6" fontWeight="bold" gutterBottom>
+            Job Details
+          </Typography>
 
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="AVAK Ref ID"
-            name="avak_ref_id"
-            value={formData.avak_ref_id}
-            onChange={handleChange}
-          />
-        </Grid>
+          <Divider sx={{ mb: 3 }} />
 
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Job No"
-            name="job_id"
-            value={formData.job_id}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="WO Subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{ xs: 2 }}>
-          <TextField
-            select
-            fullWidth
-            label="Vendor"
-            name="vendor_id"
-            SelectProps={{ multiple: true }}
-            value={formData.vendor_id || []}
-            onChange={(e) => {
-              const selectedIds = e.target.value; // array
-
-              const selectedVendors = vendors.filter((v) =>
-                selectedIds.includes(v.AgencyID)
-              );
-
-              setFormData({
-                ...formData,
-                vendor_id: selectedIds,
-                vendor_name: selectedVendors.map(v => v.AgencyName), // array of names
-              });
-
-              fetchVehicle(selectedIds); // optional: pass selected vendors
-            }}
-          >
-            {vendors.map((vendor) => (
-              <MenuItem
-                key={vendor.AgencyID}
-                value={vendor.AgencyID}
-              >
-                <ListItemText primary={vendor.AgencyName} />
-              </MenuItem>
-            ))}
-          </TextField>
-
-        </Grid>
-
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Client Code"
-            name="client_cd"
-            value={formData.client_cd}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{md:2}}>
-          <TextField
-            fullWidth
-            label="Billing Client Code"
-            name="billing_Client_cd"
-            value={formData.billing_Client_cd}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{md:2}}>
-          <TextField
-            type="number"
-            fullWidth
-            label="Commission %"
-            name="commision_Percentage"
-            value={formData.commision_Percentage}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{md:2}}>
-          <TextField
-            type="number"
-            fullWidth
-            label="GST Amount"
-            name="gst_amount"
-            value={formData.gst_amount}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{md:2}}>
-          <TextField
-            type="number"
-            fullWidth
-            label="Total Amount"
-            name="toatl_amount"
-            value={formData.toatl_amount}
-            onChange={handleChange}
-          />
-        </Grid>
-      </Grid>
-
-      {/* DETAIL LIST */}
-      <Typography variant="h6" mt={4} mb={2}>
-        Detail List
-      </Typography>
-
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Vehicle No</TableCell>
-              <TableCell>Owner Name</TableCell>
-              <TableCell>Agency</TableCell>
-              <TableCell>Rate</TableCell>
-              <TableCell>Total Rate</TableCell>
-              <TableCell>Start Date</TableCell>
-              <TableCell>End Date</TableCell>
-              
-              
-
-              <TableCell padding="checkbox">
-                <Checkbox
-                  checked={selected.length === vehicles.length}
-                  indeterminate={
-                    selected.length > 0 &&
-                    selected.length < vehicles.length
-                  }
-                  onChange={handleSelectAll}
-                />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {vehicles.map((row) => (
-              <TableRow key={row.VehicleId} hover>
-                <TableCell>{row.noOfVehicle}</TableCell>
-                <TableCell>{row.vendorName}</TableCell>
-                <TableCell>{row.AgencyName}</TableCell>
-                <TableCell>
-                <TextField
-                  variant="outlined"
-                  value={row.totalRate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
-              <TableCell>
+          <Grid container spacing={3}>
+            {/* Financial Year */}
+            <Grid item xs={12} md={3}>
               <TextField
-                  variant="outlined"
-                  value={row.rate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
-              <TableCell>
-              <TextField
-                  variant="outlined"
-                  name="start"
-                  value={row.startDate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
-              <TableCell>
-              <TextField
-                  variant="outlined"
-                  value={row.endDate}
-                  onChange={(e) =>
-                    handleChange(row.id, "name", e.target.value)
-                  }
-                />
-              </TableCell>
+                label="Financial Year"
+                fullWidth
+                value={data?.financial_year || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
 
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selected.includes(row.VehicleId)}
-                    onChange={() =>
-                      handleSelectOne(row.VehicleId)
-                    }
+  {/* Avak Ref Id */}
+            <Grid item xs={12} md={3}>
+              <TextField
+                label="Avak Ref Id "
+                fullWidth
+                value={data?.avak_ref_id || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+
+            {/* Ref No */}
+            <Grid item xs={12} md={3}>
+              <TextField
+                label="Reference No"
+                fullWidth
+                value={data?.ref_no || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+
+{/* Start Date */}
+<Grid item xs={12} md={3}>
+  <TextField
+    label="Start Date"
+    type="date"
+    fullWidth
+    value={formatDate(data?.startDate)}
+    InputLabelProps={{ shrink: true }}
+    InputProps={{ readOnly: true }}
+  />
+</Grid>
+
+{/*End Date */}
+<Grid item xs={12} md={3}>
+  <TextField
+    label="End Date"
+    type="date"
+    fullWidth
+    value={formatDate(data?.endDate)}
+    InputLabelProps={{ shrink: true }}
+    InputProps={{ readOnly: true }}
+  />
+</Grid>
+
+            {/* Service Type */}
+            <Grid item xs={12} md={1}>
+              <TextField
+                label="Service Type ID"
+                fullWidth
+                value={data?.od_servicetype_id || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+
+            {/* Subject */}
+            <Grid item xs={12}>
+              <TextField
+                label="Subject"
+                fullWidth
+                multiline
+                rows={2}
+                value={data?.subject || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+
+            {/* Client Info */}
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Client Name"
+                fullWidth
+                value={data?.client_name || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+
+            {/* <Grid item xs={12} md={4}>
+              <TextField
+                label="Billing Client Code"
+                fullWidth
+                value={data?.billing_Client_cd || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Client Group Code"
+                fullWidth
+                value={data?.client_grp_cd || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid> */}
+
+        
+            {/* GST */}
+            {/* <Grid item xs={12} md={3}>
+              <TextField
+                label="GST %"
+                fullWidth
+                value={data?.gst_percentage || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={3}>
+              <TextField
+                label="Total Amount"
+                fullWidth
+                value={data?.toatl_amount || ""}
+                InputProps={{ readOnly: true }}
+              />
+            </Grid> */}
+
+            {/* Vendors Chips */}
+            {/* <Grid item xs={12}>
+              <Typography fontWeight="bold" mb={1}>
+                Vendors
+              </Typography>
+              {data?.vendor_name?.length > 0 ? (
+                data.vendor_name.map((v, i) => (
+                  <Chip
+                    key={i}
+                    label={v}
+                    color="primary"
+                    sx={{ mr: 1, mb: 1 }}
                   />
-                </TableCell>
-              </TableRow>
-
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {selected}
-      <Box mt={3}>
-        <Button variant="contained" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </Box>
-    </Paper>
+                ))
+              ) : (
+                <Chip label="No Vendors" />
+              )}
+            </Grid> */}
+          </Grid>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
