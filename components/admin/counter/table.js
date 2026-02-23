@@ -71,7 +71,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
         background: "#010a2a",
         color: "#fff",
         textTransform: "capitalize",
-        fontSize: "0.72rem",
+        fontSize: "0.9rem",
         whiteSpace: "nowrap"
     };
 
@@ -86,7 +86,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                 mb={2}
             >
                 <Typography variant="h6" fontWeight={600}>
-                    Advertisement Downloads
+                    Counters
                 </Typography>
 
                 <TextField
