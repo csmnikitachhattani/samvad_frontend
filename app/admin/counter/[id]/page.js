@@ -5,6 +5,9 @@ import { useState, useEffect } from "react";
 import axiosClient from "@/lib/axiosClient";
 import adminServices from "@/services/adminServices";
 import outdoorServices from "@/services/outdoorServices";
+import {  useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 
 
 import {
@@ -26,6 +29,8 @@ import {
 } from "@mui/material";
 
 export default function WorkOrderForm() {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { id } = useParams();
 
   const [vendors, setVendors] = useState([]);
@@ -227,30 +232,76 @@ export default function WorkOrderForm() {
       )
     );
   };
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   const payload = {
+  //     "financialYear": formData.financial_year,
+  //     "avakRefId": formData.avak_ref_id,
+  //     "jobNo": formData.job_id,
+  //     "dprJobRefNo": "",
+  //     "woDate": new Date().toISOString(),
+  //     "entryIpAddress": "string",
+  //     "entryByUserId": "string",
+  //     "entryByUsername": "nikita",
+  //     'details': vehicles.filter(item => item.selected === true)
+  //   }
+
+
+  //   try{
+  //     const response = axiosClient.post("http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails", payload, {
+  //     // headers: {
+  //     //   "Content-Type": "multipart/form-data",
+  //     // },
+  //   });
+
+  //   dispatch(showNotification({ message: "Saved!", severity: "success" }))
+  //   router.push(`/admin/counter`)
+  //   console.log("SUCCESS:", response.data);
+  // } catch (error) {
+  //   console.error(
+  //     "ERROR:",
+  //     error.response?.data || error.message
+  //   );
+  // }
+  // };
+  const handleSubmit = async () => {
     const payload = {
-      "financialYear": formData.financial_year,
-      "avakRefId": formData.avak_ref_id,
-      "jobNo": formData.job_id,
-      "dprJobRefNo": "",
-      "woDate": new Date().toISOString(),
-      "entryIpAddress": "string",
-      "entryByUserId": "string",
-      "entryByUsername": "nikita",
-      'details': vehicles.filter(item => item.selected === true)
-    }
-
-
-    setFormData({
-      ...formData,
-      detailList: vehicles,
+      financialYear: formData.financial_year,
+      avakRefId: formData.avak_ref_id,
+      jobNo: formData.job_id,
+      dprJobRefNo: "",
+      woDate: new Date().toISOString(),
+      entryIpAddress: "string",
+      entryByUserId: "string",
+      entryByUsername: "nikita",
+      details: vehicles.filter(item => item.selected === true)
+    };
+  
+    axiosClient
+    .post(
+      "http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails",
+      payload
+    )
+    .then((response) => {
+      console.log("SUCCESS:", response.data);
+  
+      dispatch(showNotification({
+        message: "Saved successfully!",
+        severity: "success"
+      }));
+  
+      router.push("/admin/counter");
+    })
+    .catch((error) => {
+      console.error("ERROR:", error.response?.data || error.message);
+  
+      dispatch(showNotification({
+        message: error.response?.data?.message || "Save failed!",
+        severity: "error"
+      }));
     });
-    axiosClient.post("http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails", payload, {
-      // headers: {
-      //   "Content-Type": "multipart/form-data",
-      // },
-    });
+  
   };
+  
 
   return (
     <Paper sx={{ p: 3 }}>
