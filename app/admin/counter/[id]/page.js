@@ -304,237 +304,233 @@ export default function WorkOrderForm() {
   
 
   return (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" mb={2}>
-        Allocation Form
-      </Typography>
+    <Paper
+  elevation={3}
+  sx={{
+    p: 4,
+    borderRadius: 3,
+    backgroundColor: "#fafbff"
+  }}
+>
+  <Typography variant="h5" fontWeight={600} mb={3}>
+    Vehicle Allocation
+  </Typography>
 
-      {/* MAIN DETAILS */}
-      <Grid container spacing={2}>
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            fullWidth
-            label="Financial Year"
-            name="financial_year"
-            value={formData.financial_year}
-            onChange={handleChange}
-          />
+  {/* MAIN DETAILS */}
+
+    
+    <Box mb={4}>
+        <Typography variant="subtitle2" fontWeight={600} mb={2}>
+          Work Order Details
+        </Typography>
+
+        <Grid container spacing={3}>
+          <Grid item md={3}>
+            <TextField
+              fullWidth
+              label="Financial Year"
+              name="financial_year"
+              value={formData.financial_year}
+              onChange={handleChange}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+            />
+          </Grid>
+
+          <Grid item md={3}>
+            <TextField
+              fullWidth
+              label="AVAK Ref ID"
+              name="avak_ref_id"
+              value={formData.avak_ref_id}
+              onChange={handleChange}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+            />
+          </Grid>
+
+          <Grid item md={3}>
+            <TextField
+              fullWidth
+              label="Job No"
+              name="job_id"
+              value={formData.job_id}
+              onChange={handleChange}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+            />
+          </Grid>
+
+          <Grid item md={3}>
+            <TextField
+              fullWidth
+              label="WO Subject"
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+            />
+          </Grid>
+
+          <Grid item md={4}>
+            <TextField
+              select
+              fullWidth
+              label="Vendor"
+              SelectProps={{ multiple: true }}
+              value={formData.vendor_id || []}
+              onChange={(e) => {
+                const selectedIds = e.target.value;
+                const selectedVendors = vendors.filter((v) =>
+                  selectedIds.includes(v.AgencyID)
+                );
+                setFormData({
+                  ...formData,
+                  vendor_id: selectedIds,
+                  vendor_name: selectedVendors.map(
+                    (v) => v.AgencyName
+                  ),
+                });
+              }}
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+            >
+              {vendors.map((vendor) => (
+                <MenuItem
+                  key={vendor.AgencyID}
+                  value={vendor.AgencyID}
+                >
+                  <ListItemText primary={vendor.AgencyName} />
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
         </Grid>
+      </Box>
 
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            fullWidth
-            label="AVAK Ref ID"
-            name="avak_ref_id"
-            value={formData.avak_ref_id}
-            onChange={handleChange}
-          />
-        </Grid>
+  {/* DETAIL LIST */}
+  <Paper
+    elevation={0}
+    sx={{
+      p: 3,
+      borderRadius: 2,
+      backgroundColor: "white"
+    }}
+  >
+    <Typography variant="subtitle1" fontWeight={600} mb={2}>
+      Vehicle Details
+    </Typography>
 
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            fullWidth
-            label="Job No"
-            name="job_id"
-            value={formData.job_id}
-            onChange={handleChange}
-          />
-        </Grid>
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow sx={{ backgroundColor: "#f4f6fb" }}>
+            <TableCell>Vehicle</TableCell>
+            <TableCell>Owner</TableCell>
+            <TableCell>Agency</TableCell>
+            <TableCell>Rate</TableCell>
+            <TableCell>Total</TableCell>
+            <TableCell>Start</TableCell>
+            <TableCell>End</TableCell>
+            <TableCell padding="checkbox">
+              <Checkbox onChange={handleSelectAll} />
+            </TableCell>
+          </TableRow>
+        </TableHead>
 
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            fullWidth
-            label="WO Subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-          />
-        </Grid>
+        <TableBody>
+          {vehicles.map((row, index) => (
+            <TableRow
+              key={row.ledVehicleId}
+              hover
+              sx={{
+                backgroundColor: index % 2 === 0 ? "white" : "#fcfcff"
+              }}
+            >
+              <TableCell>{row.noOfVehicle}</TableCell>
+              <TableCell>{row.vendorName}</TableCell>
+              <TableCell>{row.vendorCate}</TableCell>
 
-        <Grid item size={{ xs: 2 }}>
-          <TextField
-            select
-            fullWidth
-            label="Vendor"
-            name="vendor_id"
-            SelectProps={{ multiple: true }}
-            value={formData.vendor_id || []}
-            onChange={(e) => {
-              const selectedIds = e.target.value; // array
-              const selectedVendors = vendors.filter((v) =>
-                selectedIds.includes(v.AgencyID)
-              );
-              setFormData({
-                ...formData,
-                vendor_id: selectedIds,
-                vendor_name: selectedVendors.map(v => v.AgencyName), // array of names
-              });
-              ///fetchVehicle(selectedIds); // optional: pass selected vendors
-            }}
-          >
-            {vendors.map((vendor) => (
-              <MenuItem
-                key={vendor.AgencyID}
-                value={vendor.AgencyID}
-              >
-                <ListItemText primary={vendor.AgencyName} />
-              </MenuItem>
-            ))}
-          </TextField>
+              <TableCell>
+                <TextField
+                  size="small"
+                  value={row.rate}
+                  onChange={(e) =>
+                    handleVehicleChange(row.ledVehicleId, "rate", e.target.value)
+                  }
+                />
+              </TableCell>
 
-        </Grid>
+              <TableCell>
+                <TextField
+                  size="small"
+                  value={row.totalRate}
+                  onChange={(e) =>
+                    handleVehicleChange(row.ledVehicleId, "totalRate", e.target.value)
+                  }
+                />
+              </TableCell>
 
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            fullWidth
-            label="Client Code"
-            name="client_cd"
-            value={formData.client_cd}
-            onChange={handleChange}
-          />
-        </Grid>
+              <TableCell>
+                <TextField
+                  size="small"
+                  type="date"
+                  value={row.startDate}
+                  onChange={(e) =>
+                    handleVehicleChange(row.ledVehicleId, "startDate", e.target.value)
+                  }
+                />
+              </TableCell>
 
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            fullWidth
-            label="Billing Client Code"
-            name="billing_Client_cd"
-            value={formData.billing_Client_cd}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            type="number"
-            fullWidth
-            label="Commission %"
-            name="commision_Percentage"
-            value={formData.commision_Percentage}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            type="number"
-            fullWidth
-            label="GST Amount"
-            name="gst_amount"
-            value={formData.gst_amount}
-            onChange={handleChange}
-          />
-        </Grid>
-
-        <Grid item size={{ md: 2 }}>
-          <TextField
-            type="number"
-            fullWidth
-            label="Total Amount"
-            name="toatl_amount"
-            value={formData.toatl_amount}
-            onChange={handleChange}
-          />
-        </Grid>
-      </Grid>
-
-      {/* DETAIL LIST */}
-      <Typography variant="h6" mt={4} mb={2}>
-        Detail List
-      </Typography>
-
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Vehicle No</TableCell>
-              <TableCell>Owner Name</TableCell>
-              <TableCell>Agency</TableCell>
-              <TableCell>Rate</TableCell>
-              <TableCell>Total Rate</TableCell>
-              <TableCell>Start Date</TableCell>
-              <TableCell>End Date</TableCell>
-
-
+              <TableCell>
+                <TextField
+                  size="small"
+                  type="date"
+                  value={row.endDate}
+                  onChange={(e) =>
+                    handleVehicleChange(row.ledVehicleId, "endDate", e.target.value)
+                  }
+                />
+              </TableCell>
 
               <TableCell padding="checkbox">
                 <Checkbox
-                  checked={selected.length === vehicles.length}
-                  indeterminate={
-                    selected.length > 0 &&
-                    selected.length < vehicles.length
+                  checked={row.selected}
+                  onChange={(e) =>
+                    handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)
                   }
-                  onChange={handleSelectAll}
                 />
               </TableCell>
             </TableRow>
-          </TableHead>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Paper>
 
-          <TableBody>
-            {vehicles.map((row) => (
-              <TableRow key={row.ledVehicleId} hover>
-                <TableCell>{row.noOfVehicle}</TableCell>
-                <TableCell>{row.vendorName}</TableCell>
-                <TableCell>{row.AgencyName}</TableCell>
-                <TableCell>
-                  <TextField
-                    value={row.rate}
-                    onChange={(e) =>
-                      handleVehicleChange(row.ledVehicleId, "rate", e.target.value)
-                    }
-                  />
-                </TableCell>
+  {/* SUBMIT BAR */}
+  <Box
+    mt={4}
+    sx={{
+      display: "flex",
+      justifyContent: "flex-end",
+      position: "sticky",
+      bottom: 0,
+      backgroundColor: "#fafbff",
+      pt: 2
+    }}
+  >
+    <Button
+      variant="contained"
+      size="large"
+      sx={{
+        px: 5,
+        borderRadius: 2,
+        textTransform: "none",
+        fontWeight: 600
+      }}
+      onClick={handleSubmit}
+    >
+      Submit Allocation
+    </Button>
+  </Box>
+</Paper>
 
-                <TableCell>
-                  <TextField
-                    value={row.totalRate}
-                    onChange={(e) =>
-                      handleVehicleChange(row.ledVehicleId, "totalRate", e.target.value)
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    type="date"
-                    variant="outlined"
-                    value={row.startDate}
-                    onChange={(e) =>
-                      handleVehicleChange(row.ledVehicleId, "startDate", e.target.value)
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    type="date"
-                    variant="outlined"
-                    value={row.endDate}
-                    onChange={(e) =>
-                      handleVehicleChange(row.ledVehicleId, "endDate", e.target.value)
-                    }
-                  />
-
-                </TableCell>
-
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={row.selected}
-                    onChange={(e) =>
-                      handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)
-                    }
-                  />
-                </TableCell>
-              </TableRow>
-
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {selected}
-      <Box mt={3}>
-        <Button variant="contained" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </Box>
-    </Paper>
   );
 }
