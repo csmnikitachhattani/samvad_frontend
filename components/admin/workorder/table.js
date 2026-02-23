@@ -133,7 +133,7 @@ const CounterTable = ({ rows = [] }) => {
                                                 }
                                                 sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
                                             >
-                                                Move to Allocation</Button>
+                                                Proceed Workorder</Button>
 
 
                                         </TableCell>

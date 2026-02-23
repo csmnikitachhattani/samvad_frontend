@@ -5,6 +5,10 @@ import { useSearchParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
 import { Grid, TextField } from "@mui/material";
 
+import {  useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
+
 const PRIMARY = "#030236";
 const PRIMARY_LIGHT = "#eeeef8";
 const BORDER = "#e2e4f0";
@@ -15,6 +19,8 @@ const SUCCESS = "#16a34a";
 const ERROR = "#dc2626";
 
 const DataSetUI = () => {
+    const router = useRouter();
+    const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const job_id = searchParams.get("id");
   const avak_ref = searchParams.get("avak_ref");
@@ -72,10 +78,10 @@ const DataSetUI = () => {
       setError("");
       setSuccess("");
       const payload = {
-        jobNo: job_id,
-        avakRefId: avak_ref,
-        financialYear: "2024-2025",
-        woSubject: wosubject,
+        'jobNo': job_id,
+        'avakRefId': avak_ref,
+        financialYear: '2025-2026',
+        'woSubject': wosubject,
         "clientCd": "000019",
         "billingClientCd": "000019",
         "billingOfficeCode": "00020",
@@ -91,6 +97,8 @@ const DataSetUI = () => {
       };
       await adminServices.proceedWorkload(payload);
       setSuccess("Allocation submitted successfully.");
+      dispatch(showNotification({ message: "Saved!", severity: "success" }))
+      router.push(`/admin/counter`)
     } catch (err) {
       setError("Submission failed. Please try again.");
       console.error(err);
