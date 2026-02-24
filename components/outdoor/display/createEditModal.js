@@ -15,6 +15,9 @@ import {
 import axios from "axios";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
+import { toggleCreateModal } from "@/store/modules/outdoor/vehicleSlice.js";
+
+import { useSelector, useDispatch } from "react-redux";
 
 const initialState = {
   agencyID: "",
@@ -38,10 +41,16 @@ const initialState = {
   isActive: true,
 };
 
-const CreateLocationDialog = ({ open = true, onClose }) => {
+const CreateLocationDialog = ({ open, onClose }) => {
+  const dispatch = useDispatch();
+  const ModalShow = useSelector((state) => state.vehicle.ModalShow);
+const closeUploadDialog = () =>{
+  dispatch(toggleCreateModal({
+    show: false,  
+  }))
+}
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
-  
 const [states, setStates] = useState([]);
 const [districts, setDistricts] = useState([]);
  
@@ -95,7 +104,7 @@ useEffect(() => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+    <Dialog open={ModalShow} onClose={onClose} fullWidth maxWidth="md">
         <DialogTitle
         sx={{
           backgroundColor: "#0f4c3a",
