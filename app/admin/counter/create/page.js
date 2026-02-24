@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosClient from "@/lib/axiosClient";
+import adminServices from "@/services/adminServices";
 import {
   Box,
   Button,
@@ -14,6 +15,7 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 
 // ─── Shared sx helpers ────────────────────────────────────────────────────────
@@ -53,6 +55,7 @@ function SectionHeader({ title }) {
 export default function JobForm() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [services, setServices] = useState([]);
   const [data, setData] = useState({
     job_id: "2",
     financial_year: "",
@@ -79,7 +82,17 @@ export default function JobForm() {
     entry_user_name: "nikita",
     files: null,
   });
-
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const response = await adminServices.getServices();
+        setServices(response?.result || []);
+      } catch (error) {
+        console.error("Failed to fetch services", error);
+      }
+    }
+    fetchServices();
+  }, []);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setData((prev) => ({
@@ -87,6 +100,15 @@ export default function JobForm() {
       [name]: files ? files[0] : value,
     }));
   };
+  async function getPublicIP() {
+    const res = await fetch("https://api.ipify.org?format=json");
+    const data = await res.json();
+    console.log(data.ip);
+    return data.ip
+  }
+  useEffect(()=>{
+    getPublicIP()
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,7 +129,7 @@ export default function JobForm() {
       payload.append("office_address", data.office_address);
       payload.append("billing_address", data.billing_address);
       payload.append("remarks", data.remarks);
-      payload.append("ip_address", data.ip_address);
+      payload.append("ip_address", getPublicIP());
       payload.append("entry_user_name", data.entry_user_name);
       payload.append("entry_by_user_id", "00100");
       payload.append("client_cd", "00020");
@@ -277,7 +299,7 @@ export default function JobForm() {
                 <MenuItem value="No">No</MenuItem>
               </TextField>
             </Grid>
-
+{/* 
             <Grid item size={{xs:12, md:3}}>
               <TextField
                 label="OD Service Type ID"
@@ -288,7 +310,32 @@ export default function JobForm() {
                 onChange={handleChange}
                 sx={grayField}
               />
-            </Grid>
+            </Grid> */}
+            <Grid item size={{ xs: 12, md: 3 }}>
+  <TextField
+    select
+    label="Service Type"
+    name="od_servicetype_id"
+    fullWidth
+    value={data.od_servicetype_id}
+    onChange={handleChange}
+    sx={grayField}
+  >
+    {services.length > 0 ? (
+      services.map((s) => (
+        <MenuItem key={s.serviceId} value={s.serviceId}>
+          {s.serviceName}
+        </MenuItem>
+      ))
+    ) : (
+      <MenuItem disabled>
+        <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+          No services available
+        </Typography>
+      </MenuItem>
+    )}
+  </TextField>
+</Grid>
           </Grid>
         </Paper>
 
@@ -396,7 +443,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            {/* <Grid item size={{xs:12, md:3}}>
               <TextField
                 label="IP Address"
                 name="ip_address"
@@ -405,7 +452,7 @@ export default function JobForm() {
                 onChange={handleChange}
                 sx={grayField}
               />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Paper>
 
