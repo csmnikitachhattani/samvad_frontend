@@ -388,7 +388,8 @@ export default function JobForm() {
                 select
                 label="Duration"
                 value={data.duration}
-                onChange={(e) => setDuration(e.target.value)}
+                name="duration"
+                onChange={handleChange}
                 fullWidth
                 sx={grayField}
               >
