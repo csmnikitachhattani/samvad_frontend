@@ -56,6 +56,13 @@ export default function JobForm() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [services, setServices] = useState([]);
+  const durationOptions = [
+    { value: "1week", label: "1 Week" },
+    { value: "2week", label: "2 Weeks" },
+    { value: "3week", label: "3 Weeks" },
+    { value: "1month", label: "1 Month" },
+    { value: "2month", label: "2 Months" },
+  ];
   const [data, setData] = useState({
     job_id: "2",
     financial_year: "",
@@ -66,6 +73,7 @@ export default function JobForm() {
     od_servicetype_id: "",
     subject: "",
     startDate: "",
+    duration: '',
     endDate: "",
     ref_date: "",
     receipt_date: "",
@@ -106,7 +114,7 @@ export default function JobForm() {
     console.log(data.ip);
     return data.ip
   }
-  useEffect(()=>{
+  useEffect(() => {
     getPublicIP()
   })
 
@@ -219,7 +227,7 @@ export default function JobForm() {
             fontWeight={700}
             sx={{ color: "#1a1f36", letterSpacing: "-0.3px" }}
           >
-            Job Entry Form
+            Counter Form
           </Typography>
           <Typography variant="caption" sx={{ color: "#8a90a0" }}>
             Create a new outdoor media job record
@@ -241,7 +249,7 @@ export default function JobForm() {
         >
           <SectionHeader title="Reference Information" />
           <Grid container spacing={2.5}>
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Financial Year"
                 name="financial_year"
@@ -252,7 +260,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Client Ref ID"
                 name="client_ref_id"
@@ -263,7 +271,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="AVAK Ref ID"
                 name="avak_ref_id"
@@ -274,7 +282,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Ref No"
                 name="ref_no"
@@ -285,7 +293,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 select
                 label="Is Client DPR"
@@ -299,7 +307,7 @@ export default function JobForm() {
                 <MenuItem value="No">No</MenuItem>
               </TextField>
             </Grid>
-{/* 
+            {/* 
             <Grid item size={{xs:12, md:3}}>
               <TextField
                 label="OD Service Type ID"
@@ -312,30 +320,30 @@ export default function JobForm() {
               />
             </Grid> */}
             <Grid item size={{ xs: 12, md: 3 }}>
-  <TextField
-    select
-    label="Service Type"
-    name="od_servicetype_id"
-    fullWidth
-    value={data.od_servicetype_id}
-    onChange={handleChange}
-    sx={grayField}
-  >
-    {services.length > 0 ? (
-      services.map((s) => (
-        <MenuItem key={s.serviceId} value={s.serviceId}>
-          {s.serviceName}
-        </MenuItem>
-      ))
-    ) : (
-      <MenuItem disabled>
-        <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-          No services available
+              <TextField
+                select
+                label="Service Type"
+                name="od_servicetype_id"
+                fullWidth
+                value={data.od_servicetype_id}
+                onChange={handleChange}
+                sx={grayField}
+              >
+                {services.length > 0 ? (
+                  services.map((s) => (
+                    <MenuItem key={s.serviceId} value={s.serviceId}>
+                      {s.serviceName}
+                    </MenuItem>
+                  ))
+                ) : (
+                    <MenuItem disabled>
+                      <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+                        No services available
         </Typography>
-      </MenuItem>
-    )}
-  </TextField>
-</Grid>
+                    </MenuItem>
+                  )}
+              </TextField>
+            </Grid>
           </Grid>
         </Paper>
 
@@ -352,7 +360,7 @@ export default function JobForm() {
         >
           <SectionHeader title="Job Details" />
           <Grid container spacing={2.5}>
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Subject"
                 name="subject"
@@ -363,10 +371,10 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Start Date"
-                type="datetime-local"
+                type="date"
                 name="startDate"
                 fullWidth
                 InputLabelProps={{ shrink: true }}
@@ -375,11 +383,27 @@ export default function JobForm() {
                 sx={grayField}
               />
             </Grid>
+            <Grid item size={{ xs: 12, md: 3 }}>
+              <TextField
+                select
+                label="Duration"
+                value={data.duration}
+                onChange={(e) => setDuration(e.target.value)}
+                fullWidth
+                sx={grayField}
+              >
+                {durationOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="End Date"
-                type="datetime-local"
+                type="date"
                 name="endDate"
                 fullWidth
                 InputLabelProps={{ shrink: true }}
@@ -404,7 +428,7 @@ export default function JobForm() {
         >
           <SectionHeader title="Address & Remarks" />
           <Grid container spacing={2.5}>
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Office Address"
                 name="office_address"
@@ -417,7 +441,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Billing Address"
                 name="billing_address"
@@ -430,7 +454,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{xs:12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Remarks"
                 name="remarks"

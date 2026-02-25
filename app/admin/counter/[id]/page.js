@@ -358,6 +358,9 @@ export default function WorkOrderForm() {
           <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
               label="Financial Year"
               name="financial_year"
               value={formData.financial_year}
@@ -369,6 +372,9 @@ export default function WorkOrderForm() {
           <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
               label="AVAK Ref ID"
               name="avak_ref_id"
               value={formData.avak_ref_id}
@@ -380,6 +386,9 @@ export default function WorkOrderForm() {
           <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
               label="Job No"
               name="job_id"
               value={formData.job_id}
@@ -392,6 +401,9 @@ export default function WorkOrderForm() {
             <TextField
               fullWidth
               label="WO Subject"
+              InputProps={{
+                readOnly: true,
+              }}
               name="subject"
               value={formData.subject}
               onChange={handleChange}

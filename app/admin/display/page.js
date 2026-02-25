@@ -57,7 +57,7 @@ const DisplayBoardTable = () => {
     fontWeight={600}
     sx={{ color: "#111827", letterSpacing: "-0.02em" }}
   >
-    Vehicle Boards
+   display Board
   </Typography>
 
   <Button
