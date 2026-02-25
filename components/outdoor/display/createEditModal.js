@@ -16,7 +16,8 @@ import axios from "axios";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
 import { toggleCreateModal } from "@/store/modules/outdoor/vehicleSlice.js";
-
+import { useRouter } from "next/navigation";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 const initialState = {
@@ -43,6 +44,7 @@ const initialState = {
 
 const CreateLocationDialog = ({ open, onClose }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const ModalShow = useSelector((state) => state.vehicle.ModalShow);
 const closeUploadDialog = () =>{
   dispatch(toggleCreateModal({
@@ -86,6 +88,31 @@ useEffect(() => {
       "&:hover": { backgroundColor: "#FFF8F1" },
       "&.Mui-focused fieldset": { borderColor: "#030236" },
     },
+  };
+
+  const createVehicle = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("AgencyId", data.agencyId);
+      formData.append("VehicleNo", data.vehicleNo);
+      formData.append("OwnerName", data.ownerName);
+      formData.append("FitnessUpto", "2026-01-26T14:20:06.038Z");
+      formData.append("InsuranceUpto", "2026-01-26T14:20:06.038Z");
+      if (data.rcPhotoFile) formData.append("RcPhotoFile", data.rcPhotoFile);
+      formData.append("CreatedBy", data.createdBy);
+      formData.append("CreatedIpAddress", data.createdIpAddress);
+
+      const response = await axiosClient.post(
+        "http://103.79.34.50:8083/api/ManageMaster/createledVehicle",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      closeUploadDialog();
+      return response;
+    } catch (error) {
+      console.error("Create vehicle failed:", error);
+      throw error;
+    }
   };
 
   const handleSubmit = async () => {

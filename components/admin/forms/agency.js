@@ -20,6 +20,9 @@ import {
 import adminServices from "@/services/adminServices";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
+import {  useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 
 // ── Shared field style ────────────────────────────────────────────────────────
 const field = {
@@ -146,6 +149,8 @@ const IconCalendar = () => (
 
 // ── Main component ─────────────────────────────────────────────────────────────
 const AgencyForm = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     agencyName: "",
     ownerName: "",
@@ -205,6 +210,8 @@ const AgencyForm = () => {
       };
       const result = await adminServices.createAgency(updateObject);
       console.log("Agency Created:", result);
+      dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
+      router.push("/admin/agency");
     } catch (err) {
       console.log("Error:", err.message);
     }
