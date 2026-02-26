@@ -3,7 +3,7 @@ import React from "react";
 import { Suspense } from "react";
 import NoticeBoard from "@/components/client/noticeboard";
 import Report from "@/components/client/report"
-import ForwardTo from "@/components/client/forwaded"
+import ForwardTo from "@/components/client/forward"
 import RequestForm from "@/components/client/requestform"
 import CreateNewRequest from "@/components/client/createnewrequest";
 import NewsRateList from "@/components/client/newsratelist";

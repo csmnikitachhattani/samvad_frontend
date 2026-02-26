@@ -104,7 +104,7 @@ export default function AllocationPage() {
   async function fetchServiceTypes(serviceTypeId) {
     try {
       const response = await adminServices.getVendorList(serviceTypeId);
-      // console.log("🟡 Vendor Response:", response);
+      console.log("🟡 Vendor Response:", response);
 
       setVendors(response.result || []);
     } catch (error) {
