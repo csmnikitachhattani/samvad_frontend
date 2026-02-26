@@ -94,11 +94,21 @@ useEffect(() => {
     try {
       const formData = new FormData();
       formData.append("AgencyId", data.agencyId);
-      formData.append("VehicleNo", data.vehicleNo);
-      formData.append("OwnerName", data.ownerName);
+      formData.append("LocationName", data.vehicleNo);
+      formData.append("StateCode", data.ownerName);
+      formData.append("DistrictID", "2026-01-26T14:20:06.038Z");
+      formData.append("City", "2026-01-26T14:20:06.038Z");
+      formData.append("LocationType", "2026-01-26T14:20:06.038Z");
+      formData.append("DisplayBoardSize", "2026-01-26T14:20:06.038Z");
+      formData.append("DisplayBoardLandmark", "2026-01-26T14:20:06.038Z");
+      formData.append("DisplayBoardSpecification", "2026-01-26T14:20:06.038Z");
+      formData.append("ApprovedBy", "2026-01-26T14:20:06.038Z");
+      formData.append("Remark", "2026-01-26T14:20:06.038Z");
+      formData.append("BoardLatitude", "2026-01-26T14:20:06.038Z");
+      formData.append("BoardLogitude", "2026-01-26T14:20:06.038Z");
+      if (data.rcPhotoFile) formData.append("RcPhotoFile", data.rcPhotoFile);
       formData.append("FitnessUpto", "2026-01-26T14:20:06.038Z");
       formData.append("InsuranceUpto", "2026-01-26T14:20:06.038Z");
-      if (data.rcPhotoFile) formData.append("RcPhotoFile", data.rcPhotoFile);
       formData.append("CreatedBy", data.createdBy);
       formData.append("CreatedIpAddress", data.createdIpAddress);
 

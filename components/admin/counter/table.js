@@ -61,7 +61,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                 approvedByIp: "103.79.34.50"
             };
             const response = await adminServices.ApprovedNotesheet(payload);
-            setData(response || []);
+            // setData(response || []);
         } catch (error) {
             console.error("Failed to approve notesheet", error);
         }

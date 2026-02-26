@@ -19,6 +19,15 @@ const outdoorService = {
       throw err; // interceptor will format it
     }
   },
+  getOutdoorWorkorderList: async ()=>{
+    console.log("Workorder VehicleS")
+    try {
+      const res = await axiosClient.get("http://103.79.34.50:8083/api/OutDoorMediaTransaction/getlvworkorder", {});
+      return res;
+    } catch (err) {
+      throw err; // interceptor will format it
+    }
+  },
   getAgencyVehicle : async (selected)=>{
     console.log("get all VehicleS", selected)
     try {
