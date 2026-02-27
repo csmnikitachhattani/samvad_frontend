@@ -32,6 +32,11 @@ export default function Sidebar() {
       path: "/outdoor/vehicle",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
+    {
+      label: "RO List",
+      path: "/outdoor/vehicle",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
     // Add more items here
   ];
 

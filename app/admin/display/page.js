@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import outdoorService from "@/services/outdoorServices";
 import CreateEditModal from "@/components/outdoor/display/createEditModal"
-
+import AddIcon from "@mui/icons-material/Add";
+import { toggleCreateModal } from "@/store/modules/outdoor/vehicleSlice.js";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
   Paper,
@@ -15,10 +17,17 @@ import {
   Typography,
   Chip,
   Avatar,
+  Button,
 } from "@mui/material";
 
 const DisplayBoardTable = () => {
   const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const toggleUploadDialog = () =>{
+    dispatch(toggleCreateModal({
+      show: true,  
+    }))
+  }
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -34,8 +43,46 @@ const DisplayBoardTable = () => {
 
   return (
     <Box sx={{ p: 4, backgroundColor: "#fafafa", minHeight: "100vh" }}>
+
+<Box
+  sx={{
+    mb: 3,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }}
+>
+  <Typography
+    variant="h5"
+    fontWeight={600}
+    sx={{ color: "#111827", letterSpacing: "-0.02em" }}
+  >
+   display Board
+  </Typography>
+
+  <Button
+    variant="contained"
+    startIcon={<AddIcon />}
+    sx={{
+      textTransform: "none",
+      fontWeight: 600,
+      borderRadius: 2,
+      px: 2.5,
+      backgroundColor: "#111827",
+      "&:hover": {
+        backgroundColor: "#000000",
+      },
+    }}
+    onClick={() => {
+      // open create vehicle dialog
+      toggleUploadDialog()
+    }}
+  >
+    Create Display
+  </Button>
+</Box>
       {/* Header */}
-      <Typography 
+      {/* <Typography 
         variant="h5" 
         fontWeight={600} 
         mb={3}
@@ -45,7 +92,7 @@ const DisplayBoardTable = () => {
         }}
       >
         Display Boards
-      </Typography>
+      </Typography> */}
 
       {/* Card */}
       <Paper

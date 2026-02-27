@@ -1,20 +1,19 @@
 "use client";
 import React from "react";
-import Form from "@/components/admin/forms/agency"
-
+import Table from "@/components/admin/workorder/table"
 import {
   Box,
   Divider,
 } from "@mui/material";
 
-function AdminIndex() {
+function WorkOrderIndex() {
   return (
   <Box>
     <Box sx={{width: "100%"}}>
-      <Form />
+      <Table />
     </Box>
   </Box>
   );
 }
 
-export default AdminIndex;
+export default WorkOrderIndex;

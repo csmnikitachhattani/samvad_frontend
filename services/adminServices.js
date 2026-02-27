@@ -4,16 +4,10 @@ const adminService = {
   getServices: async () => {
     console.log("newspaper information")
     try {
-    //   const payload = {
-    //     action: "update",
-    //     user_id,
-    //     'financial_year': '2025-2026',
-    //     ...updateData,
-    //   };
       const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/getservicetype");
       return res.data;
     } catch (err) {
-      throw err; // interceptor will format it
+      throw err; 
     }
   },
   getAgency: async () => {
@@ -70,5 +64,47 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getAllocationRecord: async (job_id, avakRefId) =>{
+    console.log("get Allocation detail")
+    try {
+      const res = await axiosClient.get(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/getsubrecordswithtotals?avakRefId=${avakRefId}&jobNo=${job_id}`);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  submitNotesheet: async (payload) =>{
+    console.log("post notesheet detail")
+    try {
+      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/lvnotesheetprocess`, payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  ApprovedNotesheet: async (payload) =>{
+    console.log("post notesheet detail")
+    try {
+      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/approveledvehicle`, payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  proceedWorkload: async (payload) =>{
+    console.log("post notesheet detail")
+    try {
+      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/lvworkorder`, payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  }
+
+ 
 };
 export default adminService;
