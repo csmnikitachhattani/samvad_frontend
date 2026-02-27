@@ -20,9 +20,10 @@ import {
 import adminServices from "@/services/adminServices";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
-import {  useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
+import {emailErrors, emailRules, gstField } from '@/lib/rules'
 
 // ── Shared field style ────────────────────────────────────────────────────────
 const field = {
@@ -115,35 +116,35 @@ function SectionCard({ icon, title, subtitle, children, accent = "#010a2a" }) {
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const IconAgency = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M3 21V7l9-4 9 4v14" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M9 21v-6h6v6" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" stroke="#010a2a" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M3 21V7l9-4 9 4v14" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 21v-6h6v6" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" stroke="#010a2a" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
 const IconLocation = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const IconContact = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round"/>
-    <circle cx="12" cy="7" r="4" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round"/>
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round" />
+    <circle cx="12" cy="7" r="4" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round" />
   </svg>
 );
 
 const IconService = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#8b5cf6" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#8b5cf6" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const IconCalendar = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <rect x="3" y="4" width="18" height="18" rx="3" stroke="#ef4444" strokeWidth="1.7" strokeLinecap="round"/>
-    <path d="M16 2v4M8 2v4M3 10h18" stroke="#ef4444" strokeWidth="1.7" strokeLinecap="round"/>
+    <rect x="3" y="4" width="18" height="18" rx="3" stroke="#ef4444" strokeWidth="1.7" strokeLinecap="round" />
+    <path d="M16 2v4M8 2v4M3 10h18" stroke="#ef4444" strokeWidth="1.7" strokeLinecap="round" />
   </svg>
 );
 
@@ -171,11 +172,35 @@ const AgencyForm = () => {
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [services, setServices] = useState([]);
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
-  };
+    const { name, value } = e.target
+
+    // Apply email rules
+    if (name === "email") {
+      if (!value) {
+        setErrors({ ...errors, email: emailErrors.required })
+      } else if (!emailRules.pattern.test(value)) {
+        setErrors({ ...errors, email: emailErrors.pattern })
+      }
+      else {
+        setErrors({ ...errors, email: ""}) 
+      }
+    }
+    if( name === 'gstin'){
+      if (!value) {
+        setErrors({ ...errors, gstin: gstField.required.message })
+      } else if (!gstField.pattern.value.test(value)) {
+        setErrors({ ...errors, gstin: gstField.pattern.message })
+      } else {
+        setErrors({ ...errors, gstin: "" })
+      }
+    }
+
+    setFormData({ ...formData, [name]: value })
+  }
+
 
   const handleServiceChange = (event) => {
     const { target: { value } } = event;
@@ -271,9 +296,9 @@ const AgencyForm = () => {
                 }}
               >
                 <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
-                  <path d="M3 21V7l9-4 9 4v14" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M9 21v-6h6v6" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+                  <path d="M3 21V7l9-4 9 4v14" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M9 21v-6h6v6" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
                 </svg>
               </Box>
               <Typography variant="h5" fontWeight={800} sx={{ color: "#111827", letterSpacing: "-0.5px" }}>
@@ -303,14 +328,15 @@ const AgencyForm = () => {
         {/* ── Section 1: Agency Info ── */}
         <SectionCard icon={<IconAgency />} title="Agency Information" subtitle="Basic agency identity and tax details" accent="#010a2a">
           <Grid container spacing={2.5}>
-            <Grid item size={{xs:12, sm:4}}>
+            <Grid item size={{ xs: 12, sm: 4 }}>
               <TextField fullWidth label="Agency Name" name="agencyName" value={formData.agencyName} onChange={handleChange} sx={field} />
             </Grid>
-            <Grid item size={{xs:12, sm:4}}>
+            <Grid item size={{ xs: 12, sm: 4 }}>
               <TextField fullWidth label="Owner Name" name="ownerName" value={formData.ownerName} onChange={handleChange} sx={field} />
             </Grid>
-            <Grid item size={{xs:12, sm:4}}>
-              <TextField fullWidth label="GSTIN" name="gstin" value={formData.gstin} onChange={handleChange} sx={field} />
+            <Grid item size={{ xs: 12, sm: 4 }}>
+              <TextField fullWidth label="GSTIN" name="gstin" value={formData.gstin} error={!!errors.gstin}
+                helperText={errors.gstin || "e.g. 22AAAAA0000A1Z5"} onChange={handleChange} sx={field} />
             </Grid>
           </Grid>
         </SectionCard>
@@ -318,7 +344,7 @@ const AgencyForm = () => {
         {/* ── Section 2: Location ── */}
         <SectionCard icon={<IconLocation />} title="Location" subtitle="Office address and geographic details" accent="#f59e0b">
           <Grid container spacing={2.5}>
-            <Grid item size={{xs:12,}}>
+            <Grid item size={{ xs: 12, }}>
               <TextField
                 fullWidth
                 label="Address"
@@ -330,7 +356,7 @@ const AgencyForm = () => {
                 sx={field}
               />
             </Grid>
-            <Grid item size={{xs:12, sm:4}}>
+            <Grid item size={{ xs: 12, sm: 4 }}>
               <TextField
                 select
                 fullWidth
@@ -354,10 +380,10 @@ const AgencyForm = () => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item size={{xs:12, sm:4}}>
+            <Grid item size={{ xs: 12, sm: 4 }}>
               <TextField fullWidth label="City" name="city" value={formData.city} onChange={handleChange} sx={field} />
             </Grid>
-            <Grid item size={{xs:12, sm:4}}>
+            <Grid item size={{ xs: 12, sm: 4 }}>
               <TextField
                 select
                 fullWidth
@@ -394,7 +420,17 @@ const AgencyForm = () => {
               <TextField fullWidth label="Phone" name="phone" value={formData.phone} onChange={handleChange} sx={field} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField fullWidth label="Email" name="email" type="email" value={formData.email} onChange={handleChange} sx={field} />
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                sx={field}
+                error={!!errors.email}           // 👈 turns red if error
+                helperText={errors.email}        // 👈 shows error message below
+              />
             </Grid>
           </Grid>
         </SectionCard>
@@ -432,7 +468,7 @@ const AgencyForm = () => {
         {/* ── Section 5: Services & Status ── */}
         <SectionCard icon={<IconService />} title="Services & Status" subtitle="Assign services and set agency status" accent="#8b5cf6">
           <Grid container spacing={2.5}>
-            <Grid item size={{xs:12, sm:4}}>
+            <Grid item size={{ xs: 12, sm: 4 }}>
               <FormControl fullWidth sx={field}>
                 <InputLabel sx={{ color: "#9ca3af", fontSize: "0.875rem" }}>Services</InputLabel>
                 <Select
