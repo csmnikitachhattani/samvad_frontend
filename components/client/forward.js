@@ -1,1054 +1,9 @@
 
-
-
-// // "use client";
-
-// // import React, { useEffect, useState, useMemo } from "react";
-// // import axios from "axios";
-// // import { useRouter, useSearchParams } from "next/navigation";
-
-// // import {
-// //   Container,
-// //   Card,
-// //   CardContent,
-// //   Typography,
-// //   Table,
-// //   TableBody,
-// //   TableCell,
-// //   TableHead,
-// //   TableRow,
-// //   TableContainer,
-// //   Paper,
-// //   Button,
-// //   Checkbox,
-// //   CircularProgress,
-// //   Stack,
-// //   Pagination,
-// //   Chip,
-// //   TextField,
-// //   Toolbar,
-// //   IconButton,
-// //   Tooltip,
-// // } from "@mui/material";
-
-// // import DownloadIcon from "@mui/icons-material/Download";
-// // import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-// // import TableViewIcon from "@mui/icons-material/TableView";
-// // import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
-// // const ForwardTo = () => {
-// //   const router = useRouter(); // ✅ instead of useNavigate
-// //   const searchParams = useSearchParams(); // ✅ instead of useLocation
-
-// //   const actionType = searchParams.get("action") || "get";
-
-// //   const [data, setData] = useState([]);
-// //   const [search, setSearch] = useState("");
-// //   const [currentPage, setCurrentPage] = useState(1);
-// //   const [loading, setLoading] = useState(false);
-
-// //   const recordsPerPage = 10;
-
-// //   const { financial_year, user_id, user_name } = useMemo(
-// //     () => ({
-// //       financial_year: localStorage.getItem("financial_year") || "",
-// //       user_id: localStorage.getItem("user_id") || "",
-// //       user_name: localStorage.getItem("user_name") || "",
-// //     }),
-// //     []
-// //   );
-
-// //   const formatDate = (dateString) => {
-// //     if (!dateString) return "-";
-// //     const date = new Date(dateString);
-// //     return date.toLocaleDateString("en-CA");
-// //   };
-
-// //   // ================= FETCH DATA =================
-// //   const fetchData = async () => {
-// //     if (!financial_year || !user_id) return;
-
-// //     try {
-// //       setLoading(true);
-
-// //       const res = await axios.get(
-// //         "http://103.79.34.50:8083/api/Client/getclientadvtrequests",
-// //         {
-// //           params: {
-// //             financial_year,
-// //             user_id,
-// //             user_name,
-// //             action: "get_not_forwarded",
-// //             category: "02",
-// //           },
-// //         }
-// //       );
-
-// //       const responseData =
-// //         res.data?.data ||
-// //         res.data?.result ||
-// //         (Array.isArray(res.data) ? res.data : []);
-
-// //       setData(responseData || []);
-
-// //       setCurrentPage(1);
-// //     } catch (err) {
-// //       console.error("Fetch Error:", err);
-// //       setData([]);
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     fetchData();
-// //   }, [actionType, financial_year, user_id, user_name]);
-
-// //   // ================= EDIT =================
-// //   const handleEdit = async (ref_Id) => {
-// //     try {
-// //       const response = await axios.get(
-// //         `http://localhost:3080/api/get-client-advt-request/${ref_Id}`,
-// //         {
-// //           params: {
-// //             financial_year,
-// //             user_id,
-// //             user_name,
-// //             action: "get_by_id",
-// //           },
-// //         }
-// //       );
-
-// //       const rowData =
-// //         response.data?.data ||
-// //         response.data?.result ||
-// //         response.data;
-
-// //       navigate(`/newrequest`, {
-// //         state: { action: "update", rowData },
-// //       });
-// //     } catch (error) {
-// //       console.error("Edit Error:", error);
-// //       alert("Failed to fetch record details");
-// //     }
-// //   };
-
-// //   // ================= DELETE =================
-// //   const handleDelete = async (ref_Id) => {
-// //     if (!window.confirm(`Delete Ref ID ${ref_Id}?`)) return;
-
-// //     try {
-// //       const res = await axios.delete(
-// //         `http://localhost:3080/api/client-advt-request/${ref_Id}`,
-// //         {
-// //           data: {
-// //             ref_Id,
-// //             financial_year,
-// //             user_id,
-// //             user_name,
-// //             action: "delete",
-// //           },
-// //         }
-// //       );
-
-// //       const status = res.data?.status ?? res.data?.success;
-
-// //       if (status === 1 || status === true) {
-// //         setData((prev) => prev.filter((row) => row.ref_Id !== ref_Id));
-// //         alert(`Deleted successfully (Ref ID: ${ref_Id})`);
-// //       } else {
-// //         alert(res.data?.message || "Delete failed");
-// //       }
-// //     } catch (err) {
-// //       console.error("Delete Error:", err);
-// //       alert("Server error while deleting");
-// //     }
-// //   };
-
-// //   // ================= SEARCH FILTER (NO API CHANGE) =================
-// //   const filteredData = useMemo(() => {
-// //     return data.filter((row) =>
-// //       `${row.ref_Id} ${row.subject} ${row.letter_No}`
-// //         .toLowerCase()
-// //         .includes(search.toLowerCase())
-// //     );
-// //   }, [data, search]);
-
-// //   // ================= PAGINATION =================
-// //   const indexOfLastRecord = currentPage * recordsPerPage;
-// //   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-// //   const currentRecords = filteredData.slice(
-// //     indexOfFirstRecord,
-// //     indexOfLastRecord
-// //   );
-// //   const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-
-// //   const getTitle = () => {
-// //     switch (actionType) {
-// //       case "get_all_accepted":
-// //         return "Accepted to Samvad";
-// //       case "get_forwarded":
-// //         return "Submitted to Samvad";
-// //       case "get_not_forwarded":
-// //         return "Forward To Samvad";
-// //       case "get_under_process":
-// //         return "Under Processing Request";
-// //       default:
-// //         return "Requests";
-// //     }
-// //   };
-
-// //   // ================= EXPORT EXCEL =================
-// //   const exportToExcel = () => {
-// //     const csvContent = [
-// //       ["Ref ID", "Subject", "Letter No", "Category", "Tender Amt"],
-// //       ...filteredData.map((row) => [
-// //         row.ref_Id,
-// //         row.subject,
-// //         row.letter_No,
-// //         row.ref_Category_Text,
-// //         row.tender_Amt,
-// //       ]),
-// //     ]
-// //       .map((e) => e.join(","))
-// //       .join("\n");
-
-// //     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-// //     const link = document.createElement("a");
-// //     link.href = URL.createObjectURL(blob);
-// //     link.download = "requests.csv";
-// //     link.click();
-// //   };
-
-// //   // ================= EXPORT PDF (Simple Print) =================
-// //   const exportToPDF = () => {
-// //     window.print();
-// //   };
-
-// //   // ================= STATUS CHIP =================
-// //   const getStatusChip = () => {
-// //     switch (actionType) {
-// //       case "get_all_accepted":
-// //         return <Chip label="Accepted" color="success" size="small" />;
-// //       case "get_forwarded":
-// //         return <Chip label="Forwarded" color="info" size="small" />;
-// //       case "get_under_process":
-// //         return <Chip label="Pending" color="warning" size="small" />;
-// //       default:
-// //         return <Chip label="Draft" size="small" />;
-// //     }
-// //   };
-
-// //   return (
-  
-// //       <Card elevation={5} sx={{ borderRadius: 3 }}>
-// //         <CardContent>
-// //           {/* HEADER */}
-// //           <Stack
-// //             direction="row"
-// //             justifyContent="space-between"
-// //             alignItems="center"
-// //             mb={2}
-// //           >
-// //             <Typography variant="h5" fontWeight="bold" color="error">
-// //               {getTitle()}
-// //             </Typography>
-// //             {getStatusChip()}
-// //           </Stack>
-
-// //           {/* TOOLBAR */}
-// //           <Toolbar
-// //             sx={{
-// //               display: "flex",
-// //               justifyContent: "space-between",
-// //               flexWrap: "wrap",
-// //               gap: 2,
-// //               p: 0,
-// //               mb: 2,
-// //             }}
-// //           >
-// //             <TextField
-// //               size="small"
-// //               label="Search Ref ID / Subject / Letter No"
-// //               variant="outlined"
-// //               value={search}
-// //               onChange={(e) => setSearch(e.target.value)}
-// //               sx={{ minWidth: 300 }}
-// //             />
-
-// //             <Stack direction="row" spacing={1}>
-// //               <Tooltip title="Export Excel">
-// //                 <IconButton color="success" onClick={exportToExcel}>
-// //                   <TableViewIcon />
-// //                 </IconButton>
-// //               </Tooltip>
-
-// //               <Tooltip title="Export PDF">
-// //                 <IconButton color="error" onClick={exportToPDF}>
-// //                   <PictureAsPdfIcon />
-// //                 </IconButton>
-// //               </Tooltip>
-// //             </Stack>
-// //           </Toolbar>
-
-// //           {/* LOADER */}
-// //           {loading && (
-// //             <Stack alignItems="center" my={2}>
-// //               <CircularProgress color="error" />
-// //             </Stack>
-// //           )}
-
-// //           {/* TABLE */}
-// //           <TableContainer component={Paper} elevation={3}>
-// //             <Table size="small">
-// //               <TableHead>
-// //                 <TableRow sx={{ backgroundColor: "#f1f3f4" }}>
-// //                   <TableCell><b>Ref ID</b></TableCell>
-// //                   <TableCell><b>Subject</b></TableCell>
-// //                   <TableCell><b>Letter No</b></TableCell>
-// //                   <TableCell><b>Category</b></TableCell>
-// //                   <TableCell><b>Letter Date</b></TableCell>
-// //                   <TableCell><b>Scheduled Publish Date</b></TableCell>
-// //                   <TableCell><b>Tender Amt</b></TableCell>
-// //                   <TableCell align="center"><b>Attachment</b></TableCell>
-// //                   <TableCell align="center"><b>Action</b></TableCell>
-// //                   <TableCell align="center"><b>Forward</b></TableCell>
-// //                 </TableRow>
-// //               </TableHead>
-
-// //               <TableBody>
-// //                 {!loading && currentRecords.length > 0 ? (
-// //                   currentRecords.map((row, index) => (
-// //                     <TableRow key={row.ref_Id || index} hover>
-// //                       <TableCell>
-// //                         <Chip label={row.ref_Id} color="primary" size="small" />
-// //                       </TableCell>
-// //                       <TableCell>{row.subject || "-"}</TableCell>
-// //                       <TableCell>{row.letter_No || "-"}</TableCell>
-// //                       <TableCell>
-// //                         <Chip
-// //                           label={row.ref_Category_Text || "-"}
-// //                           color="secondary"
-// //                           size="small"
-// //                         />
-// //                       </TableCell>
-// //                       <TableCell>{formatDate(row.letter_Date)}</TableCell>
-// //                       <TableCell>{formatDate(row.schedule_Date)}</TableCell>
-// //                       <TableCell>{row.tender_Amt || "-"}</TableCell>
-
-// //                       {/* ATTACHMENT BUTTON */}
-// //                       <TableCell align="center">
-// //                         {/* <IconButton color="primary">
-// //                           <FileDownloadIcon />
-// //                         </IconButton> */}
-// //                       </TableCell>
-
-// //                       {/* ACTION BUTTONS */}
-// //                       <TableCell align="center">
-// //                         <Stack direction="row" spacing={1} justifyContent="center">
-// //                           <Button
-// //                             variant="contained"
-// //                             color="warning"
-// //                             size="small"
-// //                             onClick={() => handleEdit(row.ref_Id)}
-// //                           >
-// //                             Edit
-// //                           </Button>
-// //                           <Button
-// //                             variant="contained"
-// //                             color="error"
-// //                             size="small"
-// //                             onClick={() => handleDelete(row.ref_Id)}
-// //                           >
-// //                             Delete
-// //                           </Button>
-// //                         </Stack>
-// //                       </TableCell>
-
-// //                       <TableCell align="center">
-// //                         <Checkbox color="primary" />
-// //                       </TableCell>
-// //                     </TableRow>
-// //                   ))
-// //                 ) : (
-// //                   <TableRow>
-// //                     <TableCell colSpan={10} align="center">
-// //                       {loading ? "Loading..." : "No data found"}
-// //                     </TableCell>
-// //                   </TableRow>
-// //                 )}
-// //               </TableBody>
-// //             </Table>
-// //           </TableContainer>
-
-// //           {/* PAGINATION */}
-// //           {totalPages > 1 && (
-// //             <Stack alignItems="center" mt={3}>
-// //               <Pagination
-// //                 count={totalPages}
-// //                 page={currentPage}
-// //                 onChange={(e, value) => setCurrentPage(value)}
-// //                 color="primary"
-// //                 shape="rounded"
-// //               />
-// //             </Stack>
-// //           )}
-// //         </CardContent>
-// //       </Card>
-   
-// //   );
-// // };
-
-// // export default ForwardTo;
-
-
-
-
-// "use client";
-// import React, { useEffect, useState, useMemo } from "react";
-// import axios from "axios";
-// import { useRouter, useSearchParams } from "next/navigation";
-// import {
-//   Container,
-//   Typography,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableRow,
-//   TableContainer,
-//   Button,
-//   CircularProgress,
-//   Stack,
-//   Pagination,
-//   Chip,
-//   TextField,
-//   IconButton,
-//   Tooltip,
-//   Box,
-// } from "@mui/material";
-// import DownloadIcon from "@mui/icons-material/Download";
-// import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-// import TableViewIcon from "@mui/icons-material/TableView";
-// import FileDownloadIcon from "@mui/icons-material/FileDownload";
-// import SearchIcon from "@mui/icons-material/Search";
-// import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-// const theme = createTheme({
-//   typography: {
-//     fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
-//   },
-//   palette: {
-//     primary: { main: "#0F4C81" },
-//     secondary: { main: "#E8572A" },
-//   },
-// });
-
-// const ForwardTo = () => {
-//   const router = useRouter();
-//   const searchParams = useSearchParams();
-//   const actionType = searchParams.get("action") || "get";
-
-//   const [data, setData] = useState([]);
-//   const [search, setSearch] = useState("");
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [loading, setLoading] = useState(false);
-//   const recordsPerPage = 10;
-
-//   const { financial_year, user_id, user_name } = useMemo(
-//     () => ({
-//       financial_year: localStorage.getItem("financial_year") || "",
-//       user_id: localStorage.getItem("user_id") || "",
-//       user_name: localStorage.getItem("user_name") || "",
-//     }),
-//     []
-//   );
-
-//   const formatDate = (dateString) => {
-//     if (!dateString) return "-";
-//     const date = new Date(dateString);
-//     return date.toLocaleDateString("en-CA");
-//   };
-
-//   const fetchData = async () => {
-//     if (!financial_year || !user_id) return;
-//     try {
-//       setLoading(true);
-//       const res = await axios.get(
-//         "http://103.79.34.50:8083/api/Client/getclientadvtrequests",
-//         {
-//           params: {
-//             financial_year,
-//             user_id,
-//             user_name,
-//             action: "get_not_forwarded",
-//             category: "02",
-//           },
-//         }
-//       );
-//       const responseData =
-//         res.data?.data ||
-//         res.data?.result ||
-//         (Array.isArray(res.data) ? res.data : []);
-//       setData(responseData || []);
-//       setCurrentPage(1);
-//     } catch (err) {
-//       console.error("Fetch Error:", err);
-//       setData([]);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchData();
-//   }, [actionType, financial_year, user_id, user_name]);
-
-//   const handleEdit = async (ref_Id) => {
-//     try {
-//       const response = await axios.get(
-//         `http://localhost:3080/api/get-client-advt-request/${ref_Id}`,
-//         { params: { financial_year, user_id, user_name, action: "get_by_id" } }
-//       );
-//       const rowData =
-//         response.data?.data || response.data?.result || response.data;
-//       navigate(`/newrequest`, { state: { action: "update", rowData } });
-//     } catch (error) {
-//       console.error("Edit Error:", error);
-//       alert("Failed to fetch record details");
-//     }
-//   };
-
-//   const handleDelete = async (ref_Id) => {
-//     if (!window.confirm(`Delete Ref ID ${ref_Id}?`)) return;
-//     try {
-//       const res = await axios.delete(
-//         `http://localhost:3080/api/client-advt-request/${ref_Id}`,
-//         { data: { ref_Id, financial_year, user_id, user_name, action: "delete" } }
-//       );
-//       const status = res.data?.status ?? res.data?.success;
-//       if (status === 1 || status === true) {
-//         setData((prev) => prev.filter((row) => row.ref_Id !== ref_Id));
-//         alert(`Deleted successfully (Ref ID: ${ref_Id})`);
-//       } else {
-//         alert(res.data?.message || "Delete failed");
-//       }
-//     } catch (err) {
-//       console.error("Delete Error:", err);
-//       alert("Server error while deleting");
-//     }
-//   };
-
-//   const filteredData = useMemo(() => {
-//     return data.filter((row) =>
-//       `${row.ref_Id} ${row.subject} ${row.letter_No}`
-//         .toLowerCase()
-//         .includes(search.toLowerCase())
-//     );
-//   }, [data, search]);
-
-//   const indexOfLastRecord = currentPage * recordsPerPage;
-//   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-//   const currentRecords = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
-//   const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-
-//   const getTitle = () => {
-//     switch (actionType) {
-//       case "get_all_accepted": return "Accepted to Samvad";
-//       case "get_forwarded": return "Submitted to Samvad";
-//       case "get_not_forwarded": return "Forward To Samvad";
-//       case "get_under_process": return "Under Processing Request";
-//       default: return "Requests";
-//     }
-//   };
-
-//   const exportToExcel = () => {
-//     const csvContent = [
-//       ["Ref ID", "Subject", "Letter No", "Category", "Tender Amt"],
-//       ...filteredData.map((row) => [
-//         row.ref_Id, row.subject, row.letter_No,
-//         row.ref_Category_Text, row.tender_Amt,
-//       ]),
-//     ]
-//       .map((e) => e.join(","))
-//       .join("\n");
-//     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-//     const link = document.createElement("a");
-//     link.href = URL.createObjectURL(blob);
-//     link.download = "requests.csv";
-//     link.click();
-//   };
-
-//   const exportToPDF = () => window.print();
-
-//   const getStatusChip = () => {
-//     const chipSx = {
-//       fontFamily: "'DM Sans', sans-serif",
-//       fontWeight: 700,
-//       fontSize: "0.7rem",
-//       letterSpacing: "0.08em",
-//       textTransform: "uppercase",
-//       height: 26,
-//       borderRadius: "4px",
-//     };
-//     switch (actionType) {
-//       case "get_all_accepted":
-//         return <Chip label="Accepted" sx={{ ...chipSx, bgcolor: "#D1FAE5", color: "#065F46" }} />;
-//       case "get_forwarded":
-//         return <Chip label="Forwarded" sx={{ ...chipSx, bgcolor: "#DBEAFE", color: "#1E40AF" }} />;
-//       case "get_under_process":
-//         return <Chip label="Processing" sx={{ ...chipSx, bgcolor: "#FEF3C7", color: "#92400E" }} />;
-//       default:
-//         return <Chip label="Pending" sx={{ ...chipSx, bgcolor: "#FFE4E6", color: "#9F1239" }} />;
-//     }
-//   };
-
-//   const colHead = {
-//     fontFamily: "'DM Sans', sans-serif",
-//     fontWeight: 700,
-//     fontSize: "0.7rem",
-//     letterSpacing: "0.1em",
-//     textTransform: "uppercase",
-//     color: "#11376c",
-//     py: 1.5,
-//     px: 2,
-//     borderBottom: "1px solid #1E293B",
-//     whiteSpace: "nowrap",
-//   };
-
-//   const colCell = {
-//     fontFamily: "'DM Sans', sans-serif",
-//     fontSize: "0.82rem",
-//     color: "#090a0a",
-//     py: 1.4,
-//     px: 2,
-//     borderBottom: "1px solid #959393",
-//   };
-
-//   return (
-//     <ThemeProvider theme={theme}>
-//       <link
-//         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
-//         rel="stylesheet"
-//       />
-
-//       {/* PAGE WRAPPER */}
-//       {/* <Box
-//         sx={{
-//           minHeight: "100vh",
-//           background: "linear-gradient(160deg, #0A1628 0%, #e6e9ed 50%, #0A1628 100%)",
-//           py: 4,
-//           px: { xs: 2, md: 4 },
-//         }}
-//       > */}
-//         {/* HEADER SECTION */}
-//         <Box sx={{ mb: 3 }}>
-//           {/* Top accent bar */}
-//           <Box
-//             sx={{
-//               height: 3,
-//               width: 60,
-//               background: "linear-gradient(90deg, #E8572A, #FF8C5A)",
-//               borderRadius: 2,
-//               mb: 2,
-//             }}
-//           />
-
-//           <Box
-//             sx={{
-//               display: "flex",
-//               alignItems: "flex-start",
-//               justifyContent: "space-between",
-//               flexWrap: "wrap",
-//               gap: 2,
-//             }}
-//           >
-//             <Box>
-//               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}>
-//                 <Typography
-//                   sx={{
-//                     fontFamily: "'Space Mono', monospace",
-//                     fontSize: { xs: "1.3rem", md: "1.7rem" },
-//                     fontWeight: 700,
-//                     color: "#1f4f80",
-//                     letterSpacing: "-0.02em",
-//                   }}
-//                 >
-//                   {getTitle()}
-//                 </Typography>
-//                 {getStatusChip()}
-//               </Box>
-//               <Typography
-//                 sx={{
-//                   fontFamily: "'DM Sans', sans-serif",
-//                   fontSize: "0.8rem",
-//                   color: "#64748B",
-//                   letterSpacing: "0.05em",
-//                 }}
-//               >
-//                 FY: {financial_year} &nbsp;·&nbsp; {filteredData.length} records
-//               </Typography>
-//             </Box>
-
-//             {/* EXPORT ACTIONS */}
-//             <Stack direction="row" spacing={1} alignItems="center">
-//               <Tooltip title="Export CSV">
-//                 <IconButton
-//                   onClick={exportToExcel}
-//                   sx={{
-//                     bgcolor: "#1E293B",
-//                     color: "#94A3B8",
-//                     border: "1px solid #2D3748",
-//                     borderRadius: "8px",
-//                     width: 38,
-//                     height: 38,
-//                     "&:hover": { bgcolor: "#0F4C81", color: "#fff", borderColor: "#0F4C81" },
-//                     transition: "all 0.2s",
-//                   }}
-//                 >
-//                   <TableViewIcon fontSize="small" />
-//                 </IconButton>
-//               </Tooltip>
-//               <Tooltip title="Export PDF">
-//                 <IconButton
-//                   onClick={exportToPDF}
-//                   sx={{
-//                     bgcolor: "#1E293B",
-//                     color: "#94A3B8",
-//                     border: "1px solid #2D3748",
-//                     borderRadius: "8px",
-//                     width: 38,
-//                     height: 38,
-//                     "&:hover": { bgcolor: "#E8572A", color: "#fff", borderColor: "#E8572A" },
-//                     transition: "all 0.2s",
-//                   }}
-//                 >
-//                   <PictureAsPdfIcon fontSize="small" />
-//                 </IconButton>
-//               </Tooltip>
-//               <Tooltip title="Download">
-//                 <IconButton
-//                   sx={{
-//                     bgcolor: "#1E293B",
-//                     color: "#94A3B8",
-//                     border: "1px solid #2D3748",
-//                     borderRadius: "8px",
-//                     width: 38,
-//                     height: 38,
-//                     "&:hover": { bgcolor: "#2D3748", color: "#fff" },
-//                     transition: "all 0.2s",
-//                   }}
-//                 >
-//                   <FileDownloadIcon fontSize="small" />
-//                 </IconButton>
-//               </Tooltip>
-//             </Stack>
-//           </Box>
-//         </Box>
-
-//         {/* SEARCH BAR */}
-//         <Box sx={{ mb: 2.5 }}>
-//           <TextField
-//             placeholder="Search by Ref ID, Subject, Letter No…"
-//             value={search}
-//             onChange={(e) => setSearch(e.target.value)}
-//             size="small"
-//             InputProps={{
-//               startAdornment: (
-//                 <SearchIcon sx={{ color: "#475569", mr: 1, fontSize: 18 }} />
-//               ),
-//             }}
-//             sx={{
-//               width: { xs: "100%", sm: 360 },
-//               "& .MuiOutlinedInput-root": {
-//                 fontFamily: "'DM Sans', sans-serif",
-//                 fontSize: "0.85rem",
-//                 bgcolor: "#111827",
-//                 color: "#CBD5E1",
-//                 borderRadius: "8px",
-//                 "& fieldset": { borderColor: "#1E293B" },
-//                 "&:hover fieldset": { borderColor: "#334155" },
-//                 "&.Mui-focused fieldset": { borderColor: "#0F4C81" },
-//               },
-//               "& input::placeholder": { color: "#475569" },
-//             }}
-//           />
-//         </Box>
-
-//         {/* TABLE */}
-//         <Box
-//           sx={{
-//             bgcolor: "#ffffff",
-//             borderRadius: "12px",
-//             border: "1px solid #bdbdbd",
-//             overflow: "hidden",
-//             boxShadow: "0 8px 32px #bdbdbd",
-//           }}
-//         >
-//           {/* Loading bar */}
-//           {loading && (
-//             <Box
-//               sx={{
-//                 display: "flex",
-//                 alignItems: "center",
-//                 gap: 2,
-//                 px: 3,
-//                 py: 2,
-//                 borderBottom: "1px solid #bdbdbd",
-//                 bgcolor: "#acadb0",
-//               }}
-//             >
-//               {/* <CircularProgress size={16} sx={{ color: "#E8572A" }} /> */}
-//               <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "#c3c8cf" }}>
-//                 Fetching records…
-//               </Typography>
-//             </Box>
-//           )}
-
-//           <TableContainer sx={{ maxHeight: "100vh" }}>
-//             <Table stickyHeader size="small">
-//               <TableHead>
-//                 <TableRow>
-//                   {[
-//                     "Ref ID", "Subject", "Letter No", "Category",
-//                     "Letter Date", "Scheduled Publish", "Tender Amt", "Attachment", "Actions", "Forward",
-//                   ].map((col) => (
-//                     <TableCell key={col} sx={{ ...colHead, bgcolor: "#d9dcdf !important" }}>
-//                       {col}
-//                     </TableCell>
-//                   ))}
-//                 </TableRow>
-//               </TableHead>
-
-//               <TableBody>
-//                 {!loading && currentRecords.length > 0 ? (
-//                   currentRecords.map((row, index) => (
-//                     <TableRow
-//                       key={row.ref_Id || index}
-//                       sx={{
-//                         "&:hover": { bgcolor: "#dde0e3" },
-//                         "&:hover .action-btns": { opacity: 1 },
-//                         transition: "background 0.15s",
-//                       }}
-//                     >
-//                       <TableCell sx={{ ...colCell }}>
-//                         <Box
-//                           sx={{
-//                             display: "inline-block",
-//                             fontFamily: "'Space Mono', monospace",
-//                             fontSize: "0.75rem",
-//                             color: "#1f2327",
-//                             bgcolor: "rgba(199, 199, 199, 0.08)",
-//                             px: 1,
-//                             py: 0.3,
-//                             borderRadius: "4px",
-//                             border: "1px solid rgba(96,165,250,0.15)",
-//                           }}
-//                         >
-//                           {row.ref_Id || "-"}
-//                         </Box>
-//                       </TableCell>
-//                       <TableCell sx={{ ...colCell, maxWidth: 180 }}>
-//                         <Typography
-//                           sx={{
-//                             fontFamily: "'DM Sans', sans-serif",
-//                             fontSize: "0.82rem",
-//                             color: "#a0a3a8",
-//                             overflow: "hidden",
-//                             textOverflow: "ellipsis",
-//                             whiteSpace: "nowrap",
-//                             maxWidth: 170,
-//                           }}
-//                           title={row.subject}
-//                         >
-//                           {row.subject || "-"}
-//                         </Typography>
-//                       </TableCell>
-//                       <TableCell sx={colCell}>{row.letter_No || "-"}</TableCell>
-//                       <TableCell sx={colCell}>
-//                         <Chip
-//                           label={row.ref_Category_Text || "-"}
-//                           size="small"
-//                           sx={{
-//                             fontFamily: "'DM Sans', sans-serif",
-//                             fontSize: "0.68rem",
-//                             fontWeight: 600,
-//                             height: 22,
-//                             borderRadius: "4px",
-//                             bgcolor: "rgba(15,76,129,0.25)",
-//                             color: "#1e1f21",
-//                             border: "1px solid rgba(15,76,129,0.4)",
-//                           }}
-//                         />
-//                       </TableCell>
-//                       <TableCell sx={{ ...colCell, fontFamily: "'Space Mono', monospace", fontSize: "0.75rem", color: "#94A3B8" }}>
-//                         {formatDate(row.letter_Date)}
-//                       </TableCell>
-//                       <TableCell sx={{ ...colCell, fontFamily: "'Space Mono', monospace", fontSize: "0.75rem", color: "#94A3B8" }}>
-//                         {formatDate(row.schedule_Date)}
-//                       </TableCell>
-//                       <TableCell sx={{ ...colCell, color: "#1e1f21", fontWeight: 600 }}>
-                        
-//                         {row.tender_Amt ? `₹ ${row.tender_Amt}` : "-"}
-//                       </TableCell>
-//                       <TableCell sx={colCell}>
-//                         {/* Attachment placeholder */}
-//                         <Box sx={{ color: "#334155", fontSize: "0.75rem" }}>—</Box>
-//                       </TableCell>
-//                       <TableCell sx={colCell}>
-//                         <Stack direction="row" spacing={0.8} className="action-btns" sx={{ opacity: 0.85, transition: "opacity 0.2s" }}>
-//                           <Button
-//                             size="small"
-//                             onClick={() => handleEdit(row.ref_Id)}
-//                             sx={{
-//                               fontFamily: "'DM Sans', sans-serif",
-//                               fontWeight: 700,
-//                               fontSize: "0.68rem",
-//                               textTransform: "none",
-//                               letterSpacing: "0.03em",
-//                               color: "#60A5FA",
-//                               bgcolor: "rgba(96,165,250,0.08)",
-//                               border: "1px solid rgba(96,165,250,0.2)",
-//                               px: 1.5,
-//                               py: 0.3,
-//                               minWidth: "auto",
-//                               borderRadius: "5px",
-//                               "&:hover": {
-//                                 bgcolor: "rgba(96,165,250,0.18)",
-//                                 borderColor: "#60A5FA",
-//                               },
-//                             }}
-//                           >
-//                             Edit
-//                           </Button>
-//                           <Button
-//                             size="small"
-//                             onClick={() => handleDelete(row.ref_Id)}
-//                             sx={{
-//                               fontFamily: "'DM Sans', sans-serif",
-//                               fontWeight: 700,
-//                               fontSize: "0.68rem",
-//                               textTransform: "none",
-//                               letterSpacing: "0.03em",
-//                               color: "#F87171",
-//                               bgcolor: "rgba(248,113,113,0.08)",
-//                               border: "1px solid rgba(248,113,113,0.2)",
-//                               px: 1.5,
-//                               py: 0.3,
-//                               minWidth: "auto",
-//                               borderRadius: "5px",
-//                               "&:hover": {
-//                                 bgcolor: "rgba(248,113,113,0.18)",
-//                                 borderColor: "#F87171",
-//                               },
-//                             }}
-//                           >
-//                             Delete
-//                           </Button>
-//                         </Stack>
-//                       </TableCell>
-
-
-//                       <TableCell sx={colCell}>
-//                         <Button
-//                           size="small"
-//                           sx={{
-//                             fontFamily: "'DM Sans', sans-serif",
-//                             fontWeight: 700,
-//                             fontSize: "0.68rem",
-//                             textTransform: "none",
-//                             letterSpacing: "0.03em",
-//                             color: "#fff",
-//                             background: "linear-gradient(135deg, #E8572A 0%, #FF7A4A 100%)",
-//                             px: 1.8,
-//                             py: 0.4,
-//                             minWidth: "auto",
-//                             borderRadius: "5px",
-//                             boxShadow: "0 2px 8px rgba(232,87,42,0.3)",
-//                             "&:hover": {
-//                               background: "linear-gradient(135deg, #D04A1E 0%, #E8572A 100%)",
-//                               boxShadow: "0 4px 12px rgba(232,87,42,0.5)",
-//                             },
-//                           }}
-//                         >
-//                           Forward
-//                         </Button>
-//                       </TableCell>
-//                     </TableRow>
-//                   ))
-//                 ) : (
-//                   <TableRow>
-//                     <TableCell colSpan={10} align="center" sx={{ py: 6, borderBottom: "none" }}>
-//                       <Typography
-//                         sx={{
-//                           fontFamily: "'DM Sans', sans-serif",
-//                           color: "#334155",
-//                           fontSize: "0.9rem",
-//                         }}
-//                       >
-//                         {loading ? "Loading…" : "No records found"}
-//                       </Typography>
-//                     </TableCell>
-//                   </TableRow>
-//                 )}
-//               </TableBody>
-//             </Table>
-//           </TableContainer>
-
-//           {/* FOOTER / PAGINATION */}
-//           {totalPages > 1 && (
-//             <Box
-//               sx={{
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "space-between",
-//                 px: 3,
-//                 py: 1.5,
-//                 borderTop: "1px solid #b9bbc0",
-//                 bgcolor: "#ffffff",
-//               }}
-//             >
-//               <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", color: "#475569" }}>
-//                 Showing {indexOfFirstRecord + 1}–{Math.min(indexOfLastRecord, filteredData.length)} of {filteredData.length}
-//               </Typography>
-//               <Pagination
-//                 count={totalPages}
-//                 page={currentPage}
-//                 onChange={(_, value) => setCurrentPage(value)}
-//                 size="small"
-//                 sx={{
-//                   "& .MuiPaginationItem-root": {
-//                     fontFamily: "'DM Sans', sans-serif",
-//                     fontSize: "0.78rem",
-//                     color: "#64748B",
-//                     border: "1px solid #1E293B",
-//                     bgcolor: "transparent",
-//                     borderRadius: "5px",
-//                     "&:hover": { bgcolor: "#5f6164", color: "#0c0d0d" },
-//                     "&.Mui-selected": {
-//                       bgcolor: "#0F4C81",
-//                       color: "#fff",
-//                       borderColor: "#0F4C81",
-//                       fontWeight: 700,
-//                     },
-//                   },
-//                 }}
-//               />
-//             </Box>
-//           )}
-//         </Box>
-//       {/* /</Box> */}
-//     </ThemeProvider>
-//   );
-// };
-
-// export default ForwardTo;
-
-// ===============================
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getUserIP } from "../../services/userip";
 import {
   Typography,
   Table,
@@ -1096,7 +51,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 const ForwardTo = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const actionType = searchParams.get("action") || "get";
+  const actionType = searchParams.get("action") || "get_not_forwarded";
 
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -1104,6 +59,9 @@ const ForwardTo = () => {
   const [loading, setLoading] = useState(false);
   const recordsPerPage = 10;
 
+
+
+  
   const { financial_year, user_id, user_name } = useMemo(
     () => ({
       financial_year: localStorage.getItem("financial_year") || "",
@@ -1112,6 +70,7 @@ const ForwardTo = () => {
     }),
     []
   );
+
 
   const formatDate = (dateString) => {
     if (!dateString) return "—";
@@ -1153,41 +112,8 @@ const ForwardTo = () => {
     fetchData();
   }, [actionType, financial_year, user_id, user_name]);
 
-  const handleEdit = async (ref_Id) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3080/api/get-client-advt-request/${ref_Id}`,
-        { params: { financial_year, user_id, user_name, action: "get_by_id" } }
-      );
-      const rowData =
-        response.data?.data || response.data?.result || response.data;
-      router.push(`/newrequest?action=update&ref_Id=${ref_Id}`);
-    } catch (error) {
-      console.error("Edit Error:", error);
-      alert("Failed to fetch record details");
-    }
-  };
 
-  const handleDelete = async (ref_Id) => {
-    if (!window.confirm(`Delete Ref ID ${ref_Id}?`)) return;
-    try {
-      const res = await axios.delete(
-        `http://localhost:3080/api/client-advt-request/${ref_Id}`,
-        { data: { ref_Id, financial_year, user_id, user_name, action: "delete" } }
-      );
-      const status = res.data?.status ?? res.data?.success;
-      if (status === 1 || status === true) {
-        setData((prev) => prev.filter((row) => row.ref_Id !== ref_Id));
-        alert(`Deleted successfully (Ref ID: ${ref_Id})`);
-      } else {
-        alert(res.data?.message || "Delete failed");
-      }
-    } catch (err) {
-      console.error("Delete Error:", err);
-      alert("Server error while deleting");
-    }
-  };
-
+  // ===========filteredData========================
   const filteredData = useMemo(() => {
     return data.filter((row) =>
       `${row.ref_Id} ${row.subject} ${row.letter_No}`
@@ -1326,6 +252,78 @@ const groupedFiles = filesData.reduce((acc, file) => {
   acc[category].push(file);
   return acc;
 }, {});
+
+
+// ================handleForward==========================
+const handleForward = async (row) => {
+  try {
+
+    
+    const payload = {
+      ref_id: row.ref_Id, // adjust if different
+      fin_year: row.financial_Year,
+      forward_by_user_id: localStorage.getItem("user_id"), // or your auth state
+      forward_by_ip_address: userIP, // ideally from backend
+      forward_date: new Date().toISOString(),
+      forward_time: new Date().toLocaleTimeString(),
+    };
+
+    const response = await axios.post(
+      "http://103.79.34.50:8083/api/Client/C_Client_Advt_Forward",
+      payload
+    );
+
+    if (response.status === 200) {
+      alert("Forwarded Successfully ✅");
+       await fetchData();
+    }
+  } catch (error) {
+    console.error("Forward Error:", error);
+    alert("Forward Failed ❌");
+  }
+};
+
+
+
+  // ==================handelEdit======================
+
+  const handleEdit = async (ref_Id) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3080/api/get-client-advt-request/${ref_Id}`,
+        { params: { financial_year, user_id, user_name, action: "get_by_id" } }
+      );
+      const rowData =
+        response.data?.data || response.data?.result || response.data;
+      router.push(`/newrequest?action=update&ref_Id=${ref_Id}`);
+    } catch (error) {
+      console.error("Edit Error:", error);
+      alert("Failed to fetch record details");
+    }
+  };
+
+  // =================handelDelete======================
+  const handleDelete = async (ref_Id) => {
+    if (!window.confirm(`Delete Ref ID ${ref_Id}?`)) return;
+    try {  const userIP = await getUserIP();
+      const res = await axios.delete(
+        `http://103.79.34.50:8083/api/Client/deleteclientadvtrequest/${ref_Id}`,
+        { data: { ref_Id, financialYear:financial_year,userId :user_id, ip_address: userIP } }
+      );
+      const status = res.data?.status ?? res.data?.success;
+      if (status === 1 || status === true) {
+        setData((prev) => prev.filter((row) => row.ref_Id !== ref_Id));
+        alert(`Deleted successfully (Ref ID: ${ref_Id})`);
+      } else {
+        alert(res.data?.message || "Delete failed");
+      }
+    } catch (err) {
+      console.error("Delete Error:", err);
+      alert("Server error while deleting");
+    }
+  };
+
+
 
 
 
@@ -1483,7 +481,21 @@ const groupedFiles = filesData.reduce((acc, file) => {
                         }}
                       >
                         {row.ref_Id || "—"}
+                       
+  
                       </Box>
+ 
+
+<Button
+  size="small"
+  color="primary"  fontSize="small"
+  startIcon={<VisibilityIcon fontSize="small" />}
+  onClick={() =>
+    handleViewFiles(row.ref_Id, row.financial_Year)
+  }
+>
+  Files
+</Button>
                     </TableCell>
  <TableCell sx={{ ...colCell, color: "#6B7280" }}>{row.financial_Year || "—"}</TableCell>
                     {/* Subject */}
@@ -1541,9 +553,7 @@ const groupedFiles = filesData.reduce((acc, file) => {
                     </TableCell>
 
                     {/* Attachment */}
-                    {/* <TableCell sx={colCell}>
-                      <Box sx={{ color: "#CBD5E1", fontSize: "0.8rem" }}></Box>
-                    </TableCell> */}
+                 
                     
 
 <TableCell sx={colCell}>
@@ -1604,7 +614,7 @@ const groupedFiles = filesData.reduce((acc, file) => {
                     </TableCell>
 
                     {/* Forward */}
-                    <TableCell sx={colCell}>
+                    {/* <TableCell sx={colCell}>
                       <Button
                         size="small"
                         sx={{
@@ -1628,7 +638,37 @@ const groupedFiles = filesData.reduce((acc, file) => {
                       >
                         Forward
                       </Button>
-                    </TableCell>
+                    </TableCell> */}
+
+                    {/* Forward */}
+<TableCell sx={colCell}>
+  <Button
+    size="small"
+    onClick={() => handleForward(row)} // ✅ Add this
+    sx={{
+      fontFamily: "'Outfit', sans-serif",
+      fontWeight: 700,
+      fontSize: "0.68rem",
+      textTransform: "none",
+      letterSpacing: "0.02em",
+      color: "#fff",
+      background:
+        "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
+      px: 1.8,
+      py: 0.4,
+      minWidth: "auto",
+      borderRadius: "6px",
+      boxShadow: "0 1px 4px rgba(29,78,216,0.25)",
+      "&:hover": {
+        background:
+          "linear-gradient(135deg,#1E40AF 0%,#2563EB 100%)",
+        boxShadow: "0 3px 10px rgba(29,78,216,0.35)",
+      },
+    }}
+  >
+    Forward
+  </Button>
+</TableCell>
                   </TableRow>
                 ))
               ) : (

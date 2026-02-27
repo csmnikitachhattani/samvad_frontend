@@ -137,7 +137,7 @@ const fetchCategories = async () => {
       const check = await axios.get(
         `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}/?categary_cd=${letter.categoryCd}`
       );
-      console.log("my response " + check)
+      // console.log("my response " + check)
       const uploadedCount = check?.data?.data?.length || 0;
       setLetterUploaded(uploadedCount);
 
@@ -261,7 +261,7 @@ const handleEditFileChange = async (e) => {
       alert("File record not found!");
       return;
     }
-// ✅ Extract nextCount from filename (last underscore)
+//Extract nextCount from filename (last underscore)
     const extractNextCount = (fileName) => {
       const base = fileName.split(".")[0];   // remove extension
       const parts = base.split("_");         // split by _
@@ -273,7 +273,7 @@ const handleEditFileChange = async (e) => {
     console.log("Extracted nextCount:", nextCount);
     const formData = new FormData();
 
-    // 🔥 Correct field names according to your backend
+    // Correct field names according to your backend
     formData.append("savedRefId", savedRefId);
     formData.append("financialYear", financialYear);
     formData.append("categary_cd", originalFile.categary_cd);
@@ -606,7 +606,7 @@ const formatBytesToMB = (bytes) => {
 </Table> 
 
 {/* Navigation Buttons */}
-<Box display="flex" justifyContent="space-between" mt={3}>
+<Box display="flex" justifyContent="space-between" mt={2} mb={3}>
   {/* Back Button */}
   <Button
     variant="outlined"

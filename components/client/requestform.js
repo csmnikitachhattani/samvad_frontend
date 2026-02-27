@@ -47,12 +47,14 @@ const RequestForm = ({ category }) => {
     scheduleDate: "",
     remarks: "",
     refCategoryId: "",
-    ref_Category_text: "",
+   refCategoryText: "",
     printInNationalNp: "" || null,
     printInLocalNp: "" || null,
     printInStateNp: "" || null,
     printInOtherNp: "" || null,
     ip_address: "",
+    forwardStatus: "N",
+    deleteStatus: "N",
   });
 
   const [loading, setLoading] = useState(false);
@@ -114,7 +116,7 @@ const RequestForm = ({ category }) => {
       setFormData((p) => ({
         ...p,
         refCategoryId: catId,
-        ref_Category_text: category_option,
+        refCategoryText: category_option,
       }));
     }
   }, [catText, action, catId, category_option]);
@@ -130,7 +132,7 @@ const RequestForm = ({ category }) => {
         scheduleDate: rowData.scheduleDate?.split("T")[0] || "",
         remarks: rowData.remarks || "",
         refCategoryId: rowData.refCategoryId || "",
-        ref_Category_text: rowData.ref_Category_text || "",
+        refCategoryText: rowData.refCategoryText || "",
         printInNationalNp: rowData.printInNationalNp || "",
         printInLocalNp: rowData.printInLocalNp || "",
         printInStateNp: rowData.printInStateNp || "",
@@ -256,61 +258,36 @@ const RequestForm = ({ category }) => {
                 />
               </Grid>
 
-              {/* <Grid item md={5}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Letter Date"
-                    value={
-                      formData.letterDate ? dayjs(formData.letterDate) : null
-                    }
-                    minDate={dayjs().subtract(7, "day")} // ✅ today - 7
-                    maxDate={dayjs()} // ✅ today
-                    onChange={(newValue) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        letterDate: newValue
-                          ? newValue.format("YYYY-MM-DD")
-                          : "",
-                      }));
-                    }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        required: true,
-                        InputProps: {
-                          readOnly: true, // 🚫 no typing
-                        },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </Grid> */}
-
               <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Letter Date"
+                    format="DD/MM/YYYY"
                     value={
                       formData.letterDate ? dayjs(formData.letterDate) : null
                     }
-                    minDate={dayjs().subtract(7, "day")} // today - 7
-                    maxDate={dayjs()} // today
+                    minDate={dayjs().subtract(7, "day")}
+                    maxDate={dayjs()}
                     onChange={(newValue) => {
+                      if (!newValue || !newValue.isValid()) {
+                        setFormData((prev) => ({ ...prev, letterDate: "" }));
+                        return;
+                      }
+
                       setFormData((prev) => ({
                         ...prev,
-                        letterDate: newValue
-                          ? newValue.format("YYYY-MM-DD")
-                          : "",
+                        letterDate: newValue.format("YYYY-MM-DD"),
+                        scheduleDate: "", // 🔥 reset schedule date if letter date changes
                       }));
                     }}
                     slotProps={{
                       textField: {
                         fullWidth: true,
                         required: true,
-                        size: "small", // ✅ Correct place
-                        InputProps: {
-                          readOnly: true, // no typing
-                        },
+                        size: "small",
+                        inputProps: { readOnly: true }, // 🚫 no typing
+                        onPaste: (e) => e.preventDefault(), // 🚫 no paste
+                        onKeyDown: (e) => e.preventDefault(), // 🚫 no keyboard
                       },
                     }}
                   />
@@ -321,18 +298,22 @@ const RequestForm = ({ category }) => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Schedule Date"
+                    format="DD/MM/YYYY"
                     value={
                       formData.scheduleDate
                         ? dayjs(formData.scheduleDate)
                         : null
                     }
-                    minDate={dayjs().add(1, "day")} // ✅ tomorrow only
+                    minDate={dayjs().add(3, "day")} // ✅ Only allow after today + 3 days
                     onChange={(newValue) => {
+                      if (!newValue || !newValue.isValid()) {
+                        setFormData((prev) => ({ ...prev, scheduleDate: "" }));
+                        return;
+                      }
+
                       setFormData((prev) => ({
                         ...prev,
-                        scheduleDate: newValue
-                          ? newValue.format("YYYY-MM-DD")
-                          : "",
+                        scheduleDate: newValue.format("YYYY-MM-DD"),
                       }));
                     }}
                     slotProps={{
@@ -340,9 +321,9 @@ const RequestForm = ({ category }) => {
                         fullWidth: true,
                         required: true,
                         size: "small",
-                        InputProps: {
-                          readOnly: true, // 🚫 typing blocked
-                        },
+                        inputProps: { readOnly: true }, // 🚫 manual typing blocked
+                        onPaste: (e) => e.preventDefault(), // 🚫 paste blocked
+                        onKeyDown: (e) => e.preventDefault(), // 🚫 keyboard blocked
                       },
                     }}
                   />

@@ -53,14 +53,7 @@ const CreateNewRequest = () => {
         Choose Job Request Type
       </Typography>
 
-      {/* ---------- Loader ---------- */}
-      {/* {loading ? (
-        <Stack alignItems="center" mt={6}>
-          <CircularProgress />
-          <Typography mt={2}>Loading categories...</Typography>
-        </Stack>
-      ) : (
-        <> */}
+   
       {/* ---------- Category Buttons ---------- */}
       <Stack
         direction="row"
@@ -69,13 +62,7 @@ const CreateNewRequest = () => {
         gap={1.5}
         mb={4}
       >
-        {/* {categories.map((item) => {
-          const isSelected = selectedCategory?.catId === item.catId;
-
-          const displayText = item.catText
-            ? item.catText.split("-")[0].trim()
-            : ""; */}
-
+        
             {Array.isArray(categories) &&
   categories.map((item) => {
     const isSelected = selectedCategory?.catId === item.catId;
