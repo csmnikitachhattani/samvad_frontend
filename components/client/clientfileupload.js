@@ -53,7 +53,7 @@ const ClientFileUpload = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setUserId(localStorage.getItem("user_id") || "");
+      setUserId(localStorage.getItem("user_id") || "00100");
       setUserName(localStorage.getItem("user_name") || "");
     }
   }, []);
@@ -113,7 +113,7 @@ const fetchCategories = async () => {
     const res = await axios.get(
       "http://103.79.34.50:8083/api/Client/get-upload-categories",
       {
-        params: { savedRefId, financialYear },
+        params: { ref_id: savedRefId, financial_year: financialYear },
       }
     );
 
@@ -131,13 +131,12 @@ const fetchCategories = async () => {
 
     if (letter) {
       setLetterCategoryCode(letter.categoryCd);
-// http://103.79.34.50:8083/api/Client/get-files/202602002058/2024-2025?categary_cd=2
-// http://103.79.34.50:8083/api/Client/get-files/202602002059/2024-2025/02
+
       // Check if letter is already uploaded
       const check = await axios.get(
-        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}/?categary_cd=${letter.categoryCd}`
+        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}?categary_cd="02"`   
       );
-      // console.log("my response " + check)
+
       const uploadedCount = check?.data?.data?.length || 0;
       setLetterUploaded(uploadedCount);
 
@@ -162,11 +161,11 @@ const fetchCategories = async () => {
 };
 
   const fetchFiles = async (category) => {
-    if (!savedRefId || !financialYear) return;
+    if (!category || !savedRefId || !financialYear) return;
 
     try {
       const res = await axios.get(
-        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}`
+        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}?categary_cd=${category}`
       );
         console.log("Fetching Files URL:", res); 
       setFileList(res?.data?.data || []);
@@ -261,7 +260,7 @@ const handleEditFileChange = async (e) => {
       alert("File record not found!");
       return;
     }
-//Extract nextCount from filename (last underscore)
+// ✅ Extract nextCount from filename (last underscore)
     const extractNextCount = (fileName) => {
       const base = fileName.split(".")[0];   // remove extension
       const parts = base.split("_");         // split by _
@@ -273,7 +272,7 @@ const handleEditFileChange = async (e) => {
     console.log("Extracted nextCount:", nextCount);
     const formData = new FormData();
 
-    // Correct field names according to your backend
+    // 🔥 Correct field names according to your backend
     formData.append("savedRefId", savedRefId);
     formData.append("financialYear", financialYear);
     formData.append("categary_cd", originalFile.categary_cd);
@@ -606,7 +605,7 @@ const formatBytesToMB = (bytes) => {
 </Table> 
 
 {/* Navigation Buttons */}
-<Box display="flex" justifyContent="space-between" mt={2} mb={3}>
+<Box display="flex" justifyContent="space-between" mt={3}>
   {/* Back Button */}
   <Button
     variant="outlined"

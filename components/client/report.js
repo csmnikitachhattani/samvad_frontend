@@ -43,10 +43,10 @@ const Report = () => {
 
   // 🔴 SAFE LOCALSTORAGE READ
   const financial_year =
-    typeof window !== "undefined" ? localStorage.getItem("financial_year") : "";
+    typeof window !== "undefined" ? localStorage.getItem("financial_year") : "2024-2025";
 
   const user_id =
-    typeof window !== "undefined" ? localStorage.getItem("user_id") : "";
+    typeof window !== "undefined" ? localStorage.getItem("user_id") : "00100";
 
   const [action, setAction] = useState("get");
   const [data, setData] = useState([]);

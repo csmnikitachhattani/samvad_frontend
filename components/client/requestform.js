@@ -138,6 +138,8 @@ const RequestForm = ({ category }) => {
         printInStateNp: rowData.printInStateNp || "",
         printInOtherNp: rowData.printInOtherNp || "",
         ip_address: rowData.ip_address || "",
+        deleteStatus:"N",
+        forwardStatus: "N",
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
