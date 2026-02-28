@@ -5,6 +5,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import axios from "axios";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { getUserIP } from "../../services/userip";
 
 import {
   Container,
@@ -109,7 +110,7 @@ const editFileInputRef = useRef(null);
 const fetchCategories = async () => {
   if (!savedRefId || !financialYear) return;
 
-  try {
+  try { 
     const res = await axios.get(
       "http://103.79.34.50:8083/api/Client/get-upload-categories",
       {
@@ -134,7 +135,7 @@ const fetchCategories = async () => {
 
       // Check if letter is already uploaded
       const check = await axios.get(
-        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}?categary_cd="02"`   
+        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}`   
       );
 
       const uploadedCount = check?.data?.data?.length || 0;
@@ -160,12 +161,12 @@ const fetchCategories = async () => {
   }
 };
 
-  const fetchFiles = async (category) => {
-    if (!category || !savedRefId || !financialYear) return;
+  const fetchFiles = async () => {
+    if (!savedRefId || !financialYear) return;
 
     try {
       const res = await axios.get(
-        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}?categary_cd=${category}`
+        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}`
       );
         console.log("Fetching Files URL:", res); 
       setFileList(res?.data?.data || []);
@@ -176,7 +177,7 @@ const fetchCategories = async () => {
 
   const handleUpload = async () => {
     if (!file || !userId) return;
-
+ const userIp = await getUserIP();
     const categoryToUse =
       letterUploaded === 0 ? letterCategoryCode : selectedCategory;
 
@@ -191,6 +192,7 @@ const fetchCategories = async () => {
     formData.append("user_id", userId);
     formData.append("user_name", userName);
     formData.append("file", file);
+    formData.append("UserIp", userIp );
 
 
     await axios.post("http://103.79.34.50:8083/api/Client/uploadfile", formData, {
@@ -245,7 +247,7 @@ const fetchCategories = async () => {
   return cat?.categoryName || "Letter";
 }, [categories, letterCategoryCode]);
 
-// ==============================
+// ============update==================
 const handleEditFileChange = async (e) => {
   const newFile = e.target.files[0];
 
@@ -268,8 +270,8 @@ const handleEditFileChange = async (e) => {
     };
 
     const nextCount = extractNextCount(originalFile.link_name);
-
-    console.log("Extracted nextCount:", nextCount);
+const userIp = await getUserIP();
+    // console.log("Extracted nextCount:", nextCount);
     const formData = new FormData();
 
     // 🔥 Correct field names according to your backend
@@ -281,6 +283,7 @@ const handleEditFileChange = async (e) => {
     formData.append("user_id", userId);
     formData.append("user_name", userName);
     formData.append("file", newFile);
+    formData.append("UserIp", userIp );
 
     const res = await axios.put(
       "http://103.79.34.50:8083/api/Client/updatefile",
@@ -313,7 +316,7 @@ const startEditProcess = (sno) => {
   editFileInputRef.current.click();
 };
 
-
+// ===========delete==================
 const handleDeleteFile = async (sno) => {
   if (!sno) return;
 
@@ -328,13 +331,13 @@ const handleDeleteFile = async (sno) => {
 
   if (!window.confirm("Are you sure you want to delete this file?")) return;
 
-  try {
+  try {const userIp = await getUserIP();
     const url = `http://103.79.34.50:8083/api/Client/deletefile/${savedRefId}/${financialYear}/${originalFile.sno}`;
 console.log("Delete URL:", url);
     const bodyData = {
       userId: userId,
       userName: userName,
-      userIp: "0.0.0.0"   // If you don’t have real IP, backend usually accepts dummy
+      userIp: userIp   
     };
 
     const res = await axios.delete(url, {
@@ -344,7 +347,8 @@ console.log("Delete URL:", url);
 
     if (res.data?.status === 1) {
       alert("File deleted successfully!");
-      await fetchFiles(originalFile.categary_cd); // refresh list
+      await fetchFiles(originalFile.categary_cd);
+      
     } else {
       alert(res.data?.message || "Delete failed");
     }

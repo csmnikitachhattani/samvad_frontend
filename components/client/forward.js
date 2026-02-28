@@ -134,6 +134,7 @@ const ForwardTo = () => {
       case "get_forwarded": return "Submitted to Samvad";
       case "get_not_forwarded": return "Forward To Samvad";
       case "get_under_process": return "Under Processing Request";
+      case "get_rejected": return "Rejected Request";
       default: return "Requests";
     }
   };
@@ -167,14 +168,18 @@ const ForwardTo = () => {
       height: 24,
       borderRadius: "6px",
     };
-    switch (actionType) {
+    switch (actionType) {  
       case "get_all_accepted":
         return <Chip label="Accepted" sx={{ ...base, bgcolor: "#DCFCE7", color: "#15803D", border: "1px solid #BBF7D0" }} />;
       case "get_forwarded":
         return <Chip label="Forwarded" sx={{ ...base, bgcolor: "#DBEAFE", color: "#1D4ED8", border: "1px solid #BFDBFE" }} />;
       case "get_under_process":
         return <Chip label="Processing" sx={{ ...base, bgcolor: "#FEF9C3", color: "#A16207", border: "1px solid #FEF08A" }} />;
-      default:
+     case "get_rejected":
+        return <Chip label="Rejected" sx={{ ...base, bgcolor: "#FEE2E2", color: "#B91C1C", border: "1px solid #FECACA" }} />;
+     
+     
+        default:
         return <Chip label="Pending" sx={{ ...base, bgcolor: "#FEE2E2", color: "#B91C1C", border: "1px solid #FECACA" }} />;
     }
   };
@@ -489,15 +494,35 @@ const handleForward = async (row) => {
         <TableContainer sx={{ maxHeight: "100vh" }}>
           <Table stickyHeader size="small">
             <TableHead>
-              <TableRow>
+              {/* <TableRow>
                 {[
                   "Ref ID", "Financial Year", "Subject", "Letter No", "Category",
-                  "Letter Date", "Scheduled Publish", "Tender Amt",
-                  "Status", "Actions", "Forward",
+                  "Letter Date", "Scheduled Publish", "Tender Amt","Status",
+                  (actionType === "get_not_forwarded" ? ["Actions", "Forward"] : [])
+               
                 ].map((col) => (
                   <TableCell key={col} sx={colHead}>{col}</TableCell>
                 ))}
-              </TableRow>
+              </TableRow> */}
+
+              <TableRow>
+  {[
+    "Ref ID",
+    "Financial Year",
+    "Subject",
+    "Letter No",
+    "Category",
+    "Letter Date",
+    "Scheduled Publish",
+    "Tender Amt",
+    "Status",
+    ...(actionType === "get_not_forwarded" ? ["Actions", "Forward"] : []),
+  ].map((col) => (
+    <TableCell key={col} sx={colHead}>
+      {col}
+    </TableCell>
+  ))}
+</TableRow>
             </TableHead>
 
             <TableBody>
@@ -625,7 +650,8 @@ const handleForward = async (row) => {
   )}
 </TableCell>
 
-                    {/* Actions */}
+
+                    {/* Actions
                     <TableCell sx={colCell}>
                       <Stack direction="row" spacing={0.7}>
                         <Button
@@ -672,34 +698,8 @@ const handleForward = async (row) => {
                     </TableCell>
 
                     {/* Forward */}
-                    {/* <TableCell sx={colCell}>
-                      <Button
-                        size="small"
-                        sx={{
-                          fontFamily: "'Outfit', sans-serif",
-                          fontWeight: 700,
-                          fontSize: "0.68rem",
-                          textTransform: "none",
-                          letterSpacing: "0.02em",
-                          color: "#fff",
-                          background: "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
-                          px: 1.8,
-                          py: 0.4,
-                          minWidth: "auto",
-                          borderRadius: "6px",
-                          boxShadow: "0 1px 4px rgba(29,78,216,0.25)",
-                          "&:hover": {
-                            background: "linear-gradient(135deg,#1E40AF 0%,#2563EB 100%)",
-                            boxShadow: "0 3px 10px rgba(29,78,216,0.35)",
-                          },
-                        }}
-                      >
-                        Forward
-                      </Button>
-                    </TableCell> */}
-
-                    {/* Forward */}
-<TableCell sx={colCell}>
+                
+{/* <TableCell sx={colCell}>
   <Button
     size="small"
     onClick={() => handleForward(row)} // ✅ Add this
@@ -726,7 +726,88 @@ const handleForward = async (row) => {
   >
     Forward
   </Button>
-</TableCell>
+</TableCell> */} 
+
+{actionType === "get_not_forwarded" && (
+  <>
+    {/* Actions */}
+    <TableCell sx={colCell}>
+      <Stack direction="row" spacing={0.7}>
+        <Button
+          size="small"
+          onClick={() => handleEdit(row.ref_Id)}
+          sx={{
+            fontFamily: "'Outfit', sans-serif",
+            fontWeight: 600,
+            fontSize: "0.68rem",
+            textTransform: "none",
+            color: "#1D4ED8",
+            bgcolor: "#EFF6FF",
+            border: "1px solid #BFDBFE",
+            px: 1.4,
+            py: 0.3,
+            minWidth: "auto",
+            borderRadius: "6px",
+            "&:hover": { bgcolor: "#DBEAFE", borderColor: "#1D4ED8" },
+          }}
+        >
+          Edit
+        </Button>
+
+        <Button
+          size="small"
+          onClick={() => handleDelete(row.ref_Id)}
+          sx={{
+            fontFamily: "'Outfit', sans-serif",
+            fontWeight: 600,
+            fontSize: "0.68rem",
+            textTransform: "none",
+            color: "#DC2626",
+            bgcolor: "#FEF2F2",
+            border: "1px solid #FECACA",
+            px: 1.4,
+            py: 0.3,
+            minWidth: "auto",
+            borderRadius: "6px",
+            "&:hover": { bgcolor: "#FEE2E2", borderColor: "#DC2626" },
+          }}
+        >
+          Delete
+        </Button>
+      </Stack>
+    </TableCell>
+
+    {/* Forward */}
+    <TableCell sx={colCell}>
+      <Button
+        size="small"
+        onClick={() => handleForward(row)}
+        sx={{
+          fontFamily: "'Outfit', sans-serif",
+          fontWeight: 700,
+          fontSize: "0.68rem",
+          textTransform: "none",
+          letterSpacing: "0.02em",
+          color: "#fff",
+          background:
+            "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
+          px: 1.8,
+          py: 0.4,
+          minWidth: "auto",
+          borderRadius: "6px",
+          boxShadow: "0 1px 4px rgba(29,78,216,0.25)",
+          "&:hover": {
+            background:
+              "linear-gradient(135deg,#1E40AF 0%,#2563EB 100%)",
+            boxShadow: "0 3px 10px rgba(29,78,216,0.35)",
+          },
+        }}
+      >
+        Forward
+      </Button>
+    </TableCell>
+  </>
+)}
                   </TableRow>
                 ))
               ) : (
@@ -785,19 +866,49 @@ const handleForward = async (row) => {
           </Box>
         )}
       </Box>
-      <Dialog
+ 
+
+{/* ================================test============ */}
+<Dialog
   open={openFilesModal}
   onClose={() => setOpenFilesModal(false)}
-  maxWidth="md"
+
   fullWidth
+  size="small"
 >
-  <DialogTitle sx={{ fontWeight: "bold", color: "error.main" }}>
+  {/* Header with Close Button */}
+  <DialogTitle
+    sx={{
+      fontWeight: "bold",
+      color: "error.main",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
     View Attachments
+
+    <Button
+      variant="outlined"
+      color="error"
+      size="small"
+      onClick={() => setOpenFilesModal(false)}
+      sx={{ textTransform: "none", fontWeight: 600 }}
+    >
+      Close
+    </Button>
   </DialogTitle>
 
   <DialogContent dividers sx={{ height: 450 }}>
     {filesLoading ? (
-      <Box textAlign="center" mt={5}>
+      <Box
+        sx={{
+          // display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
         <CircularProgress color="error" />
       </Box>
     ) : filesData.length === 0 ? (
@@ -807,7 +918,7 @@ const handleForward = async (row) => {
         <Box key={category} mb={3}>
           {/* Category Title */}
           <Typography
-            variant="h6"
+            variant=""
             sx={{ mb: 1, color: "#1976d2", fontWeight: 600 }}
           >
             {category}
@@ -826,27 +937,37 @@ const handleForward = async (row) => {
                       border: "1px solid #e0e0e0",
                       borderRadius: 2,
                       p: 1,
-                      textAlign: "center",
                       height: 150,
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      alignItems: "center",      // ✅ Vertical center
+                      justifyContent: "center",  // ✅ Horizontal center
                       backgroundColor: "#fafafa",
                       cursor: "pointer",
+                      textAlign: "center",
                     }}
                     onClick={() => window.open(fileUrl, "_blank")}
                   >
                     {isImage ? (
-                      <img
-                        src={fileUrl}
-                        alt={file.link_name}
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "120px",
-                          objectFit: "contain",
-                          borderRadius: "6px",
+                      <Box
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
-                      />
+                      >
+                        <img
+                          src={fileUrl}
+                          alt={file.link_name}
+                          style={{
+                            maxWidth: "100%",
+                            maxHeight: "120px",
+                            objectFit: "contain",
+                            borderRadius: "6px",
+                          }}
+                        />
+                      </Box>
                     ) : isPdf ? (
                       <Box>
                         <PictureAsPdfIcon
@@ -861,17 +982,21 @@ const handleForward = async (row) => {
                         <InsertDriveFileIcon
                           sx={{ fontSize: 50, color: "#607d8b" }}
                         />
-                        <Typography variant="caption" display="block">
+                        <Typography >
                           File
                         </Typography>
                       </Box>
                     )}
                   </Box>
 
-                  {/* File Size in MB */}
+                  {/* File Size */}
                   <Typography
                     variant="caption"
-                    sx={{ display: "block", mt: 0.5 }}
+                    sx={{
+                      display: "block",
+                      mt: 0.5,
+                      textAlign: "center",
+                    }}
                   >
                     {(file.file_size_in_bytes / (1024 * 1024)).toFixed(2)} MB
                   </Typography>
