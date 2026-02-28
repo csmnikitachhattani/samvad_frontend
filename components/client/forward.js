@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
@@ -22,21 +21,15 @@ import {
   Tooltip,
   Box,
   Checkbox,
-   Dialog,
+  Dialog,
   DialogTitle,
   DialogContent,
   Grid,
-
-
 } from "@mui/material";
-
 
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 // import {useState } from "react";
-
-
-
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
@@ -45,7 +38,6 @@ import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
 
 // =============================================
 const ForwardTo = () => {
@@ -59,17 +51,16 @@ const ForwardTo = () => {
   const [loading, setLoading] = useState(false);
   const recordsPerPage = 10;
 
-
-
-  
   const { financial_year, user_id, user_name } = useMemo(
     () => ({
       financial_year: localStorage.getItem("financial_year") || "",
       user_id: localStorage.getItem("user_id") || "",
       user_name: localStorage.getItem("user_name") || "",
     }),
-    []
+    [],
   );
+
+
 
 
   const formatDate = (dateString) => {
@@ -90,9 +81,9 @@ const ForwardTo = () => {
             user_id,
             user_name,
             action: actionType,
-             category: "02",
+            category: "02",
           },
-        }
+        },
       );
       const responseData =
         res.data?.data ||
@@ -112,37 +103,49 @@ const ForwardTo = () => {
     fetchData();
   }, [actionType, financial_year, user_id, user_name]);
 
-
   // ===========filteredData========================
   const filteredData = useMemo(() => {
     return data.filter((row) =>
       `${row.ref_Id} ${row.subject} ${row.letter_No}`
         .toLowerCase()
-        .includes(search.toLowerCase())
+        .includes(search.toLowerCase()),
     );
   }, [data, search]);
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords = filteredData.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord,
+  );
   const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-
+// ==============title========================
   const getTitle = () => {
     switch (actionType) {
-      case "get_all_accepted": return "Accepted to Samvad";
-      case "get_forwarded": return "Submitted to Samvad";
-      case "get_not_forwarded": return "Forward To Samvad";
-      case "get_under_process": return "Under Processing Request";
-      default: return "Requests";
+      case "get_all_accepted":
+        return "Accepted to Samvad";
+      case "get_forwarded":
+        return "Submitted to Samvad";
+      case "get_not_forwarded":
+        return "Forward To Samvad";
+      case "get_under_process":
+        return "Under Processing Request";
+      default:
+        return "Requests";
     }
   };
-
+// ----------------------expeort================================
   const exportToExcel = () => {
     const csvContent = [
       ["Ref ID", "Subject", "Letter No", "Category", "Tender Amt"],
       ...filteredData.map((row) => [
-        row.ref_Id,row.financial_Year, row.subject, row.letter_No,
-        row.ref_Category_Text, row.tender_Amt,
+        row.ref_Id,
+        row.financial_Year,
+        row.subject,
+        row.letter_No,
+        row.ref_Category_Text,
+        row.tender_Amt,
+      
       ]),
     ]
       .map((e) => e.join(","))
@@ -168,13 +171,53 @@ const ForwardTo = () => {
     };
     switch (actionType) {
       case "get_all_accepted":
-        return <Chip label="Accepted" sx={{ ...base, bgcolor: "#DCFCE7", color: "#15803D", border: "1px solid #BBF7D0" }} />;
+        return (
+          <Chip
+            label="Accepted"
+            sx={{
+              ...base,
+              bgcolor: "#DCFCE7",
+              color: "#15803D",
+              border: "1px solid #BBF7D0",
+            }}
+          />
+        );
       case "get_forwarded":
-        return <Chip label="Forwarded" sx={{ ...base, bgcolor: "#DBEAFE", color: "#1D4ED8", border: "1px solid #BFDBFE" }} />;
+        return (
+          <Chip
+            label="Forwarded"
+            sx={{
+              ...base,
+              bgcolor: "#DBEAFE",
+              color: "#1D4ED8",
+              border: "1px solid #BFDBFE",
+            }}
+          />
+        );
       case "get_under_process":
-        return <Chip label="Processing" sx={{ ...base, bgcolor: "#FEF9C3", color: "#A16207", border: "1px solid #FEF08A" }} />;
+        return (
+          <Chip
+            label="Processing"
+            sx={{
+              ...base,
+              bgcolor: "#FEF9C3",
+              color: "#A16207",
+              border: "1px solid #FEF08A",
+            }}
+          />
+        );
       default:
-        return <Chip label="Pending" sx={{ ...base, bgcolor: "#FEE2E2", color: "#B91C1C", border: "1px solid #FECACA" }} />;
+        return (
+          <Chip
+            label="Pending"
+            sx={{
+              ...base,
+              bgcolor: "#FEE2E2",
+              color: "#B91C1C",
+              border: "1px solid #FECACA",
+            }}
+          />
+        );
     }
   };
 
@@ -202,100 +245,97 @@ const ForwardTo = () => {
     borderBottom: "1px solid #F1F5F9",
   };
 
+  const theme = createTheme({
+    typography: {
+      fontFamily: "'Outfit', 'Helvetica Neue', sans-serif",
+    },
+    palette: {
+      primary: { main: "#1D4ED8" },
+      secondary: { main: "#E8572A" },
+    },
+  });
 
+  // =====Attachment show=============
+  const BASE_FILE_URL = "http://103.79.34.50:8083/Uploads/Client";
 
-const theme = createTheme({
-  typography: {
-    fontFamily: "'Outfit', 'Helvetica Neue', sans-serif",
-  },
-  palette: {
-    primary: { main: "#1D4ED8" },
-    secondary: { main: "#E8572A" },
-  },
-});
+  const [openFilesModal, setOpenFilesModal] = useState(false);
+  const [filesData, setFilesData] = useState([]);
+  const [filesLoading, setFilesLoading] = useState(false);
 
-// =====Attachment show=============
-const BASE_FILE_URL =
-  "http://103.79.34.50:8083/Uploads/Client";
+  // ===============================================
+  const handleViewFiles = async (refId, financialYear) => {
+    try {
+      setFilesLoading(true);
+      setOpenFilesModal(true);
 
-const [openFilesModal, setOpenFilesModal] = useState(false);
-const [filesData, setFilesData] = useState([]);
-const [filesLoading, setFilesLoading] = useState(false);
+      const res = await axios.get(
+        `http://103.79.34.50:8083/api/Client/get-files/${refId}/${financialYear}`,
+        // add ?categary_cd=02 if needed
+      );
 
-// ===============================================
-const handleViewFiles = async (refId, financialYear) => {
-  try {
-    setFilesLoading(true);
-    setOpenFilesModal(true);
-
-    const res = await axios.get(
-      `http://103.79.34.50:8083/api/Client/get-files/${refId}/${financialYear}`
-      // add ?categary_cd=02 if needed
-    );
-
-    if (res.data?.status === 1) {
-      setFilesData(res.data.data || []);
-    } else {
+      if (res.data?.status === 1) {
+        setFilesData(res.data.data || []);
+      } else {
+        setFilesData([]);
+      }
+    } catch (error) {
+      console.error("File fetch error:", error);
       setFilesData([]);
+    } finally {
+      setFilesLoading(false);
     }
-  } catch (error) {
-    console.error("File fetch error:", error);
-    setFilesData([]);
-  } finally {
-    setFilesLoading(false);
-  }
-};
+  };
 
-const groupedFiles = filesData.reduce((acc, file) => {
-  const category = file.cat_name || "Others";
-  if (!acc[category]) acc[category] = [];
-  acc[category].push(file);
-  return acc;
-}, {});
+  const groupedFiles = filesData.reduce((acc, file) => {
+    const category = file.cat_name || "Others";
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(file);
+    return acc;
+  }, {});
 
+  // ================handleForward==========================
+  const handleForward = async (row) => {
+    try {
+      const payload = {
+        ref_id: row.ref_Id, // adjust if different
+        fin_year: row.financial_Year,
+        forward_by_user_id: localStorage.getItem("user_id"), // or your auth state
+        forward_by_ip_address: userIP, // ideally from backend
+        forward_date: new Date().toISOString(),
+        forward_time: new Date().toLocaleTimeString(),
+      };
 
-// ================handleForward==========================
-const handleForward = async (row) => {
-  try {
+      const response = await axios.post(
+        "http://103.79.34.50:8083/api/Client/C_Client_Advt_Forward",
+        payload,
+      );
 
-    
-    const payload = {
-      ref_id: row.ref_Id, // adjust if different
-      fin_year: row.financial_Year,
-      forward_by_user_id: localStorage.getItem("user_id"), // or your auth state
-      forward_by_ip_address: userIP, // ideally from backend
-      forward_date: new Date().toISOString(),
-      forward_time: new Date().toLocaleTimeString(),
-    };
-
-    const response = await axios.post(
-      "http://103.79.34.50:8083/api/Client/C_Client_Advt_Forward",
-      payload
-    );
-
-    if (response.status === 200) {
-      alert("Forwarded Successfully ✅");
-       await fetchData();
+      if (response.status === 200) {
+        alert("Forwarded Successfully ✅");
+        await fetchData();
+      }
+    } catch (error) {
+      console.error("Forward Error:", error);
+      alert("Forward Failed ❌");
     }
-  } catch (error) {
-    console.error("Forward Error:", error);
-    alert("Forward Failed ❌");
-  }
-};
-
-
+  };
 
   // ==================handelEdit======================
+// http://103.79.34.50:8083/api/Client/getclientadvtrequests?user_id=00100&financial_year=2024-2025&action=get_by_id&ref_id=202602002073&category=02' \
 
   const handleEdit = async (ref_Id) => {
     try {
       const response = await axios.get(
-        `http://localhost:3080/api/get-client-advt-request/${ref_Id}`,
-        { params: { financial_year, user_id, user_name, action: "get_by_id" } }
+        `http://103.79.34.50:8083/api/Client/getclientadvtrequests?ref_id=${ref_Id}&category=02&financial_year=${financial_year}&user_id=${user_id}&action=get_by_id`,
+
+
+        
+        // { params: { financial_year, user_id, user_name, action: "get_by_id" } },
       );
       const rowData =
         response.data?.data || response.data?.result || response.data;
       router.push(`/newrequest?action=update&ref_Id=${ref_Id}`);
+      console.log("Edit Data:", rowData);
     } catch (error) {
       console.error("Edit Error:", error);
       alert("Failed to fetch record details");
@@ -305,10 +345,19 @@ const handleForward = async (row) => {
   // =================handelDelete======================
   const handleDelete = async (ref_Id) => {
     if (!window.confirm(`Delete Ref ID ${ref_Id}?`)) return;
-    try {  const userIP = await getUserIP();
+    try {
+      const userIP = await getUserIP();
       const res = await axios.delete(
         `http://103.79.34.50:8083/api/Client/deleteclientadvtrequest/${ref_Id}`,
-        { data: { ref_Id, financialYear:financial_year,userId :user_id, ip_address: userIP } }
+        {
+          data: {
+            ref_Id,
+            financialYear: financial_year,
+            userId: user_id,
+            ip_address: userIP,
+         ref_Category_id:"02",
+          },
+        },
       );
       const status = res.data?.status ?? res.data?.success;
       if (status === 1 || status === true) {
@@ -322,10 +371,6 @@ const handleForward = async (row) => {
       alert("Server error while deleting");
     }
   };
-
-
-
-
 
   // ── icon button style ──────────────────────────────────────────────────────
   const iconBtnSx = (hoverColor) => ({
@@ -349,11 +394,29 @@ const handleForward = async (row) => {
       {/* ── HEADER ─────────────────────────────────────────────────────────── */}
       <Box sx={{ mb: 3 }}>
         {/* accent bar */}
-        <Box sx={{ height: 3, width: 48, background: "linear-gradient(90deg,#1D4ED8,#60A5FA)", borderRadius: 2, mb: 2 }} />
+        <Box
+          sx={{
+            height: 3,
+            width: 48,
+            background: "linear-gradient(90deg,#1D4ED8,#60A5FA)",
+            borderRadius: 2,
+            mb: 2,
+          }}
+        />
 
-        <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
+        >
           <Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.4 }}>
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.4 }}
+            >
               <Typography
                 sx={{
                   fontFamily: "'Outfit', sans-serif",
@@ -367,8 +430,16 @@ const handleForward = async (row) => {
               </Typography>
               {getStatusChip()}
             </Box>
-            <Typography sx={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.78rem", color: "#94A3B8", letterSpacing: "0.04em" }}>
-              FY: {financial_year}&nbsp;&nbsp;·&nbsp;&nbsp;{filteredData.length} records
+            <Typography
+              sx={{
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.78rem",
+                color: "#94A3B8",
+                letterSpacing: "0.04em",
+              }}
+            >
+              FY: {financial_year}&nbsp;&nbsp;·&nbsp;&nbsp;{filteredData.length}{" "}
+              records
             </Typography>
           </Box>
 
@@ -401,7 +472,9 @@ const handleForward = async (row) => {
           onChange={(e) => setSearch(e.target.value)}
           size="small"
           InputProps={{
-            startAdornment: <SearchIcon sx={{ color: "#94A3B8", mr: 1, fontSize: 17 }} />,
+            startAdornment: (
+              <SearchIcon sx={{ color: "#94A3B8", mr: 1, fontSize: 17 }} />
+            ),
           }}
           sx={{
             width: { xs: "100%", sm: 340 },
@@ -413,7 +486,10 @@ const handleForward = async (row) => {
               borderRadius: "9px",
               "& fieldset": { borderColor: "#E2E8F0" },
               "&:hover fieldset": { borderColor: "#CBD5E1" },
-              "&.Mui-focused fieldset": { borderColor: "#1D4ED8", borderWidth: 1.5 },
+              "&.Mui-focused fieldset": {
+                borderColor: "#1D4ED8",
+                borderWidth: 1.5,
+              },
             },
             "& input::placeholder": { color: "#94A3B8", opacity: 1 },
           }}
@@ -432,9 +508,26 @@ const handleForward = async (row) => {
       >
         {/* loading strip */}
         {loading && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, px: 3, py: 1.5, bgcolor: "#EFF6FF", borderBottom: "1px solid #DBEAFE" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              px: 3,
+              py: 1.5,
+              bgcolor: "#EFF6FF",
+              borderBottom: "1px solid #DBEAFE",
+            }}
+          >
             <CircularProgress size={14} sx={{ color: "#1D4ED8" }} />
-            <Typography sx={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.78rem", color: "#1D4ED8", fontWeight: 500 }}>
+            <Typography
+              sx={{
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.78rem",
+                color: "#1D4ED8",
+                fontWeight: 500,
+              }}
+            >
               Fetching records…
             </Typography>
           </Box>
@@ -445,11 +538,21 @@ const handleForward = async (row) => {
             <TableHead>
               <TableRow>
                 {[
-                  "Ref ID", "Financial Year", "Subject", "Letter No", "Category",
-                  "Letter Date", "Scheduled Publish", "Tender Amt",
-                  "Attachment", "Actions", "Forward",
+                  "Ref ID",
+                  "Financial Year",
+                  "Subject",
+                  "Letter No",
+                  "Category",
+                  "Letter Date",
+                  "Scheduled Publish",
+                  "Tender Amt",
+                  "Status",
+                  "Actions",
+                  "Forward",
                 ].map((col) => (
-                  <TableCell key={col} sx={colHead}>{col}</TableCell>
+                  <TableCell key={col} sx={colHead}>
+                    {col}
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -481,23 +584,23 @@ const handleForward = async (row) => {
                         }}
                       >
                         {row.ref_Id || "—"}
-                       
-  
                       </Box>
- 
 
-<Button
-  size="small"
-  color="primary"  fontSize="small"
-  startIcon={<VisibilityIcon fontSize="small" />}
-  onClick={() =>
-    handleViewFiles(row.ref_Id, row.financial_Year)
-  }
->
-  Files
-</Button>
+                      <Button
+                        size="small"
+                        color="primary"
+                        fontSize="small"
+                        startIcon={<VisibilityIcon fontSize="small" />}
+                        onClick={() =>
+                          handleViewFiles(row.ref_Id, row.financial_Year)
+                        }
+                      >
+                        Files
+                      </Button>
                     </TableCell>
- <TableCell sx={{ ...colCell, color: "#6B7280" }}>{row.financial_Year || "—"}</TableCell>
+                    <TableCell sx={{ ...colCell, color: "#6B7280" }}>
+                      {row.financial_Year || "—"}
+                    </TableCell>
                     {/* Subject */}
                     <TableCell sx={{ ...colCell, maxWidth: 180 }}>
                       <Typography
@@ -517,7 +620,9 @@ const handleForward = async (row) => {
                     </TableCell>
 
                     {/* Letter No */}
-                    <TableCell sx={{ ...colCell, color: "#6B7280" }}>{row.letter_No || "—"}</TableCell>
+                    <TableCell sx={{ ...colCell, color: "#6B7280" }}>
+                      {row.letter_No || "—"}
+                    </TableCell>
 
                     {/* Category */}
                     <TableCell sx={colCell}>
@@ -538,34 +643,65 @@ const handleForward = async (row) => {
                     </TableCell>
 
                     {/* Letter Date */}
-                    <TableCell sx={{ ...colCell, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.74rem", color: "#6B7280" }}>
+                    <TableCell
+                      sx={{
+                        ...colCell,
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: "0.74rem",
+                        color: "#6B7280",
+                      }}
+                    >
                       {formatDate(row.letter_Date)}
                     </TableCell>
 
                     {/* Schedule Date */}
-                    <TableCell sx={{ ...colCell, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.74rem", color: "#6B7280" }}>
+                    <TableCell
+                      sx={{
+                        ...colCell,
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: "0.74rem",
+                        color: "#6B7280",
+                      }}
+                    >
                       {formatDate(row.schedule_Date)}
                     </TableCell>
 
                     {/* Tender Amt */}
-                    <TableCell sx={{ ...colCell, fontWeight: 600, color: "#0F172A" }}>
+                    <TableCell
+                      sx={{ ...colCell, fontWeight: 600, color: "#0F172A" }}
+                    >
                       {row.tender_Amt ? `₹ ${row.tender_Amt}` : "—"}
                     </TableCell>
 
-                    {/* Attachment */}
-                 
-                    
+                    {/* Status */}
 
-<TableCell sx={colCell}>
-  <IconButton
-    color="primary"
-    onClick={() =>
-      handleViewFiles(row.ref_Id, row.financial_Year) // adjust field names if needed
-    }
-  >
-    <VisibilityIcon />
-  </IconButton>
-</TableCell>
+                    {/* <TableCell sx={colCell}>
+                      <IconButton
+                        color="primary"
+                        onClick={
+                          () => handleViewFiles(row.ref_Id, row.financial_Year) // adjust field names if needed
+                        }
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                    </TableCell> */}
+                     <TableCell sx={colCell}>
+                      <Chip
+                        label={row.status || "—"}
+                        size="small"
+                        sx={{
+                          fontFamily: "'Outfit', sans-serif",
+                          fontSize: "0.67rem",
+                          fontWeight: 600,
+                          height: 21,
+                          borderRadius: "5px",
+                          bgcolor: "#F0FDF4",
+                          color: "#b10808",
+                          border: "1px solid #f7c1bb",
+                        }}
+                      />
+                    </TableCell>
+
 
                     {/* Actions */}
                     <TableCell sx={colCell}>
@@ -585,7 +721,10 @@ const handleForward = async (row) => {
                             py: 0.3,
                             minWidth: "auto",
                             borderRadius: "6px",
-                            "&:hover": { bgcolor: "#DBEAFE", borderColor: "#1D4ED8" },
+                            "&:hover": {
+                              bgcolor: "#DBEAFE",
+                              borderColor: "#1D4ED8",
+                            },
                           }}
                         >
                           Edit
@@ -605,7 +744,10 @@ const handleForward = async (row) => {
                             py: 0.3,
                             minWidth: "auto",
                             borderRadius: "6px",
-                            "&:hover": { bgcolor: "#FEE2E2", borderColor: "#DC2626" },
+                            "&:hover": {
+                              bgcolor: "#FEE2E2",
+                              borderColor: "#DC2626",
+                            },
                           }}
                         >
                           Delete
@@ -641,40 +783,50 @@ const handleForward = async (row) => {
                     </TableCell> */}
 
                     {/* Forward */}
-<TableCell sx={colCell}>
-  <Button
-    size="small"
-    onClick={() => handleForward(row)} // ✅ Add this
-    sx={{
-      fontFamily: "'Outfit', sans-serif",
-      fontWeight: 700,
-      fontSize: "0.68rem",
-      textTransform: "none",
-      letterSpacing: "0.02em",
-      color: "#fff",
-      background:
-        "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
-      px: 1.8,
-      py: 0.4,
-      minWidth: "auto",
-      borderRadius: "6px",
-      boxShadow: "0 1px 4px rgba(29,78,216,0.25)",
-      "&:hover": {
-        background:
-          "linear-gradient(135deg,#1E40AF 0%,#2563EB 100%)",
-        boxShadow: "0 3px 10px rgba(29,78,216,0.35)",
-      },
-    }}
-  >
-    Forward
-  </Button>
-</TableCell>
+                    <TableCell sx={colCell}>
+                      <Button
+                        size="small"
+                        onClick={() => handleForward(row)} // ✅ Add this
+                        sx={{
+                          fontFamily: "'Outfit', sans-serif",
+                          fontWeight: 700,
+                          fontSize: "0.68rem",
+                          textTransform: "none",
+                          letterSpacing: "0.02em",
+                          color: "#fff",
+                          background:
+                            "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
+                          px: 1.8,
+                          py: 0.4,
+                          minWidth: "auto",
+                          borderRadius: "6px",
+                          boxShadow: "0 1px 4px rgba(29,78,216,0.25)",
+                          "&:hover": {
+                            background:
+                              "linear-gradient(135deg,#1E40AF 0%,#2563EB 100%)",
+                            boxShadow: "0 3px 10px rgba(29,78,216,0.35)",
+                          },
+                        }}
+                      >
+                        Forward
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={10} align="center" sx={{ py: 7, borderBottom: "none" }}>
-                    <Typography sx={{ fontFamily: "'Outfit', sans-serif", color: "#94A3B8", fontSize: "0.9rem" }}>
+                  <TableCell
+                    colSpan={10}
+                    align="center"
+                    sx={{ py: 7, borderBottom: "none" }}
+                  >
+                    <Typography
+                      sx={{
+                        fontFamily: "'Outfit', sans-serif",
+                        color: "#94A3B8",
+                        fontSize: "0.9rem",
+                      }}
+                    >
                       {loading ? "Loading…" : "No records found"}
                     </Typography>
                   </TableCell>
@@ -697,8 +849,16 @@ const handleForward = async (row) => {
               bgcolor: "#FAFAFA",
             }}
           >
-            <Typography sx={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.78rem", color: "#94A3B8" }}>
-              Showing {indexOfFirstRecord + 1}–{Math.min(indexOfLastRecord, filteredData.length)} of {filteredData.length}
+            <Typography
+              sx={{
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.78rem",
+                color: "#94A3B8",
+              }}
+            >
+              Showing {indexOfFirstRecord + 1}–
+              {Math.min(indexOfLastRecord, filteredData.length)} of{" "}
+              {filteredData.length}
             </Typography>
             <Pagination
               count={totalPages}
@@ -728,107 +888,107 @@ const handleForward = async (row) => {
         )}
       </Box>
       <Dialog
-  open={openFilesModal}
-  onClose={() => setOpenFilesModal(false)}
-  maxWidth="md"
-  fullWidth
->
-  <DialogTitle sx={{ fontWeight: "bold", color: "error.main" }}>
-    View Attachments
-  </DialogTitle>
+        open={openFilesModal}
+        onClose={() => setOpenFilesModal(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontWeight: "bold", color: "error.main" }}>
+          View Attachments
+        </DialogTitle>
 
-  <DialogContent dividers sx={{ height: 450 }}>
-    {filesLoading ? (
-      <Box textAlign="center" mt={5}>
-        <CircularProgress color="error" />
-      </Box>
-    ) : filesData.length === 0 ? (
-      <Typography align="center">No files found</Typography>
-    ) : (
-      Object.entries(groupedFiles).map(([category, files]) => (
-        <Box key={category} mb={3}>
-          {/* Category Title */}
-          <Typography
-            variant="h6"
-            sx={{ mb: 1, color: "#1976d2", fontWeight: 600 }}
-          >
-            {category}
-          </Typography>
+        <DialogContent dividers sx={{ height: 450 }}>
+          {filesLoading ? (
+            <Box textAlign="center" mt={5}>
+              <CircularProgress color="error" />
+            </Box>
+          ) : filesData.length === 0 ? (
+            <Typography align="center">No files found</Typography>
+          ) : (
+            Object.entries(groupedFiles).map(([category, files]) => (
+              <Box key={category} mb={3}>
+                {/* Category Title */}
+                <Typography
+                  variant="h6"
+                  sx={{ mb: 1, color: "#1976d2", fontWeight: 600 }}
+                >
+                  {category}
+                </Typography>
 
-          <Grid container spacing={2}>
-            {files.map((file, index) => {
-              const fileUrl = `${BASE_FILE_URL}/${file.link_name}`;
-              const isImage = file.content_type?.startsWith("image");
-              const isPdf = file.content_type === "application/pdf";
+                <Grid container spacing={2}>
+                  {files.map((file, index) => {
+                    const fileUrl = `${BASE_FILE_URL}/${file.link_name}`;
+                    const isImage = file.content_type?.startsWith("image");
+                    const isPdf = file.content_type === "application/pdf";
 
-              return (
-                <Grid item xs={6} md={3} key={index}>
-                  <Box
-                    sx={{
-                      border: "1px solid #e0e0e0",
-                      borderRadius: 2,
-                      p: 1,
-                      textAlign: "center",
-                      height: 150,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: "#fafafa",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => window.open(fileUrl, "_blank")}
-                  >
-                    {isImage ? (
-                      <img
-                        src={fileUrl}
-                        alt={file.link_name}
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "120px",
-                          objectFit: "contain",
-                          borderRadius: "6px",
-                        }}
-                      />
-                    ) : isPdf ? (
-                      <Box>
-                        <PictureAsPdfIcon
-                          sx={{ fontSize: 50, color: "red" }}
-                        />
-                        <Typography variant="caption" display="block">
-                          PDF File
+                    return (
+                      <Grid item xs={6} md={3} key={index}>
+                        <Box
+                          sx={{
+                            border: "1px solid #e0e0e0",
+                            borderRadius: 2,
+                            p: 1,
+                            textAlign: "center",
+                            height: 150,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "#fafafa",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => window.open(fileUrl, "_blank")}
+                        >
+                          {isImage ? (
+                            <img
+                              src={fileUrl}
+                              alt={file.link_name}
+                              style={{
+                                maxWidth: "100%",
+                                maxHeight: "120px",
+                                objectFit: "contain",
+                                borderRadius: "6px",
+                              }}
+                            />
+                          ) : isPdf ? (
+                            <Box>
+                              <PictureAsPdfIcon
+                                sx={{ fontSize: 50, color: "red" }}
+                              />
+                              <Typography variant="caption" display="block">
+                                PDF File
+                              </Typography>
+                            </Box>
+                          ) : (
+                            <Box>
+                              <InsertDriveFileIcon
+                                sx={{ fontSize: 50, color: "#607d8b" }}
+                              />
+                              <Typography variant="caption" display="block">
+                                File
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box>
+
+                        {/* File Size in MB */}
+                        <Typography
+                          variant="caption"
+                          sx={{ display: "block", mt: 0.5 }}
+                        >
+                          {(file.file_size_in_bytes / (1024 * 1024)).toFixed(2)}{" "}
+                          MB
                         </Typography>
-                      </Box>
-                    ) : (
-                      <Box>
-                        <InsertDriveFileIcon
-                          sx={{ fontSize: 50, color: "#607d8b" }}
-                        />
-                        <Typography variant="caption" display="block">
-                          File
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-
-                  {/* File Size in MB */}
-                  <Typography
-                    variant="caption"
-                    sx={{ display: "block", mt: 0.5 }}
-                  >
-                    {(file.file_size_in_bytes / (1024 * 1024)).toFixed(2)} MB
-                  </Typography>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
-      ))
-    )}
-  </DialogContent>
-</Dialog>
+              </Box>
+            ))
+          )}
+        </DialogContent>
+      </Dialog>
     </ThemeProvider>
   );
 };
-
 
 export default ForwardTo;

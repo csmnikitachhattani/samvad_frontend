@@ -53,7 +53,10 @@ const ClientSideNavbar = ({ isCollapsed }) => {
       label: "Create New Request / Upload Your Work Order",
       path: "/client/clientnewrequist", // fixed typo
     },
-    { label: "Inbox", path: "/client/newrequest" },
+
+    { label: "Inbox",
+      path: "/client/forward",
+      action: "get_rejected", },
 
     // Requests with query params (Next.js way instead of state)
     {
@@ -84,7 +87,7 @@ const ClientSideNavbar = ({ isCollapsed }) => {
 
     { label: "Published Advertisement", path: "/Forward-Request" },
     { label: "Report", path: "/client/report" },
-    { label: "Check Status", path: "/client/newsratelist" },
+    // { label: "Check Status", path: "/client/newsratelist" },
     { label: "News Paper Rate List", path: "/client/newsratelist" },
     {
       label: "Generated Bill List / Outstanding / Payment Details",
