@@ -346,7 +346,8 @@ const handleForward = async (row) => {
       );
       const rowData =
         response.data?.data || response.data?.result || response.data;
-      router.push(`/newrequest?action=update&ref_Id=${ref_Id}`);
+        console.log("Edit Fetch Response:", response.data);
+      router.push(`/client/clientnewrequist?ref_Id=${ref_Id}`);
     } catch (error) {
       console.error("Edit Error:", error);
       alert("Failed to fetch record details");
