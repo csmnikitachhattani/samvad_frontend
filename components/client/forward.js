@@ -337,22 +337,56 @@ const handleForward = async (row) => {
 
 
   // ==================handelEdit======================
-
   const handleEdit = async (ref_Id) => {
-    try {
-      const response = await axios.get(
-        `http://103.79.34.50:8083/api/Client/getclientadvtrequests`,
-        { params: { ref_Id, financial_year, user_id, user_name, action: "get_by_id" } }
-      );
-      const rowData =
-        response.data?.data || response.data?.result || response.data;
-        console.log("Edit Fetch Response:", response.data);
-      router.push(`/client/clientnewrequist?ref_Id=${ref_Id}`);
-    } catch (error) {
-      console.error("Edit Error:", error);
-      alert("Failed to fetch record details");
+  if (!ref_Id) {
+    alert("Invalid Reference ID");
+    return;
+  }
+
+  try {
+    const userIP = await getUserIP();
+
+    const response = await axios.get(
+      "http://103.79.34.50:8083/api/Client/getclientadvtrequests",
+      {
+        params: {
+          ref_id: ref_Id,
+          financial_year: financial_year,
+          user_id: user_id,
+          user_name: user_name,
+          action: "get_by_id",
+          category: "02", // ✅ Important (was missing earlier)
+          ip_address: userIP,
+        },
+      }
+    );
+
+    console.log("Full API Response:", response.data);
+
+    if (response.data?.message !== "Success") {
+      alert(response.data?.message || "Failed to fetch record");
+      return;
     }
-  };
+
+    // ✅ API returns array → take first record
+    const rowData = response.data?.data?.[0];
+
+    if (!rowData) {
+      alert("No record found for this ID");
+      return;
+    }
+
+    console.log("Edit Row Data:", rowData);
+
+      if (rowData?.ref_Id) {
+  router.push(`/client/updatclientrequist/${rowData.ref_Id}`);
+}
+
+  } catch (error) {
+    console.error("Edit Error:", error);
+    alert("Failed to fetch record details");
+  }
+};
 
   // =================handelDelete======================
   const handleDelete = async (ref_Id) => {

@@ -183,7 +183,7 @@ const RequestForm = ({ category }) => {
 
     try {
       await axios.put(
-        `http://103.79.34.50:8083/api/Client/insertclientadvtrequest/${rowData.refId}`,
+        `http://103.79.34.50:8083/api/Client/updateclientadvtrequest/${rowData.refId}`,
         {
           ...formData,
           financialYear,
