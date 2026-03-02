@@ -41,61 +41,7 @@ const field = {
   "& .MuiInputBase-input": { color: "#111827", fontWeight: 500 },
 };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const payload = {
-      subject:                  formData.subject,
-      avak_category:            formData.contentCategory,
-      received_date:            formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
-      fixed_date:               formData.fixedDate || "",
-      tender_amt:               Number(formData.tenderAmount) || 0,
-      letter_no:                formData.letterNo,
-      letter_date:              formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
-      caption_cd:               formData.captionCd || "",
-      total_pages:              formData.noOfPages,
-      receiving_mode_code:      formData.modeOfReceiving,
-      letter_type_code:         formData.letterType,
-      remarks:                  formData.remark,
-      financial_year:           formData.financialYear || "",
-      client_cd:                formData.client,
-      base_dept_code:           formData.baseDept,
-      office_code:              formData.office,
-      office_level_code:        formData.officeLevel,
-      district_code:            formData.district,
-      section_code:             formData.section,
-      client_prarup_code:       formData.clientPrarupCode || "",
-      client_name:              formData.clientName || "",
-      client_address:           formData.clientAddress || "",
-      client_city:              formData.clientCity || "",
-      schedule_date:            formData.publicationDate ? new Date(formData.publicationDate).toISOString() : null,
-      is_post_ro:               formData.isPostRo || "",
-      ref_id:                   formData.refId || "",
-      avak_ref_id:              formData.avakRefId || "",
-      create_update_flag_name:  "C",                          // "C" = Create, "U" = Update
-      entry_by_user_type_cd:    "",
-      entry_by_user_id:         "00100",                      // replace with auth user
-      entry_by_section_cd:      formData.section || "",
-      client_exist:             "Y",
-      entry_date:               new Date().toISOString(),
-      entry_time:               new Date().toTimeString().split(" ")[0],
-      ip_address:               "103.79.34.50",               // replace with real IP
-    };
 
-    const response = await axiosClient.post(
-      "http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveavak",
-      payload,
-      { headers: { "Content-Type": "application/json" } }
-    );
-
-    dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
-    router.push("/admin/counter");
-    console.log("SUCCESS:", response.data);
-  } catch (error) {
-    console.error("ERROR:", error.response?.data || error.message);
-    dispatch(showNotification({ message: error.response?.data?.message || "Save failed!", severity: "error" }));
-  }
-};
 
 // ── Section Card ──────────────────────────────────────────────────────────────
 function SectionCard({ icon, title, subtitle, children, accent = "#010a2a" }) {
@@ -288,9 +234,60 @@ export default function ClientAttachmentForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
+    try {
+      const payload = {
+        subject:                  formData.subject,
+        avak_category:            formData.contentCategory,
+        received_date:            formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
+        fixed_date:               formData.fixedDate || "",
+        tender_amt:               Number(formData.tenderAmount) || 0,
+        letter_no:                formData.letterNo,
+        letter_date:              formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
+        caption_cd:               formData.captionCd || "",
+        total_pages:              formData.noOfPages,
+        receiving_mode_code:      formData.modeOfReceiving,
+        letter_type_code:         formData.letterType,
+        remarks:                  formData.remark,
+        financial_year:           formData.financialYear || "",
+        client_cd:                formData.client,
+        base_dept_code:           formData.baseDept,
+        office_code:              formData.office,
+        office_level_code:        formData.officeLevel,
+        district_code:            formData.district,
+        section_code:             formData.section,
+        client_prarup_code:       formData.clientPrarupCode || "",
+        client_name:              formData.clientName || "",
+        client_address:           formData.clientAddress || "",
+        client_city:              formData.clientCity || "",
+        schedule_date:            formData.publicationDate ? new Date(formData.publicationDate).toISOString() : null,
+        is_post_ro:               formData.isPostRo || "",
+        ref_id:                   formData.refId || "",
+        avak_ref_id:              formData.avakRefId || "",
+        create_update_flag_name:  "C",                          // "C" = Create, "U" = Update
+        entry_by_user_type_cd:    "",
+        entry_by_user_id:         "00100",                      // replace with auth user
+        entry_by_section_cd:      formData.section || "",
+        client_exist:             "Y",
+        entry_date:               new Date().toISOString(),
+        entry_time:               new Date().toTimeString().split(" ")[0],
+        ip_address:               "103.79.34.50",               // replace with real IP
+      };
+  
+      const response = await axiosClient.post(
+        "http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveavak",
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
+  
+      dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
+      router.push("/admin/counter");
+      console.log("SUCCESS:", response.data);
+    } catch (error) {
+      console.error("ERROR:", error.response?.data || error.message);
+      dispatch(showNotification({ message: error.response?.data?.message || "Save failed!", severity: "error" }));
+    }
   };
 
   return (
@@ -341,7 +338,7 @@ export default function ClientAttachmentForm() {
           />
         </Box>
 
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form">
 
           {/* ── Section 1: Content Category ── */}
           <SectionCard icon={<IconCategory />} title="Content Category" subtitle="Select the type of media content" accent="#6366f1">
