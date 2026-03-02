@@ -107,7 +107,8 @@ export default function LoginPage() {
         localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
         localStorage.setItem('userid', res.data.result[0].userid,)
         localStorage.setItem('financialYear', financialYear)
-        //router.push("/admin");
+        localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
+        router.push("/admin");
       } else {
         setError(res.data?.message || "Invalid credentials");
         generateCaptcha();
