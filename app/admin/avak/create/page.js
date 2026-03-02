@@ -17,7 +17,7 @@ import {
   FormLabel,
   InputAdornment,
 } from "@mui/material";
-
+import axiosClient from "@/lib/axiosClient";
 // ── Shared field style ────────────────────────────────────────────────────────
 const field = {
   "& .MuiOutlinedInput-root": {
@@ -625,7 +625,7 @@ export default function ClientAttachmentForm() {
                 type="submit"
                 variant="contained"
                 size="medium"
-                onClick={handleSubmit}
+                onClick={handleSubmit()}
                 sx={{
                   px: 4,
                   borderRadius: "10px",
