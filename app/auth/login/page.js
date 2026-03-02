@@ -73,9 +73,23 @@ export default function LoginPage() {
     }
 
     setError("");
-
+   let res;
     try {
-      const res = await axios.post(
+  
+      if(userType.code === "ODM"){
+        res = await axios.post(
+          "http://103.79.34.50:8083/api/Login/agencylogin",
+          {
+            usertypecode: userType.code,
+            userid: username,
+            usrpassword: password,
+            usertypeid: userType.id.toString(),
+          },
+        )
+        console.log("Login Path from API:", res.data.result[0]);
+      }
+      else { 
+        res = await axios.post(
         "http://103.79.34.50:8083/api/Login/cgsamvadlogin",
         {
           usertypecode: userType.code,
@@ -84,14 +98,16 @@ export default function LoginPage() {
           usertypeid: userType.id.toString(),
         },
       );
-      console.log("Login Path from API:", res.data);
+      console.log("Login Path from API:", res.data.result[0]);
+      }
+      //console.log("Login Path from API:", res.data);
       if (res.data?.status == 200) {
         // ✅ CHECK LOGIN PATH (DEBUG)
-        localStorage.setItem('username', res.data.username)
-        localStorage.setItem('usertypecode', res.data.usertypecode)
-        localStorage.setItem('userid', res.data.userid,)
+        localStorage.setItem('username', res.data.result[0].username)
+        localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
+        localStorage.setItem('userid', res.data.result[0].userid,)
         localStorage.setItem('financialYear', financialYear)
-        router.push("/admin");
+        //router.push("/admin");
       } else {
         setError(res.data?.message || "Invalid credentials");
         generateCaptcha();
