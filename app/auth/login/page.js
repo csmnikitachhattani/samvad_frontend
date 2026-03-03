@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Container,
   Box,
@@ -22,10 +23,12 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LogiImg from "@/public/images/logo_samvad.png";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [userType, setUserType] = useState({ id: "", code: "", name: "" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [captcha, setCaptcha] = useState("");
+  const [financialYear, setFinancialYear] = useState("");
   const [userInput, setUserInput] = useState("");
   const [error, setError] = useState("");
   const [userTypeList, setUserTypeList] = useState([]);
@@ -44,7 +47,7 @@ export default function LoginPage() {
   // Fetch user types
   const fetchUserTypes = async () => {
     try {
-      const res = await axios.get("http://103.79.34.50:3080/api/usertype");
+      const res = await axios.get("http://103.79.34.50:8083/api/Login/getalllogintype");
       setUserTypeList(res.data || []);
     } catch (err) {
       console.error("Failed to load user types", err);
@@ -70,9 +73,23 @@ export default function LoginPage() {
     }
 
     setError("");
-
+   let res;
     try {
-      const res = await axios.post(
+  
+      if(userType.code === "ODM"){
+        res = await axios.post(
+          "http://103.79.34.50:8083/api/Login/agencylogin",
+          {
+            usertypecode: userType.code,
+            userid: username,
+            usrpassword: password,
+            usertypeid: userType.id.toString(),
+          },
+        )
+        console.log("Login Path from API:", res.data.result[0]);
+      }
+      else { 
+        res = await axios.post(
         "http://103.79.34.50:8083/api/Login/cgsamvadlogin",
         {
           usertypecode: userType.code,
@@ -81,16 +98,17 @@ export default function LoginPage() {
           usertypeid: userType.id.toString(),
         },
       );
-      console.log("Login Path from API:", res.data);
+      console.log("Login Path from API:", res.data.result[0]);
+      }
+      //console.log("Login Path from API:", res.data);
       if (res.data?.status == 200) {
         // ✅ CHECK LOGIN PATH (DEBUG)
-
-        console.log("hhhh", res.data.result[0].loginpath);
-
-        // ✅ External redirect (BEST)
-        setTimeout(() => {
-          window.location.href = res.data.result[0].loginpath;
-        }, 1000);
+        localStorage.setItem('username', res.data.result[0].username)
+        localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
+        localStorage.setItem('userid', res.data.result[0].userid,)
+        localStorage.setItem('financialYear', financialYear)
+        localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
+        router.push("/admin");
       } else {
         setError(res.data?.message || "Invalid credentials");
         generateCaptcha();
@@ -206,25 +224,32 @@ export default function LoginPage() {
 
             {/* User Type Dropdown */}
             <FormControl fullWidth sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              placeholder="Financial Year"
+              value={financialYear}
+              onChange={(e) => setFinancialYear(e.target.value)}
+              sx={{ mb: 2 }}
+            />
               <Select
                 value={userType.code}
                 onChange={(e) => {
                   const selected = userTypeList.find(
-                    (x) => x.login_user_type_code === e.target.value,
+                    (x) => x.login_User_Type_Code === e.target.value,
                   );
                   setUserType({
                     id: selected?.id || "",
-                    code: selected?.login_user_type_code || "",
-                    name: selected?.login_user_type_name || "",
+                    code: selected?.login_User_Type_Code || "",
+                    name: selected?.login_User_Type_Name || "",
                   });
                 }}
                 displayEmpty
                 renderValue={(selectedCode) => {
                   const selected = userTypeList.find(
-                    (x) => x.login_user_type_code === selectedCode,
+                    (x) => x.login_User_Type_Code === selectedCode,
                   );
                   return selected
-                    ? selected.login_user_type_name
+                    ? selected.login_User_Type_Name
                     : "Select User Type";
                 }}
                 sx={{
@@ -243,10 +268,10 @@ export default function LoginPage() {
                 </MenuItem>
                 {userTypeList.map((item) => (
                   <MenuItem
-                    key={item.login_user_type_code}
-                    value={item.login_user_type_code}
+                    key={item.login_User_Type_Code}
+                    value={item.login_User_Type_Code}
                   >
-                    {item.login_user_type_name}
+                    {item.login_User_Type_Name}
                   </MenuItem>
                 ))}
               </Select>

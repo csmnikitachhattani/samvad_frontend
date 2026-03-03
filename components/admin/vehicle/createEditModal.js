@@ -6,6 +6,7 @@ import { toggleCreateModal } from "@/store/modules/outdoor/vehicleSlice.js";
 import { useRouter } from "next/navigation";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { vehicleField } from '@/lib/rules'
 import {
   Dialog,
   DialogTitle,
@@ -25,6 +26,7 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
   const dispatch = useDispatch();
   const ModalShow = useSelector((state) => state.vehicle.ModalShow);
   const [vendors, setVendors] = useState([])
+  const [errors, setErrors] = useState({})
 
   const closeUploadDialog = () => {
     dispatch(toggleCreateModal({
@@ -72,7 +74,6 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
         }
       
       );
-      // ✅ Close dialog ONLY after successful API call
       dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
       router.push("/admin/vehicle");
       resetForm()
@@ -115,17 +116,27 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
     console.log(data.ip);
     return data.ip
   }
-  useEffect(() => {
-    getPublicIP()
-  })
+  
 
   const handleChange = (e) => {
-    console.log("chnages")
-    const { name, value, files } = e.target;
+   
+    const { name, value, files } = e.target; 
+    console.log("changes", value, name)
+    if (name === "vehicleNo") {
+      if (!value) {
+        setErrors({ ...errors, vehicleNo: vehicleField.required.message })
+      } else if (!vehicleField.pattern.value.test(value)) {
+        setErrors({ ...errors, vehicleNo: vehicleField.pattern.message })
+      }
+      else {
+        setErrors({ ...errors, vehicleNo: ""}) 
+      }
+    }
     setData({
       ...data,
       [name]: files ? files[0] : value,
     });
+    
   };
 
   const fieldStyle = {
@@ -191,9 +202,11 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
                 name="vehicleNo"
                 fullWidth
                 size="small"
-                value={data.vehicleNo}
+                value={data.vehicleNo.toUpperCase()}
                 onChange={handleChange}
                 sx={fieldStyle}
+                error={!!errors.vehicleNo} 
+                helperText={errors.vehicleNo}       
 
               />
             </Grid>

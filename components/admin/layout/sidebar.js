@@ -43,6 +43,11 @@ const isActive = (path) => pathname.startsWith(path);
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
+      label: "Mini Bus Boards",
+      path: "/admin/bus",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
       label: "Counter",
       path: "/admin/counter",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,

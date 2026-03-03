@@ -34,6 +34,17 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getMiniBusList: async () => {
+    console.log("get all mini bus")
+    try {
+      const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/get-all-bus");
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+ 
   getcounter: async () => {
     console.log("get all agencncy")
     try {
