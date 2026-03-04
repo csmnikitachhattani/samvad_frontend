@@ -358,7 +358,7 @@ const BusTable = () => {
           </Box>
           <Box>
             <Typography variant="subtitle1" fontWeight={700} sx={{ color: "#111827", letterSpacing: "-0.2px" }}>
-              Bus Registry
+              Mini Bus List
             </Typography>
             <Typography variant="caption" sx={{ color: "#9ca3af" }}>
               {loading ? "Loading…" : `${filteredRows.length} bus${filteredRows.length !== 1 ? "es" : ""} found`}

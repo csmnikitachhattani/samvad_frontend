@@ -4,7 +4,7 @@ const adminService = {
   getServices: async () => {
     console.log("newspaper information")
     try {
-      const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/getservicetype");
+      const res = await axiosClient.get("/ManageMaster/getservicetype");
       return res.data;
     } catch (err) {
       throw err; 
@@ -13,7 +13,7 @@ const adminService = {
   getAgency: async () => {
     console.log("get all agencncy")
     try {
-      const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/allagency");
+      const res = await axiosClient.get("/ManageMaster/allagency");
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -28,7 +28,7 @@ const adminService = {
         ...updateData,
       };
 
-      const res = await axiosClient.post("http://103.79.34.50:8083/api/ManageMaster/createagency", payload);
+      const res = await axiosClient.post("/ManageMaster/createagency", payload);
       return res.data;
     } catch (err) {
       throw err; // interceptor will format it
@@ -37,7 +37,7 @@ const adminService = {
   getMiniBusList: async () => {
     console.log("get all mini bus")
     try {
-      const res = await axiosClient.get("http://103.79.34.50:8083/api/ManageMaster/get-all-bus");
+      const res = await axiosClient.get("/ManageMaster/get-all-bus");
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -48,7 +48,7 @@ const adminService = {
   getcounter: async () => {
     console.log("get all agencncy")
     try {
-      const res = await axiosClient.get("http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoorcounter");
+      const res = await axiosClient.get("/OutDoorMediaTransaction/getoutdoorcounter");
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -58,7 +58,7 @@ const adminService = {
   getcounterDetail: async (id) => {
     console.log("get counter detail")
     try {
-      const res = await axiosClient.get(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoorcounter?id=${id}`);
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getoutdoorcounter?id=${id}`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -68,7 +68,17 @@ const adminService = {
   getVendorList: async (id) => {
     console.log("get counter detail")
     try {
-      const res = await axiosClient.get(`http://103.79.34.50:8083/api/ManageMaster/getagencybyserviceid/${id}`);
+      const res = await axiosClient.get(`/ManageMaster/getagencybyserviceid/${id}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getClientRequestList: async () => {
+    console.log("get request Client List")
+    try {
+      const res = await axiosClient.get(`/Client/get-client-requests?finYear=2024-2025`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -78,7 +88,7 @@ const adminService = {
   getAllocationRecord: async (job_id, avakRefId) =>{
     console.log("get Allocation detail")
     try {
-      const res = await axiosClient.get(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/getsubrecordswithtotals?avakRefId=${avakRefId}&jobNo=${job_id}`);
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getsubrecordswithtotals?avakRefId=${avakRefId}&jobNo=${job_id}`);
       return res;
     } catch (err) {
       console.log("answer")
@@ -88,7 +98,7 @@ const adminService = {
   submitNotesheet: async (payload) =>{
     console.log("post notesheet detail")
     try {
-      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/lvnotesheetprocess`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/lvnotesheetprocess`, payload);
       return res;
     } catch (err) {
       console.log("answer")
@@ -98,7 +108,7 @@ const adminService = {
   ApprovedNotesheet: async (payload) =>{
     console.log("post notesheet detail")
     try {
-      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/approveledvehicle`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/approveledvehicle`, payload);
       return res;
     } catch (err) {
       console.log("answer")
@@ -108,7 +118,7 @@ const adminService = {
   proceedWorkload: async (payload) =>{
     console.log("post notesheet detail")
     try {
-      const res = await axiosClient.post(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/lvworkorder`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/lvworkorder`, payload);
       return res;
     } catch (err) {
       console.log("answer")
