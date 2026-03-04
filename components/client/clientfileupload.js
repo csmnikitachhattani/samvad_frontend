@@ -1,9 +1,11 @@
-// ========================USE STATIC MATTER===================
+
+
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import axios from "axios";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { getUserIP } from "../../services/userip";
 
 import {
   Container,
@@ -16,6 +18,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableHead,
   TableRow,
   Paper,
   Dialog,
@@ -23,9 +26,22 @@ import {
   DialogContent,
   DialogActions,
   MenuItem,
+  Tooltip, Stack ,IconButton,
 } from "@mui/material";
 
-import { FaUpload, FaFolder, FaDownload, FaCheckCircle } from "react-icons/fa";
+import {
+  FaUpload,
+  FaFolder,
+  FaDownload,
+  FaCheckCircle,
+  FaFileAlt,FaTrash, FaPencilAlt ,FaEye,
+} from "react-icons/fa";
+
+/* ===== VIRTUAL MATTER (Fallback) ===== */
+const VIRTUAL_MATTER = {
+  categoryCd: "01",
+  categoryName: "Matter",
+};
 
 const ClientFileUpload = () => {
   const router = useRouter();
@@ -38,14 +54,14 @@ const ClientFileUpload = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setUserId(localStorage.getItem("user_id") || "");
+      setUserId(localStorage.getItem("user_id") || "00100");
       setUserName(localStorage.getItem("user_name") || "");
     }
   }, []);
 
   /* ========= PARAMS ========= */
   const savedRefId = params?.savedRefId;
-  const financial_year = searchParams.get("financial_year");
+  const financialYear = searchParams.get("financialYear");
 
   /* ========= REFS ========= */
   const fileInputRef = useRef(null);
@@ -55,94 +71,113 @@ const ClientFileUpload = () => {
   const [file, setFile] = useState(null);
   const [linkName, setLinkName] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [letterCategoryCode, setLetterCategoryCode] = useState("");
+  const [matterCategoryCode, setMatterCategoryCode] = useState("");
   const [letterUploaded, setLetterUploaded] = useState(0);
 
   const [filePreviewUrl, setFilePreviewUrl] = useState(null);
 
-  const VIRTUAL_MATTER = {
-    cat_cd: "01",
-    cat_name: "Matter",
-  };
+const [fileToReplaceSno, setFileToReplaceSno] = useState(null);
+const editFileInputRef = useRef(null);
+
 
   /* ========= FILE HANDLERS ========= */
   const handleFileSelect = (selectedFile) => {
     if (!selectedFile) return;
+
     setFile(selectedFile);
     setLinkName(selectedFile.name);
 
-    if (selectedFile.type.startsWith("image/")) {
+    if (selectedFile.type?.startsWith("image/")) {
       setFilePreviewUrl(URL.createObjectURL(selectedFile));
     } else {
       setFilePreviewUrl(null);
     }
   };
 
-  /* ========= API ========= */
-  const fetchCategories = async () => {
-    if (!savedRefId || !financial_year) return;
-
-    try {
-      const res = await axios.get(
-        "http://103.79.34.50:3080/api/upload-categories",
-        { params: { savedRefId, financial_year } },
-      );
-
-      const data = res.data.data || [];
-      setCategories(data);
-
-      const letter = data.find((c) =>
-        c.cat_name?.toLowerCase().includes("letter"),
-      );
-      const matter = data.find((c) =>
-        c.cat_name?.toLowerCase().includes("matter"),
-      );
-
-      if (!letter) return;
-
-      setLetterCategoryCode(letter.cat_cd);
-
-      const check = await axios.get(
-        `http://103.79.34.50:3080/api/files/${savedRefId}/${financial_year}/${letter.cat_cd}`,
-      );
-
-      const uploadedCount = check?.data?.data?.length || 0;
-      setLetterUploaded(uploadedCount);
-
-      // Auto-select Matter if Letter already uploaded
-      if (uploadedCount > 0 && matter) {
-        setSelectedCategory(matter.cat_cd);
-      } else {
-        setSelectedCategory(letter.cat_cd);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchFiles = async (category) => {
-    if (!category) return;
-
-    try {
-      const res = await axios.get(
-        `http://103.79.34.50:3080/api/files/${savedRefId}/${financial_year}/${category}`,
-      );
-      setFileList(res.data.data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     handleFileSelect(e.dataTransfer.files[0]);
   };
+
+  /* ========= API ========= */
+
+const fetchCategories = async () => {
+  if (!savedRefId || !financialYear) return;
+
+  try { 
+    const res = await axios.get(
+      "http://103.79.34.50:8083/api/Client/get-upload-categories",
+      {
+        params: { ref_id: savedRefId, financial_year: financialYear },
+      }
+    );
+
+    const data = res?.data?.data || [];
+    setCategories(data);
+
+    // Detect Letter & Matter categories
+    const letter = data.find((c) =>
+      c?.categoryName?.toLowerCase()?.includes("letter")
+    );
+
+    const matter = data.find((c) =>
+      c?.categoryName?.toLowerCase()?.includes("matter")
+    );
+
+    if (letter) {
+      setLetterCategoryCode(letter.categoryCd);
+
+      // Check if letter is already uploaded
+      const check = await axios.get(
+        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}`   
+      );
+
+      const uploadedCount = check?.data?.data?.length || 0;
+      setLetterUploaded(uploadedCount);
+
+      // --------- AUTO-SELECT LOGIC ---------
+      if (uploadedCount > 0) {
+  // Letter already uploaded → auto-select Matter or virtual Matter
+  setSelectedCategory(
+    matter?.categoryCd || VIRTUAL_MATTER.categoryCd
+  );
+} else {
+  // Letter NOT uploaded → auto-select Letter
+  setSelectedCategory(letter.categoryCd);
+}
+    }
+
+    if (matter) {
+      setMatterCategoryCode(matter.categoryCd);
+    }
+  } catch (err) {
+    console.error("Fetch categories error:", err);
+  }
+};
+
+  const fetchFiles = async () => {
+    if (!savedRefId || !financialYear) return;
+
+    try {
+      const res = await axios.get(
+        `http://103.79.34.50:8083/api/Client/get-files/${savedRefId}/${financialYear}`
+      );
+        console.log("Fetching Files URL:", res); 
+      setFileList(res?.data?.data || []);
+    } catch (err) {
+      console.error("Fetch files error:", err);
+    }
+  };
+
   const handleUpload = async () => {
     if (!file || !userId) return;
-
+ const userIp = await getUserIP();
     const categoryToUse =
       letterUploaded === 0 ? letterCategoryCode : selectedCategory;
 
@@ -150,51 +185,52 @@ const ClientFileUpload = () => {
       fileList.filter((f) => f.categary_cd === categoryToUse).length + 1;
 
     const formData = new FormData();
-    formData.append("ref_id", savedRefId);
-    formData.append("financial_year", financial_year);
+    formData.append("savedRefId", savedRefId);
+    formData.append("financialYear", financialYear);
     formData.append("categary_cd", categoryToUse);
     formData.append("nextCount", nextCount);
     formData.append("user_id", userId);
     formData.append("user_name", userName);
     formData.append("file", file);
+    formData.append("UserIp", userIp );
 
-    await axios.post("http://103.79.34.50:3080/api/post-files", formData, {
+
+    await axios.post("http://103.79.34.50:8083/api/Client/uploadfile", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    // If uploaded Letter, mark as uploaded and auto-select Matter
+    // After letter upload auto-switch to matter
     if (categoryToUse === letterCategoryCode) {
       setLetterUploaded(1);
-      const matter = categories.find((c) =>
-        c.cat_name?.toLowerCase().includes("matter"),
-      );
-      if (matter) setSelectedCategory(matter.cat_cd);
-      else setSelectedCategory(VIRTUAL_MATTER.cat_cd);
+      setSelectedCategory(matterCategoryCode || VIRTUAL_MATTER.categoryCd);
     }
 
     setFile(null);
     setLinkName("");
     setFilePreviewUrl(null);
-    fileInputRef.current.value = "";
+    if (fileInputRef.current) fileInputRef.current.value = "";
 
     setShowModal(true);
     fetchFiles(categoryToUse);
   };
 
+  /* ========= EFFECTS ========= */
   useEffect(() => {
     fetchCategories();
-  }, [savedRefId, financial_year]);
+  }, [savedRefId, financialYear]);
 
   useEffect(() => {
-    if (selectedCategory) fetchFiles(selectedCategory);
+    if (selectedCategory) {
+      fetchFiles(selectedCategory);
+    }
   }, [selectedCategory]);
 
-  /* ========= NORMALIZED CATEGORIES (with virtual Matter) ========= */
-  const normalizedCategories = React.useMemo(() => {
+  /* ========= NORMALIZED CATEGORIES ========= */
+  const normalizedCategories = useMemo(() => {
     const list = [...categories];
 
     const hasMatter = list.some((c) =>
-      c.cat_name?.toLowerCase().includes("matter"),
+      c?.categoryName?.toLowerCase()?.includes("matter")
     );
 
     if (letterUploaded > 0 && !hasMatter) {
@@ -204,18 +240,141 @@ const ClientFileUpload = () => {
     return list;
   }, [categories, letterUploaded]);
 
+  const letterCategoryName = useMemo(() => {
+  const cat = categories.find(
+    (c) => c.categoryCd === letterCategoryCode
+  );
+  return cat?.categoryName || "Letter";
+}, [categories, letterCategoryCode]);
+
+// ============update==================
+const handleEditFileChange = async (e) => {
+  const newFile = e.target.files[0];
+
+  if (!newFile || !fileToReplaceSno) return;
+
+  try {
+    const originalFile = fileList.find(
+      (f) => Number(f.sno) === Number(fileToReplaceSno)
+    );
+
+    if (!originalFile) {
+      alert("File record not found!");
+      return;
+    }
+// ✅ Extract nextCount from filename (last underscore)
+    const extractNextCount = (fileName) => {
+      const base = fileName.split(".")[0];   // remove extension
+      const parts = base.split("_");         // split by _
+      return Number(parts[parts.length - 1]); // last value
+    };
+
+    const nextCount = extractNextCount(originalFile.link_name);
+const userIp = await getUserIP();
+    // console.log("Extracted nextCount:", nextCount);
+    const formData = new FormData();
+
+    // 🔥 Correct field names according to your backend
+    formData.append("savedRefId", savedRefId);
+    formData.append("financialYear", financialYear);
+    formData.append("categary_cd", originalFile.categary_cd);
+    formData.append("nextCount", nextCount); 
+    formData.append("sno", originalFile.sno);
+    formData.append("user_id", userId);
+    formData.append("user_name", userName);
+    formData.append("file", newFile);
+    formData.append("UserIp", userIp );
+
+    const res = await axios.put(
+      "http://103.79.34.50:8083/api/Client/updatefile",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+
+    if (res.data?.status === 1) {
+      alert("File updated successfully!");
+
+      // Refresh file list for the same category
+      await fetchFiles(originalFile.categary_cd);
+    } else {
+      alert(res.data?.message || "Update failed");
+    }
+  } catch (err) {
+    console.error("Update error:", err.response?.data || err.message);
+    alert("Error updating file");
+  } finally {
+    setFileToReplaceSno(null);
+    if (editFileInputRef.current) {
+      editFileInputRef.current.value = "";
+    }
+  }
+};
+const startEditProcess = (sno) => {
+  setFileToReplaceSno(sno);
+  editFileInputRef.current.click();
+};
+
+// ===========delete==================
+const handleDeleteFile = async (sno) => {
+  if (!sno) return;
+
+  const originalFile = fileList.find(
+    (f) => Number(f.sno) === Number(sno)
+  );
+
+  if (!originalFile) {
+    alert("File record not found!");
+    return;
+  }
+
+  if (!window.confirm("Are you sure you want to delete this file?")) return;
+
+  try {const userIp = await getUserIP();
+    const url = `http://103.79.34.50:8083/api/Client/deletefile/${savedRefId}/${financialYear}/${originalFile.sno}`;
+console.log("Delete URL:", url);
+    const bodyData = {
+      userId: userId,
+      userName: userName,
+      userIp: userIp   
+    };
+
+    const res = await axios.delete(url, {
+      data: bodyData, // 🔥 DELETE must send body like this in axios
+      headers: { "Content-Type": "application/json" }
+    });
+
+    if (res.data?.status === 1) {
+      alert("File deleted successfully!");
+      await fetchFiles(originalFile.categary_cd);
+      
+    } else {
+      alert(res.data?.message || "Delete failed");
+    }
+  } catch (err) {
+    console.error("Delete error:", err.response?.data || err.message);
+    alert("Error deleting file");
+  }
+};
+
+
+const handleNext = () => {
+  // You can change the next route here
+  router.push(`/client/forward`);
+};
+
+
+// =================Byte to MB===================
+const formatBytesToMB = (bytes) => {
+  if (!bytes) return "0 MB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+};
+
   /* ========= UI ========= */
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* <Card sx={{ mb: 4, background: "linear-gradient(135deg,#667eea,#764ba2)", color: "#fff", borderRadius: 3 }}>
-        <CardContent>
-          <Box display="flex" alignItems="center" gap={2}>
-            <FaFolder size={32} />
-            <Typography variant="h5" fontWeight="bold">File Management</Typography>
-          </Box>
-        </CardContent>
-      </Card> */}
-
+      {/* Header Card */}
       <Card
         sx={{
           mb: 4,
@@ -244,12 +403,13 @@ const ClientFileUpload = () => {
             </Paper>
             <Paper sx={{ p: 2 }}>
               <Typography variant="caption">Financial Year</Typography>
-              <Typography fontWeight="bold">{financial_year}</Typography>
+              <Typography fontWeight="bold">{financialYear}</Typography>
             </Paper>
           </Box>
         </CardContent>
       </Card>
 
+      {/* Upload Card */}
       <Card sx={{ mb: 4, borderRadius: 3 }}>
         <CardContent>
           <Box textAlign="center" mb={3}>
@@ -260,29 +420,27 @@ const ClientFileUpload = () => {
           </Box>
 
           <Box display="flex" gap={3} mb={3}>
-            {/* Category */}
             {letterUploaded === 0 ? (
               <TextField label="Category" value="Letter" disabled fullWidth />
             ) : (
               <TextField
                 select
-                label="Category"
+               
+                size="small"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 fullWidth
               >
                 {normalizedCategories.map((cat) => (
-                  <MenuItem key={cat.cat_cd} value={cat.cat_cd}>
-                    {cat.cat_name}
+                  <MenuItem key={cat.categoryCd} value={cat.categoryCd}>
+                    {cat.categoryName}
                   </MenuItem>
                 ))}
               </TextField>
             )}
 
-            {/* File Name */}
-            <TextField label="File Name" value={linkName} fullWidth />
+            <TextField label="File Name"    size="small" value={linkName} fullWidth />
           </Box>
-
           <input
             hidden
             type="file"
@@ -293,12 +451,13 @@ const ClientFileUpload = () => {
           <Button
             fullWidth
             variant="contained"
-            onClick={() => fileInputRef.current.click()}
+            onClick={() => fileInputRef.current?.click()}
           >
             Browse
           </Button>
+
           <Paper
-            onClick={() => fileInputRef.current.click()}
+            onClick={() => fileInputRef.current?.click()}
             onDragOver={(e) => {
               e.preventDefault();
               setIsDragging(true);
@@ -313,6 +472,7 @@ const ClientFileUpload = () => {
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
+              mt: 2,
             }}
           >
             <Box textAlign="center">
@@ -326,7 +486,7 @@ const ClientFileUpload = () => {
               ) : (
                 <>
                   {filePreviewUrl ? (
-                    <img src={filePreviewUrl} height={120} />
+                    <img src={filePreviewUrl} height={120} alt="preview" />
                   ) : (
                     <FaFileAlt size={40} />
                   )}
@@ -335,6 +495,7 @@ const ClientFileUpload = () => {
               )}
             </Box>
           </Paper>
+
           <Box textAlign="center" mt={3}>
             <Button variant="contained" disabled={!file} onClick={handleUpload}>
               Upload
@@ -343,30 +504,148 @@ const ClientFileUpload = () => {
         </CardContent>
       </Card>
 
-      {/* Uploaded Files Table */}
+      {/* Files Table */}
       <Paper>
         <Typography sx={{ p: 2, background: "#222", color: "#fff" }}>
           Uploaded Files
         </Typography>
+       
+
         <Table>
-          <TableBody>
-            {fileList.map((f, i) => (
-              <TableRow key={i}>
-                <TableCell>{i + 1}</TableCell>
-                <TableCell>{f.link_name}</TableCell>
-                <TableCell>
-                  <Button
-                    href={`http://103.79.34.50:3080/api/${f.file_path}`}
-                    target="_blank"
-                  >
-                    <FaDownload />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+  <TableHead>
+    <TableRow>
+      <TableCell><strong>S.No</strong></TableCell>
+      <TableCell><strong>File Name</strong></TableCell>
+         <TableCell><strong>File Size</strong></TableCell>
+            <TableCell><strong>File Type</strong></TableCell>
+      <TableCell><strong>Action</strong></TableCell>
+    </TableRow>
+  </TableHead>
+
+  <TableBody>
+    {fileList.map((f, i) => (
+      <TableRow key={i}>
+        <TableCell>{i + 1}</TableCell>
+        <TableCell>{f.link_name}</TableCell>
+   
+         <TableCell>{formatBytesToMB(f.file_size_in_bytes)}</TableCell>
+  <TableCell>{f.content_type}</TableCell>
+  
+
+{/* =============Actions with Download, Edit, Delete Buttons============= */}
+        <TableCell align="center">
+  <Stack direction="row" spacing={1} justifyContent="center">
+    
+    {/* Download Button */}
+    <Tooltip title="Download File" arrow>
+      <IconButton
+        color="success"
+        component="a"
+        href={`http://103.79.34.50:8083/Uploads/Client/${f.link_name}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{
+          border: "1px solid",
+          borderColor: "success.main",
+          "&:hover": {
+            backgroundColor: "success.main",
+            color: "#fff",
+          },
+        }}
+      >
+        {/* <FaDownload size={16} /> */}
+        <FaEye size={16} />
+      </IconButton>
+    </Tooltip>
+
+    {/* Edit Button */}
+    <Tooltip title="Edit / Replace File" arrow>
+      <IconButton
+        color="warning"
+        onClick={() => startEditProcess(f.sno)}
+        sx={{
+          border: "1px solid",
+          borderColor: "warning.main",
+          "&:hover": {
+            backgroundColor: "warning.main",
+            color: "#fff",
+          },
+        }}
+      >
+        <FaPencilAlt size={16} />
+      </IconButton>
+
+      <input
+  type="file"
+  hidden
+  ref={editFileInputRef}
+  onChange={handleEditFileChange}
+/>
+    </Tooltip>
+
+    {/* Delete Button */}
+    <Tooltip title="Delete File" arrow>
+      <IconButton
+        color="error"
+        onClick={() => handleDeleteFile(f.sno)}
+        sx={{
+          border: "1px solid",
+          borderColor: "error.main",
+          "&:hover": {
+            backgroundColor: "error.main",
+            color: "#fff",
+          },
+        }}
+      >
+        <FaTrash size={16} />
+      </IconButton>
+    </Tooltip>
+
+  </Stack>
+</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table> 
+
+{/* Navigation Buttons */}
+<Box display="flex" justifyContent="space-between" mt={3}>
+  {/* Back Button */}
+  <Button
+    variant="outlined"
+    color="primary"
+    onClick={() => router.back()}
+    sx={{
+      px: 4,
+      py: 1,
+      borderRadius: 2,
+      textTransform: "none",
+      fontWeight: "bold",
+    }}
+  >
+    ← Back
+  </Button>
+
+  {/* Next Button */}
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={() => handleNext()}
+    sx={{
+      px: 4,
+      py: 1,
+      borderRadius: 2,
+      textTransform: "none",
+      fontWeight: "bold",
+    }}
+  >
+    Next →
+  </Button>
+</Box>
       </Paper>
+
+
+    
 
       {/* Success Modal */}
       <Dialog open={showModal} onClose={() => setShowModal(false)}>
@@ -383,5 +662,4 @@ const ClientFileUpload = () => {
 };
 
 export default ClientFileUpload;
-// ===============================
-// ===============================
+

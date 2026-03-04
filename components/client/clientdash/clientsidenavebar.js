@@ -1,20 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Box,
   List,
   ListItemButton,
   ListItemText,
   Divider,
-  Collapse,
-  Typography,
 } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 const navItemStyle = {
   color: "#E6EDF3",
@@ -42,9 +37,67 @@ const navItemStyle = {
 
 const ClientSideNavbar = ({ isCollapsed }) => {
   const pathname = usePathname();
-  const [openProfile, setOpenProfile] = useState(false);
+  const searchParams = useSearchParams();
 
-  const isActive = (path) => pathname === path;
+  const isActive = (path, action) => {
+    if (action) {
+      return pathname === path && searchParams.get("action") === action;
+    }
+    return pathname === path;
+  };
+
+  const menuItems = [
+    { label: "Dashboard", path: "/newrequest" },
+    { label: "Notice Board", path: "/client/noticeboard" },
+    {
+      label: "Create New Request / Upload Your Work Order",
+      path: "/client/clientnewrequist", // fixed typo
+    },
+    { label: "Rejected List / Inbox", 
+       path: "/client/forward",
+      action: "get_rejected", },
+
+    // Requests with query params (Next.js way instead of state)
+    {
+      label: "Submited Requests",
+      path: "/client/forward",
+      action: "get_forwarded",
+    },
+    {
+      label: "Draft Request",
+      path: "/client/forward",
+      action: "get_not_forwarded",
+    },
+    {
+      label: "Under Processing Request",
+      path: "/client/forward",
+      action: "get_under_process",
+    },
+    {
+      label: "Accepted Request",
+      path: "/client/forward",
+      action: "get_all_accepted",
+    },
+    {
+      label: "Unaccepted Request",
+      path: "/client/forward",
+      action: "get_all_unaccepted",
+    },
+
+    { label: "Published Advertisement", path: "/Forward-Request" },
+    { label: "Report", path: "/client/report" },
+    // { label: "Check Status", path: "/client/newsratelist" },
+    { label: "News Paper Rate List", path: "/client/newsratelist" },
+    {
+      label: "Generated Bill List / Outstanding / Payment Details",
+      path: "/Forward-Request",
+    },
+  ];
+
+  const footerItems = [
+    { label: "About Us", path: "/aboutus" },
+    { label: "Help Desk", path: "/helpdesk" },
+  ];
 
   return (
     <Box
@@ -52,33 +105,46 @@ const ClientSideNavbar = ({ isCollapsed }) => {
         background:
           "linear-gradient(180deg, #0F2027, #203A43, #2C5364)",
         boxShadow: "4px 0 12px rgba(0,0,0,0.35)",
-        height: "100%", 
-        overflow: "hidden"
+        height: "100%",
+        overflowY: "auto", // allow scroll instead of hidden
       }}
     >
       <List disablePadding sx={{ p: 1 }}>
-        {[
-          { label: "Dashboard", path: "/newrequest" },
-          { label: "Notice Board", path: "/client/noticeboard" },
-          {
-            label: "Create New Request / Upload Your Work Order",
-            path: "/client/clientnewrequist",
-          },
-          { label: "Inbox", path: "/client/newrequest" },
-          { label: "Submited Requests", path: "/newrequest" },
-          { label: "Draft Request", path: "/forwardto" },
-          { label: "Under Processing Request", path: "/Forward-Request" },
-          { label: "Accepted Request", path: "/Forward-Request" },
-          { label: "Published Advertisement", path: "/Forward-Request" },
-          { label: "Report", path: "/client/report" },
+        {menuItems.map((item, index) => {
+          const href = item.action
+            ? `${item.path}?action=${item.action}`
+            : item.path;
 
-          { label: "Check Status", path: "/client/newsratelist" },
-          { label: "News Paper Rate List", path: "/client/newsratelist" },
-          {
-            label: "Generated Bill List / Outstanding / Payment Details",
-            path: "/Forward-Request",
-          },
-        ].map((item, index) => (
+          return (
+            <ListItemButton
+              key={index}
+              component={Link}
+              href={href}
+              selected={isActive(item.path, item.action)}
+              sx={navItemStyle}
+            >
+              {!isCollapsed && (
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontSize: "13px",
+                    letterSpacing: "0.3px",
+                    lineHeight: 1.4,
+                  }}
+                />
+              )}
+            </ListItemButton>
+          );
+        })}
+
+        <Divider
+          sx={{
+            my: 1.5,
+            borderColor: "rgba(255,255,255,0.15)",
+          }}
+        />
+
+        {footerItems.map((item, index) => (
           <ListItemButton
             key={index}
             component={Link}
@@ -92,40 +158,11 @@ const ClientSideNavbar = ({ isCollapsed }) => {
                 primaryTypographyProps={{
                   fontSize: "13px",
                   letterSpacing: "0.3px",
-                  lineHeight: 1.4,
                 }}
               />
             )}
           </ListItemButton>
         ))}
-        <Divider
-          sx={{
-            my: 1.5,
-            borderColor: "rgba(255,255,255,0.15)",
-          }}
-        />
-
-        {[{ label: "About Us", path: "/aboutus" }, { label: "Help Desk", path: "/helpdesk" }].map(
-          (item, index) => (
-            <ListItemButton
-              key={index}
-              component={Link}
-              href={item.path}
-              selected={isActive(item.path)}
-              sx={navItemStyle}
-            >
-              {!isCollapsed && (
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{
-                    fontSize: "13px",
-                    letterSpacing: "0.3px",
-                  }}
-                />
-              )}
-            </ListItemButton>
-          )
-        )}
       </List>
     </Box>
   );

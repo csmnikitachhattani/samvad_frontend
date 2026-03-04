@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import adminServices from "@/services/adminServices";
 import {
   Box,
   Button,
@@ -18,6 +20,8 @@ import {
   InputAdornment,
 } from "@mui/material";
 import axiosClient from "@/lib/axiosClient";
+
+
 // ── Shared field style ────────────────────────────────────────────────────────
 const field = {
   "& .MuiOutlinedInput-root": {
@@ -209,6 +213,8 @@ function ContentCategoryRadio({ value, onChange }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function ClientAttachmentForm() {
+  const { id } = useParams();
+  console.log(id)
   const [formData, setFormData] = useState({
     contentCategory: "outdoor_media",
     letterNo: "",
@@ -233,6 +239,28 @@ export default function ClientAttachmentForm() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+   
+  useEffect(() => {
+    let finyear = localStorage.getItem('financialYear')
+    const payload = {
+        "client_ref_id": "202603002098",
+  "fin_year": "2024-2025"
+}
+    
+    async function fetchData() {
+      try {
+        const res = await adminServices.getClientRecord(payload);
+        console.log(res)
+        setData(res);
+      } catch (error) {
+        console.error("Failed to fetch work orders", error);
+      } finally {
+        //setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,666 +1,15 @@
-// // "use client";
-
-// // import React, { useEffect, useState, useRef } from "react";
-// // import axios from "axios";
-// // import { useRouter, useSearchParams } from "next/navigation";
-
-// // import {
-// //   Box,
-// //   Grid,
-// //   Card,
-// //   CardContent,
-// //   Typography,
-// //   TextField,
-// //   Button,
-// //   Select,
-// //   MenuItem,
-// //   Dialog,
-// //   DialogTitle,
-// //   DialogContent,
-// //   DialogActions,
-// //   Divider,
-// // } from "@mui/material";
-
-// // const RequestForm = ({ category }) => {
-// //   const router = useRouter();
-// //   const searchParams = useSearchParams();
-
-// //   const action = searchParams.get("action"); // "update"
-// //   const rowData =
-// //     typeof window !== "undefined"
-// //       ? JSON.parse(sessionStorage.getItem("rowData") || "null")
-// //       : null;
-
-// //   // ================= Init LocalStorage =================
-// //   useEffect(() => {
-// //     if (!localStorage.getItem("financial_year"))
-// //       localStorage.setItem("financial_year", "2024-2025");
-
-// //     if (!localStorage.getItem("user_id"))
-// //       localStorage.setItem("user_id", "00100");
-
-// //     if (!localStorage.getItem("ref_Category_id"))
-// //       localStorage.setItem("ref_Category_id", "02");
-
-// //     if (!localStorage.getItem("user_name"))
-// //       localStorage.setItem(
-// //         "user_name",
-// //         "SUPERINTENDING ENGINEER, City Circle-II CSPDCL,Raipur, रायपुर"
-// //       );
-
-// //     fetchIP();
-// //   }, []);
-
-// //   const financial_year = localStorage.getItem("financial_year");
-// //   const user_id = localStorage.getItem("user_id");
-// //   const user_name = localStorage.getItem("user_name");
-
-// //   // ================= Category Logic =================
-// //   const cat_text = category?.cat_text || "";
-// //   const category_option = cat_text ? cat_text.split("-")[0].trim() : "";
-// //   const cat_id = category?.cat_id || "";
-
-// //   const form_option = ["classified", "display"].includes(
-// //     category_option.toLowerCase()
-// //   );
-
-// //   // ================= State =================
-// //   const [formData, setFormData] = useState({
-// //     subject: "",
-// //     tender_amt: "",
-// //     letter_no: "",
-// //     letter_date: "",
-// //     schedule_date: "",
-// //     remarks: "",
-// //     ref_Category_id: "",
-// //     ref_Category_text: "",
-// //     print_in_national_np: "",
-// //     print_in_local_np: "",
-// //     print_in_state_np: "",
-// //     print_in_other_np: "",
-// //     ip_address: "",
-// //   });
-
-// //   const [loading, setLoading] = useState(false);
-// //   const [openDialog, setOpenDialog] = useState(false);
-// //   const [savedRefId, setSavedRefId] = useState("");
-
-// //   const letterDateRef = useRef(null);
-// //   const scheduleDateRef = useRef(null);
-
-// //   // ================= Fetch IP =================
-// //   const fetchIP = async () => {
-// //     try {
-// //       const res = await fetch("https://api.ipify.org?format=json");
-// //       const data = await res.json();
-// //       setFormData((prev) => ({ ...prev, ip_address: data.ip }));
-// //     } catch (err) {
-// //       console.error(err);
-// //     }
-// //   };
-
-// //   // ================= Auto Fill Category =================
-// //   useEffect(() => {
-// //     if (cat_text && action !== "update") {
-// //       setFormData((prev) => ({
-// //         ...prev,
-// //         ref_Category_id: cat_id,
-// //         ref_Category_text: category_option,
-// //       }));
-// //     }
-// //   }, [cat_text, action]);
-
-// //   // ================= Edit Mode =================
-// //   useEffect(() => {
-// //     if (action === "update" && rowData) {
-// //       setFormData({
-// //         ...rowData,
-// //         letter_date: rowData.letter_date?.split("T")[0],
-// //         schedule_date: rowData.schedule_date?.split("T")[0],
-// //       });
-// //       window.scrollTo({ top: 0, behavior: "smooth" });
-// //     }
-// //   }, [action, rowData]);
-
-// //   // ================= Handlers =================
-// //   const handleChange = (e) => {
-// //     const { name, value } = e.target;
-// //     setFormData((prev) => ({ ...prev, [name]: value }));
-// //   };
-
-// //   const handleSubmit = async () => {
-// //     setLoading(true);
-// //     try {
-// //       const payload = {
-// //         ...formData,
-// //         financial_year,
-// //         user_id,
-// //         user_name,
-// //       };
-
-// //       const res = await axios.post(
-// //         "http://103.79.34.50:3080/api/client-advt-request",
-// //         payload
-// //       );
-
-// //       setSavedRefId(res.data.ref_id);
-// //       setOpenDialog(true);
-// //     } catch (err) {
-// //       alert(err.response?.data?.message || "Submit error");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   const handleUpdate = async () => {
-// //     setLoading(true);
-// //     try {
-// //       await axios.put(
-// //         `http://103.79.34.50:3080/api/client-advt-request/${rowData.ref_id}`,
-// //         {
-// //           ...formData,
-// //           financial_year,
-// //           user_id,
-// //         }
-// //       );
-// //       setSavedRefId(rowData.ref_id);
-// //       setOpenDialog(true);
-// //     } catch (err) {
-// //       alert("Update failed");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   const handleOk = () => {
-// //     setOpenDialog(false);
-// //     router.push(`/upload-file/${savedRefId}`);
-// //   };
-
-// //   // ================= UI =================
-// //   return (
-// //     <Box p={4}>
-// //       <Card elevation={3}>
-// //         <CardContent>
-// //           <Typography align="center" fontWeight="bold">
-// //             Financial Year: {financial_year}
-// //           </Typography>
-
-// //           <Divider sx={{ my: 2 }} />
-
-// //           <Grid container spacing={2}>
-// //             <Grid item md={3} xs={12}>
-// //               <TextField
-// //                 fullWidth
-// //                 label="Letter No"
-// //                 name="letter_no"
-// //                 value={formData.letter_no}
-// //                 onChange={handleChange}
-// //               />
-// //             </Grid>
-
-// //             <Grid item md={3} xs={12}>
-// //               <TextField
-// //                 fullWidth
-// //                 label="Letter Date"
-// //                 value={formData.letter_date}
-// //                 onClick={() => letterDateRef.current.showPicker()}
-// //                 InputProps={{ readOnly: true }}
-// //               />
-// //               <input
-// //                 type="date"
-// //                 hidden
-// //                 ref={letterDateRef}
-// //                 onChange={(e) =>
-// //                   setFormData((p) => ({ ...p, letter_date: e.target.value }))
-// //                 }
-// //               />
-// //             </Grid>
-
-// //             <Grid item md={5} xs={12}>
-// //               <TextField
-// //                 fullWidth
-// //                 required
-// //                 label="Subject"
-// //                 name="subject"
-// //                 value={formData.subject}
-// //                 onChange={handleChange}
-// //               />
-// //             </Grid>
-
-// //             <Grid item md={3} xs={12}>
-// //               <TextField
-// //                 fullWidth
-// //                 label="Schedule Date"
-// //                 value={formData.schedule_date}
-// //                 onClick={() => scheduleDateRef.current.showPicker()}
-// //                 InputProps={{ readOnly: true }}
-// //               />
-// //               <input
-// //                 type="date"
-// //                 hidden
-// //                 ref={scheduleDateRef}
-// //                 onChange={(e) =>
-// //                   setFormData((p) => ({
-// //                     ...p,
-// //                     schedule_date: e.target.value,
-// //                   }))
-// //                 }
-// //               />
-// //             </Grid>
-
-// //             {form_option && (
-// //               <Grid item md={3} xs={12}>
-// //                 <TextField
-// //                   fullWidth
-// //                   type="number"
-// //                   label="Tender Amount"
-// //                   name="tender_amt"
-// //                   value={formData.tender_amt}
-// //                   onChange={handleChange}
-// //                 />
-// //               </Grid>
-// //             )}
-
-// //             <Grid item md={3} xs={12}>
-// //               <Select
-// //                 fullWidth
-// //                 value={formData.ref_Category_id}
-// //                 onChange={(e) =>
-// //                   setFormData((p) => ({
-// //                     ...p,
-// //                     ref_Category_id: e.target.value,
-// //                     ref_Category_text:
-// //                       e.target.options[e.target.selectedIndex].text,
-// //                   }))
-// //                 }
-// //               >
-// //                 <MenuItem value={cat_id}>{category_option}</MenuItem>
-// //               </Select>
-// //             </Grid>
-// //           </Grid>
-
-// //           {form_option && (
-// //             <>
-// //               <Divider sx={{ my: 3 }} />
-// //               <Typography fontWeight="bold" mb={1}>
-// //                 Enter Number of Papers
-// //               </Typography>
-// //               <Grid container spacing={2}>
-// //                 {[
-// //                   "print_in_national_np",
-// //                   "print_in_local_np",
-// //                   "print_in_state_np",
-// //                   "print_in_other_np",
-// //                 ].map((field, i) => (
-// //                   <Grid item md={3} xs={12} key={i}>
-// //                     <TextField
-// //                       fullWidth
-// //                       type="number"
-// //                       label={field.replace(/_/g, " ")}
-// //                       name={field}
-// //                       value={formData[field]}
-// //                       onChange={handleChange}
-// //                     />
-// //                   </Grid>
-// //                 ))}
-// //               </Grid>
-// //             </>
-// //           )}
-
-// //           <Divider sx={{ my: 3 }} />
-
-// //           <TextField
-// //             fullWidth
-// //             multiline
-// //             rows={4}
-// //             label="Remarks"
-// //             name="remarks"
-// //             value={formData.remarks}
-// //             onChange={handleChange}
-// //           />
-
-// //           <Box textAlign="center" mt={3}>
-// //             <Button
-// //               variant="contained"
-// //               size="large"
-// //               disabled={loading}
-// //               onClick={action === "update" ? handleUpdate : handleSubmit}
-// //             >
-// //               {loading
-// //                 ? "Processing..."
-// //                 : action === "update"
-// //                 ? "Update Request"
-// //                 : "Submit Request"}
-// //             </Button>
-// //           </Box>
-// //         </CardContent>
-// //       </Card>
-
-// //       {/* SUCCESS DIALOG */}
-// //       <Dialog open={openDialog}>
-// //         <DialogTitle>Success</DialogTitle>
-// //         <DialogContent>
-// //           <Typography align="center">
-// //             Ref ID: <b>{savedRefId}</b>
-// //           </Typography>
-// //         </DialogContent>
-// //         <DialogActions>
-// //           <Button onClick={handleOk} variant="contained">
-// //             OK
-// //           </Button>
-// //         </DialogActions>
-// //       </Dialog>
-// //     </Box>
-// //   );
-// // };
-
-// // export default RequestForm;
-
-// // "use client";
-
-// // import React, { useEffect, useState, useRef } from "react";
-// // import axios from "axios";
-// // import { useRouter, useSearchParams } from "next/navigation";
-// // import {
-// //   Box,
-// //   Card,
-// //   CardContent,
-// //   Typography,
-// //   TextField,
-// //   Button,
-// //   Dialog,
-// //   DialogTitle,
-// //   DialogContent,
-// //   DialogActions,
-// //   Divider,
-// //   Grid,
-// //   Select,
-// //   MenuItem,
-// // } from "@mui/material";
-
-// // import { initLocalStorage } from "@/app/utils/initClientStorage";
-
-// // const RequestForm = ({ category }) => {
-// //   const router = useRouter();
-// //   const searchParams = useSearchParams();
-// //   const action = searchParams.get("action");
-
-// //   // ================= STATE (ALL HOOKS FIRST) =================
-// //   const [mounted, setMounted] = useState(false);
-
-// //   const [clientData, setClientData] = useState({
-// //     financial_year: "",
-// //     user_id: "",
-// //     user_name: "",
-// //     ref_Category_id: "",
-// //   });
-
-// //   const [formData, setFormData] = useState({
-// //     subject: "",
-// //     tender_amt: "",
-// //     letter_no: "",
-// //     letter_date: "",
-// //     schedule_date: "",
-// //     remarks: "",
-// //     ref_Category_id: "",
-// //     ref_Category_text: "",
-// //     print_in_national_np: "",
-// //     print_in_local_np: "",
-// //     print_in_state_np: "",
-// //     print_in_other_np: "",
-// //     ip_address: "",
-// //   });
-
-// //   const [loading, setLoading] = useState(false);
-// //   const [openDialog, setOpenDialog] = useState(false);
-// //   const [savedRefId, setSavedRefId] = useState("");
-
-// //   const letterDateRef = useRef(null);
-// //   const scheduleDateRef = useRef(null);
-
-// //   // ================= EFFECTS =================
-// //   useEffect(() => {
-// //     initLocalStorage();
-
-// //     setClientData({
-// //       financial_year: localStorage.getItem("financial_year") || "",
-// //       user_id: localStorage.getItem("user_id") || "",
-// //       user_name: localStorage.getItem("user_name") || "",
-// //       ref_Category_id: localStorage.getItem("ref_Category_id") || "",
-// //     });
-
-// //     setMounted(true);
-// //   }, []);
-
-// //   useEffect(() => {
-// //     const fetchIP = async () => {
-// //       try {
-// //         const res = await fetch("https://api.ipify.org?format=json");
-// //         const data = await res.json();
-// //         setFormData((prev) => ({ ...prev, ip_address: data.ip }));
-// //       } catch (err) {
-// //         console.error("IP fetch error", err);
-// //       }
-// //     };
-// //     fetchIP();
-// //   }, []);
-
-// //   // ================= SAFE RENDER CHECK =================
-// //   if (!mounted) return null;
-
-// //   const { financial_year, user_id, user_name } = clientData;
-
-// //   // ================= HANDLERS =================
-// //   const handleChange = (e) => {
-// //     const { name, value } = e.target;
-// //     setFormData((prev) => ({ ...prev, [name]: value }));
-// //   };
-
-// //   const handleSubmit = async () => {
-// //     setLoading(true);
-// //     try {
-// //       const payload = {
-// //         ...formData,
-// //         financial_year,
-// //         user_id,
-// //         user_name,
-// //       };
-
-// //       const res = await axios.post(
-// //         "http://103.79.34.50:3080/api/client-advt-request",
-// //         payload
-// //       );
-
-// //       setSavedRefId(res.data.ref_id);
-// //       setOpenDialog(true);
-// //     } catch (err) {
-// //       alert(err.response?.data?.message || "Submit error");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   const handleOk = () => {
-// //     setOpenDialog(false);
-// //     router.push(`/upload-file/${savedRefId}`);
-// //   };
-
-// //   // ================= UI =================
-// //   return (
-// //      <Box p={4}>
-// //     <Card elevation={3}>
-// //       <CardContent>
-// //          <Typography align="center" fontWeight="bold">
-// //            Financial Year: {financial_year}
-// //          </Typography>
-// //          <Divider sx={{ my: 2 }} />
-// //          <Grid container spacing={2}>
-// //            <Grid item md={3} xs={12}>
-// //              <TextField
-// //                 fullWidth
-// //                  label="Letter No"
-// //                  name="letter_no"
-// //                  value={formData.letter_no}
-// //                  onChange={handleChange}
-// //                />
-// //              </Grid>
-
-// //              <Grid item md={3} xs={12}>
-// //                <TextField
-// //                  fullWidth
-// //                  label="Letter Date"
-// //                  value={formData.letter_date}
-// //                  onClick={() => letterDateRef.current.showPicker()}
-// //                  InputProps={{ readOnly: true }}
-// //                />
-// //                <input
-// //                  type="date"
-// //                  hidden
-// //                  ref={letterDateRef}
-// //                  onChange={(e) =>
-// //                    setFormData((p) => ({ ...p, letter_date: e.target.value }))
-// //                  }
-// //                />
-// //              </Grid>
-// //              <Grid item md={5} xs={12}>
-// //                <TextField
-// //                  fullWidth
-// //                  required
-// //                  label="Subject"
-// //                  name="subject"
-// //                  value={formData.subject}
-// //                  onChange={handleChange}
-// //                />
-// //              </Grid>
-
-// //              <Grid item md={3} xs={12}>
-// //                <TextField
-// //                  fullWidth
-// //                  label="Schedule Date"
-// //                  value={formData.schedule_date}
-// //                  onClick={() => scheduleDateRef.current.showPicker()}
-// //                  InputProps={{ readOnly: true }}
-// //                />
-// //                <input
-// //                  type="date"
-// //                  hidden
-// //                  ref={scheduleDateRef}
-// //                  onChange={(e) =>
-// //                    setFormData((p) => ({
-// //                      ...p,
-// //                      schedule_date: e.target.value,
-// //                    }))
-// //                  }
-// //                />
-// //              </Grid>
-// //              {form_option && (
-// //                <Grid item md={3} xs={12}>
-// //                  <TextField
-// //                    fullWidth
-// //                    type="number"
-// //                    label="Tender Amount"
-// //                    name="tender_amt"
-// //                    value={formData.tender_amt}
-// //                    onChange={handleChange}
-// //                  />
-// //                </Grid>
-// //              )}
-// //              <Grid item md={3} xs={12}>
-// //                <Select
-// //                  fullWidth
-// //                  value={formData.ref_Category_id}
-// //                  onChange={(e) =>
-// //                    setFormData((p) => ({
-// //                      ...p,
-// //                      ref_Category_id: e.target.value,
-// //                      ref_Category_text:
-// //                        e.target.options[e.target.selectedIndex].text,
-// //                    }))
-// //                  }
-// //                >
-// //                  <MenuItem value={cat_id}>{category_option}</MenuItem>
-// //                </Select>
-// //              </Grid>
-// //            </Grid>
-// //            {form_option && (
-// //              <>
-// //                <Divider sx={{ my: 3 }} />
-// //                <Typography fontWeight="bold" mb={1}>
-// //                  Enter Number of Papers
-// //                </Typography>
-// //                <Grid container spacing={2}>
-// //                  {[
-// //                    "print_in_national_np",
-// //                    "print_in_local_np",
-// //                    "print_in_state_np",
-// //                    "print_in_other_np",
-// //                  ].map((field, i) => (
-// //                    <Grid item md={3} xs={12} key={i}>
-// //                      <TextField
-// //                        fullWidth
-// //                        type="number"
-// //                        label={field.replace(/_/g, " ")}
-// //                        name={field}
-// //                        value={formData[field]}
-// //                        onChange={handleChange}
-// //                      />
-// //                    </Grid>
-// //                  ))}
-// //                </Grid>
-// //              </>
-// //            )}
-// //            <Divider sx={{ my: 3 }} />
-// //            <TextField
-// //              fullWidth
-// //              multiline
-// //              rows={4}
-// //              label="Remarks"
-// //              name="remarks"
-// //              value={formData.remarks}
-// //              onChange={handleChange}
-// //            />
-// //            <Box textAlign="center" mt={3}>
-// //              <Button
-// //                variant="contained"
-// //                size="large"
-// //                disabled={loading}
-// //                onClick={action === "update" ? handleUpdate : handleSubmit}
-// //              >
-// //                {loading
-// //                  ? "Processing..."
-// //                  : action === "update"
-// //                  ? "Update Request"
-// //                  : "Submit Request"}
-// //              </Button>
-// //            </Box>
-// //          </CardContent>
-// //        </Card>
-// //        {/* SUCCESS DIALOG */}
-// //        <Dialog open={openDialog}>
-// //          <DialogTitle>Success</DialogTitle>
-// //          <DialogContent>
-// //            <Typography align="center">
-// //              Ref ID: <b>{savedRefId}</b>
-// //            </Typography>
-// //          </DialogContent>
-// //          <DialogActions>
-// //            <Button onClick={handleOk} variant="contained">
-// //              OK
-// //            </Button>
-// //          </DialogActions>
-// //        </Dialog>
-// //      </Box>
-// //   );
-// // };
-
-// // export default RequestForm;
+// // ====================================
 
 // "use client";
 
-// import React, { useEffect, useState, useRef } from "react";
+// import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import { useRouter, useSearchParams } from "next/navigation";
+// import dayjs from "dayjs";
+
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 // import {
 //   Box,
@@ -669,312 +18,435 @@
 //   Typography,
 //   TextField,
 //   Button,
+//   Grid,
+//   Select,
+//   MenuItem,
 //   Dialog,
 //   DialogTitle,
 //   DialogContent,
 //   DialogActions,
 //   Divider,
-//   Grid,
-//   Select,
-//   MenuItem,
 // } from "@mui/material";
-
-// import { initLocalStorage } from "@/app/utils/initClientStorage";
 
 // const RequestForm = ({ category }) => {
 //   const router = useRouter();
 //   const searchParams = useSearchParams();
+
+//   // ================= Router Params =================
 //   const action = searchParams.get("action");
+//   const rowData = searchParams.get("rowData")
+//     ? JSON.parse(searchParams.get("rowData"))
+//     : null;
 
-//   // ================= SAFE CATEGORY VALUES =================
-//   const form_option = category?.form_option || false;
-//   const cat_id = category?.cat_id || "";
-//   const category_option = category?.category_option || "";
-
-//   // ================= STATE =================
-//   const [mounted, setMounted] = useState(false);
-
-//   const [clientData, setClientData] = useState({
-//     financial_year: "",
-//     user_id: "",
-//     user_name: "",
-//     ref_Category_id: "",
-//   });
-
+//   // ================= State =================
 //   const [formData, setFormData] = useState({
 //     subject: "",
-//     tender_amt: "",
-//     letter_no: "",
-//     letter_date: "",
-//     schedule_date: "",
+//     tenderAmt: "",
+//     letterNo: "",
+//     letterDate: "",
+//     scheduleDate: "",
 //     remarks: "",
-//     ref_Category_id: "",
-//     ref_Category_text: "",
-//     print_in_national_np: "",
-//     print_in_local_np: "",
-//     print_in_state_np: "",
-//     print_in_other_np: "",
+//     refCategoryId: "",
+//    refCategoryText: "",
+//     printInNationalNp: "" || null,
+//     printInLocalNp: "" || null,
+//     printInStateNp: "" || null,
+//     printInOtherNp: "" || null,
 //     ip_address: "",
+//     forwardStatus: "N",
+//     deleteStatus: "N",
 //   });
 
 //   const [loading, setLoading] = useState(false);
-//   const [openDialog, setOpenDialog] = useState(false);
+//   const [showModal, setShowModal] = useState(false);
 //   const [savedRefId, setSavedRefId] = useState("");
 
-//   const letterDateRef = useRef(null);
-//   const scheduleDateRef = useRef(null);
-
-//   // ================= EFFECTS =================
-//   useEffect(() => {
-//     initLocalStorage();
-
-//     setClientData({
-//       financial_year: localStorage.getItem("financial_year") || "",
-//       user_id: localStorage.getItem("user_id") || "",
-//       user_name: localStorage.getItem("user_name") || "",
-//       ref_Category_id: localStorage.getItem("ref_Category_id") || "",
-//     });
-
-//     setMounted(true);
-//   }, []);
+//   // ================= Local Storage (Client Safe) =================
+//   const [financialYear, setFinancialYear] = useState("");
+//   const [userId, setUserId] = useState("");
+//   const [user_name, setUserName] = useState("");
 
 //   useEffect(() => {
-//     const fetchIP = async () => {
+//     if (typeof window === "undefined") return;
+
+//     localStorage.setItem(
+//       "financialYear",
+//       localStorage.getItem("financialYear") || "2024-2025",
+//     );
+//     localStorage.setItem("userId", localStorage.getItem("userId") || "00100");
+//     localStorage.setItem(
+//       "refCategoryId",
+//       localStorage.getItem("refCategoryId") || "02",
+//     );
+//     localStorage.setItem(
+//       "user_name",
+//       localStorage.getItem("user_name") ||
+//         "SUPERINTENDING ENGINEER, City Circle-II CSPDCL,Raipur, रायपुर",
+//     );
+
+//     setFinancialYear(localStorage.getItem("financialYear"));
+//     setUserId(localStorage.getItem("userId"));
+//     setUserName(localStorage.getItem("user_name"));
+
+//     const getIP = async () => {
 //       try {
 //         const res = await fetch("https://api.ipify.org?format=json");
 //         const data = await res.json();
-//         setFormData((prev) => ({ ...prev, ip_address: data.ip }));
-//       } catch (err) {
-//         console.error("IP fetch error", err);
+//         setFormData((p) => ({ ...p, ip_address: data.ip }));
+//       } catch {
+//         console.error("IP fetch failed");
 //       }
 //     };
-//     fetchIP();
+
+//     getIP();
 //   }, []);
 
-//   if (!mounted) return null;
+//   // ================= Category =================
+//   const catText = category?.catText || "";
+//   const category_option = catText ? catText.split("-")[0].trim() : "";
+//   const catId = category?.catId || "";
 
-//   const { financial_year, user_id, user_name } = clientData;
+//   const form_option = ["classified", "display"].includes(
+//     category_option.toLowerCase(),
+//   );
 
-//   // ================= HANDLERS =================
+//   // ================= Autofill Category =================
+//   useEffect(() => {
+//     if (catText && action !== "update") {
+//       setFormData((p) => ({
+//         ...p,
+//         refCategoryId: catId,
+//         refCategoryText: category_option,
+//       }));
+//     }
+//   }, [catText, action, catId, category_option]);
+
+//   // ================= Autofill Edit =================
+//   useEffect(() => {
+//     if (action === "update" && rowData) {
+//       setFormData({
+//         subject: rowData.subject || "",
+//         tenderAmt: rowData.tenderAmt || "",
+//         letterNo: rowData.letterNo || "",
+//         letterDate: rowData.letterDate?.split("T")[0] || "",
+//         scheduleDate: rowData.scheduleDate?.split("T")[0] || "",
+//         remarks: rowData.remarks || "",
+//         refCategoryId: rowData.refCategoryId || "",
+//         refCategoryText: rowData.refCategoryText || "",
+//         printInNationalNp: rowData.printInNationalNp || "",
+//         printInLocalNp: rowData.printInLocalNp || "",
+//         printInStateNp: rowData.printInStateNp || "",
+//         printInOtherNp: rowData.printInOtherNp || "",
+//         ip_address: rowData.ip_address || "",
+//         deleteStatus:"N",
+//         forwardStatus: "N",
+//       });
+//       window.scrollTo({ top: 0, behavior: "smooth" });
+//     }
+//   }, [action, rowData]);
+
+//   // ================= Handle Change =================
 //   const handleChange = (e) => {
 //     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
+//     setFormData((p) => ({ ...p, [name]: value }));
 //   };
 
-//   const handleSubmit = async () => {
+//   // ================= Submit =================
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
 //     setLoading(true);
-//     try {
-//       const payload = {
-//         ...formData,
-//         financial_year,
-//         user_id,
-//         user_name,
-//       };
 
+//     try {
 //       const res = await axios.post(
-//         "http://103.79.34.50:3080/api/client-advt-request",
-//         payload
+//         "http://103.79.34.50:8083/api/Client/insertclientadvtrequest",
+//         {
+//           ...formData,
+//           financialYear,
+//           userId,
+//           user_name,
+//         },
 //       );
 
 //       setSavedRefId(res.data.ref_id);
-//       setOpenDialog(true);
+//       setShowModal(true);
 //     } catch (err) {
-//       alert(err.response?.data?.message || "Submit error");
+//       alert(err.response?.data?.message || "Error submitting form");
 //     } finally {
 //       setLoading(false);
 //     }
 //   };
 
-//   // Update uses same logic (no change in behavior)
-//   const handleUpdate = handleSubmit;
+//   // ================= Update =================
+//   const handleUpdate = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
 
+//     try {
+//       await axios.put(
+//         `http://103.79.34.50:8083/api/Client/updateclientadvtrequest/${rowData.refId}`,
+//         {
+//           ...formData,
+//           financialYear,
+//           userId,
+//           refId: rowData.refId,
+//         },
+//       );
+
+//       setSavedRefId(rowData.refId);
+//       setShowModal(true);
+//     } catch (err) {
+//       alert(err.response?.data?.message || "Error updating");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // ================= OK Redirect =================
 //   const handleOk = () => {
-//     setOpenDialog(false);
-//     router.push(`/upload-file/${savedRefId}`);
+//     setShowModal(false);
+
+//     router.push(
+//       `/client/upload-file/${savedRefId}?financialYear=${financialYear}`,
+//     );
 //   };
 
 //   // ================= UI =================
 //   return (
-//     <Box p={4}>
-//       <Card elevation={3}>
-//         <CardContent>
-//           <Typography align="center" fontWeight="bold">
-//             Financial Year: {financial_year}
-//           </Typography>
-
-//           <Divider sx={{ my: 2 }} />
-
-//           <Grid container spacing={2}>
-//             <Grid item md={3} xs={12}>
-//               <TextField
-//                 fullWidth
-//                 label="Letter No"
-//                 name="letter_no"
-//                 value={formData.letter_no}
-//                 onChange={handleChange}
-//               />
-//             </Grid>
-
-//             <Grid item md={3} xs={12}>
-//               <TextField
-//                 fullWidth
-//                 label="Letter Date"
-//                 value={formData.letter_date}
-//                 onClick={() => letterDateRef.current.showPicker()}
-//                 InputProps={{ readOnly: true }}
-//               />
-//               <input
-//                 type="date"
-//                 hidden
-//                 ref={letterDateRef}
-//                 onChange={(e) =>
-//                   setFormData((p) => ({ ...p, letter_date: e.target.value }))
-//                 }
-//               />
-//             </Grid>
-
-//             <Grid item md={5} xs={12}>
-//               <TextField
-//                 fullWidth
-//                 required
-//                 label="Subject"
-//                 name="subject"
-//                 value={formData.subject}
-//                 onChange={handleChange}
-//               />
-//             </Grid>
-
-//             <Grid item md={3} xs={12}>
-//               <TextField
-//                 fullWidth
-//                 label="Schedule Date"
-//                 value={formData.schedule_date}
-//                 onClick={() => scheduleDateRef.current.showPicker()}
-//                 InputProps={{ readOnly: true }}
-//               />
-//               <input
-//                 type="date"
-//                 hidden
-//                 ref={scheduleDateRef}
-//                 onChange={(e) =>
-//                   setFormData((p) => ({
-//                     ...p,
-//                     schedule_date: e.target.value,
-//                   }))
-//                 }
-//               />
-//             </Grid>
-
-//             {form_option && (
-//               <Grid item md={3} xs={12}>
-//                 <TextField
-//                   fullWidth
-//                   type="number"
-//                   label="Tender Amount"
-//                   name="tender_amt"
-//                   value={formData.tender_amt}
-//                   onChange={handleChange}
-//                 />
-//               </Grid>
-//             )}
-
-//             <Grid item md={3} xs={12}>
-//               <Select
-//                 fullWidth
-//                 value={formData.ref_Category_id}
-//                 onChange={(e) =>
-//                   setFormData((p) => ({
-//                     ...p,
-//                     ref_Category_id: e.target.value,
-//                     ref_Category_text:
-//                       e.target.options[e.target.selectedIndex].text,
-//                   }))
-//                 }
-//               >
-//                 <MenuItem value={cat_id}>{category_option}</MenuItem>
-//               </Select>
-//             </Grid>
-//           </Grid>
-
-//           {form_option && (
-//             <>
-//               <Divider sx={{ my: 3 }} />
-//               <Typography fontWeight="bold" mb={1}>
-//                 Enter Number of Papers
-//               </Typography>
-
-//               <Grid container spacing={2}>
-//                 {[
-//                   "print_in_national_np",
-//                   "print_in_local_np",
-//                   "print_in_state_np",
-//                   "print_in_other_np",
-//                 ].map((field) => (
-//                   <Grid item md={3} xs={12} key={field}>
-//                     <TextField
-//                       fullWidth
-//                       type="number"
-//                       label={field.replace(/_/g, " ")}
-//                       name={field}
-//                       value={formData[field]}
-//                       onChange={handleChange}
-//                     />
-//                   </Grid>
-//                 ))}
-//               </Grid>
-//             </>
-//           )}
-
-//           <Divider sx={{ my: 3 }} />
-
-//           <TextField
-//             fullWidth
-//             multiline
-//             rows={4}
-//             label="Remarks"
-//             name="remarks"
-//             value={formData.remarks}
-//             onChange={handleChange}
-//           />
-
-//           <Box textAlign="center" mt={3}>
-//             <Button
-//               variant="contained"
-//               size="large"
-//               disabled={loading}
-//               onClick={action === "update" ? handleUpdate : handleSubmit}
-//             >
-//               {loading
-//                 ? "Processing..."
-//                 : action === "update"
-//                 ? "Update Request"
-//                 : "Submit Request"}
-//             </Button>
-//           </Box>
-//         </CardContent>
-//       </Card>
-
-//       {/* SUCCESS DIALOG */}
-//       <Dialog open={openDialog}>
-//         <DialogTitle>Success</DialogTitle>
+//     <Box p={3}>
+//       <Dialog open={showModal} onClose={handleOk}>
+//         <DialogTitle sx={{ bgcolor: "success.main", color: "#fff" }}>
+//           Success
+//         </DialogTitle>
 //         <DialogContent>
-//           <Typography align="center">
-//             Ref ID: <b>{savedRefId}</b>
+//           <Typography align="center" mt={2}>
+//             {action === "update"
+//               ? "Record updated successfully!"
+//               : "Data submitted successfully!"}
+//           </Typography>
+//           <Typography align="center" fontWeight="bold">
+//             Ref ID: {savedRefId}
 //           </Typography>
 //         </DialogContent>
 //         <DialogActions>
-//           <Button onClick={handleOk} variant="contained">
+//           <Button variant="contained" color="success" onClick={handleOk}>
 //             OK
 //           </Button>
 //         </DialogActions>
 //       </Dialog>
+
+//       <form>
+//         <Card>
+//           <CardContent>
+//             <Typography
+//               fontWeight="bold"
+//               mb={2}
+//               sx={{
+//                 userSelect: "none",
+//                 cursor: "default",
+//               }}
+//             >
+//               Financial Year: {financialYear}
+//             </Typography>
+
+//             <Grid container spacing={1}>
+//               <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
+//                 <TextField
+//                   fullWidth
+//                   size="small"
+//                   label="Letter No"
+//                   name="letterNo"
+//                   value={formData.letterNo}
+//                   onChange={handleChange}
+//                 />
+//               </Grid>
+
+//               <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+//                 <LocalizationProvider dateAdapter={AdapterDayjs}>
+//                   <DatePicker
+//                     label="Letter Date"
+//                     format="DD/MM/YYYY"
+//                     value={
+//                       formData.letterDate ? dayjs(formData.letterDate) : null
+//                     }
+//                     minDate={dayjs().subtract(7, "day")}
+//                     maxDate={dayjs()}
+//                     onChange={(newValue) => {
+//                       if (!newValue || !newValue.isValid()) {
+//                         setFormData((prev) => ({ ...prev, letterDate: "" }));
+//                         return;
+//                       }
+
+//                       setFormData((prev) => ({
+//                         ...prev,
+//                         letterDate: newValue.format("YYYY-MM-DD"),
+//                         scheduleDate: "", // 🔥 reset schedule date if letter date changes
+//                       }));
+//                     }}
+//                     slotProps={{
+//                       textField: {
+//                         fullWidth: true,
+//                         required: true,
+//                         size: "small",
+//                         inputProps: { readOnly: true }, // 🚫 no typing
+//                         onPaste: (e) => e.preventDefault(), // 🚫 no paste
+//                         onKeyDown: (e) => e.preventDefault(), // 🚫 no keyboard
+//                       },
+//                     }}
+//                   />
+//                 </LocalizationProvider>
+//               </Grid>
+
+//               <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+//                 <LocalizationProvider dateAdapter={AdapterDayjs}>
+//                   <DatePicker
+//                     label="Schedule Date"
+//                     format="DD/MM/YYYY"
+//                     value={
+//                       formData.scheduleDate
+//                         ? dayjs(formData.scheduleDate)
+//                         : null
+//                     }
+//                     minDate={dayjs().add(3, "day")} // ✅ Only allow after today + 3 days
+//                     onChange={(newValue) => {
+//                       if (!newValue || !newValue.isValid()) {
+//                         setFormData((prev) => ({ ...prev, scheduleDate: "" }));
+//                         return;
+//                       }
+
+//                       setFormData((prev) => ({
+//                         ...prev,
+//                         scheduleDate: newValue.format("YYYY-MM-DD"),
+//                       }));
+//                     }}
+//                     slotProps={{
+//                       textField: {
+//                         fullWidth: true,
+//                         required: true,
+//                         size: "small",
+//                         inputProps: { readOnly: true }, // 🚫 manual typing blocked
+//                         onPaste: (e) => e.preventDefault(), // 🚫 paste blocked
+//                         onKeyDown: (e) => e.preventDefault(), // 🚫 keyboard blocked
+//                       },
+//                     }}
+//                   />
+//                 </LocalizationProvider>
+//               </Grid>
+
+//               <Grid item size={{ xs: 12, sm: 6, md: 5 }}>
+//                 <TextField
+//                   fullWidth
+//                   rows={2}
+//                   multiline
+//                   label="Subject"
+//                   name="subject"
+//                   value={formData.subject}
+//                   onChange={handleChange}
+//                   required
+//                 />
+//               </Grid>
+
+//               <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+//                 <TextField
+//                   fullWidth
+//                   size="small"
+//                   label="Tender Amount"
+//                   name="tenderAmt"
+//                   value={formData.tenderAmt}
+//                   required
+//                   inputMode="decimal"
+//                   onChange={(e) => {
+//                     const value = e.target.value;
+
+//                     // Allow only digits and ONE decimal point
+//                     if (/^\d*\.?\d{0,2}$/.test(value)) {
+//                       setFormData((prev) => ({
+//                         ...prev,
+//                         tenderAmt: value,
+//                       }));
+//                     }
+//                   }}
+//                   onKeyDown={(e) => {
+//                     // Block invalid keys
+//                     if (["e", "E", "+", "-", ","].includes(e.key)) {
+//                       e.preventDefault();
+//                     }
+//                   }}
+//                 />
+//               </Grid>
+
+//               <Grid item size={{ xs: 12, sm: 6, md: 2 }}>
+//                 <Select fullWidth size="small" value={formData.refCategoryId}>
+//                   <MenuItem value={catId}>{category_option}</MenuItem>
+//                 </Select>
+//               </Grid>
+//             </Grid>
+
+//             {form_option && (
+//               <>
+//                 <Divider sx={{ my: 2 }} />
+//                 <Typography fontWeight="bold" color="success.main">
+//                   Enter Number of Papers
+//                 </Typography>
+
+//                 <Grid container spacing={2} mt={1}>
+//                   {[
+//                     ["printInNationalNp", "National Newspapers"],
+//                     ["printInLocalNp", "Local Newspapers"],
+//                     ["printInStateNp", "State Newspapers"],
+//                     ["printInOtherNp", "Other Newspapers"],
+//                   ].map(([name, label]) => (
+//                     <Grid item key={name} size={{ xs: 12, sm: 6, md: 3 }}>
+//                       <TextField
+//                         fullWidth
+//                         size="small"
+//                         type="number"
+//                         name={name}
+//                         label={label}
+//                         value={formData[name] || ""}
+//                         onChange={handleChange}
+//                       />
+//                     </Grid>
+//                   ))}
+//                 </Grid>
+//               </>
+//             )}
+
+//             <Grid container spacing={2}>
+//               <Grid item size={{ xs: 12, sm: 6, md: 5 }} mt={3}>
+//                 <TextField
+//                   fullWidth
+//                   multiline
+//                   rows={2}
+//                   label="Remarks"
+//                   name="remarks"
+//                   value={formData.remarks}
+//                   onChange={handleChange}
+//                 />
+//               </Grid>
+//             </Grid>
+//           </CardContent>
+//         </Card>
+
+//         <Box textAlign="center" mt={3}>
+//           <Button
+//             variant="contained"
+//             disabled={loading}
+//             onClick={action === "update" ? handleUpdate : handleSubmit}
+//           >
+//             {loading
+//               ? "Processing..."
+//               : action === "update"
+//                 ? "Update Request"
+//                 : "Submit Request"}
+//           </Button>
+//         </Box>
+//       </form>
 //     </Box>
 //   );
 // };
 
 // export default RequestForm;
-
-// ====================================
+// ===============================
 
 "use client";
 
@@ -1004,399 +476,834 @@ import {
   Divider,
 } from "@mui/material";
 
+/* ═══════════════════════════════════════════════════════════════════════
+   INSERT / UPDATE CLIENT ADVERTISEMENT REQUEST
+   Design: Instrument Sans · Arctic White / Navy Blue palette
+   Logic: 100% unchanged from original
+═══════════════════════════════════════════════════════════════════════ */
+
+const STYLES = `
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:            #f0f4fb;
+    --surface:       #ffffff;
+    --surface-sub:   #f8faff;
+    --border:        #dde3f0;
+    --border-hover:  #b0bfdd;
+    --border-focus:  #2563eb;
+    --accent:        #2563eb;
+    --accent-dk:     #1d4ed8;
+    --accent-lt:     #eff4ff;
+    --accent-ring:   rgba(37,99,235,0.12);
+    --text:          #0d1b3e;
+    --text-2:        #4a5a7a;
+    --text-3:        #8898b8;
+    --success:       #059669;
+    --success-bg:    #ecfdf5;
+    --error:         #dc2626;
+    --error-bg:      #fef2f2;
+    --shadow-1: 0 1px 3px rgba(13,27,62,0.06), 0 1px 2px rgba(13,27,62,0.04);
+    --shadow-2: 0 4px 16px rgba(13,27,62,0.08), 0 2px 6px rgba(13,27,62,0.04);
+    --shadow-3: 0 16px 48px rgba(13,27,62,0.14), 0 4px 14px rgba(13,27,62,0.06);
+    --r:  14px;
+    --r2: 9px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── PAGE ── */
+  .rf-page {
+    min-height: 100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 70% 50% at 15% 0%,  rgba(37,99,235,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 40% at 85% 100%, rgba(37,99,235,0.06) 0%, transparent 55%);
+    padding: 40px 20px 72px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+  }
+  .rf-inner { max-width: 1040px; margin: 0 auto; }
+
+  /* ── PAGE HEADER ── */
+  .rf-hd {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .rf-eyebrow {
+    font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.11em; text-transform: uppercase;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 5px;
+  }
+  .rf-eyebrow-line {
+    width: 18px; height: 2px;
+    background: var(--accent); border-radius: 1px;
+  }
+  .rf-title {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 28px; font-weight: 700;
+    letter-spacing: -0.6px; line-height: 1.15;
+    color: var(--text);
+  }
+  .rf-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 13px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    box-shadow: var(--shadow-1);
+  }
+  .pill-lbl { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+  .pill-val { font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+
+  /* ── CARD ── */
+  .rf-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+
+  /* ── CARD HEADER ── */
+  .rf-card-hd {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, #f6f9ff 0%, #ffffff 100%);
+  }
+  .rf-card-label {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 15px; font-weight: 600; color: var(--text);
+  }
+  .rf-card-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .rf-fy-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 13px;
+    background: var(--accent-lt);
+    border: 1px solid rgba(37,99,235,0.22);
+    border-radius: 100px;
+    font-size: 10.5px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── FORM ── */
+  .rf-form { padding: 30px; }
+
+  /* ── DIVIDER ── */
+  .rf-sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border) 15%, var(--border) 85%, transparent 100%);
+    margin: 24px 0;
+  }
+
+  /* ── NEWSPAPER SECTION LABEL ── */
+  .rf-np-label {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--text-2); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .rf-np-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* ── NEWSPAPER TILES ── */
+  .np-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 0;
+  }
+  @media(max-width:700px) { .np-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .np-tile {
+    border: 1.5px solid var(--border);
+    border-radius: var(--r2);
+    padding: 16px 14px 14px;
+    background: var(--surface-sub);
+    transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease), background 0.18s var(--ease);
+    display: flex; flex-direction: column; gap: 10px;
+    cursor: text;
+  }
+  .np-tile:focus-within {
+    border-color: var(--np-color, var(--accent));
+    background: var(--surface);
+    box-shadow: 0 0 0 3px var(--np-ring, var(--accent-ring));
+  }
+  .np-tile:hover:not(:focus-within) { border-color: var(--border-hover); background: #f2f6ff; }
+  .np-hd {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--text-2);
+  }
+  .np-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--np-color, var(--accent)); flex-shrink: 0; }
+  .np-foot { font-size: 10px; color: var(--text-3); text-align: center; font-weight: 500; letter-spacing: 0.03em; }
+
+  /* ── SUMMARY PANEL ── */
+  .rf-smry {
+    background: linear-gradient(140deg, var(--accent-lt) 0%, #f0f6ff 100%);
+    border: 1.5px solid rgba(37,99,235,0.18);
+    border-radius: var(--r2);
+    padding: 20px;
+  }
+  .smry-ttl {
+    font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .smry-ttl::after { content: ''; flex: 1; height: 1px; background: rgba(37,99,235,0.18); }
+  .smry-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 1px dashed rgba(37,99,235,0.1);
+  }
+  .smry-row:last-child { border-bottom: none; }
+  .smry-k { font-size: 10.5px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .smry-v { font-size: 12.5px; font-weight: 600; color: var(--text); text-align: right; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .smry-v.hi { color: var(--accent); }
+
+  /* ── FOOTER ── */
+  .rf-footer {
+    padding: 18px 30px;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(90deg, #f6f9ff 0%, #ffffff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* ── BOTTOM DUAL ── */
+  .bottom-dual {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 18px;
+    align-items: start;
+  }
+  @media(max-width:700px) { .bottom-dual { grid-template-columns: 1fr; } }
+
+  /* ── MUI OVERRIDES ── */
+  .rf-form .MuiOutlinedInput-root {
+    border-radius: 9px !important;
+    background: var(--surface-sub) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13.5px !important;
+    transition: border-color 0.18s var(--ease), background 0.18s var(--ease), box-shadow 0.18s var(--ease) !important;
+  }
+  .rf-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--border-hover) !important;
+  }
+  .rf-form .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--border-focus) !important;
+    border-width: 1.5px !important;
+  }
+  .rf-form .MuiOutlinedInput-root.Mui-focused {
+    background: var(--surface) !important;
+    box-shadow: 0 0 0 3px var(--accent-ring) !important;
+  }
+  .rf-form .MuiOutlinedInput-notchedOutline {
+    border-color: var(--border) !important;
+    border-width: 1.5px !important;
+  }
+  .rf-form .MuiInputLabel-root {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: var(--text-3) !important;
+  }
+  .rf-form .MuiInputLabel-root.Mui-focused { color: var(--accent) !important; }
+  .rf-form .MuiInputBase-input {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+    padding: 10px 13px !important;
+  }
+  .rf-form .MuiSelect-select {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-cancel {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    height: 42px; padding: 0 22px;
+    border-radius: var(--r2);
+    font-family: 'Instrument Sans', sans-serif; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid var(--border);
+    background: transparent; color: var(--text-2);
+    outline: none; transition: all 0.18s var(--ease);
+  }
+  .btn-cancel:hover { background: #f0f4fb; border-color: var(--border-hover); color: var(--text); }
+
+  .btn-submit {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    height: 42px; padding: 0 28px;
+    border-radius: var(--r2); min-width: 160px;
+    font-family: 'Instrument Sans', sans-serif; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; border: none; outline: none;
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(37,99,235,0.28);
+    transition: all 0.18s var(--ease);
+    letter-spacing: 0.01em;
+  }
+  .btn-submit:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    box-shadow: 0 5px 18px rgba(37,99,235,0.38);
+    transform: translateY(-1px);
+  }
+  .btn-submit:active:not(:disabled) { transform: none; }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+
+  .spin {
+    width: 15px; height: 15px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: turn 0.65s linear infinite; display: inline-block;
+  }
+  @keyframes turn { to { transform: rotate(360deg); } }
+
+  /* ── MODAL OVERRIDES ── */
+  .rf-modal-title {
+    font-family: 'Instrument Sans', sans-serif !important;
+    font-size: 16px !important; font-weight: 700 !important;
+  }
+  .rf-modal-content { padding: 24px 28px 16px !important; text-align: center; }
+  .rf-modal-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--success-bg);
+    border: 2px solid rgba(5,150,105,0.2);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; font-size: 22px; color: var(--success);
+  }
+  .rf-modal-ref {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin-top: 12px; padding: 7px 16px;
+    background: var(--accent-lt);
+    border: 1px solid rgba(37,99,235,0.18);
+    border-radius: 100px;
+    font-size: 12px; font-weight: 600; color: var(--accent);
+  }
+
+  @media(max-width:820px) {
+    .rf-title { font-size: 22px; }
+    .rf-form { padding: 20px; }
+    .rf-card-hd { padding: 16px 20px; }
+    .rf-footer { padding: 14px 20px; }
+  }
+`;
+
+const NP_TILES = [
+  { key: "printInNationalNp", label: "National", color: "#2563eb", ring: "rgba(37,99,235,0.12)" },
+  { key: "printInLocalNp",    label: "Local",    color: "#0891b2", ring: "rgba(8,145,178,0.12)" },
+  { key: "printInStateNp",    label: "State",    color: "#7c3aed", ring: "rgba(124,58,237,0.12)" },
+  { key: "printInOtherNp",    label: "Other",    color: "#d97706", ring: "rgba(217,119,6,0.12)" },
+];
+
+/* ═══════════════════════════════════════════════════════════════════════ */
 const RequestForm = ({ category }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // ================= Router Params =================
-  const action = searchParams.get("action");
-  const rowData = searchParams.get("rowData")
-    ? JSON.parse(searchParams.get("rowData"))
-    : null;
+  // ── Router Params ──
+  const action  = searchParams.get("action");
+  const rowData = searchParams.get("rowData") ? JSON.parse(searchParams.get("rowData")) : null;
 
-  // ================= State =================
+  // ── State ──
   const [formData, setFormData] = useState({
-    subject: "",
-    tender_amt: "",
-    letter_no: "",
-    letter_date: "",
-    schedule_date: "",
-    remarks: "",
-    ref_Category_id: "",
-    ref_Category_text: "",
-    print_in_national_np: "",
-    print_in_local_np: "",
-    print_in_state_np: "",
-    print_in_other_np: "",
-    ip_address: "",
+    subject: "", tenderAmt: "", letterNo: "", letterDate: "",
+    scheduleDate: "", remarks: "", refCategoryId: "", refCategoryText: "",
+    printInNationalNp: "" || null, printInLocalNp: "" || null,
+    printInStateNp: "" || null,   printInOtherNp: "" || null,
+    ip_address: "", forwardStatus: "N", deleteStatus: "N",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [savedRefId, setSavedRefId] = useState("");
+  const [loading,     setLoading]     = useState(false);
+  const [showModal,   setShowModal]   = useState(false);
+  const [savedRefId,  setSavedRefId]  = useState("");
 
-  // ================= Local Storage (Client Safe) =================
-  const [financial_year, setFinancialYear] = useState("");
-  const [user_id, setUserId] = useState("");
-  const [user_name, setUserName] = useState("");
+  // ── Local Storage ──
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    localStorage.setItem(
-      "financial_year",
-      localStorage.getItem("financial_year") || "2024-2025",
-    );
-    localStorage.setItem("user_id", localStorage.getItem("user_id") || "00100");
-    localStorage.setItem(
-      "ref_Category_id",
-      localStorage.getItem("ref_Category_id") || "02",
-    );
-    localStorage.setItem(
-      "user_name",
-      localStorage.getItem("user_name") ||
-        "SUPERINTENDING ENGINEER, City Circle-II CSPDCL,Raipur, रायपुर",
-    );
-
-    setFinancialYear(localStorage.getItem("financial_year"));
-    setUserId(localStorage.getItem("user_id"));
+    localStorage.setItem("financialYear", localStorage.getItem("financialYear") || "2024-2025");
+    localStorage.setItem("userId",        localStorage.getItem("userId")        || "00100");
+    localStorage.setItem("refCategoryId", localStorage.getItem("refCategoryId") || "02");
+    localStorage.setItem("user_name",     localStorage.getItem("user_name")     || "SUPERINTENDING ENGINEER, City Circle-II CSPDCL,Raipur, रायपुर");
+    setFinancialYear(localStorage.getItem("financialYear"));
+    setUserId(localStorage.getItem("userId"));
     setUserName(localStorage.getItem("user_name"));
-
     const getIP = async () => {
       try {
-        const res = await fetch("https://api.ipify.org?format=json");
+        const res  = await fetch("https://api.ipify.org?format=json");
         const data = await res.json();
-        setFormData((p) => ({ ...p, ip_address: data.ip }));
-      } catch {
-        console.error("IP fetch failed");
-      }
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch { console.error("IP fetch failed"); }
     };
-
     getIP();
   }, []);
 
-  // ================= Category =================
-  const cat_text = category?.cat_text || "";
-  const category_option = cat_text ? cat_text.split("-")[0].trim() : "";
-  const cat_id = category?.cat_id || "";
+  // ── Category ──
+  const catText        = category?.catText || "";
+  const category_option = catText ? catText.split("-")[0].trim() : "";
+  const catId          = category?.catId   || "";
+  const form_option    = ["classified", "display"].includes(category_option.toLowerCase());
 
-  const form_option = ["classified", "display"].includes(
-    category_option.toLowerCase(),
-  );
-
-  // ================= Autofill Category =================
+  // ── Autofill Category ──
   useEffect(() => {
-    if (cat_text && action !== "update") {
-      setFormData((p) => ({
-        ...p,
-        ref_Category_id: cat_id,
-        ref_Category_text: category_option,
-      }));
+    if (catText && action !== "update") {
+      setFormData(p => ({ ...p, refCategoryId: catId, refCategoryText: category_option }));
     }
-  }, [cat_text, action, cat_id, category_option]);
+  }, [catText, action, catId, category_option]);
 
-  // ================= Autofill Edit =================
+  // ── Autofill Edit ──
   useEffect(() => {
     if (action === "update" && rowData) {
       setFormData({
-        subject: rowData.subject || "",
-        tender_amt: rowData.tender_amt || "",
-        letter_no: rowData.letter_no || "",
-        letter_date: rowData.letter_date?.split("T")[0] || "",
-        schedule_date: rowData.schedule_date?.split("T")[0] || "",
-        remarks: rowData.remarks || "",
-        ref_Category_id: rowData.ref_Category_id || "",
-        ref_Category_text: rowData.ref_Category_text || "",
-        print_in_national_np: rowData.print_in_national_np || "",
-        print_in_local_np: rowData.print_in_local_np || "",
-        print_in_state_np: rowData.print_in_state_np || "",
-        print_in_other_np: rowData.print_in_other_np || "",
-        ip_address: rowData.ip_address || "",
+        subject:            rowData.subject            || "",
+        tenderAmt:          rowData.tenderAmt          || "",
+        letterNo:           rowData.letterNo           || "",
+        letterDate:         rowData.letterDate?.split("T")[0]   || "",
+        scheduleDate:       rowData.scheduleDate?.split("T")[0] || "",
+        remarks:            rowData.remarks            || "",
+        refCategoryId:      rowData.refCategoryId      || "",
+        refCategoryText:    rowData.refCategoryText    || "",
+        printInNationalNp:  rowData.printInNationalNp  || "",
+        printInLocalNp:     rowData.printInLocalNp     || "",
+        printInStateNp:     rowData.printInStateNp     || "",
+        printInOtherNp:     rowData.printInOtherNp     || "",
+        ip_address:         rowData.ip_address         || "",
+        deleteStatus:  "N", forwardStatus: "N",
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [action, rowData]);
 
-  // ================= Handle Change =================
+  // ── Handle Change ──
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
+    setFormData(p => ({ ...p, [name]: value }));
   };
 
-  // ================= Submit =================
+  // ── Submit ──
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await axios.post(
-        "http://103.79.34.50:3080/api/client-advt-request",
-        {
-          ...formData,
-          financial_year,
-          user_id,
-          user_name,
-        },
+        "http://103.79.34.50:8083/api/Client/insertclientadvtrequest",
+        { ...formData, financialYear, userId, user_name }
       );
-
       setSavedRefId(res.data.ref_id);
       setShowModal(true);
     } catch (err) {
       alert(err.response?.data?.message || "Error submitting form");
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
-  // ================= Update =================
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  // ── Update ──
+  // const handleUpdate = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   try {
+  //     await axios.put(
+  //       `http://103.79.34.50:8083/api/Client/updateclientadvtrequest/${rowData.refId}`,
+  //       { ...formData, financialYear, userId, refId: rowData.refId }
+  //     );
+  //     setSavedRefId(rowData.refId);
+  //     setShowModal(true);
+  //   } catch (err) {
+  //     alert(err.response?.data?.message || "Error updating");
+  //   } finally { setLoading(false); }
+  // };
 
-    try {
-      await axios.put(
-        `http://103.79.34.50:3080/api/client-advt-request/${rowData.ref_id}`,
-        {
-          ...formData,
-          financial_year,
-          user_id,
-          ref_id: rowData.ref_id,
-        },
-      );
-
-      setSavedRefId(rowData.ref_id);
-      setShowModal(true);
-    } catch (err) {
-      alert(err.response?.data?.message || "Error updating");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ================= OK Redirect =================
+  // ── Redirect ──
   const handleOk = () => {
     setShowModal(false);
-
-    router.push(
-      `/client/upload-file/${savedRefId}?financial_year=${financial_year}`,
-    );
+    router.push(`/client/upload-file/${savedRefId}?financialYear=${financialYear}`);
   };
 
-  // ================= UI =================
+  const totalPapers = [formData.printInNationalNp, formData.printInLocalNp, formData.printInStateNp, formData.printInOtherNp]
+    .reduce((s, v) => s + (Number(v) || 0), 0);
+
+  const isUpdate = action === "update";
+
+  /* ── UI ── */
   return (
-    <Box p={3}>
-      <Dialog open={showModal} onClose={handleOk}>
-        <DialogTitle sx={{ bgcolor: "success.main", color: "#fff" }}>
-          Success
+    <>
+      <style>{STYLES}</style>
+
+          {/* Card */}
+          <div className="rf-card">
+
+            {/* Card Header */}
+            <div className="rf-card-hd">
+                  <div>
+              <div className="rf-eyebrow">
+                <span className="rf-eyebrow-line" />
+                Advertisement Management
+              </div>
+              <div className="rf-title">
+                {isUpdate ? "Update Client Request" : "New Advertisement Request"}
+              </div>
+              <div>
+                <div className="rf-card-label">
+                  {isUpdate ? "Edit Request Details" : "Request Details"}
+                </div>
+                <div className="rf-card-sub">
+                  Fields marked <span style={{color:"#2563eb", fontWeight:700}}>*</span> are required
+                </div>
+              </div>
+            </div>
+            <div className="rf-pills">
+              
+                <div className="pill">
+                  <span className="pill-lbl">FY</span>
+                  <span className="pill-val">{financialYear}</span>
+                </div>
+        
+             
+            </div>
+              
+             
+            </div>
+
+            {/* Form Body */}
+            <div className="rf-form">
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+
+                {/* Letter No */}
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    fullWidth size="small"
+                    label="Letter No"
+                    name="letterNo"
+                    value={formData.letterNo}
+                    onChange={handleChange}
+                    placeholder="e.g. LTR/2024/001"
+                  />
+                </Grid>
+
+                {/* Letter Date */}
+                 <Grid item size={{xs:12, sm:6, md:3}}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Letter Date *"
+                      format="DD/MM/YYYY"
+                      value={formData.letterDate ? dayjs(formData.letterDate) : null}
+                      minDate={dayjs().subtract(7, "day")}
+                      maxDate={dayjs()}
+                      onChange={(newValue) => {
+                        if (!newValue || !newValue.isValid()) {
+                          setFormData(prev => ({ ...prev, letterDate: "" }));
+                          return;
+                        }
+                        setFormData(prev => ({
+                          ...prev,
+                          letterDate: newValue.format("YYYY-MM-DD"),
+                          scheduleDate: "",
+                        }));
+                      }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true, required: true, size: "small",
+                          inputProps: { readOnly: true },
+                          onPaste: e => e.preventDefault(),
+                          onKeyDown: e => e.preventDefault(),
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                  {/* Schedule Date */}
+                <Grid item size={{xs:12, sm:6, md:3}}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Schedule Date *"
+                      format="DD/MM/YYYY"
+                      value={formData.scheduleDate ? dayjs(formData.scheduleDate) : null}
+                      minDate={dayjs().add(3, "day")}
+                      onChange={(newValue) => {
+                        if (!newValue || !newValue.isValid()) {
+                          setFormData(prev => ({ ...prev, scheduleDate: "" }));
+                          return;
+                        }
+                        setFormData(prev => ({
+                          ...prev,
+                          scheduleDate: newValue.format("YYYY-MM-DD"),
+                        }));
+                      }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true, required: true, size: "small",
+                          inputProps: { readOnly: true },
+                          onPaste: e => e.preventDefault(),
+                          onKeyDown: e => e.preventDefault(),
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+               
+                  {/* Category Select */}
+               <Grid item size={{xs:12, sm:6, md:2}}>
+                  <Select fullWidth size="small" value={formData.refCategoryId}>
+                    <MenuItem value={catId}>{category_option}</MenuItem>
+                  </Select>
+                </Grid>
+
+              </Grid>
+
+              <Grid container spacing={2} sx={{ mb: 0 }}>
+               
+                  {/* Tender Amount */}
+               <Grid item size={{xs:12, sm:6, md:4}}>
+                  <TextField
+                    fullWidth size="small"
+                    label="Tender Amount *"
+                    name="tenderAmt"
+                    value={formData.tenderAmt}
+                    required
+                    inputMode="decimal"
+                    placeholder="0.00"
+                    InputProps={{ startAdornment: <span style={{color:"var(--text-3)", marginRight:4, fontSize:13}}>₹</span> }}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d*\.?\d{0,2}$/.test(value)) {
+                        setFormData(prev => ({ ...prev, tenderAmt: value }));
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-", ","].includes(e.key)) e.preventDefault();
+                    }}
+                  />
+                </Grid>
+
+
+                {/* Subject */}
+                   <Grid item size={{xs:12, sm:6, md:7}}>
+                  <TextField
+                    fullWidth rows={1} multiline
+                    size="small"
+                    label="Subject *"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter advertisement subject"
+                  />
+                </Grid>
+
+              
+              
+
+              </Grid>
+
+              {/* Newspaper Distribution */}
+              {form_option && (
+                <>
+                  <div className="rf-sep" />
+                  <div className="rf-np-label">Newspaper Distribution — No. of Papers</div>
+                  <div className="np-grid">
+                    {NP_TILES.map(({ key, label, color, ring }) => (
+                      <div
+                        className="np-tile" key={key}
+                        style={{ "--np-color": color, "--np-ring": ring }}
+                      >
+                        <div className="np-hd">
+                          <span className="np-dot" />
+                          {label}
+                        </div>
+                        {/* Render as plain input inside tile for styling, but use TextField internally */}
+                        <TextField
+                          fullWidth size="small"
+                          type="number"
+                          name={key}
+                          value={formData[key] || ""}
+                          onChange={handleChange}
+                          placeholder="0"
+                          inputProps={{ min: 0, style: { textAlign: "center", fontSize: 26, fontWeight: 700, fontFamily: "'Instrument Sans', sans-serif", padding: "4px 0 8px", borderBottom: `2px solid ${color}`, borderRadius: 0 } }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": { background: "transparent !important", boxShadow: "none !important" },
+                            "& .MuiOutlinedInput-notchedOutline": { border: "none !important" },
+                            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": { border: "none !important" },
+                            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { border: "none !important" },
+                            "& .MuiOutlinedInput-root.Mui-focused": { boxShadow: "none !important" },
+                          }}
+                        />
+                        <div className="np-foot">newspapers</div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              <div className="rf-sep" />
+
+              {/* Remarks + Summary */}
+              <div className="bottom-dual">
+                <TextField
+                  fullWidth multiline rows={4}
+                  label="Remarks / Additional Notes"
+                  name="remarks"
+                  value={formData.remarks}
+                  onChange={handleChange}
+                  placeholder="Enter any additional remarks, special instructions, or notes here…"
+                />
+
+                <div className="rf-smry">
+                  <div className="smry-ttl">Summary</div>
+                  {[
+                    { k: "Subject",      v: formData.subject      || "—" },
+                    { k: "Amount",       v: formData.tenderAmt ? `₹ ${formData.tenderAmt}` : "—", hi: true },
+                    { k: "Category",     v: category_option       || "—" },
+                    { k: "Letter Date",  v: formData.letterDate   || "—" },
+                    { k: "Schedule",     v: formData.scheduleDate || "—" },
+                    { k: "Total Papers", v: totalPapers || "—",  hi: true },
+                  ].map(({ k, v, hi }) => (
+                    <div className="smry-row" key={k}>
+                      <span className="smry-k">{k}</span>
+                      <span className={`smry-v${hi ? " hi" : ""}`}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>{/* /rf-form */}
+
+            {/* Footer */}
+            <div className="rf-footer">
+              <button className="btn-cancel" onClick={() => router.back()} disabled={loading}>
+                Cancel
+              </button>
+              <button
+                className="btn-submit"
+                disabled={loading}
+                onClick={isUpdate ? handleUpdate : handleSubmit}
+              >
+                {loading
+                  ? <><span className="spin" />&nbsp;Processing…</>
+                  : <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M5 12l5 5L20 7"/>
+                      </svg>
+                      {isUpdate ? "Update Request" : "Submit Request"}
+                    </>
+                }
+              </button>
+            </div>
+
+          </div>{/* /rf-card */}
+      
+
+      {/* ── Success Modal ── */}
+      <Dialog
+        open={showModal}
+        onClose={handleOk}
+        PaperProps={{
+          sx: {
+            borderRadius: "18px",
+            maxWidth: 380,
+            width: "100%",
+            overflow: "hidden",
+            border: "1px solid #dde3f0",
+            boxShadow: "0 16px 48px rgba(13,27,62,0.14)",
+          }
+        }}
+      >
+        <DialogTitle sx={{
+          background: "linear-gradient(90deg, #f6f9ff 0%, #fff 100%)",
+          borderBottom: "1px solid #dde3f0",
+          fontFamily: "'Instrument Sans', sans-serif",
+          fontSize: "15px", fontWeight: 700,
+          color: "#0d1b3e", py: 2, px: 3,
+        }}>
+          {isUpdate ? "Request Updated" : "Request Submitted"}
         </DialogTitle>
-        <DialogContent>
-          <Typography align="center" mt={2}>
-            {action === "update"
-              ? "Record updated successfully!"
-              : "Data submitted successfully!"}
+
+        <DialogContent sx={{ textAlign: "center", py: 4, px: 3 }}>
+          <Box sx={{
+            width: 58, height: 58, borderRadius: "50%",
+            background: "#ecfdf5", border: "2px solid rgba(5,150,105,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            margin: "0 auto 16px", fontSize: "22px",
+          }}>
+            ✓
+          </Box>
+          <Typography sx={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#4a5a7a", lineHeight: 1.65 }}>
+            {isUpdate ? "Record updated successfully!" : "Data submitted successfully!"}
           </Typography>
-          <Typography align="center" fontWeight="bold">
-            Ref ID: {savedRefId}
-          </Typography>
+          <Box sx={{
+            display: "inline-flex", alignItems: "center", gap: 1,
+            mt: 2, px: 2, py: 0.8,
+            background: "#eff4ff", border: "1px solid rgba(37,99,235,0.18)",
+            borderRadius: "100px",
+          }}>
+            <Typography sx={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600, color: "#2563eb" }}>
+              Ref ID:&nbsp;<strong>{savedRefId}</strong>
+            </Typography>
+          </Box>
         </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="success" onClick={handleOk}>
-            OK
-          </Button>
+
+        <DialogActions sx={{ justifyContent: "center", pb: 3, pt: 0 }}>
+          <button className="btn-submit" onClick={handleOk} style={{minWidth: 140}}>
+            Continue →
+          </button>
         </DialogActions>
       </Dialog>
 
-      <form>
-        <Card>
-          <CardContent>
-            <Typography
-              align="center"
-              fontWeight="bold"
-              mb={2}
-              sx={{
-                userSelect: "none",
-                cursor: "default",
-              }}
-            >
-              Financial Year: {financial_year}
-            </Typography>
-
-            <Grid container spacing={2}>
-              <Grid item md={3}>
-                <TextField
-                  fullWidth
-                  placeholder="Letter No"
-                  name="letter_no"
-                  value={formData.letter_no}
-                  onChange={handleChange}
-                />
-              </Grid>
-
-              <Grid item md={5}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Letter Date"
-                    value={
-                      formData.letter_date ? dayjs(formData.letter_date) : null
-                    }
-                    minDate={dayjs().subtract(7, "day")} // ✅ today - 7
-                    maxDate={dayjs()} // ✅ today
-                    onChange={(newValue) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        letter_date: newValue
-                          ? newValue.format("YYYY-MM-DD")
-                          : "",
-                      }));
-                    }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        required: true,
-                        InputProps: {
-                          readOnly: true, // 🚫 no typing
-                        },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </Grid>
-
-              <Grid item md={5}>
-                <TextField
-                  fullWidth
-                  placeholder="Subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-
-              <Grid item md={5}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Schedule Date"
-                    value={
-                      formData.schedule_date
-                        ? dayjs(formData.schedule_date)
-                        : null
-                    }
-                    minDate={dayjs().add(1, "day")} // ✅ tomorrow only
-                    onChange={(newValue) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        schedule_date: newValue
-                          ? newValue.format("YYYY-MM-DD")
-                          : "",
-                      }));
-                    }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        required: true,
-                        InputProps: {
-                          readOnly: true, // 🚫 typing blocked
-                        },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </Grid>
-
-              <Grid item md={5}>
-                <TextField
-                  fullWidth
-                  placeholder="Tender Amount"
-                  name="tender_amt"
-                  value={formData.tender_amt}
-                  required
-                  inputMode="decimal"
-                  onChange={(e) => {
-                    const value = e.target.value;
-
-                    // Allow only digits and ONE decimal point
-                    if (/^\d*\.?\d{0,2}$/.test(value)) {
-                      setFormData((prev) => ({
-                        ...prev,
-                        tender_amt: value,
-                      }));
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    // Block invalid keys
-                    if (["e", "E", "+", "-", ","].includes(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                />
-              </Grid>
-
-              <Grid item md={3}>
-                <Select fullWidth value={formData.ref_Category_id}>
-                  <MenuItem value={cat_id}>{category_option}</MenuItem>
-                </Select>
-              </Grid>
-            </Grid>
-
-            {form_option && (
-              <>
-                <Divider sx={{ my: 2 }} />
-                <Typography fontWeight="bold" color="success.main">
-                  Enter Number of Papers
-                </Typography>
-
-                <Grid container spacing={2} mt={1}>
-                  {[
-                    ["print_in_national_np", "National Newspapers"],
-                    ["print_in_local_np", "Local Newspapers"],
-                    ["print_in_state_np", "State Newspapers"],
-                    ["print_in_other_np", "Other Newspapers"],
-                  ].map(([name, label]) => (
-                    <Grid item md={3} key={name}>
-                      <TextField
-                        fullWidth
-                        type="number"
-                        name={name}
-                        placeholder={label}
-                        value={formData[name]}
-                        onChange={handleChange}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
-            )}
-
-            <Box mt={3}>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label="Remarks"
-                name="remarks"
-                value={formData.remarks}
-                onChange={handleChange}
-              />
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Box textAlign="center" mt={3}>
-          <Button
-            variant="contained"
-            disabled={loading}
-            onClick={action === "update" ? handleUpdate : handleSubmit}
-          >
-            {loading
-              ? "Processing..."
-              : action === "update"
-                ? "Update Request"
-                : "Submit Request"}
-          </Button>
-        </Box>
-      </form>
-    </Box>
+      {/* inject btn styles outside scoped form */}
+      <style>{`
+        .btn-cancel, .btn-submit {
+          display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+          height: 42px; padding: 0 22px;
+          border-radius: 9px;
+          font-family: 'Instrument Sans', sans-serif; font-size: 13.5px; font-weight: 600;
+          cursor: pointer; outline: none;
+          transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
+        }
+        .btn-cancel {
+          background: transparent; color: #4a5a7a;
+          border: 1.5px solid #dde3f0;
+        }
+        .btn-cancel:hover { background: #f0f4fb; border-color: #b0bfdd; color: #0d1b3e; }
+        .btn-submit {
+          background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+          color: #fff; border: none; min-width: 158px;
+          box-shadow: 0 2px 10px rgba(37,99,235,0.28);
+        }
+        .btn-submit:hover:not(:disabled) {
+          background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+          box-shadow: 0 5px 18px rgba(37,99,235,0.38);
+          transform: translateY(-1px);
+        }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+      `}</style>
+    </>
   );
 };
 

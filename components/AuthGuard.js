@@ -12,13 +12,13 @@ export default function AuthGuard({ children }) {
     const role = localStorage.getItem("loginusertypename");
 
     // Always allow login page
-    if (pathname === "/login") {
+    if (pathname === "/auth/login") {
       setLoading(false);
       return;
     }
 
     if (!role) {
-      router.replace("/login");
+      router.replace("/auth/login");
       return;
     }
 
