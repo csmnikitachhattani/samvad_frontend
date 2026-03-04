@@ -22,7 +22,8 @@ const ClientNotices = () => {
     const fetchNotices = async () => {
       try {
         const res = await axios.get(
-          "http://103.79.34.50:3080/api/get-clientnotices",
+          // "http://103.79.34.50:3080/api/get-clientnotices",
+          "http://103.79.34.50:8083/api/Client/getclientnotices",
         );
         setNotices(res.data.data || []);
       } catch (err) {
@@ -92,14 +93,14 @@ const ClientNotices = () => {
                     lineHeight: 1.6,
                   }}
                 >
-                  {parse(notice.Information || "")}
+                  {parse(notice.information || "")}
                 </Typography>
 
                 <Typography
                   variant="body2"
                   sx={{ textAlign: "right", color: "#555", mt: 1 }}
                 >
-                  <strong>Date:</strong> {notice.entry_date}
+                  <strong>Date:</strong> {notice.entryDate}
                 </Typography>
 
                 <Divider sx={{ mt: 2 }} />

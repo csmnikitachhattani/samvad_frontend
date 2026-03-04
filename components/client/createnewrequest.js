@@ -26,9 +26,10 @@ const CreateNewRequest = () => {
     const fetchCategories = async () => {
       try {
         const res = await axiosClient.get(
-          "http://103.79.34.50:3080/api/createnewrequest",
+          // "http://103.79.34.50:3080/api/createnewrequest",
+          "http://103.79.34.50:8083/api/Client/getavakcategories ",
         );
-        setCategories(res.data || []);
+        setCategories(res.data.data || []);
       } catch (error) {
         console.error("Fetch Error:", error);
       } finally {
@@ -52,14 +53,7 @@ const CreateNewRequest = () => {
         Choose Job Request Type
       </Typography>
 
-      {/* ---------- Loader ---------- */}
-      {/* {loading ? (
-        <Stack alignItems="center" mt={6}>
-          <CircularProgress />
-          <Typography mt={2}>Loading categories...</Typography>
-        </Stack>
-      ) : (
-        <> */}
+   
       {/* ---------- Category Buttons ---------- */}
       <Stack
         direction="row"
@@ -68,16 +62,18 @@ const CreateNewRequest = () => {
         gap={1.5}
         mb={4}
       >
-        {categories.map((item) => {
-          const isSelected = selectedCategory?.cat_id === item.cat_id;
+        
+            {Array.isArray(categories) &&
+  categories.map((item) => {
+    const isSelected = selectedCategory?.catId === item.catId;
 
-          const displayText = item.cat_text
-            ? item.cat_text.split("-")[0].trim()
-            : "";
+    const displayText = item.catText
+      ? item.catText.split("-")[0].trim()
+      : "";
 
           return (
             <Button
-              key={item.cat_id}
+              key={item.catId}
               variant={isSelected ? "contained" : "outlined"}
               color={isSelected ? "inherit" : "secondary"}
               sx={{
@@ -122,7 +118,7 @@ const CreateNewRequest = () => {
             }}
           >
             <Typography fontWeight="bold" fontSize="14px">
-              {selectedCategory.cat_text}
+              {selectedCategory.catText}
             </Typography>
           </Box>
 
