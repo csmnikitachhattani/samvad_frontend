@@ -44,7 +44,6 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
- 
   getcounter: async () => {
     console.log("get all agencncy")
     try {
@@ -69,6 +68,16 @@ const adminService = {
     console.log("get counter detail")
     try {
       const res = await axiosClient.get(`/ManageMaster/getagencybyserviceid/${id}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getClientRecord: async (payload) => {
+    console.log("get counter detail")
+    try {
+      const res = await axiosClient.post(`/Client/get-client-request-record/`, payload);
       return res.data;
     } catch (err) {
       console.log("answer")
