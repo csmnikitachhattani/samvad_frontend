@@ -108,7 +108,13 @@ export default function LoginPage() {
         localStorage.setItem('userid', res.data.result[0].userid,)
         localStorage.setItem('financialYear', financialYear)
         localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
-        router.push("/admin");
+        
+        if(userType.code === "CLNT"){
+          router.push("/client");
+        }
+        else{
+          router.push("/admin");
+        }
       } else {
         setError(res.data?.message || "Invalid credentials");
         generateCaptcha();

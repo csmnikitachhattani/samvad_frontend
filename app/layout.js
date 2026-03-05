@@ -18,9 +18,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
-          <AuthGuard>
+          {/* <AuthGuard> */}
             {children}
-          </AuthGuard>
+          {/* </AuthGuard> */}
         </Providers>
       </body>
     </html>
