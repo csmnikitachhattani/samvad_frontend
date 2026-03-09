@@ -226,8 +226,8 @@ export default function ClientAttachmentForm() {
     letter_no: "",
     receivingDate: "",
     category: "tender",
-    tenderAmount: "",
-    publicationDate: "",
+    tender_amt: "",
+    schedule_date: "",
     client: "",
     baseDept: "",
     district: "",
@@ -330,7 +330,7 @@ export default function ClientAttachmentForm() {
         avak_category: formData.ref_Category_id,
         received_date: formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
         fixed_date: formData.fixedDate || "",
-        tender_amt: Number(formData.tenderAmount) || 0,
+        tender_amt: Number(formData.tender_amt) || 0,
         letter_no: formData.letter_no,
         letter_date: formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
         caption_cd: formData.captionCd || "",
@@ -349,7 +349,7 @@ export default function ClientAttachmentForm() {
         client_name: formData.clientName || "",
         client_address: formData.clientAddress || "",
         client_city: formData.clientCity || "",
-        schedule_date: formData.publicationDate ? new Date(formData.publicationDate).toISOString() : null,
+        schedule_date: formData.schedule_date ? new Date(formData.schedule_date).toISOString() : null,
         is_post_ro: formData.isPostRo || "",
         ref_id: formData.refId || "",
         avak_ref_id: formData.avakRefId || "",
@@ -486,9 +486,9 @@ export default function ClientAttachmentForm() {
                 <TextField
                   fullWidth
                   label="Tender Amount"
-                  name="tenderAmount"
+                  name="tender_amt"
                   type="number"
-                  value={formData.tenderAmount}
+                  value={formData.tender_amt}
                   onChange={handleChange}
                   InputProps={{
                     startAdornment: <InputAdornment position="start"><Typography sx={{ color: "#9ca3af", fontSize: "0.85rem", fontWeight: 600 }}>₹</Typography></InputAdornment>,
@@ -501,10 +501,10 @@ export default function ClientAttachmentForm() {
                 <TextField
                   fullWidth
                   label="Publication Date"
-                  name="publicationDate"
+                  name="schedule_date"
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  value={formData.publicationDate}
+                  value={formData.schedule_date}
                   onChange={handleChange}
                   sx={field}
                 />
