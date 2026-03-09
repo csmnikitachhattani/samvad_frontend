@@ -223,7 +223,7 @@ export default function ClientAttachmentForm() {
   console.log(id)
   const [formData, setFormData] = useState({
     contentCategory: "",
-    letterNo: "",
+    letter_no: "",
     receivingDate: "",
     category: "tender",
     tenderAmount: "",
@@ -297,9 +297,14 @@ export default function ClientAttachmentForm() {
       try {
         const res = await adminServices.getClientRecord(payload);
         console.log(res)
-        //const apiData = res?.data?.data || res?.data;
+        const apiData = res?.data?.data || res?.data;
         //const job = Array.isArray(apiData) ? apiData[0] : apiData;
-        //setFormData(job);
+        setFormData();
+        // if (job) {
+          setFormData((prev) => ({ ...prev, ...res }));
+          
+        //}
+        console.log("assigned",formData)
       } catch (error) {
         console.error("Failed to fetch work orders", error);
       } finally {
@@ -321,7 +326,7 @@ export default function ClientAttachmentForm() {
         received_date:            formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
         fixed_date:               formData.fixedDate || "",
         tender_amt:               Number(formData.tenderAmount) || 0,
-        letter_no:                formData.letterNo,
+        letter_no:                formData.letter_no,
         letter_date:              formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
         caption_cd:               formData.captionCd || "",
         total_pages:              formData.noOfPages,
@@ -434,8 +439,8 @@ export default function ClientAttachmentForm() {
                 <TextField
                   fullWidth
                   label="Letter No"
-                  name="letterNo"
-                  value={formData.letterNo}
+                  name="letter_no"
+                  value={formData.letter_no}
                   onChange={handleChange}
                   sx={field}
                 />
