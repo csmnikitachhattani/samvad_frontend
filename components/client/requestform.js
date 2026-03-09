@@ -447,11 +447,13 @@ useEffect(() => {
     axios
       .get(`http://103.79.34.50:8083/api/ManageMaster/getallAdvtCaptions?allowedRefCateId=${catId}`)
       .then((res) => {
-        const filtered =
-          res.data?.result?.filter(
-            (item) => item.allowed_ref_cate_id === catId
-          ) || [];
-
+   const filtered =
+  res.data?.result?.filter((item) =>
+    item.allowed_ref_cate_id
+      ?.split(",")
+      .map((id) => id.trim())
+      .includes(catId)
+  ) || [];
         setCaptions(filtered);
       })
       .catch((err) => {
