@@ -144,12 +144,7 @@ const IconMeta = () => (
 );
 
 // ── Content Category Radio ─────────────────────────────────────────────────────
-const CATEGORIES = [
-  { catId: "classified", catText: "Classified" },
-  { catId: "outdoor_media", catText: "Outdoor Media" },
-  { catId: "printing", catText: "Printing" },
-  { catId: "electronic", catText: "Electronic" },
-];
+
 function ContentCategoryRadio({ value, onChange, categories }) {
   return (
     <Box>
@@ -225,7 +220,7 @@ export default function ClientAttachmentForm() {
     ref_Category_id: "",
     letter_no: "",
     receivingDate: "",
-    category: "tender",
+    caption_cd: "",
     tender_amt: "",
     schedule_date: "",
     client: "",
@@ -282,8 +277,17 @@ export default function ClientAttachmentForm() {
   async function fetchClient() {
     try {
       const res = await clientServices.getClientData();
-      console.log(res)
+      console.log("console", res.data)
       //setFormData(res);
+      setFormData((prev) => ({
+        ...prev,
+        baseDept: res.data.data.base_dept_code,
+        district: res.data.data.district_code,
+        officeLevel: res.data.data.Office_code,
+        office: res.data.data.Office_code,
+        section: res.data.data.section_code,
+        officer: res.data.data.employee_code,
+      }));
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -327,25 +331,25 @@ export default function ClientAttachmentForm() {
     try {
       const payload = {
         subject: formData.subject,
-        avak_category: formData.ref_Category_id,
+        avak_caption_cd: formData.ref_Category_id,
         received_date: formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
-        fixed_date: formData.fixedDate || "",
+        fixed_date: formData.fixedDate || "20-2-2026",
         tender_amt: Number(formData.tender_amt) || 0,
         letter_no: formData.letter_no,
         letter_date: formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
-        caption_cd: formData.captionCd || "",
+        caption_cd: formData.captionCd || "02",
         total_pages: formData.noOfPages,
         receiving_mode_code: formData.modeOfReceiving,
         letter_type_code: formData.letterType,
         remarks: formData.remark,
-        financial_year: formData.financialYear || "",
+        financial_year: formData.financialYear || "2024-2025",
         client_cd: formData.client,
         base_dept_code: formData.baseDept,
         office_code: formData.office,
         office_level_code: formData.officeLevel,
         district_code: formData.district,
         section_code: formData.section,
-        client_prarup_code: formData.clientPrarupCode || "",
+        client_prarup_code: formData.clientPrarupCode || '2',
         client_name: formData.clientName || "",
         client_address: formData.clientAddress || "",
         client_city: formData.clientCity || "",
@@ -438,7 +442,7 @@ export default function ClientAttachmentForm() {
           </SectionCard>
 
           {/* ── Section 2: Document Info ── */}
-          <SectionCard icon={<IconDoc />} title="Document Details" subtitle="Letter and category reference information" accent="#010a2a">
+          <SectionCard icon={<IconDoc />} title="Document Details" subtitle="Letter and caption_cd reference information" accent="#010a2a">
             <Grid container spacing={2.5}>
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
@@ -469,8 +473,8 @@ export default function ClientAttachmentForm() {
                   select
                   fullWidth
                   label="Category"
-                  name="category"
-                  value={formData.category}
+                  name="caption_cd"
+                  value={formData.caption_cd}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -712,7 +716,7 @@ export default function ClientAttachmentForm() {
                 //type="submit"
                 variant="contained"
                 size="medium"
-                //onClick={handleSubmit()}
+                onClick={handleSubmit}
                 sx={{
                   px: 4,
                   borderRadius: "10px",
