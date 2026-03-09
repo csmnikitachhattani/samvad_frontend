@@ -145,25 +145,24 @@ const IconMeta = () => (
 
 // ── Content Category Radio ─────────────────────────────────────────────────────
 const CATEGORIES = [
-  { value: "classified", label: "Classified" },
-  { value: "outdoor_media", label: "Outdoor Media" },
-  { value: "printing", label: "Printing" },
-  { value: "electronic", label: "Electronic" },
+  { catId: "classified", catText: "Classified" },
+  { catId: "outdoor_media", catText: "Outdoor Media" },
+  { catId: "printing", catText: "Printing" },
+  { catId: "electronic", catText: "Electronic" },
 ];
-
-function ContentCategoryRadio({ value, onChange }) {
+function ContentCategoryRadio({ value, onChange, categories }) {
   return (
     <Box>
       <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", mb: 1.5, display: "block" }}>
         Content Category
       </Typography>
       <Box display="flex" flexWrap="wrap" gap={1.2}>
-        {CATEGORIES.map((cat) => {
-          const active = value === cat.value;
+        {categories.map((cat) => {
+          const active = value === cat.catId;
           return (
             <Box
-              key={cat.value}
-              onClick={() => onChange(cat.value)}
+              key={cat.catId}
+              onClick={() => onChange(cat.catId)}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -205,7 +204,7 @@ function ContentCategoryRadio({ value, onChange }) {
                 fontWeight={active ? 700 : 500}
                 sx={{ color: active ? "#fff" : "#374151", fontSize: "0.82rem", whiteSpace: "nowrap" }}
               >
-                {cat.label}
+                {cat.catText}
               </Typography>
             </Box>
           );
@@ -220,6 +219,7 @@ export default function ClientAttachmentForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = useParams();
+ 
   console.log(id)
   const [formData, setFormData] = useState({
     contentCategory: "",
@@ -245,12 +245,28 @@ export default function ClientAttachmentForm() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  const [categories, setCategories] = useState([])
+
+  async function fetchCategory() {
+    try {
+      const res = await clientServices.getAdvtCategory();
+      console.log("hgyghugh", res.data.data)
+      setCategories(res.data.data);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  // useEffect(() => {
+  //   fetchCategory()
+  // }, []);
 
   async function fetchDepartment() {
     try {
       const res = await clientServices.getalldepartment();
       console.log(res)
-      setFormData(res);
+      //setFormData(res);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -261,24 +277,14 @@ export default function ClientAttachmentForm() {
     try {
       const res = await clientServices.getAdvtCaption();
       console.log(res)
-      setFormData(res);
+      //setFormData(res);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
       //setLoading(false);
     }
   }
-  async function fetchCategory() {
-    try {
-      const res = await clientServices.getAdvtCategory();
-      console.log(res)
-      setFormData(res);
-    } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
-    }
-  }
+
    
   useEffect(() => {
     let finyear = localStorage.getItem('financialYear')
@@ -291,7 +297,9 @@ export default function ClientAttachmentForm() {
       try {
         const res = await adminServices.getClientRecord(payload);
         console.log(res)
-        setFormData(res);
+        //const apiData = res?.data?.data || res?.data;
+        //const job = Array.isArray(apiData) ? apiData[0] : apiData;
+        //setFormData(job);
       } catch (error) {
         console.error("Failed to fetch work orders", error);
       } finally {
@@ -415,6 +423,7 @@ export default function ClientAttachmentForm() {
             <ContentCategoryRadio
               value={formData.contentCategory}
               onChange={(val) => setFormData((prev) => ({ ...prev, contentCategory: val }))}
+              categories= {categories}
             />
           </SectionCard>
 
