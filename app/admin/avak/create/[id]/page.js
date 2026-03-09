@@ -297,7 +297,7 @@ export default function ClientAttachmentForm() {
   useEffect(() => {
     let finyear = localStorage.getItem('financialYear')
     const payload = {
-      "client_ref_id": "202603002098",
+      "client_ref_id": id,
       "fin_year": finyear
     }
 
