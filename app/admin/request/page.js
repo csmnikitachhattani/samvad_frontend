@@ -285,10 +285,10 @@ const RequestTable = ({ requestData }) => {
                         size="small"
                         sx={actionBtn("#010a2a", "#e8eaf6")}
                         onClick={() =>
-                          router.push(`/admin/request/${row.ref_id}`)
+                          router.push(`/admin/avak/create/${row.ref_id}`)
                         }
                       >
-                        View / Edit
+                        Create Avak
                       </Button>
                     </Stack>
                   </TableCell>

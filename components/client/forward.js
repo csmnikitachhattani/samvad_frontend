@@ -26,20 +26,9 @@ import {
   DialogTitle,
   DialogContent,
   Grid,
-
-
 } from "@mui/material";
-
-
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-
-// import {useState } from "react";
-
-
-
-
 import VisibilityIcon from "@mui/icons-material/Visibility";
-
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -90,7 +79,7 @@ const ForwardTo = () => {
             user_id,
             user_name,
             action: actionType,
-             category: "02",
+             category: "03",
           },
         }
       );
@@ -355,7 +344,7 @@ const handleForward = async (row) => {
           user_id: user_id,
           user_name: user_name,
           action: "get_by_id",
-          category: "02", // ✅ Important (was missing earlier)
+          category: "03", // ✅ Important (was missing earlier)
           ip_address: userIP,
         },
       }
