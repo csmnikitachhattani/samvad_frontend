@@ -44,7 +44,7 @@ const clientServices = {
     console.log("Workorder VehicleS")
     const {fin_year, datatype, } = params
     try {
-      const res = await axiosClient.get("/Client/avak-list?finYear=2025-2026&userId=1001&dataType=AvakList");
+      const res = await axiosClient.get("/Client/avak-list?finYear=2025-2026&dataType=AvakList");
       return res;
     } catch (err) {
       throw err; // interceptor will format it"
