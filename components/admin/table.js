@@ -23,7 +23,13 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import adminServices from "@/services/adminServices";
 
+import {  useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
+
 const AdvtDownloadTable = ({ rows = [] }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");

@@ -15,6 +15,10 @@ import {
 import axios from "axios";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
+import { toggleCreateModal } from "@/store/modules/outdoor/vehicleSlice.js";
+import { useRouter } from "next/navigation";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const initialState = {
   agencyID: "",
@@ -38,10 +42,17 @@ const initialState = {
   isActive: true,
 };
 
-const CreateLocationDialog = ({ open = true, onClose }) => {
+const CreateLocationDialog = ({ open, onClose }) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const ModalShow = useSelector((state) => state.vehicle.ModalShow);
+const closeUploadDialog = () =>{
+  dispatch(toggleCreateModal({
+    show: false,  
+  }))
+}
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
-  
 const [states, setStates] = useState([]);
 const [districts, setDistricts] = useState([]);
  
@@ -79,6 +90,41 @@ useEffect(() => {
     },
   };
 
+  const createVehicle = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("AgencyId", data.agencyId);
+      formData.append("LocationName", data.vehicleNo);
+      formData.append("StateCode", data.ownerName);
+      formData.append("DistrictID", "2026-01-26T14:20:06.038Z");
+      formData.append("City", "2026-01-26T14:20:06.038Z");
+      formData.append("LocationType", "2026-01-26T14:20:06.038Z");
+      formData.append("DisplayBoardSize", "2026-01-26T14:20:06.038Z");
+      formData.append("DisplayBoardLandmark", "2026-01-26T14:20:06.038Z");
+      formData.append("DisplayBoardSpecification", "2026-01-26T14:20:06.038Z");
+      formData.append("ApprovedBy", "2026-01-26T14:20:06.038Z");
+      formData.append("Remark", "2026-01-26T14:20:06.038Z");
+      formData.append("BoardLatitude", "2026-01-26T14:20:06.038Z");
+      formData.append("BoardLogitude", "2026-01-26T14:20:06.038Z");
+      if (data.rcPhotoFile) formData.append("RcPhotoFile", data.rcPhotoFile);
+      formData.append("FitnessUpto", "2026-01-26T14:20:06.038Z");
+      formData.append("InsuranceUpto", "2026-01-26T14:20:06.038Z");
+      formData.append("CreatedBy", data.createdBy);
+      formData.append("CreatedIpAddress", data.createdIpAddress);
+
+      const response = await axiosClient.post(
+        "http://103.79.34.50:8083/api/ManageMaster/createledVehicle",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      closeUploadDialog();
+      return response;
+    } catch (error) {
+      console.error("Create vehicle failed:", error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -95,7 +141,7 @@ useEffect(() => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+    <Dialog open={ModalShow} onClose={onClose} fullWidth maxWidth="md">
         <DialogTitle
         sx={{
           backgroundColor: "#0f4c3a",

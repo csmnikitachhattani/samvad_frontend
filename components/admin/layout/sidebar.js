@@ -28,18 +28,33 @@ const isActive = (path) => pathname.startsWith(path);
       icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
     },
     {
-      label: "Master",
-      path: "/admin/profile",
-      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
       label: "Agency",
       path: "/admin/agency",
       icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
+      label: "Display Boards",
+      path: "/admin/display",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Vehicle Boards",
+      path: "/admin/vehicle",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Mini Bus Boards",
+      path: "/admin/bus",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
       label: "Counter",
       path: "/admin/counter",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Workorders",
+      path: "/admin/workorder",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {

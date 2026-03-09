@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import {useEffect } from 'react'
-import Table from "@/components/admin/counter/table";
+import Table from "@/components/admin/bus/table";
 import { Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 
@@ -29,12 +29,12 @@ function AdminIndex() {
       >
         <Button
           variant="contained"
-          onClick={() => router.push("/admin/counter/create")}
+          onClick={() => router.push("/admin/bus/create")}
           sx={{  background: "#010a2a",
           color: "#fff",
           textTransform: "capitalize",}}
         >
-          Create Counter
+          Add Mini Bus
         </Button>
       </Box>
 
