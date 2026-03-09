@@ -111,35 +111,35 @@ function SectionCard({ icon, title, subtitle, children, accent = "#010a2a" }) {
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const IconDoc = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="#010a2a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const IconCategory = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M4 6h16M4 12h10M4 18h7" stroke="#6366f1" strokeWidth="1.7" strokeLinecap="round"/>
+    <path d="M4 6h16M4 12h10M4 18h7" stroke="#6366f1" strokeWidth="1.7" strokeLinecap="round" />
   </svg>
 );
 
 const IconLocation = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const IconOffice = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <path d="M3 21V7l9-4 9 4v14" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M9 21v-6h6v6" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" stroke="#10b981" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M3 21V7l9-4 9 4v14" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 21v-6h6v6" stroke="#10b981" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" stroke="#10b981" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
 const IconMeta = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="10" stroke="#8b5cf6" strokeWidth="1.7"/>
-    <path d="M12 8v4l3 3" stroke="#8b5cf6" strokeWidth="1.7" strokeLinecap="round"/>
+    <circle cx="12" cy="12" r="10" stroke="#8b5cf6" strokeWidth="1.7" />
+    <path d="M12 8v4l3 3" stroke="#8b5cf6" strokeWidth="1.7" strokeLinecap="round" />
   </svg>
 );
 
@@ -219,10 +219,10 @@ export default function ClientAttachmentForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = useParams();
- 
-  console.log(id)
+
+  const [captions, setCaptions] = useState([])
   const [formData, setFormData] = useState({
-    contentCategory: "",
+    ref_Category_id: "",
     letter_no: "",
     receivingDate: "",
     category: "tender",
@@ -258,9 +258,6 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-  // useEffect(() => {
-  //   fetchCategory()
-  // }, []);
 
   async function fetchDepartment() {
     try {
@@ -276,6 +273,18 @@ export default function ClientAttachmentForm() {
   async function fetchCaption() {
     try {
       const res = await clientServices.getAdvtCaption();
+      console.log('caption', res.data)
+      setCaptions(res.data.result);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+
+  async function fetchClient() {
+    try {
+      const res = await clientServices.getClientData();
       console.log(res)
       //setFormData(res);
     } catch (error) {
@@ -284,15 +293,13 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-
-   
   useEffect(() => {
     let finyear = localStorage.getItem('financialYear')
     const payload = {
-        "client_ref_id": "202603002098",
-  "fin_year": finyear
-}
-    
+      "client_ref_id": "202603002098",
+      "fin_year": finyear
+    }
+
     async function fetchData() {
       try {
         const res = await adminServices.getClientRecord(payload);
@@ -301,10 +308,10 @@ export default function ClientAttachmentForm() {
         //const job = Array.isArray(apiData) ? apiData[0] : apiData;
         setFormData();
         // if (job) {
-          setFormData((prev) => ({ ...prev, ...res }));
-          
+        setFormData((prev) => ({ ...prev, ...res }));
+
         //}
-        console.log("assigned",formData)
+        console.log("assigned", formData)
       } catch (error) {
         console.error("Failed to fetch work orders", error);
       } finally {
@@ -314,56 +321,57 @@ export default function ClientAttachmentForm() {
     fetchData();
     fetchDepartment();
     fetchCaption();
-    fetchCategory()
+    fetchCategory();
+    fetchClient();
   }, []);
 
   const handleSubmit = async () => {
     //e.preventDefault();
     try {
       const payload = {
-        subject:                  formData.subject,
-        avak_category:            formData.contentCategory,
-        received_date:            formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
-        fixed_date:               formData.fixedDate || "",
-        tender_amt:               Number(formData.tenderAmount) || 0,
-        letter_no:                formData.letter_no,
-        letter_date:              formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
-        caption_cd:               formData.captionCd || "",
-        total_pages:              formData.noOfPages,
-        receiving_mode_code:      formData.modeOfReceiving,
-        letter_type_code:         formData.letterType,
-        remarks:                  formData.remark,
-        financial_year:           formData.financialYear || "",
-        client_cd:                formData.client,
-        base_dept_code:           formData.baseDept,
-        office_code:              formData.office,
-        office_level_code:        formData.officeLevel,
-        district_code:            formData.district,
-        section_code:             formData.section,
-        client_prarup_code:       formData.clientPrarupCode || "",
-        client_name:              formData.clientName || "",
-        client_address:           formData.clientAddress || "",
-        client_city:              formData.clientCity || "",
-        schedule_date:            formData.publicationDate ? new Date(formData.publicationDate).toISOString() : null,
-        is_post_ro:               formData.isPostRo || "",
-        ref_id:                   formData.refId || "",
-        avak_ref_id:              formData.avakRefId || "",
-        create_update_flag_name:  "C",                          // "C" = Create, "U" = Update
-        entry_by_user_type_cd:    "",
-        entry_by_user_id:         "00100",                      // replace with auth user
-        entry_by_section_cd:      formData.section || "",
-        client_exist:             "Y",
-        entry_date:               new Date().toISOString(),
-        entry_time:               new Date().toTimeString().split(" ")[0],
-        ip_address:               "103.79.34.50",               // replace with real IP
+        subject: formData.subject,
+        avak_category: formData.ref_Category_id,
+        received_date: formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
+        fixed_date: formData.fixedDate || "",
+        tender_amt: Number(formData.tenderAmount) || 0,
+        letter_no: formData.letter_no,
+        letter_date: formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
+        caption_cd: formData.captionCd || "",
+        total_pages: formData.noOfPages,
+        receiving_mode_code: formData.modeOfReceiving,
+        letter_type_code: formData.letterType,
+        remarks: formData.remark,
+        financial_year: formData.financialYear || "",
+        client_cd: formData.client,
+        base_dept_code: formData.baseDept,
+        office_code: formData.office,
+        office_level_code: formData.officeLevel,
+        district_code: formData.district,
+        section_code: formData.section,
+        client_prarup_code: formData.clientPrarupCode || "",
+        client_name: formData.clientName || "",
+        client_address: formData.clientAddress || "",
+        client_city: formData.clientCity || "",
+        schedule_date: formData.publicationDate ? new Date(formData.publicationDate).toISOString() : null,
+        is_post_ro: formData.isPostRo || "",
+        ref_id: formData.refId || "",
+        avak_ref_id: formData.avakRefId || "",
+        create_update_flag_name: "C",                          // "C" = Create, "U" = Update
+        entry_by_user_type_cd: "",
+        entry_by_user_id: "00100",                      // replace with auth user
+        entry_by_section_cd: formData.section || "",
+        client_exist: "Y",
+        entry_date: new Date().toISOString(),
+        entry_time: new Date().toTimeString().split(" ")[0],
+        ip_address: "103.79.34.50",               // replace with real IP
       };
-  
+
       const response = await axiosClient.post(
         "http://103.79.34.50:8083/api/Client/create-update-avak",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
-  
+
       dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
       router.push("/admin/counter");
       console.log("SUCCESS:", response.data);
@@ -394,8 +402,8 @@ export default function ClientAttachmentForm() {
                 }}
               >
                 <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Box>
               <Typography variant="h5" fontWeight={800} sx={{ color: "#111827", letterSpacing: "-0.5px" }}>
@@ -426,9 +434,9 @@ export default function ClientAttachmentForm() {
           {/* ── Section 1: Content Category ── */}
           <SectionCard icon={<IconCategory />} title="Content Category" subtitle="Select the type of media content" accent="#6366f1">
             <ContentCategoryRadio
-              value={formData.contentCategory}
-              onChange={(val) => setFormData((prev) => ({ ...prev, contentCategory: val }))}
-              categories= {categories}
+              value={formData.ref_Category_id}
+              onChange={(val) => setFormData((prev) => ({ ...prev, ref_Category_id: val }))}
+              categories={categories}
             />
           </SectionCard>
 
@@ -469,10 +477,11 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   sx={field}
                 >
-                  <MenuItem value="tender">Tender</MenuItem>
-                  <MenuItem value="general">General</MenuItem>
-                  <MenuItem value="urgent">Urgent</MenuItem>
-                  <MenuItem value="confidential">Confidential</MenuItem>
+                  {captions.map((cap) => (
+                    <MenuItem key={cap.caption_cd} value={cap.caption_name}>
+                      {cap.caption_name}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Grid>
 
@@ -567,7 +576,7 @@ export default function ClientAttachmentForm() {
           {/* ── Section 3: Location & Office ── */}
           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
-              <Grid item size={{ xs:12, }}>
+              <Grid item size={{ xs: 12, }}>
                 <TextField
                   fullWidth
                   label="Base Department"
@@ -578,7 +587,7 @@ export default function ClientAttachmentForm() {
                 />
               </Grid>
 
-              <Grid item size={{ xs:12,}}>
+              <Grid item size={{ xs: 12, }}>
                 <TextField
                   fullWidth
                   label="District"
@@ -589,7 +598,7 @@ export default function ClientAttachmentForm() {
                     startAdornment: (
                       <InputAdornment position="start">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round"/>
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" />
                         </svg>
                       </InputAdornment>
                     ),

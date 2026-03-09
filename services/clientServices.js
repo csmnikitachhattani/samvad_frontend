@@ -10,6 +10,15 @@ const clientServices = {
       throw err; 
     }
   },
+
+  getClientData: async ()=>{
+    try {
+      const res = await axiosClient.get("/Client/get-client-detail_by_sno/2");
+      return res;
+    } catch (err) {
+      throw err; // interceptor will format it"
+    }
+  },
  
   getAdvtCaption: async ()=>{
     console.log("Workorder VehicleS")
