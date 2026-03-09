@@ -250,7 +250,6 @@ export default function ClientAttachmentForm() {
   async function fetchCategory() {
     try {
       const res = await clientServices.getAdvtCategory();
-      console.log("hgyghugh", res.data.data)
       setCategories(res.data.data);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
@@ -262,7 +261,6 @@ export default function ClientAttachmentForm() {
   async function fetchDepartment() {
     try {
       const res = await clientServices.getalldepartment();
-      console.log(res)
       //setFormData(res);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
@@ -273,7 +271,6 @@ export default function ClientAttachmentForm() {
   async function fetchCaption() {
     try {
       const res = await clientServices.getAdvtCaption();
-      console.log('caption', res.data)
       setCaptions(res.data.result);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
