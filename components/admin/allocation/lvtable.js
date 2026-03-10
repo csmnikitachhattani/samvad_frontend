@@ -362,50 +362,17 @@ const WorkOrderCards = () => {
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        // Replace with your actual API call:
-        // const response = await axiosClient.get("YOUR_API_URL");
-        // setData(response.data || []);
-
-        // ── mock data ──
-        setData([
-          {
-            financial_year: "2025-2026", avak_ref_id: "65765", job_no: "032603001",
-            wo_subject: "Highway Billboard — Phase 1", wo_no: "03LV26002",
-            wo_date: "2026-03-09T00:00:00", vendor_id: "1", vendor_name: "Vehicle-Agency",
-            client_cd: "000019", billing_Client_cd: "000019", billing_office_code: "00020",
-            client_grp_cd: "00002", od_servicetype_id: 2,
-            start_date: "2026-03-31T00:00:00", end_date: "2026-04-30T00:00:00",
-            commision_Percentage: 20, commission_amount: 7.2, amount_with_commission: 43.2,
-            gst_percentage: "12", gst_amount: 5.18, toatl_amount: 48.38,
-            entry_ip_address: "103.79.34.50", entry_by_username: "string",
-            detailList: [
-              { allocation_id: 1, led_vehicle_id: 6, vendor_id: "1", vendor_name: "Vehicle-Agency", vendor_cate: "outdoor media", rate: 12, no_of_vehicle: 1, no_of_programme: 4, total_rate: 12, start_date: "2026-03-31T00:00:00", end_date: "2026-04-30T00:00:00", entry_by_username: "nikita" },
-              { allocation_id: 3, led_vehicle_id: 2, vendor_id: "1", vendor_name: "Vehicle-Agency", vendor_cate: "outdoor media", rate: 12, no_of_vehicle: 1, no_of_programme: 4, total_rate: 12, start_date: "2026-03-31T00:00:00", end_date: "2026-04-30T00:00:00", entry_by_username: "nikita" },
-              { allocation_id: 4, led_vehicle_id: 1, vendor_id: "1", vendor_name: "Vehicle-Agency", vendor_cate: "outdoor media", rate: 12, no_of_vehicle: 1, no_of_programme: 4, total_rate: 12, start_date: "2026-03-31T00:00:00", end_date: "2026-04-30T00:00:00", entry_by_username: "nikita" },
-            ],
-          },
-          {
-            financial_year: "2025-2026", avak_ref_id: "65765", job_no: "032603001",
-            wo_subject: "City Centre Branding", wo_no: "03LV26003",
-            wo_date: "2026-03-09T00:00:00", vendor_id: "3", vendor_name: "swati agency",
-            client_cd: "000019", billing_Client_cd: "000019", billing_office_code: "00020",
-            client_grp_cd: "00002", od_servicetype_id: 2,
-            start_date: "2026-03-31T00:00:00", end_date: "2026-04-30T00:00:00",
-            commision_Percentage: 20, commission_amount: 2.4, amount_with_commission: 14.4,
-            gst_percentage: "12", gst_amount: 1.73, toatl_amount: 16.13,
-            entry_ip_address: "103.79.34.50", entry_by_username: "string",
-            detailList: [
-              { allocation_id: 2, led_vehicle_id: 3, vendor_id: "3", vendor_name: "swati agency", vendor_cate: "outdoor media", rate: 12, no_of_vehicle: 1, no_of_programme: 4, total_rate: 12, start_date: "2026-03-31T00:00:00", end_date: "2026-04-30T00:00:00", entry_by_username: "nikita" },
-            ],
-          },
-        ]);
-      } catch (error) {
-        console.error("Failed to fetch work orders", error);
-      } finally {
-        setLoading(false);
+        try {
+          const res = await adminServices.getAllocationtList();
+          console.log(res)
+          setData(res)
+        } catch (error) {
+          console.error("Failed to fetch work orders", error);
+        } finally {
+          setLoading(false);
+        }
       }
-    }
+          
     fetchData();
   }, []);
 
@@ -439,7 +406,7 @@ const WorkOrderCards = () => {
                 </svg>
               </Box>
               <Typography variant="h5" fontWeight={800} sx={{ color: "#111827", letterSpacing: "-0.5px" }}>
-                Work Orders
+                Allocation List 
               </Typography>
             </Box>
             <Typography variant="body2" sx={{ color: "#9ca3af", ml: "60px" }}>
