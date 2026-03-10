@@ -2,7 +2,6 @@ import axiosClient from "@/lib/axiosClient";
 
 const clientServices = {
   getalldepartment: async () => {
-    console.log("get all display Board")
     try {
       const res = await axiosClient.get("/ManageMaster/getdepartmentname");
       return res.data;
@@ -21,7 +20,6 @@ const clientServices = {
   },
  
   getAdvtCaption: async ()=>{
-    console.log("Workorder VehicleS")
     try {
       const res = await axiosClient.get("/ManageMaster/getallAdvtCaptions");
       return res;
@@ -31,7 +29,6 @@ const clientServices = {
   },
 
   getAdvtCategory: async ()=>{
-    console.log("Workorder VehicleS")
     try {
       const res = await axiosClient.get("/Client/getavakcategories");
       return res;
@@ -41,10 +38,20 @@ const clientServices = {
   },
 
   getAdvtList: async (params)=>{
-    console.log("Workorder VehicleS")
     const {fin_year, datatype, } = params
     try {
-      const res = await axiosClient.get("/Client/avak-list?finYear=2025-2026&userId=1001&dataType=AvakList");
+      const res = await axiosClient.get("/Client/avak-list?dataType=AvakList");
+      return res;
+    } catch (err) {
+      throw err; // interceptor will format it"
+    }
+  },
+
+  getAvakDetail: async (payload)=>{
+    console.log("Workorder VehicleS")
+    //const {fin_year, avak_ref_id, } = params
+    try {
+      const res = await axiosClient.post("/Client/get-avak-record", payload);
       return res;
     } catch (err) {
       throw err; // interceptor will format it"

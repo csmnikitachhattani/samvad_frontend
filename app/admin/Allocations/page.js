@@ -1,4 +1,8 @@
+import LvTable from '@/components/admin/allocation/lvtable';
 export default function Allocations() {
-    return <div>Allocations</div>;
-  }
-  
+  return (
+    <div>
+      <LvTable />
+    </div>
+  );
+}

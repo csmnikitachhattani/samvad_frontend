@@ -94,6 +94,16 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getAllocationtList: async () => {
+    console.log("get request Client List")
+    try {
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getlvjoballocation`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   getAllocationRecord: async (job_id, avakRefId) =>{
     console.log("get Allocation detail")
     try {

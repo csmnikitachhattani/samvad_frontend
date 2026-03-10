@@ -53,21 +53,25 @@ const ClientSideNavbar = ({ isCollapsed }) => {
       label: "Create New Request / Upload Your Work Order",
       path: "/client/clientnewrequist", // fixed typo
     },
-    { label: "Rejected List / Inbox", 
-       path: "/client/forward",
-      action: "get_rejected", },
 
-    // Requests with query params (Next.js way instead of state)
-    {
-      label: "Submited Requests",
-      path: "/client/forward",
-      action: "get_forwarded",
-    },
     {
       label: "Draft Request",
       path: "/client/forward",
       action: "get_not_forwarded",
     },
+    {
+      label: "Rejected List / Inbox",
+      path: "/client/forward",
+      action: "get_rejected",
+    },
+
+    // Requests with query params (Next.js way instead of state)
+    // {
+    //   label: "Submited Requests",
+    //   path: "/client/forward",
+    //   action: "get_forwarded",
+    // },
+
     {
       label: "Under Processing Request",
       path: "/client/forward",
@@ -84,7 +88,8 @@ const ClientSideNavbar = ({ isCollapsed }) => {
       action: "get_all_unaccepted",
     },
 
-    { label: "Published Advertisement", path: "/Forward-Request" },
+    { label: "Completed Work", path: "/Forward-Request" },
+    // { label: "Published Advertisement", path: "/Forward-Request" },
     { label: "Report", path: "/client/report" },
     // { label: "Check Status", path: "/client/newsratelist" },
     { label: "News Paper Rate List", path: "/client/newsratelist" },
@@ -102,8 +107,7 @@ const ClientSideNavbar = ({ isCollapsed }) => {
   return (
     <Box
       sx={{
-        background:
-          "linear-gradient(180deg, #0F2027, #203A43, #2C5364)",
+        background: "linear-gradient(180deg, #0F2027, #203A43, #2C5364)",
         boxShadow: "4px 0 12px rgba(0,0,0,0.35)",
         height: "100%",
         overflowY: "auto", // allow scroll instead of hidden
