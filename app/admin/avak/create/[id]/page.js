@@ -305,13 +305,8 @@ export default function ClientAttachmentForm() {
       try {
         const res = await adminServices.getClientRecord(payload);
         console.log(res)
-        const apiData = res?.data?.data || res?.data;
-        //const job = Array.isArray(apiData) ? apiData[0] : apiData;
-        setFormData();
-        // if (job) {
+        //const apiData = res?.data?.data || res?.data;
         setFormData((prev) => ({ ...prev, ...res }));
-
-        //}
         console.log("assigned", formData)
       } catch (error) {
         console.error("Failed to fetch work orders", error);
