@@ -439,13 +439,13 @@ const ClientAttachmentTable = () => {
                     {/* Letter No */}
                     <TableCell sx={{ ...bodyCell, minWidth: 150 }}>
                       <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", fontSize: "0.82rem" }}>
-                        {row.letterNo || "—"}
+                        {row.letter_no_date|| "—"}
                       </Typography>
                       <Box display="flex" gap={0.6} mt={0.5} flexWrap="wrap">
-                        <LetterTypeBadge value={row.letterType} />
+                        <LetterTypeBadge value={row.letter_type} />
                       </Box>
                       <Typography variant="caption" sx={{ color: "#9ca3af", display: "block", mt: 0.4 }}>
-                        Recv: {fmt(row.receivingDate)}
+                        Recv: {fmt(row.received_date)}
                       </Typography>
                     </TableCell>
 
@@ -503,7 +503,7 @@ const ClientAttachmentTable = () => {
                         </Box>
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <Typography variant="caption" sx={{ color: "#9ca3af", fontSize: "0.68rem", fontWeight: 600, textTransform: "uppercase", width: 30 }}>Rcv</Typography>
-                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.receivingDate)}</Typography>
+                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.received_date)}</Typography>
                         </Box>
                       </Box>
                     </TableCell>
@@ -524,13 +524,13 @@ const ClientAttachmentTable = () => {
                     {/* Mode / Pages */}
                     <TableCell sx={{ ...bodyCell, minWidth: 120 }}>
                       <Stack spacing={0.6} alignItems="flex-start">
-                        <ModePill value={row.modeOfReceiving} />
+                        <ModePill value={row.receiving_mode} />
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
                             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/>
                           </svg>
                           <Typography variant="caption" sx={{ color: "#6b7280", fontWeight: 600 }}>
-                            {row.noOfPages} pages
+                            {row.total_pages} pages
                           </Typography>
                         </Box>
                       </Stack>
