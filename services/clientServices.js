@@ -58,6 +58,22 @@ const clientServices = {
     }
   },
 
+  getallReceivingModes: async ()=>{
+    try {
+      const res = await axiosClient.get("/ManageMaster/getallReceivingModeTypes");
+      return res;
+    } catch (err) {
+      throw err; // interceptor will format it"
+    }
+  },
+  getallLetterTypes: async ()=>{
+    try {
+      const res = await axiosClient.get("/ManageMaster/getalllettertype");
+      return res;
+    } catch (err) {
+      throw err; // interceptor will format it"
+    }
+  },
 
 };
 
