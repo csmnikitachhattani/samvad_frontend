@@ -481,7 +481,7 @@ const AvakTable = () => {
                         <Button
                           variant="contained"
                           size="small"
-                          onClick={() => router.push(`/admin/client-attachment/${row.id}/process`)}
+                          onClick={() => router.push(`/admin/counter/create/${row.avak_ref_id}`)}
                           sx={actionBtn("#10b981", "#ecfdf5")}
                         >
                           Process to counter
