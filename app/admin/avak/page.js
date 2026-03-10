@@ -438,6 +438,9 @@ const ClientAttachmentTable = () => {
 
                     {/* Letter No */}
                     <TableCell sx={{ ...bodyCell, minWidth: 150 }}>
+                    <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", fontSize: "0.82rem" }}>
+                        {row.subject|| "—"}
+                      </Typography>
                       <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", fontSize: "0.82rem" }}>
                         {row.letter_no_date|| "—"}
                       </Typography>
@@ -553,7 +556,7 @@ const ClientAttachmentTable = () => {
                           onClick={() => router.push(`/admin/client-attachment/${row.id}/process`)}
                           sx={actionBtn("#10b981", "#ecfdf5")}
                         >
-                          Process
+                          Process to counter
                         </Button>
                         <Button
                           variant="contained"
