@@ -1029,8 +1029,10 @@ export default function UpdateClientRequestForm({ userId = "00100", financialYea
         printInOtherRemark: fd.printInOtherRemark || "",
         deleteStatus:  fd.deleteStatus  || "N",
         forwardStatus: fd.forwardStatus || "N",
-        refCategoryText: fd.refCategoryText || "",
+        captionCd: fd.caption_Cd || "",
         refCategoryId:   fd.refCategoryId   || "",
+        // refCategoryText: fd.refCategoryText || "",
+
         ip_address: fd.ip_address || "100.12.12.12",
         userId,
       };
@@ -1138,7 +1140,7 @@ export default function UpdateClientRequestForm({ userId = "00100", financialYea
                 </div>
                 <div className="fld">
                   <label className="fld-lbl">Category</label>
-                  <input className="fld-ctrl" name="refCategoryText" value={fd.refCategoryText} readOnly placeholder="Auto-filled" />
+                  <input className="fld-ctrl" name="caption_Cd" value={fd.caption_Cd} readOnly placeholder="Auto-filled" />
                 </div>
               </div>
 
@@ -1187,7 +1189,7 @@ export default function UpdateClientRequestForm({ userId = "00100", financialYea
                   {[
                     { k: "Subject",      v: fd.subject || "—" },
                     { k: "Amount",       v: fd.tenderAmt ? `₹ ${fd.tenderAmt}` : "—", hi: true },
-                    { k: "Category",     v: fd.refCategoryText || "—" },
+                    { k: "Caption Code",     v: fd.caption_Cd || "—" },
                     { k: "Letter Date",  v: fd.letterDate   || "—" },
                     { k: "Schedule",     v: fd.scheduleDate || "—" },
                     { k: "Total Papers", v: totalPapers || "—", hi: true },

@@ -51,6 +51,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 const ForwardTo = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+ 
   const actionType = searchParams.get("action") || "get_not_forwarded";
 
   const [data, setData] = useState([]);
@@ -90,7 +91,7 @@ const ForwardTo = () => {
             user_id,
             user_name,
             action: actionType,
-             category: "02",
+         
           },
         }
       );
@@ -355,7 +356,7 @@ const handleForward = async (row) => {
           user_id: user_id,
           user_name: user_name,
           action: "get_by_id",
-          category: "02", // ✅ Important (was missing earlier)
+          // category: "02", // Important (was missing earlier)
           ip_address: userIP,
         },
       }
@@ -368,7 +369,7 @@ const handleForward = async (row) => {
       return;
     }
 
-    // ✅ API returns array → take first record
+    //  API returns array → take first record
     const rowData = response.data?.data?.[0];
 
     if (!rowData) {
@@ -686,82 +687,7 @@ const handleForward = async (row) => {
 </TableCell>
 
 
-                    {/* Actions
-                    <TableCell sx={colCell}>
-                      <Stack direction="row" spacing={0.7}>
-                        <Button
-                          size="small"
-                          onClick={() => handleEdit(row.ref_Id)}
-                          sx={{
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "0.68rem",
-                            textTransform: "none",
-                            color: "#1D4ED8",
-                            bgcolor: "#EFF6FF",
-                            border: "1px solid #BFDBFE",
-                            px: 1.4,
-                            py: 0.3,
-                            minWidth: "auto",
-                            borderRadius: "6px",
-                            "&:hover": { bgcolor: "#DBEAFE", borderColor: "#1D4ED8" },
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="small"
-                          onClick={() => handleDelete(row.ref_Id)}
-                          sx={{
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "0.68rem",
-                            textTransform: "none",
-                            color: "#DC2626",
-                            bgcolor: "#FEF2F2",
-                            border: "1px solid #FECACA",
-                            px: 1.4,
-                            py: 0.3,
-                            minWidth: "auto",
-                            borderRadius: "6px",
-                            "&:hover": { bgcolor: "#FEE2E2", borderColor: "#DC2626" },
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </Stack>
-                    </TableCell>
-
-                    {/* Forward */}
-                
-{/* <TableCell sx={colCell}>
-  <Button
-    size="small"
-    onClick={() => handleForward(row)} // ✅ Add this
-    sx={{
-      fontFamily: "'Outfit', sans-serif",
-      fontWeight: 700,
-      fontSize: "0.68rem",
-      textTransform: "none",
-      letterSpacing: "0.02em",
-      color: "#fff",
-      background:
-        "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
-      px: 1.8,
-      py: 0.4,
-      minWidth: "auto",
-      borderRadius: "6px",
-      boxShadow: "0 1px 4px rgba(29,78,216,0.25)",
-      "&:hover": {
-        background:
-          "linear-gradient(135deg,#1E40AF 0%,#2563EB 100%)",
-        boxShadow: "0 3px 10px rgba(29,78,216,0.35)",
-      },
-    }}
-  >
-    Forward
-  </Button>
-</TableCell> */} 
+         
 
 {actionType === "get_not_forwarded" && (
   <>
@@ -974,8 +900,8 @@ const handleForward = async (row) => {
                       p: 1,
                       height: 150,
                       display: "flex",
-                      alignItems: "center",      // ✅ Vertical center
-                      justifyContent: "center",  // ✅ Horizontal center
+                      alignItems: "center",      // Vertical center
+                      justifyContent: "center",  // Horizontal center
                       backgroundColor: "#fafafa",
                       cursor: "pointer",
                       textAlign: "center",
