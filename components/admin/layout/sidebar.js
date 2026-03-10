@@ -59,7 +59,7 @@ const isActive = (path) => pathname.startsWith(path);
     },
     {
       label: "Allocated",
-      path: "/admin/allocated",
+      path: "/admin/allocation",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
