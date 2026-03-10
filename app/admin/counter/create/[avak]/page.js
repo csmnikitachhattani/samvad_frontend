@@ -107,8 +107,19 @@ export default function JobForm() {
   useEffect(() => {
     async function fetchAvakDetails() {
       try {
-        const response = await clientServices.getAvakDetail({avak_ref_id:avak, fin_year:'2024-2025'});
-        setServices(response?.result || []);
+        const res = await clientServices.getAvakDetail({avak_ref_id:avak, fin_year:'2024-2025'});
+        console.log(res)
+        setData((prev) => ({
+            ...prev,
+            financial_year: '2024-2025',
+            subject: res.data.subject,
+            avak_ref_id: avak,
+            client_ref_id: res.data.client_ref_id,
+            // office: res.data.data.Office_code,
+            // section: res.data.data.section_code,
+            // officer: res.data.data.employee_code,
+          }));
+        setData((prev) => ({ ...prev, ...res.data }));
       } catch (error) {
         console.error("Failed to fetch services", error);
       }
