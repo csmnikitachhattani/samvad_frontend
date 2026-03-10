@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import axiosClient from "@/lib/axiosClient";
 import adminServices from "@/services/adminServices";
+import { useParams } from "next/navigation";
+import clientServices from "@/services/clientServices";
 import {
   Box,
   Button,
@@ -101,6 +103,18 @@ export default function JobForm() {
     }
     fetchServices();
   }, []);
+  const { avak } = useParams();
+  useEffect(() => {
+    async function fetchAvakDetails() {
+      try {
+        const response = await clientServices.getAvakDetail({avak_ref_id:avak, fin_year:'2024-2025'});
+        setServices(response?.result || []);
+      } catch (error) {
+        console.error("Failed to fetch services", error);
+      }
+    }
+    fetchAvakDetails();
+  }, []);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setData((prev) => ({
@@ -165,6 +179,8 @@ export default function JobForm() {
       console.error("ERROR:", error.response?.data || error.message);
     }
   };
+  
+ 
 
   return (
     <Paper
