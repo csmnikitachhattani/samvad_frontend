@@ -202,7 +202,7 @@ function WorkOrderCard({ row, router }) {
           </Button>
           <Button size="small" variant="contained"
             sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 700, fontSize: "0.75rem", background: "#010a2a", px: 1.5, py: 0.5, boxShadow: "0 2px 6px rgba(1,10,42,0.25)", "&:hover": { background: "#0d1b4b" } }}>
-            Approve
+            Generate Notesheet
           </Button>
         </Box>
       </Box>
@@ -212,7 +212,7 @@ function WorkOrderCard({ row, router }) {
         <Grid container spacing={3}>
 
           {/* Vendor block */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item size={{xs:12, sm:6, md:3}}>
             <Box sx={{ p: 2, borderRadius: "12px", backgroundColor: "#f8f9fb", border: "1px solid #e9eaf0", height: "100%" }}>
               <Typography variant="caption" sx={{ color: "#9ca3af", fontSize: "0.67rem", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700, display: "block", mb: 1 }}>
                 Vendor
@@ -238,7 +238,7 @@ function WorkOrderCard({ row, router }) {
           </Grid>
 
           {/* Duration block */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item size={{xs:12, sm:6, md:3}}>
             <Box sx={{ p: 2, borderRadius: "12px", backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", height: "100%" }}>
               <Typography variant="caption" sx={{ color: "#6b7280", fontSize: "0.67rem", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700, display: "block", mb: 1 }}>
                 Campaign Duration
@@ -257,7 +257,7 @@ function WorkOrderCard({ row, router }) {
           </Grid>
 
           {/* Financials block */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item size={{xs:12, sm:6, md:3}}>
             <Box sx={{ p: 2, borderRadius: "12px", backgroundColor: "#f8f9fb", border: "1px solid #e9eaf0", height: "100%" }}>
               <Typography variant="caption" sx={{ color: "#9ca3af", fontSize: "0.67rem", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700, display: "block", mb: 1 }}>
                 Financials
@@ -271,7 +271,7 @@ function WorkOrderCard({ row, router }) {
           </Grid>
 
           {/* Allocation summary */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item size={{xs:12, sm:6, md:3}}>
             <Box
               onClick={() => setOpen(!open)}
               sx={{
