@@ -48,6 +48,11 @@ const isActive = (path) => pathname.startsWith(path);
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
+      label: "request",
+      path: "/admin/request",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
       label: "Avak",
       path: "/admin/avak",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
