@@ -182,7 +182,7 @@ function TableSkeleton() {
 }
 
 // ── Main component ─────────────────────────────────────────────────────────────
-const ClientAttachmentTable = () => {
+const AvakTable = () => {
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -201,78 +201,6 @@ const ClientAttachmentTable = () => {
       } finally {
         setLoading(false);
       }
-      // try {
-      //   // const response = await adminServices.getClientAttachments();
-      //   // setData(response?.result || []);
-
-      //   // ── Mock data for preview ──
-      //   setData([
-      //     {
-      //       id: 1,
-      //       letterNo: "LTR/2024/001",
-      //       receivingDate: "2024-03-15",
-      //       category: "tender",
-      //       contentCategory: "outdoor_media",
-      //       tenderAmount: 250000,
-      //       publicationDate: "2024-03-20",
-      //       client: "Madhya Pradesh Tourism",
-      //       baseDept: "Tourism Dept",
-      //       district: "Bhopal",
-      //       officeLevel: "state",
-      //       office: "Main Secretariat",
-      //       section: "Advertising",
-      //       officer: "Rajesh Kumar",
-      //       modeOfReceiving: "email",
-      //       noOfPages: 12,
-      //       letterType: "incoming",
-      //       remark: "Urgent tender for highway billboard campaign",
-      //     },
-      //     {
-      //       id: 2,
-      //       letterNo: "LTR/2024/002",
-      //       receivingDate: "2024-03-18",
-      //       category: "general",
-      //       contentCategory: "classified",
-      //       tenderAmount: 0,
-      //       publicationDate: "2024-03-22",
-      //       client: "MPPKVVCL",
-      //       baseDept: "Energy Dept",
-      //       district: "Indore",
-      //       officeLevel: "district",
-      //       office: "District Office",
-      //       section: "PR Cell",
-      //       officer: "Sunita Patel",
-      //       modeOfReceiving: "hand",
-      //       noOfPages: 5,
-      //       letterType: "outgoing",
-      //       remark: "",
-      //     },
-      //     {
-      //       id: 3,
-      //       letterNo: "LTR/2024/003",
-      //       receivingDate: "2024-03-20",
-      //       category: "tender",
-      //       contentCategory: "printing",
-      //       tenderAmount: 180000,
-      //       publicationDate: "2024-03-25",
-      //       client: "MP Health Services",
-      //       baseDept: "Health Dept",
-      //       district: "Jabalpur",
-      //       officeLevel: "district",
-      //       office: "CMO Office",
-      //       section: "Admin",
-      //       officer: "Dr. Amit Singh",
-      //       modeOfReceiving: "courier",
-      //       noOfPages: 20,
-      //       letterType: "incoming",
-      //       remark: "Annual health awareness campaign prints",
-      //     },
-      //   ]);
-      // } catch (error) {
-      //   console.error("Failed to fetch client attachments", error);
-      // } finally {
-      //   setLoading(false);
-      // }
     }
     fetchData();
   }, []);
@@ -623,4 +551,4 @@ const ClientAttachmentTable = () => {
   );
 };
 
-export default ClientAttachmentTable;
+export default AvakTable;
