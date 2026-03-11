@@ -670,7 +670,6 @@ export default function JobForm() {
   client_cd: "",
   client_name: "",
   office_address: "",
-
   office_code: "",
   district_code: "",
   remarks: "",
@@ -695,10 +694,10 @@ export default function JobForm() {
 Billing_client_cd:""
 
 });
-  useEffect(() => {
-    async function fetchServices() {
+useEffect(() => {
+    async function fetchServices(Avak_category) {
       try {
-        const response = await adminServices.getServices();
+        const response = await adminServices.getServices(Avak_category);
         setServices(response?.result || []);
       } catch (error) {
         console.error("Failed to fetch services", error);
@@ -725,10 +724,8 @@ Billing_client_cd:""
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const payload = new FormData();
-
       payload.append("job_id", data.job_id);
       payload.append("financial_year", data.financial_year);
       payload.append("client_ref_id", data.client_ref_id);
@@ -821,8 +818,7 @@ payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
         officer: avak.client_cd,
         section: avak.section_code,
         remarks: avak.remarks,
-
-
+        Avak_category: avak.Avak_category,
         Billing_client_cd:avak.client_cd,
         Billing_address:avak.client_address,
         Billing_base_dept_code:avak.base_dept_code,

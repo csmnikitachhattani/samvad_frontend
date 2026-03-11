@@ -421,18 +421,18 @@ export default function ClientAttachmentForm() {
   }, []);
 
   const handleSubmit = async () => {
-    e.preventDefault();
+    //e.preventDefault();
     try {
       const payload = {
         subject: formData.subject,
-        avak_caption_cd: formData.ref_Category_id,
+        avak_category: formData.ref_Category_id,
         received_date: formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
         fixed_date: formData.fixedDate || "2026-03-12T12:54:48.276Z",
         tender_amt: Number(formData.tender_amt) || 0,
         letter_no: formData.letter_no,
         letter_date: formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
         caption_cd: formData.captionCd || "02",
-        total_pages: formData.files,
+        total_pages: String(formData.files),
         receiving_mode_code: formData.modeOfReceiving,
         letter_type_code: formData.letterType,
         remarks: formData.remark,
@@ -448,7 +448,7 @@ export default function ClientAttachmentForm() {
         client_address: formData.clientAddress || "Raipur",
         client_city: formData.clientCity || "Raipur",
         schedule_date: formData.schedule_date ? new Date(formData.schedule_date).toISOString() : null,
-        ref_id: id || "",
+        ref_id: id ,
         create_update_flag_name: "Insert",                          // "C" = Create, "U" = Update
         entry_by_user_type_cd: "01",
         entry_by_user_id: "00100",                      // replace with auth user

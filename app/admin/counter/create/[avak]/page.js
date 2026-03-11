@@ -74,8 +74,9 @@ export default function JobForm() {
     { value: "2month", label: "2 Months" },
   ];
   const [data, setData] = useState({
-    job_id: "2",
+    job_id: "",
     financial_year: "",
+    Avak_category: "",
     client_ref_id: "",
     avak_ref_id: "",
     is_client_dpr: "",
@@ -105,18 +106,21 @@ export default function JobForm() {
     client: "",
     entry_user_name: "nikita",
     files: null,
+    Avak_category: '',
   });
-  // useEffect(() => {
-  //   async function fetchServices() {
-  //     try {
-  //       const response = await adminServices.getServices();
-  //       setServices(response?.result || []);
-  //     } catch (error) {
-  //       console.error("Failed to fetch services", error);
-  //     }
-  //   }
-  //   fetchServices();
-  // }, []);
+  useEffect(() => {
+  if(data.Avak_category){
+    async function fetchServices() {
+      try {
+        const response = await adminServices.getServices(data.Avak_category);
+        setServices(response?.result || []);
+      } catch (error) {
+        console.error("Failed to fetch services", error);
+      }
+    }
+    fetchServices();
+  }
+  }, [data.Avak_category]);
   const { avak } = useParams();
   useEffect(() => {
     async function fetchAvakDetails() {
@@ -129,9 +133,6 @@ export default function JobForm() {
             subject: res.data.subject,
             avak_ref_id: avak,
             client_ref_id: res.data.client_ref_id,
-            // office: res.data.data.Office_code,
-            // section: res.data.data.section_code,
-            // officer: res.data.data.employee_code,
           }));
         setData((prev) => ({ ...prev, ...res.data }));
       } catch (error) {
@@ -222,16 +223,6 @@ export default function JobForm() {
       //setLoading(false);
     }
   }
-  async function fetchCaption() {
-    try {
-      const res = await clientServices.getAdvtCaption();
-      setCaptions(res.data.result);
-    } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
-    }
-  }
 
   async function fetchClient(client) {
     try {
@@ -305,7 +296,7 @@ export default function JobForm() {
       }
 
       const response = await axiosClient.post(
-        "http://103.79.34.50:8083/api/outDoorMediaTransaction/savecounter",
+        "/outDoorMediaTransaction/savecounter",
         payload,
         {
           headers: { "Content-Type": "multipart/form-data" },
