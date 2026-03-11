@@ -460,116 +460,97 @@ export default function JobForm() {
       </Box>
 
       <Box component="form" >
-        {/* ── Reference Info ── */}
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            mb: 3,
-            borderRadius: "14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #e8eaf0",
-          }}
-        >
-          <SectionHeader title="Reference Information" />
-          <Grid container spacing={2.5}>
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Financial Year"
-                name="financial_year"
-                fullWidth
-                value={data.financial_year}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid>
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Client Ref ID"
-                name="client_ref_id"
-                fullWidth
-                value={data.client_ref_id}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid>
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="AVAK Ref ID"
-                name="avak_ref_id"
-                fullWidth
-                value={data.avak_ref_id}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid>
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Ref No"
-                name="ref_no"
-                fullWidth
-                value={data.ref_no}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid>
-
-            {/* <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                select
-                label="Is Client DPR"
-                name="is_client_dpr"
-                fullWidth
-                value={data.is_client_dpr}
-                onChange={handleChange}
-                sx={grayField}
-              >
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-              </TextField>
-            </Grid> */}
-            {/* 
-            <Grid item size={{xs:12, md:3}}>
-              <TextField
-                label="OD Service Type ID"
-                type="number"
-                name="od_servicetype_id"
-                fullWidth
-                value={data.od_servicetype_id}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid> */}
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                select
-                label="Service Type"
-                name="od_servicetype_id"
-                fullWidth
-                value={data.od_servicetype_id}
-                onChange={handleChange}
-                sx={grayField}
-              >
-                {services.length > 0 ? (
-                  services.map((s) => (
-                    <MenuItem key={s.serviceId} value={s.serviceId}>
-                      {s.serviceName}
-                    </MenuItem>
-                  ))
-                ) : (
-                    <MenuItem disabled>
-                      <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-                        No services available
+      {/* ── Reference Info ── */}
+<Paper
+  elevation={0}
+  sx={{
+    p: 3,
+    mb: 3,
+    borderRadius: "14px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #e8eaf0",
+  }}
+>
+  <SectionHeader title="Reference Information" />
+  <Grid container spacing={2.5} alignItems="center">
+    
+    {/* Financial Year */}
+    <Grid item size={{ xs: 12, md: 3 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          Financial Year
         </Typography>
-                    </MenuItem>
-                  )}
-              </TextField>
-            </Grid>
-          </Grid>
-        </Paper>
+        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+          {data.financial_year || "—"}
+        </Typography>
+      </Box>
+    </Grid>
+
+    {/* Client Ref ID */}
+    <Grid item size={{ xs: 12, md: 3 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          Client Ref ID
+        </Typography>
+        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+          {data.client_ref_id || "—"}
+        </Typography>
+      </Box>
+    </Grid>
+
+    {/* AVAK Ref ID */}
+    <Grid item size={{ xs: 12, md: 3 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          AVAK Ref ID
+        </Typography>
+        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+          {data.avak_ref_id || "—"}
+        </Typography>
+      </Box>
+    </Grid>
+
+    {/* Ref No */}
+    <Grid item size={{ xs: 12, md: 3 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          Ref No
+        </Typography>
+        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+          {data.ref_no || "—"}
+        </Typography>
+      </Box>
+    </Grid>
+
+    {/* Service Type — still interactive */}
+    <Grid item size={{ xs: 12, md: 3 }}>
+      <TextField
+        select
+        label="Service Type"
+        name="od_servicetype_id"
+        fullWidth
+        value={data.od_servicetype_id}
+        onChange={handleChange}
+        sx={grayField}
+      >
+        {services.length > 0 ? (
+          services.map((s) => (
+            <MenuItem key={s.serviceId} value={s.serviceId}>
+              {s.serviceName}
+            </MenuItem>
+          ))
+        ) : (
+          <MenuItem disabled>
+            <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+              No services available
+            </Typography>
+          </MenuItem>
+        )}
+      </TextField>
+    </Grid>
+
+  </Grid>
+</Paper>
 
         {/* ── Job Details ── */}
         <Paper
