@@ -87,7 +87,7 @@ const adminService = {
   getClientRequestList: async () => {
     console.log("get request Client List")
     try {
-      const res = await axiosClient.get(`/Client/get-client-requests?finYear=2024-2025`);
+      const res = await axiosClient.get(`/Client/getclientadvtrequests?financial_year=2024-2025&action=get_forwarded&user_id=00100`);
       return res.data;
     } catch (err) {
       console.log("answer")
