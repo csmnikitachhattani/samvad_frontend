@@ -98,8 +98,7 @@ export default function JobForm() {
     district_code: "",
     remarks: "",
     baseDept: '',
-    district: '',
-    officeLevel: '',
+    office_level_code: '',
     office: '',
     section: '',
     ip_address: "",
@@ -281,6 +280,8 @@ export default function JobForm() {
       payload.append("endDate", data.endDate);
       payload.append("office_address", data.office_address);
       payload.append("billing_address", data.billing_address);
+      payload.append("office_level_code", data.office_level_code)
+      payload.append("district_code", data.district_code)
       payload.append("remarks", data.remarks);
       payload.append("ip_address", getPublicIP());
       payload.append("entry_user_name", data.entry_user_name);
