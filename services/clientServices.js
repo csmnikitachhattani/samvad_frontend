@@ -74,6 +74,14 @@ const clientServices = {
       throw err; // interceptor will format it"
     }
   },
+  getFilesDetails: async()=>{
+    try {
+      const res = await axiosClient.get("/Client/get-filese");
+      return res;
+    } catch (err) {
+      throw err; // interceptor will format it"
+    }
+  }
 
 };
 

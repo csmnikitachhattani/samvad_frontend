@@ -33,6 +33,11 @@ const isActive = (path) => pathname.startsWith(path);
       icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     {
+      label: "Agency User",
+      path: "/admin/agency/agencyuser",
+      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
       label: "Display Boards",
       path: "/admin/display",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
