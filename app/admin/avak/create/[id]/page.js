@@ -669,15 +669,6 @@ export default function ClientAttachmentForm() {
                   name="district"
                   value={formData.district}
                   onChange={handleChange}
-                  // InputProps={{
-                  //   startAdornment: (
-                  //     <InputAdornment position="start">
-                  //       <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                  //         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" />
-                  //       </svg>
-                  //     </InputAdornment>
-                  //   ),
-                  // }}
                   sx={field}
                 >
                    {districts.map((district) => (
