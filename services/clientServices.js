@@ -50,9 +50,9 @@ const clientServices = {
       throw err; // interceptor will format it
     }
   },
-  getClientData: async ()=>{
+  getClientData: async (client)=>{
     try {
-      const res = await axiosClient.get("/Client/get-client-detail_by_sno/2");
+      const res = await axiosClient.get(`/Client/get-client-detail_by_sno/${client}`);
       return res;
     } catch (err) {
       throw err; // interceptor will format it"

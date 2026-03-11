@@ -215,7 +215,6 @@ export default function ClientAttachmentForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = useParams();
-
   const [captions, setCaptions] = useState([])
   const [departments, setDepartments] = useState([])
   const [districts, setDistricts] = useState([])
@@ -225,6 +224,7 @@ export default function ClientAttachmentForm() {
   const [officers, setOfficers] = useState([])
   const [modes, setModes] = useState([])
   const [letterTypes, setLetterTypes] = useState([])
+  const [categories, setCategories] = useState([])
   const [formData, setFormData] = useState({
     ref_Category_id: "",
     letter_no: "",
@@ -240,17 +240,14 @@ export default function ClientAttachmentForm() {
     section: "",
     officer: "",
     modeOfReceiving: "",
-    noOfPages: "",
+    files: "",
     letterType: "",
     remark: "",
   });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const [categories, setCategories] = useState([])
-
   async function fetchCategory() {
     try {
       const res = await clientServices.getAdvtCategory();
@@ -291,9 +288,9 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-  async function fetchOfficeLevel() {
+  async function fetchOfficeLevel(deptCode) {
     try {
-      const res = await clientServices.getOfficeLevels({deptCode:formData.baseDept});
+      const res = await clientServices.getOfficeLevels({deptCode});
       //setFormData(res);
       setLevels(res.result)
     } catch (error) {
@@ -355,9 +352,10 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-  async function fetchClient() {
+
+  async function fetchClient(client) {
     try {
-      const res = await clientServices.getClientData();
+      const res = await clientServices.getClientData(client);
       console.log("console", res.data)
       //setFormData(res);
       setFormData((prev) => ({
@@ -370,7 +368,6 @@ export default function ClientAttachmentForm() {
         officer: res.data.data.employee_code,
       }));
     fetchDistricts();
-    fetchOfficeLevel();
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -378,22 +375,29 @@ export default function ClientAttachmentForm() {
     }
   }
   useEffect(() => {
+    if(formData.client !== ""){
+      fetchClient(formData.client)
+    }
+  },[formData.client])
+  useEffect(() => {
     if(formData.baseDept&&formData.district){
-    console.log(formData.district, formData.baseDept)
+    fetchOfficeLevel(formData.baseDept)
     fetchOffice(formData.baseDept, formData.district);
     fetchSections(formData.baseDept, formData.district);
     fetchOfficers(formData.baseDept, formData.district);
     }
   },[formData.baseDept, formData.district])
-
-
+  useEffect(() => {
+    if(formData.baseDept){
+    fetchOfficeLevel(formData.baseDept)
+    }
+  },[formData.baseDept,])
   useEffect(() => {
     let finyear = localStorage.getItem('financialYear')
     const payload = {
       "client_ref_id": id,
       "fin_year": finyear
     }
-
     async function fetchData() {
       try {
         const res = await adminServices.getClientRecord(payload);
@@ -411,14 +415,13 @@ export default function ClientAttachmentForm() {
     fetchDepartment();
     fetchCaption();
     fetchCategory();
-    fetchClient();
     fetchModeOfReceiving();
     fetchLetterType();
     
   }, []);
 
   const handleSubmit = async () => {
-    //e.preventDefault();
+    e.preventDefault();
     try {
       const payload = {
         subject: formData.subject,
@@ -429,9 +432,9 @@ export default function ClientAttachmentForm() {
         letter_no: formData.letter_no,
         letter_date: formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
         caption_cd: formData.captionCd || "02",
-        total_pages: formData.noOfPages,
-        receiving_mode_code: '01',
-        letter_type_code: '01',
+        total_pages: formData.files,
+        receiving_mode_code: formData.modeOfReceiving,
+        letter_type_code: formData.letterType,
         remarks: formData.remark,
         financial_year: formData.financialYear || "2024-2025",
         client_cd: formData.client || '2',
@@ -446,7 +449,6 @@ export default function ClientAttachmentForm() {
         client_city: formData.clientCity || "Raipur",
         schedule_date: formData.schedule_date ? new Date(formData.schedule_date).toISOString() : null,
         ref_id: id || "",
-        //avak_ref_id: formData.avakRefId || "",
         create_update_flag_name: "Insert",                          // "C" = Create, "U" = Update
         entry_by_user_type_cd: "01",
         entry_by_user_id: "00100",                      // replace with auth user
@@ -458,7 +460,7 @@ export default function ClientAttachmentForm() {
       };
 
       const response = await axiosClient.post(
-        "http://103.79.34.50:8083/api/Client/create-update-avak",
+        "/Client/create-update-avak",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -646,9 +648,9 @@ export default function ClientAttachmentForm() {
                 <TextField
                   fullWidth
                   label="No. of Pages in Document"
-                  name="noOfPages"
+                  name="files"
                   type="number"
-                  value={formData.noOfPages}
+                  value={formData.files}
                   onChange={handleChange}
                   sx={field}
                 />
