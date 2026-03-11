@@ -721,7 +721,13 @@ export default function ClientAttachmentForm() {
                   value={formData.section}
                   onChange={handleChange}
                   sx={field}
-                />
+                > {sections.map((section) => (
+                  <MenuItem key={section} >
+                    {section}
+                  </MenuItem>
+                ))}
+
+                  </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
