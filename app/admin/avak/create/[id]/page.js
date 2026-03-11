@@ -221,6 +221,7 @@ export default function ClientAttachmentForm() {
   const [districts, setDistricts] = useState([])
   const [levels, setLevels] = useState([])
   const [offices, setOffices] = useState([])
+  const [sections, setSections] = useState([])
   const [formData, setFormData] = useState({
     ref_Category_id: "",
     letter_no: "",
@@ -292,7 +293,19 @@ export default function ClientAttachmentForm() {
   async function fetchOffice(deptCode, distCode) {
     try {
       const res = await clientServices.getOfficeNames({deptCode, distCode});
-      setoffices(res.data.result);
+      console.log(res)
+      setOffices(res.result);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchSections(deptCode, distCode) {
+    try {
+      const res = await clientServices.getClientSection({deptCode, distCode});
+      console.log(res)
+      setSections(res.result);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -336,6 +349,7 @@ export default function ClientAttachmentForm() {
     if(formData.baseDept&&formData.district){
     console.log("hghghg", formData.district, formData.baseDept)
     fetchOffice(formData.baseDept, formData.district);
+    fetchSections(formData.baseDept, formData.district);
     }
   },[formData.baseDept, formData.district])
 
@@ -683,6 +697,7 @@ export default function ClientAttachmentForm() {
 
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
+                  select
                   fullWidth
                   label="Office"
                   name="office"
@@ -691,8 +706,8 @@ export default function ClientAttachmentForm() {
                   sx={field}
                 >
                     {offices.map((office) => (
-                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
-                      {level.officeLevelName}
+                    <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
+                      {office.officeName}
                     </MenuItem>
                   ))}
                 </TextField>

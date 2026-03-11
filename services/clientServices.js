@@ -23,7 +23,7 @@ const clientServices = {
   getClientSection: async (req)=>{
     const {distCode, deptCode} = req
     try {
-      const res = await axiosClient.get(`/ManageMaster/getclientsection/${deptCode}`);
+      const res = await axiosClient.get(`/ManageMaster/getclientsection/${distCode}/${deptCode}`);
       return res.data;
     } catch (err) {
       console.log("answer")
