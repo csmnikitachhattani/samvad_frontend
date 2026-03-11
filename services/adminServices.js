@@ -144,46 +144,6 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
-  getOfficeLevels: async (req)=>{
-    const {distCode, deptCode} = req
-    try {
-      const res = await axiosClient.get(`/manageMaster/getofficelevel/${deptCode}`);
-      return res.data;
-    } catch (err) {
-      console.log("answer")
-      throw err; // interceptor will format it
-    }
-  },
-  getClientSection: async (req)=>{
-    const {distCode, deptCode} = req
-    try {
-      const res = await axiosClient.get(`/manageMaster/getofficelevel/${deptCode}`);
-      return res.data;
-    } catch (err) {
-      console.log("answer")
-      throw err; // interceptor will format it
-    }
-  },
-  getOfficerSection: async (req)=>{
-    const {distCode, deptCode} = req
-    try {
-      const res = await axiosClient.get(`/manageMaster/getofficer/${distCode}/${deptCode}`);
-      return res.data;
-    } catch (err) {
-      console.log("answer")
-      throw err; // interceptor will format it
-    }
-  },
-  getOfficeNames: async (req)=>{
-    const {distCode, deptCode} = req
-    try {
-      const res = await axiosClient.get(`/manageMaster/getofficename/${distCode}/${deptCode}`);
-      return res.data;
-    } catch (err) {
-      console.log("answer")
-      throw err; // interceptor will format it
-    }
-  },
 
  
 };

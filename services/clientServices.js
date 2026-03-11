@@ -9,7 +9,46 @@ const clientServices = {
       throw err; 
     }
   },
-
+  getOfficeLevels: async (req)=>{
+    const {distCode, deptCode} = req
+    try {
+      const res = await axiosClient.get(`/manageMaster/getofficelevel/${deptCode}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getClientSection: async (req)=>{
+    const {distCode, deptCode} = req
+    try {
+      const res = await axiosClient.get(`/manageMaster/getofficelevel/${deptCode}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOfficerSection: async (req)=>{
+    const {distCode, deptCode} = req
+    try {
+      const res = await axiosClient.get(`/manageMaster/getofficer/${distCode}/${deptCode}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOfficeNames: async (req)=>{
+    const {distCode, deptCode} = req
+    try {
+      const res = await axiosClient.get(`/manageMaster/getofficename/${distCode}/${deptCode}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   getClientData: async ()=>{
     try {
       const res = await axiosClient.get("/Client/get-client-detail_by_sno/2");
@@ -18,7 +57,6 @@ const clientServices = {
       throw err; // interceptor will format it"
     }
   },
- 
   getAdvtCaption: async ()=>{
     try {
       const res = await axiosClient.get("/ManageMaster/getallAdvtCaptions");
@@ -27,7 +65,6 @@ const clientServices = {
       throw err; // interceptor will format it"
     }
   },
-
   getAdvtCategory: async ()=>{
     try {
       const res = await axiosClient.get("/Client/getavakcategories");
@@ -36,7 +73,6 @@ const clientServices = {
       throw err; // interceptor will format it"
     }
   },
-
   getAdvtList: async (params)=>{
     const {fin_year, datatype, } = params
     try {
@@ -46,7 +82,6 @@ const clientServices = {
       throw err; // interceptor will format it"
     }
   },
-
   getAvakDetail: async (payload)=>{
     console.log("Workorder VehicleS")
     //const {fin_year, avak_ref_id, } = params
@@ -57,7 +92,6 @@ const clientServices = {
       throw err; // interceptor will format it"
     }
   },
-
   getallReceivingModes: async ()=>{
     try {
       const res = await axiosClient.get("/ManageMaster/getallReceivingModeTypes");
