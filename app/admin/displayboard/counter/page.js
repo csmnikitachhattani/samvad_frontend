@@ -689,9 +689,11 @@ export default function JobForm() {
 
   //`billing details
   Billing_client_cd: "",
-  Billing_client_cd: "",
   Billing_client_name: "",
   Billing_address: "",
+   Billing_section_code: "",
+Billing_client_cd:""
+
 });
   useEffect(() => {
     async function fetchServices() {
@@ -754,13 +756,15 @@ export default function JobForm() {
       payload.append("officer", data.officer);
       payload.append("designation", data.designation);
 // billing_details
-payload.append("Billing_client_cd", data.Billing_client_cd);
-payload.append("Billing_client_name", data.Billing_client_name);
+payload.append("Billing_client_cd", data.Billing_client_cd ||data.client_cd);
+payload.append("Billing_client_name", data.Billing_client_name||data.client_name);
 payload.append("Billing_address", data.Billing_address);
-payload.append("Billing_base_dept_code", data.Billing_base_dept_code);
-payload.append("Billing_office_level_code", data.Billing_office_level_code);
-payload.append("Billing_office_code", data.Billing_office_code);
-payload.append("Billing_section_code", data.Billing_section_code);
+payload.append("Billing_base_dept_code", data.Billing_base_dept_code ||data.baseDepartment);
+payload.append("Billing_office_level_code", data.Billing_office_level_code||data.officeLevel);
+payload.append("Billing_office_code", data.Billing_office_code|| data.office_code);
+payload.append("Billing_section_code", data.Billing_section_code||data.section);
+payload.append("Billing_officer", data.Billing_officer||data.officer);
+
 payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
 
 
@@ -768,8 +772,9 @@ payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
 
       if (data.files) {
         payload.append("files", data.files);
+        
       }
-
+   
       for (let pair of payload.entries()) {
         console.log(pair[0], pair[1]);
       }
@@ -816,6 +821,13 @@ payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
         officer: avak.client_cd,
         section: avak.section_code,
         remarks: avak.remarks,
+
+
+        Billing_client_cd:avak.client_cd,
+        Billing_address:avak.client_address,
+        Billing_base_dept_code:avak.base_dept_code,
+        Billing_district_code:avak.district_code,
+       Billing_office_level_code:avak.office_level_code,
       }));
 
     } catch (error) {
@@ -975,21 +987,7 @@ payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
               />
             </Grid>
 
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                select
-                label="Is Client DPR"
-                name="is_client_dpr"
-                fullWidth
-                size="small"
-                value={data.is_client_dpr}
-                onChange={handleChange}
-               
-              >
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-              </TextField>
-            </Grid>
+           
             <Grid item xs={12} md={3}>
               <TextField
                 select
@@ -1018,13 +1016,23 @@ payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
               />
             </Grid>
           </Grid>
-          <SectionHeader title="Office Mapping" />
 
-<ClientDetails data={data} setData={setData} />
+      <Grid container spacing={2} mt={3}>
 
- <SectionHeader title="Billing Client Details" />
+  {/* Client Details */}
+ <Grid item size={{xs:12 ,md:6}}>
+    <SectionHeader title="Office Mapping" />
+    <ClientDetails data={data} setData={setData} />
+  </Grid>
 
-<BillingsDetails data={data} setData={setData} />
+  {/* Billing Details */}
+  <Grid item size={{xs:12 ,md:6}}>
+    <SectionHeader title="Billing Client Details" />
+    <BillingsDetails data={data} setData={setData} />
+  </Grid>
+
+</Grid>
+ 
 {/* ===============job detals=========================== */}
           <SectionHeader title="Job Details" />
           <Grid container spacing={2.5}>
@@ -1233,9 +1241,13 @@ payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
         </Box>
         </Paper>
 
+   
+
 
        
       </Box>
     </Paper>
+
+    
   );
 }

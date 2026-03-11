@@ -955,6 +955,8 @@ const NP = [
 export default function UpdateClientRequestForm({ userId = "00100", financialYear = "2024-2025" }) {
   const params = useParams();
   const ref_id = params?.ref_id;
+  const category=params?.category;
+  
   const router = useRouter();
 
   const [loading,      setLoading]      = useState(false);
@@ -978,7 +980,7 @@ export default function UpdateClientRequestForm({ userId = "00100", financialYea
       try {
         const res = await axios.get(
           "http://103.79.34.50:8083/api/Client/getclientadvtrequests",
-          { params: { user_id: userId, financial_year: financialYear, action: "get_by_id", ref_id, category: "02" } }
+          { params: { user_id: userId, financial_year: financialYear, action: "get_by_id", ref_id, category } }
         );
         if (res.data?.message !== "Success") { alert(res.data?.message || "Fetch failed"); return; }
         const d = res.data?.data?.[0];
@@ -1004,7 +1006,7 @@ export default function UpdateClientRequestForm({ userId = "00100", financialYea
       } catch { alert("Error fetching record"); }
       finally { setFetchLoading(false); }
     })();
-  }, [ref_id, userId, financialYear]);
+  }, [ref_id, userId, financialYear, category]);
 
   const set = (e) => setFd(p => ({ ...p, [e.target.name]: e.target.value }));
 

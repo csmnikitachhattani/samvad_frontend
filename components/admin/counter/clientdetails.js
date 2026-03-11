@@ -91,7 +91,7 @@ export default function ClientDetails({ data, setData }) {
   return (
     <Grid container spacing={2.5}>
 
-      <Grid item size={{xs: 12, md: 3}}>
+      <Grid item size={{xs: 12, md: 12}}>
         <TextField
           select
           label="Base Department"
@@ -109,7 +109,7 @@ export default function ClientDetails({ data, setData }) {
         </TextField>
       </Grid>
 
-   <Grid item size={{xs: 12, md: 3}}>
+   <Grid item size={{xs: 12, md: 12}}>
         <TextField
           select
           label="District"
@@ -127,7 +127,7 @@ export default function ClientDetails({ data, setData }) {
         </TextField>
       </Grid>
 
-   <Grid item size={{xs: 12, md: 3}}>
+   <Grid item size={{xs: 12, md: 12}}>
         <TextField
           select
           label="Office Level"
@@ -145,7 +145,7 @@ export default function ClientDetails({ data, setData }) {
         </TextField>
       </Grid>
 
-    <Grid item size={{xs: 12, md: 3}}>
+    <Grid item size={{xs: 12, md: 12}}>
         <TextField
           select
           label="Office"
@@ -163,7 +163,7 @@ export default function ClientDetails({ data, setData }) {
         </TextField>
       </Grid>
 
-     <Grid item size={{xs: 12, md: 3}}>
+     <Grid item size={{xs: 12, md:12}}>
         <TextField
           select
           label="Section"
@@ -181,7 +181,7 @@ export default function ClientDetails({ data, setData }) {
         </TextField>
       </Grid>
 
-    <Grid item size={{xs: 12, md: 3}}>
+    <Grid item size={{xs: 12, md: 12}}>
   <TextField
     select
     label="Officer"
