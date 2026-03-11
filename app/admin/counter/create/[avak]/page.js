@@ -144,7 +144,7 @@ export default function JobForm() {
     getPublicIP()
   })
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { 
     e.preventDefault();
 
     try {

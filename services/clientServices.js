@@ -10,8 +10,7 @@ const clientServices = {
     }
   },
   getOfficeLevels: async (req)=>{
-    const {distCode, deptCode} = req
-
+    const {distCode, de} = req
     try {
       const res = await axiosClient.get(`/ManageMaster/getofficelevel/B010`);
       return res.data;
@@ -30,9 +29,8 @@ const clientServices = {
       throw err; // interceptor will format it
     }
   },
-  getOfficerSection: async (req)=>{
+  getOfficers: async (req)=>{
     const {distCode, deptCode} = req
-    
     try {
       const res = await axiosClient.get(`/ManageMaster/getofficer/${distCode}/${deptCode}`);
       return res.data;

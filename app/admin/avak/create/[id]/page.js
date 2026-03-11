@@ -222,6 +222,7 @@ export default function ClientAttachmentForm() {
   const [levels, setLevels] = useState([])
   const [offices, setOffices] = useState([])
   const [sections, setSections] = useState([])
+  const [officers, setOfficers] = useState([])
   const [formData, setFormData] = useState({
     ref_Category_id: "",
     letter_no: "",
@@ -312,6 +313,17 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
+  async function fetchOfficers(deptCode, distCode) {
+    try {
+      const res = await clientServices.getOfficers({deptCode, distCode});
+      console.log(res)
+      setOfficers(res.result);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
   async function fetchCaption() {
     try {
       const res = await clientServices.getAdvtCaption();
@@ -322,7 +334,6 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-
   async function fetchClient() {
     try {
       const res = await clientServices.getClientData();
@@ -332,7 +343,7 @@ export default function ClientAttachmentForm() {
         ...prev,
         baseDept: res.data.data.base_dept_code,
         district: res.data.data.district_code,
-        officeLevel: res.data.data.Office_code,
+        officeLevel: res.data.data.OfficeLevel,
         office: res.data.data.Office_code,
         section: res.data.data.section_code,
         officer: res.data.data.employee_code,
@@ -347,9 +358,10 @@ export default function ClientAttachmentForm() {
   }
   useEffect(() => {
     if(formData.baseDept&&formData.district){
-    console.log("hghghg", formData.district, formData.baseDept)
+    console.log(formData.district, formData.baseDept)
     fetchOffice(formData.baseDept, formData.district);
     fetchSections(formData.baseDept, formData.district);
+    fetchOfficers(formData.baseDept, formData.district);
     }
   },[formData.baseDept, formData.district])
 
@@ -732,13 +744,20 @@ export default function ClientAttachmentForm() {
 
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
+                  select
                   fullWidth
                   label="Officer"
                   name="officer"
                   value={formData.officer}
                   onChange={handleChange}
                   sx={field}
-                />
+                >
+                    {officers.map((officer) => (
+                    <MenuItem key={officer.employeeId} value={officer.employeeId}>
+                      {officer.employeeName}
+                    </MenuItem>
+                  ))}
+                  </TextField>
               </Grid>
             </Grid>
           </SectionCard>
