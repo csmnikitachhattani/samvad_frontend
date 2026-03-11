@@ -40,6 +40,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 const ForwardTo = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+ 
   const actionType = searchParams.get("action") || "get_not_forwarded";
 
   const [data, setData] = useState([]);
@@ -79,7 +80,8 @@ const ForwardTo = () => {
             user_id,
             user_name,
             action: actionType,
-             category: "03",
+          
+         
           },
         }
       );
@@ -319,15 +321,56 @@ const handleForward = async (row) => {
     }
   } catch (error) {
     console.error("Forward Error:", error);
-    alert("Forward Failed ❌");
+    alert("Forward Failed");
   }
 };
 
+// const handleForward = async (row) => {
+//   try {
+
+//     const fileRes = await axios.get(
+//       `http://103.79.34.50:8083/api/Client/get-files/${row.ref_Id}/${row.financial_Year}`
+//     );
+
+//     const files = fileRes.data?.data || [];
+
+//     //  If no file uploaded
+//     if (files.length === 0) {
+//       alert("Please upload attachment before forwarding.");
+//       return;
+//     }
+
+//     const userIP = await getUserIP();
+
+//     const payload = {
+//       ref_id: row.ref_Id,
+//       fin_year: row.financial_Year,
+//       forward_by_user_id: localStorage.getItem("user_id") || "00100",
+//       forward_by_ip_address: userIP,
+//       forward_date: new Date().toISOString(),
+//       forward_time: new Date().toLocaleTimeString(),
+//     };
+
+//     const response = await axios.post(
+//       "http://103.79.34.50:8083/api/Client/C_Client_Advt_Forward",
+//       payload
+//     );
+
+//     if (response.status === 200) {
+//       alert("Forwarded Successfully ");
+//       await fetchData();
+//     }
+
+//   } catch (error) {
+//     console.error("Forward Error:", error);
+//     alert("Forward Failed");
+//   }
+// };
 
 
   // ==================handelEdit======================
-  const handleEdit = async (ref_Id) => {
-  if (!ref_Id) {
+  const handleEdit = async (ref_Id,ref_Category_Id) => {
+  if (!ref_Id && !ref_Category_Id) {
     alert("Invalid Reference ID");
     return;
   }
@@ -344,7 +387,8 @@ const handleForward = async (row) => {
           user_id: user_id,
           user_name: user_name,
           action: "get_by_id",
-          category: "03", // ✅ Important (was missing earlier)
+          // category: "02", // Important (was missing earlier)
+          category: ref_Category_Id , // fallback to 02 if not available
           ip_address: userIP,
         },
       }
@@ -357,7 +401,7 @@ const handleForward = async (row) => {
       return;
     }
 
-    // ✅ API returns array → take first record
+    //  API returns array → take first record
     const rowData = response.data?.data?.[0];
 
     if (!rowData) {
@@ -618,6 +662,7 @@ const handleForward = async (row) => {
                     <TableCell sx={colCell}>
                       <Chip
                         label={row.ref_Category_Text || "—"}
+
                         size="small"
                         sx={{
                           fontFamily: "'Outfit', sans-serif",
@@ -631,6 +676,27 @@ const handleForward = async (row) => {
                         }}
                       />
                     </TableCell>
+                    {/* <input type="hidden" value={row.ref_Category_Id} /> */}
+<TableCell sx={{ display: "none" }}>
+  {row.ref_Category_Id}
+</TableCell>
+                    {/* <TableCell sx={colCell}>
+                      <Chip
+                        label={row.ref_Category_Id|| "—"}
+
+                        size="small"
+                        sx={{
+                          fontFamily: "'Outfit', sans-serif",
+                          fontSize: "0.67rem",
+                          fontWeight: 600,
+                          height: 21,
+                          borderRadius: "5px",
+                          bgcolor: "#F0FDF4",
+                          color: "#15803D",
+                          border: "1px solid #BBF7D0",
+                        }}
+                      />
+                    </TableCell> */}
 
                     {/* Letter Date */}
                     <TableCell sx={{ ...colCell, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.74rem", color: "#6B7280" }}>
@@ -675,82 +741,7 @@ const handleForward = async (row) => {
 </TableCell>
 
 
-                    {/* Actions
-                    <TableCell sx={colCell}>
-                      <Stack direction="row" spacing={0.7}>
-                        <Button
-                          size="small"
-                          onClick={() => handleEdit(row.ref_Id)}
-                          sx={{
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "0.68rem",
-                            textTransform: "none",
-                            color: "#1D4ED8",
-                            bgcolor: "#EFF6FF",
-                            border: "1px solid #BFDBFE",
-                            px: 1.4,
-                            py: 0.3,
-                            minWidth: "auto",
-                            borderRadius: "6px",
-                            "&:hover": { bgcolor: "#DBEAFE", borderColor: "#1D4ED8" },
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="small"
-                          onClick={() => handleDelete(row.ref_Id)}
-                          sx={{
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "0.68rem",
-                            textTransform: "none",
-                            color: "#DC2626",
-                            bgcolor: "#FEF2F2",
-                            border: "1px solid #FECACA",
-                            px: 1.4,
-                            py: 0.3,
-                            minWidth: "auto",
-                            borderRadius: "6px",
-                            "&:hover": { bgcolor: "#FEE2E2", borderColor: "#DC2626" },
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </Stack>
-                    </TableCell>
-
-                    {/* Forward */}
-                
-{/* <TableCell sx={colCell}>
-  <Button
-    size="small"
-    onClick={() => handleForward(row)} // ✅ Add this
-    sx={{
-      fontFamily: "'Outfit', sans-serif",
-      fontWeight: 700,
-      fontSize: "0.68rem",
-      textTransform: "none",
-      letterSpacing: "0.02em",
-      color: "#fff",
-      background:
-        "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
-      px: 1.8,
-      py: 0.4,
-      minWidth: "auto",
-      borderRadius: "6px",
-      boxShadow: "0 1px 4px rgba(29,78,216,0.25)",
-      "&:hover": {
-        background:
-          "linear-gradient(135deg,#1E40AF 0%,#2563EB 100%)",
-        boxShadow: "0 3px 10px rgba(29,78,216,0.35)",
-      },
-    }}
-  >
-    Forward
-  </Button>
-</TableCell> */} 
+         
 
 {actionType === "get_not_forwarded" && (
   <>
@@ -759,7 +750,7 @@ const handleForward = async (row) => {
       <Stack direction="row" spacing={0.7}>
         <Button
           size="small"
-          onClick={() => handleEdit(row.ref_Id)}
+          onClick={() => handleEdit(row.ref_Id,row.ref_Category_Id)}
           sx={{
             fontFamily: "'Outfit', sans-serif",
             fontWeight: 600,
@@ -829,6 +820,27 @@ const handleForward = async (row) => {
       >
         Forward
       </Button>
+
+      {/* <Button
+  size="small"
+  disabled={!row.has_files}   // API se boolean aaye to best
+  onClick={() => handleForward(row)}
+  sx={{
+    fontFamily: "'Outfit', sans-serif",
+    fontWeight: 700,
+    fontSize: "0.68rem",
+    textTransform: "none",
+    letterSpacing: "0.02em",
+    color: "#fff",
+    background:
+      "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
+    px: 1.8,
+    py: 0.4,
+    borderRadius: "6px",
+  }}
+>
+  Forward
+</Button> */}
     </TableCell>
   </>
 )}
@@ -963,8 +975,8 @@ const handleForward = async (row) => {
                       p: 1,
                       height: 150,
                       display: "flex",
-                      alignItems: "center",      // ✅ Vertical center
-                      justifyContent: "center",  // ✅ Horizontal center
+                      alignItems: "center",      // Vertical center
+                      justifyContent: "center",  // Horizontal center
                       backgroundColor: "#fafafa",
                       cursor: "pointer",
                       textAlign: "center",

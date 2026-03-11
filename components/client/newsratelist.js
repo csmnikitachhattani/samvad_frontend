@@ -25,7 +25,7 @@ const NewsRatesList = () => {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 15;
+  const recordsPerPage = 10;
 
   useEffect(() => {
     fetchData();
@@ -37,6 +37,7 @@ const NewsRatesList = () => {
       // const res = await axios.get("http://103.79.34.50:3080/api/get-news-rate");
       const res = await axios.get("http://103.79.34.50:8083/api/Client/getNewsPaperWithRates");
       setData(res.data || []);
+      console.log("newsrate list:", res.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -53,7 +54,7 @@ const NewsRatesList = () => {
       np.rates.forEach((r, i) => {
         rows.push({
           "Sr No.": np.sr_no,
-          "NP Name": np.NP,
+          "NP Name": np.np,
           Sno: i + 1,
           Category: r.rate_category_name,
           "CC Rate ₹": r.cc_rate,
@@ -95,13 +96,13 @@ const NewsRatesList = () => {
   };
 
   return (
-    <Box p={4}>
+    <Box p={2}>
       <Typography
         variant="h5"
         textAlign="center"
         fontWeight="bold"
         mb={4}
-        sx={{ background: "#D1A980", color: "#313647", p: 2, borderRadius: 1 }}
+        sx={{ background: "rgb(32, 57, 66)", color: "#e0e0e3", p: 1, borderRadius: 1 }}
       >
         News Paper Rate List
       </Typography>
@@ -133,15 +134,18 @@ const NewsRatesList = () => {
 
       {/* Table */}
       {loading ? (
-        <Stack alignItems="center" mt={5}>
+        <Stack alignItems="center" mt={1}>
           <CircularProgress />
         </Stack>
       ) : (
         <>
-          <TableContainer component={Paper}>
-            <Table size="small">
-              <TableHead sx={{ background: "#f1f1f1" }}>
-                <TableRow>
+          <TableContainer component={Paper} sx={{ maxHeight: "80vh",pb:10 }}>
+            <Table size="small" stickyHeader >
+              <TableHead sx={{ background: "#d3cbcb", "& th": {
+      background: "#d3cbcb",
+      fontWeight: "bold"
+    } }}>
+                <TableRow> 
                   <TableCell align="center">Sr No</TableCell>
                   <TableCell align="center">News Paper</TableCell>
                   <TableCell align="center">Sno</TableCell>
@@ -177,7 +181,7 @@ const NewsRatesList = () => {
                                 align="center"
                                 sx={{ fontWeight: "bold" }}
                               >
-                                {np.NP}
+                                {np.np}
                               </TableCell>
                             </>
                           )}

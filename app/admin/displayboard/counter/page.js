@@ -45,7 +45,11 @@
 //           flexShrink: 0,
 //         }}
 //       />
-//       <Typography variant="subtitle1" fontWeight={600} sx={{ color: "#1a1f36" }}>
+//       <Typography
+//         variant="subtitle1"
+//         fontWeight={600}
+//         sx={{ color: "#1a1f36" }}
+//       >
 //         {title}
 //       </Typography>
 //     </Box>
@@ -64,16 +68,17 @@
 //     { value: "2month", label: "2 Months" },
 //   ];
 //   const [data, setData] = useState({
-//     job_id: "2",
+//     job_id: "",
 //     financial_year: "",
 //     client_ref_id: "",
 //     avak_ref_id: "",
 //     is_client_dpr: "",
 //     ref_no: "",
-//     od_servicetype_id: "",
+//     od_servicetype_id: "1",
+//     no_of_media_count: "",
 //     subject: "",
 //     startDate: "",
-//     duration: '',
+//     duration: "",
 //     endDate: "",
 //     ref_date: "",
 //     receipt_date: "",
@@ -112,11 +117,11 @@
 //     const res = await fetch("https://api.ipify.org?format=json");
 //     const data = await res.json();
 //     console.log(data.ip);
-//     return data.ip
+//     return data.ip;
 //   }
 //   useEffect(() => {
-//     getPublicIP()
-//   })
+//     getPublicIP();
+//   });
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
@@ -131,6 +136,8 @@
 //       payload.append("is_client_dpr", data.is_client_dpr);
 //       payload.append("ref_no", data.ref_no);
 //       payload.append("od_servicetype_id", data.od_servicetype_id);
+//       payload.append("no_of_media_count", data.no_of_media_count);
+
 //       payload.append("subject", data.subject);
 //       payload.append("startDate", data.startDate);
 //       payload.append("endDate", data.endDate);
@@ -151,11 +158,11 @@
 //       }
 
 //       const response = await axiosClient.post(
-//         "http://103.79.34.50:8083/api/outDoorMediaTransaction/savecounter",
+//         "http://103.79.34.50:8083/api/OutDoorMediaTransaction/dbsavecounter",
 //         payload,
 //         {
 //           headers: { "Content-Type": "multipart/form-data" },
-//         }
+//         },
 //       );
 
 //       dispatch(showNotification({ message: "Saved!", severity: "success" }));
@@ -218,7 +225,15 @@
 //               strokeLinecap="round"
 //               strokeLinejoin="round"
 //             />
-//             <line x1="12" y1="12" x2="12" y2="12.01" stroke="white" strokeWidth="2" strokeLinecap="round" />
+//             <line
+//               x1="12"
+//               y1="12"
+//               x2="12"
+//               y2="12.01"
+//               stroke="white"
+//               strokeWidth="2"
+//               strokeLinecap="round"
+//             />
 //           </svg>
 //         </Box>
 //         <Box>
@@ -227,15 +242,15 @@
 //             fontWeight={700}
 //             sx={{ color: "#1a1f36", letterSpacing: "-0.3px" }}
 //           >
-//             Counter Form
+//             Display Board Counter Form
 //           </Typography>
 //           <Typography variant="caption" sx={{ color: "#8a90a0" }}>
-//             Create a new outdoor media job record
+//             Create a new display Board job record
 //           </Typography>
 //         </Box>
 //       </Box>
 
-//       <Box component="form" >
+//       <Box component="form">
 //         {/* ── Reference Info ── */}
 //         <Paper
 //           elevation={0}
@@ -249,14 +264,36 @@
 //         >
 //           <SectionHeader title="Reference Information" />
 //           <Grid container spacing={2.5}>
+//             {/* <Grid item size={{ xs: 12, md: 3 }}>
+//               <TextField
+//                 label="Financial Year"
+//                 name="financial_year"
+//                 fullWidth
+//                 size="small"
+//                 value={data.financial_year}
+//                 onChange={handleChange}
+//                
+//               />
+//             </Grid> */}
+
 //             <Grid item size={{ xs: 12, md: 3 }}>
 //               <TextField
 //                 label="Financial Year"
 //                 name="financial_year"
 //                 fullWidth
+//                 size="small"
 //                 value={data.financial_year}
-//                 onChange={handleChange}
-//                 sx={grayField}
+//                 onChange={(e) => {
+//                   const value = e.target.value;
+
+//                   // Allow only format like 2024-2025 while typing
+//                   if (/^\d{0,4}-?\d{0,4}$/.test(value)) {
+//                     handleChange(e);
+//                   }
+//                 }}
+//                 placeholder="2024-2025"
+//                 inputProps={{ maxLength: 9 }}
+//                
 //               />
 //             </Grid>
 
@@ -265,9 +302,10 @@
 //                 label="Client Ref ID"
 //                 name="client_ref_id"
 //                 fullWidth
+//                 size="small"
 //                 value={data.client_ref_id}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 
@@ -276,9 +314,10 @@
 //                 label="AVAK Ref ID"
 //                 name="avak_ref_id"
 //                 fullWidth
+//                 size="small"
 //                 value={data.avak_ref_id}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 
@@ -287,9 +326,10 @@
 //                 label="Ref No"
 //                 name="ref_no"
 //                 fullWidth
+//                 size="small"
 //                 value={data.ref_no}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 
@@ -299,75 +339,57 @@
 //                 label="Is Client DPR"
 //                 name="is_client_dpr"
 //                 fullWidth
+//                 size="small"
 //                 value={data.is_client_dpr}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               >
 //                 <MenuItem value="Yes">Yes</MenuItem>
 //                 <MenuItem value="No">No</MenuItem>
 //               </TextField>
 //             </Grid>
-//             {/* 
-//             <Grid item size={{xs:12, md:3}}>
-//               <TextField
-//                 label="OD Service Type ID"
-//                 type="number"
-//                 name="od_servicetype_id"
-//                 fullWidth
-//                 value={data.od_servicetype_id}
-//                 onChange={handleChange}
-//                 sx={grayField}
-//               />
-//             </Grid> */}
-//             <Grid item size={{ xs: 12, md: 3 }}>
+//             <Grid item xs={12} md={3}>
 //               <TextField
 //                 select
 //                 label="Service Type"
 //                 name="od_servicetype_id"
 //                 fullWidth
+//                 size="small"
 //                 value={data.od_servicetype_id}
-//                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               >
-//                 {services.length > 0 ? (
-//                   services.map((s) => (
-//                     <MenuItem key={s.serviceId} value={s.serviceId}>
-//                       {s.serviceName}
-//                     </MenuItem>
-//                   ))
-//                 ) : (
-//                     <MenuItem disabled>
-//                       <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-//                         No services available
-//         </Typography>
-//                     </MenuItem>
-//                   )}
+//                 <MenuItem value="1">Display Board</MenuItem>
 //               </TextField>
 //             </Grid>
-//           </Grid>
-//         </Paper>
 
-//         {/* ── Job Details ── */}
-//         <Paper
-//           elevation={0}
-//           sx={{
-//             p: 3,
-//             mb: 3,
-//             borderRadius: "14px",
-//             backgroundColor: "#ffffff",
-//             border: "1px solid #e8eaf0",
-//           }}
-//         >
+//             <Grid item size={{ xs: 12, md: 3 }}>
+//               <TextField
+//                 type="number"
+//                 label="Number Of Media Count"
+//                 name="no_of_media_count"
+//                 fullWidth
+//                 size="small"
+//                 value={data.no_of_media_count}
+//                 onChange={handleChange}
+//                 inputProps={{ min: 0 }}
+//                
+//               />
+//             </Grid>
+//           </Grid>
+// {/* ===============job detals=========================== */}
 //           <SectionHeader title="Job Details" />
 //           <Grid container spacing={2.5}>
-//             <Grid item size={{ xs: 12, md: 3 }}>
+//             <Grid item size={{ xs: 12, md: 6 }}>
 //               <TextField
 //                 label="Subject"
 //                 name="subject"
 //                 fullWidth
+
+//                 multiline
+//                 rows={2}
 //                 value={data.subject}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 
@@ -377,10 +399,11 @@
 //                 type="date"
 //                 name="startDate"
 //                 fullWidth
+//                 size="small"
 //                 InputLabelProps={{ shrink: true }}
 //                 value={data.startDate}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 //             <Grid item size={{ xs: 12, md: 3 }}>
@@ -391,7 +414,8 @@
 //                 name="duration"
 //                 onChange={handleChange}
 //                 fullWidth
-//                 sx={grayField}
+//                    size="small"
+//                
 //               >
 //                 {durationOptions.map((option) => (
 //                   <MenuItem key={option.value} value={option.value}>
@@ -407,91 +431,59 @@
 //                 type="date"
 //                 name="endDate"
 //                 fullWidth
+//                    size="small"
 //                 InputLabelProps={{ shrink: true }}
 //                 value={data.endDate}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 //           </Grid>
-//         </Paper>
 
-//         {/* ── Address Info ── */}
-//         <Paper
-//           elevation={0}
-//           sx={{
-//             p: 3,
-//             mb: 3,
-//             borderRadius: "14px",
-//             backgroundColor: "#ffffff",
-//             border: "1px solid #e8eaf0",
-//           }}
-//         >
-//           <SectionHeader title="Address & Remarks" />
+// <SectionHeader title="Address & Remarks" />
 //           <Grid container spacing={2.5}>
-//             <Grid item size={{ xs: 12, md: 3 }}>
+//             <Grid item size={{ xs: 12, md: 4 }}>
 //               <TextField
 //                 label="Office Address"
 //                 name="office_address"
 //                 multiline
-//                 rows={3}
+//                 rows={2}
 //                 fullWidth
 //                 value={data.office_address}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 
-//             <Grid item size={{ xs: 12, md: 3 }}>
+//             <Grid item size={{ xs: 12, md: 4 }}>
 //               <TextField
 //                 label="Billing Address"
 //                 name="billing_address"
 //                 multiline
-//                 rows={3}
+//                 rows={2}
 //                 fullWidth
 //                 value={data.billing_address}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 
-//             <Grid item size={{ xs: 12, md: 3 }}>
+//             <Grid item size={{ xs: 12, md: 4 }}>
 //               <TextField
 //                 label="Remarks"
 //                 name="remarks"
 //                 multiline
-//                 rows={3}
+//                 rows={2}
 //                 fullWidth
 //                 value={data.remarks}
 //                 onChange={handleChange}
-//                 sx={grayField}
+//                
 //               />
 //             </Grid>
 
-//             {/* <Grid item size={{xs:12, md:3}}>
-//               <TextField
-//                 label="IP Address"
-//                 name="ip_address"
-//                 fullWidth
-//                 value={data.ip_address}
-//                 onChange={handleChange}
-//                 sx={grayField}
-//               />
-//             </Grid> */}
+         
 //           </Grid>
-//         </Paper>
 
-//         {/* ── File Upload ── */}
-//         <Paper
-//           elevation={0}
-//           sx={{
-//             p: 3,
-//             mb: 3,
-//             borderRadius: "14px",
-//             backgroundColor: "#ffffff",
-//             border: "1px solid #e8eaf0",
-//           }}
-//         >
 //           <SectionHeader title="Attachment" />
 //           <Box
 //             component="label"
@@ -523,7 +515,10 @@
 //                 strokeLinejoin="round"
 //               />
 //             </svg>
-//             <Typography variant="body2" sx={{ color: "#5a6072", fontWeight: 500 }}>
+//             <Typography
+//               variant="body2"
+//               sx={{ color: "#5a6072", fontWeight: 500 }}
+//             >
 //               {data.files ? data.files.name : "Click to upload a file"}
 //             </Typography>
 //             <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
@@ -537,14 +532,13 @@
 //               onChange={handleChange}
 //             />
 //           </Box>
-//         </Paper>
 
-//         {/* ── Submit Bar ── */}
+//  {/* ── Submit Bar ── */}
 //         <Box
 //           sx={{
 //             display: "flex",
 //             justifyContent: "flex-end",
-//             position: "sticky",
+//             // position: "sticky",
 //             bottom: 0,
 //             backgroundColor: "#f7f8fc",
 //             pt: 2,
@@ -575,6 +569,10 @@
 //             Submit Job
 //           </Button>
 //         </Box>
+//         </Paper>
+
+
+       
 //       </Box>
 //     </Paper>
 //   );
@@ -583,12 +581,13 @@
 
 
 
-
 "use client";
-
+import axios from "axios";
 import { useState, useEffect } from "react";
 import axiosClient from "@/lib/axiosClient";
 import adminServices from "@/services/adminServices";
+import ClientDetails from "../../../../components/admin/counter/clientdetails";
+import BillingsDetails from "../../../../components/admin/counter/billingdetails";
 import {
   Box,
   Button,
@@ -631,7 +630,11 @@ function SectionHeader({ title }) {
           flexShrink: 0,
         }}
       />
-      <Typography variant="subtitle1" fontWeight={600} sx={{ color: "#1a1f36" }}>
+      <Typography
+        variant="subtitle1"
+        fontWeight={600}
+        sx={{ color: "#1a1f36" }}
+      >
         {title}
       </Typography>
     </Box>
@@ -650,32 +653,48 @@ export default function JobForm() {
     { value: "2month", label: "2 Months" },
   ];
   const [data, setData] = useState({
-    job_id: "2",
-    financial_year: "",
-    client_ref_id: "",
-    avak_ref_id: "",
-    is_client_dpr: "",
-    ref_no: "",
-    od_servicetype_id: "",
-    subject: "",
-    startDate: "",
-    duration: '',
-    endDate: "",
-    ref_date: "",
-    receipt_date: "",
-    client_cd: "",
-    client_name: "",
-    office_address: "",
-    billing_client_cd: "",
-    billing_client_name: "",
-    billing_address: "",
-    office_code: "",
-    district_code: "",
-    remarks: "",
-    ip_address: "",
-    entry_user_name: "nikita",
-    files: null,
-  });
+  job_id: "",
+  financial_year: "",
+  client_ref_id: "",
+  avak_ref_id: "",
+  is_client_dpr: "",
+  ref_no: "",
+  od_servicetype_id: "1",
+  no_of_media_count: "",
+  subject: "",
+  startDate: "",
+  duration: "",
+  endDate: "",
+  ref_date: "",
+  receipt_date: "",
+  client_cd: "",
+  client_name: "",
+  office_address: "",
+
+  office_code: "",
+  district_code: "",
+  remarks: "",
+  ip_address: "",
+  entry_user_name: "nikita",
+  files: null,
+
+  // IMPORTANT DEFAULT VALUES
+  baseDepartment: "",
+  district_code: "",
+  officeLevel: "",
+  office_code: "",
+  section: "",
+  officer: "",
+  designation: "",
+
+  //`billing details
+  Billing_client_cd: "",
+  Billing_client_name: "",
+  Billing_address: "",
+   Billing_section_code: "",
+Billing_client_cd:""
+
+});
   useEffect(() => {
     async function fetchServices() {
       try {
@@ -698,11 +717,11 @@ export default function JobForm() {
     const res = await fetch("https://api.ipify.org?format=json");
     const data = await res.json();
     console.log(data.ip);
-    return data.ip
+    return data.ip;
   }
   useEffect(() => {
-    getPublicIP()
-  })
+    getPublicIP();
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -717,31 +736,55 @@ export default function JobForm() {
       payload.append("is_client_dpr", data.is_client_dpr);
       payload.append("ref_no", data.ref_no);
       payload.append("od_servicetype_id", data.od_servicetype_id);
+      payload.append("no_of_media_count", data.no_of_media_count);
+
       payload.append("subject", data.subject);
       payload.append("startDate", data.startDate);
       payload.append("endDate", data.endDate);
       payload.append("office_address", data.office_address);
-      payload.append("billing_address", data.billing_address);
+      
       payload.append("remarks", data.remarks);
       payload.append("ip_address", getPublicIP());
       payload.append("entry_user_name", data.entry_user_name);
       payload.append("entry_by_user_id", "00100");
-      payload.append("client_cd", "00020");
+      payload.append("client_cd",data.client_cd);
+      payload.append("baseDepartment", data.baseDepartment);
+      payload.append("district_code", data.district_code);
+      payload.append("officeLevel", data.officeLevel);
+      payload.append("office_code", data.office_code);
+      payload.append("section", data.section);
+      payload.append("officer", data.officer);
+      payload.append("designation", data.designation);
+// billing_details
+payload.append("Billing_client_cd", data.Billing_client_cd ||data.client_cd);
+payload.append("Billing_client_name", data.Billing_client_name||data.client_name);
+payload.append("Billing_address", data.Billing_address);
+payload.append("Billing_base_dept_code", data.Billing_base_dept_code ||data.baseDepartment);
+payload.append("Billing_office_level_code", data.Billing_office_level_code||data.officeLevel);
+payload.append("Billing_office_code", data.Billing_office_code|| data.office_code);
+payload.append("Billing_section_code", data.Billing_section_code||data.section);
+payload.append("Billing_officer", data.Billing_officer||data.officer);
+
+payload.append("Billing_client_prarup_code", data.Billing_client_prarup_code);
+
+
+
 
       if (data.files) {
         payload.append("files", data.files);
+        
       }
-
+   
       for (let pair of payload.entries()) {
         console.log(pair[0], pair[1]);
       }
 
       const response = await axiosClient.post(
-        "http://103.79.34.50:8083/api/outDoorMediaTransaction/savecounter",
+        "http://103.79.34.50:8083/api/OutDoorMediaTransaction/dbsavecounter",
         payload,
         {
           headers: { "Content-Type": "multipart/form-data" },
-        }
+        },
       );
 
       dispatch(showNotification({ message: "Saved!", severity: "success" }));
@@ -751,6 +794,49 @@ export default function JobForm() {
       console.error("ERROR:", error.response?.data || error.message);
     }
   };
+
+  useEffect(() => {
+  async function getAvakData() {
+    try {
+      const res = await axios.post(
+        "http://103.79.34.50:8083/api/Client/get-avak-record",
+        {
+          avak_ref_id:"2024000002",
+          fin_year: "2024-2025",
+        }
+      );
+
+      const avak = res.data;
+
+      setData((prev) => ({
+        ...prev,
+        subject: avak.subject,
+        client_cd: avak.client_cd,
+        client_name: avak.client_name,
+        office_address: avak.client_address,
+        baseDepartment: avak.base_dept_code,
+        district_code: avak.district_code,
+        officeLevel: avak.office_level_code,
+        office_code: avak.office_code,
+        officer: avak.client_cd,
+        section: avak.section_code,
+        remarks: avak.remarks,
+
+
+        Billing_client_cd:avak.client_cd,
+        Billing_address:avak.client_address,
+        Billing_base_dept_code:avak.base_dept_code,
+        Billing_district_code:avak.district_code,
+       Billing_office_level_code:avak.office_level_code,
+      }));
+
+    } catch (error) {
+      console.error("AVAK API Error", error);
+    }
+  }
+
+  getAvakData();
+}, []);
 
   return (
     <Paper
@@ -804,7 +890,15 @@ export default function JobForm() {
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            <line x1="12" y1="12" x2="12" y2="12.01" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <line
+              x1="12"
+              y1="12"
+              x2="12"
+              y2="12.01"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </Box>
         <Box>
@@ -813,15 +907,15 @@ export default function JobForm() {
             fontWeight={700}
             sx={{ color: "#1a1f36", letterSpacing: "-0.3px" }}
           >
-            Counter Form
+            Display Board Counter Form
           </Typography>
           <Typography variant="caption" sx={{ color: "#8a90a0" }}>
-            Create a new outdoor media job record
+            Create a new display Board job record
           </Typography>
         </Box>
       </Box>
 
-      <Box component="form" >
+      <Box component="form">
         {/* ── Reference Info ── */}
         <Paper
           elevation={0}
@@ -835,14 +929,25 @@ export default function JobForm() {
         >
           <SectionHeader title="Reference Information" />
           <Grid container spacing={2.5}>
+        
             <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 label="Financial Year"
                 name="financial_year"
                 fullWidth
+                size="small"
                 value={data.financial_year}
-                onChange={handleChange}
-                sx={grayField}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  // Allow only format like 2024-2025 while typing
+                  if (/^\d{0,4}-?\d{0,4}$/.test(value)) {
+                    handleChange(e);
+                  }
+                }}
+                placeholder="2024-2025"
+                inputProps={{ maxLength: 9 }}
+               
               />
             </Grid>
 
@@ -851,9 +956,10 @@ export default function JobForm() {
                 label="Client Ref ID"
                 name="client_ref_id"
                 fullWidth
+                size="small"
                 value={data.client_ref_id}
                 onChange={handleChange}
-                sx={grayField}
+               
               />
             </Grid>
 
@@ -862,9 +968,10 @@ export default function JobForm() {
                 label="AVAK Ref ID"
                 name="avak_ref_id"
                 fullWidth
+                size="small"
                 value={data.avak_ref_id}
                 onChange={handleChange}
-                sx={grayField}
+               
               />
             </Grid>
 
@@ -873,87 +980,73 @@ export default function JobForm() {
                 label="Ref No"
                 name="ref_no"
                 fullWidth
+                size="small"
                 value={data.ref_no}
                 onChange={handleChange}
-                sx={grayField}
+               
               />
             </Grid>
 
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                select
-                label="Is Client DPR"
-                name="is_client_dpr"
-                fullWidth
-                value={data.is_client_dpr}
-                onChange={handleChange}
-                sx={grayField}
-              >
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-              </TextField>
-            </Grid>
-            {/* 
-            <Grid item size={{xs:12, md:3}}>
-              <TextField
-                label="OD Service Type ID"
-                type="number"
-                name="od_servicetype_id"
-                fullWidth
-                value={data.od_servicetype_id}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid> */}
-            <Grid item size={{ xs: 12, md: 3 }}>
+           
+            <Grid item xs={12} md={3}>
               <TextField
                 select
                 label="Service Type"
                 name="od_servicetype_id"
                 fullWidth
+                size="small"
                 value={data.od_servicetype_id}
-                onChange={handleChange}
-                sx={grayField}
+               
               >
-                {services.length > 0 ? (
-                  services.map((s) => (
-                    <MenuItem key={s.serviceId} value={s.serviceId}>
-                      {s.serviceName}
-                    </MenuItem>
-                  ))
-                ) : (
-                    <MenuItem disabled>
-                      <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-                        No services available
-        </Typography>
-                    </MenuItem>
-                  )}
+                <MenuItem value="1">Display Board</MenuItem>
               </TextField>
             </Grid>
-          </Grid>
-        </Paper>
 
-        {/* ── Job Details ── */}
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            mb: 3,
-            borderRadius: "14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #e8eaf0",
-          }}
-        >
+            <Grid item size={{ xs: 12, md: 3 }}>
+              <TextField
+                type="number"
+                label="Number Of Media Count"
+                name="no_of_media_count"
+                fullWidth
+                size="small"
+                value={data.no_of_media_count}
+                onChange={handleChange}
+                inputProps={{ min: 0 }}
+               
+              />
+            </Grid>
+          </Grid>
+
+      <Grid container spacing={2} mt={3}>
+
+  {/* Client Details */}
+ <Grid item size={{xs:12 ,md:6}}>
+    <SectionHeader title="Office Mapping" />
+    <ClientDetails data={data} setData={setData} />
+  </Grid>
+
+  {/* Billing Details */}
+  <Grid item size={{xs:12 ,md:6}}>
+    <SectionHeader title="Billing Client Details" />
+    <BillingsDetails data={data} setData={setData} />
+  </Grid>
+
+</Grid>
+ 
+{/* ===============job detals=========================== */}
           <SectionHeader title="Job Details" />
           <Grid container spacing={2.5}>
-            <Grid item size={{ xs: 12, md: 3 }}>
+            <Grid item size={{ xs: 12, md: 12 }}>
               <TextField
                 label="Subject"
                 name="subject"
                 fullWidth
+
+                multiline
+                rows={2}
                 value={data.subject}
                 onChange={handleChange}
-                sx={grayField}
+               
               />
             </Grid>
 
@@ -963,10 +1056,11 @@ export default function JobForm() {
                 type="date"
                 name="startDate"
                 fullWidth
+                size="small"
                 InputLabelProps={{ shrink: true }}
                 value={data.startDate}
                 onChange={handleChange}
-                sx={grayField}
+               
               />
             </Grid>
             <Grid item size={{ xs: 12, md: 3 }}>
@@ -977,7 +1071,8 @@ export default function JobForm() {
                 name="duration"
                 onChange={handleChange}
                 fullWidth
-                sx={grayField}
+                   size="small"
+               
               >
                 {durationOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -993,93 +1088,22 @@ export default function JobForm() {
                 type="date"
                 name="endDate"
                 fullWidth
+                   size="small"
                 InputLabelProps={{ shrink: true }}
                 value={data.endDate}
                 onChange={handleChange}
-                sx={grayField}
+               
               />
             </Grid>
           </Grid>
-        </Paper>
 
-        {/* ── Address Info ── */}
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            mb: 3,
-            borderRadius: "14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #e8eaf0",
-          }}
-        >
-          <SectionHeader title="Address & Remarks" />
-          <Grid container spacing={2.5}>
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Office Address"
-                name="office_address"
-                multiline
-                rows={3}
-                fullWidth
-                value={data.office_address}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid>
 
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Billing Address"
-                name="billing_address"
-                multiline
-                rows={3}
-                fullWidth
-                value={data.billing_address}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid>
 
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Remarks"
-                name="remarks"
-                multiline
-                rows={3}
-                fullWidth
-                value={data.remarks}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid>
-
-            {/* <Grid item size={{xs:12, md:3}}>
-              <TextField
-                label="IP Address"
-                name="ip_address"
-                fullWidth
-                value={data.ip_address}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid> */}
-          </Grid>
-        </Paper>
-
-        {/* ── File Upload ── */}
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            mb: 3,
-            borderRadius: "14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #e8eaf0",
-          }}
-        >
           <SectionHeader title="Attachment" />
-          <Box
+         <Grid container spacing={2.5}>
+            <Grid item size={{ xs: 12, md: 6 }}>
+
+               <Box
             component="label"
             htmlFor="file-upload"
             sx={{
@@ -1109,8 +1133,11 @@ export default function JobForm() {
                 strokeLinejoin="round"
               />
             </svg>
-            <Typography variant="body2" sx={{ color: "#5a6072", fontWeight: 500 }}>
-              {data.files ? data.files.name : "Click to upload a file"}
+            <Typography
+              variant="body2"
+              sx={{ color: "#5a6072", fontWeight: 500 }}
+            >
+              {data.files ? data.files.name : "Click to upload a Letter"}
             </Typography>
             <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
               Any format accepted
@@ -1123,14 +1150,65 @@ export default function JobForm() {
               onChange={handleChange}
             />
           </Box>
-        </Paper>
+</Grid>
+         <Grid item size={{ xs: 12, md: 6 }}>
 
-        {/* ── Submit Bar ── */}
+               <Box
+            component="label"
+            htmlFor="file-upload"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              p: 3,
+              borderRadius: "10px",
+              border: "2px dashed #d0d4e8",
+              backgroundColor: "#f4f5f7",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                borderColor: "#5c7cfa",
+                backgroundColor: "#eef1ff",
+              },
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                stroke="#8a90a0"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <Typography
+              variant="body2"
+              sx={{ color: "#5a6072", fontWeight: 500 }}
+            >
+              {data.files ? data.files.name : "Click to upload Metter"}
+            </Typography>
+            <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
+              Any format accepted
+            </Typography>
+            <input
+              id="file-upload"
+              hidden
+              type="file"
+              name="files"
+              onChange={handleChange}
+            />
+          </Box>
+</Grid>
+
+</Grid>
+ {/* ── Submit Bar ── */}
         <Box
           sx={{
             display: "flex",
             justifyContent: "flex-end",
-            position: "sticky",
+            // position: "sticky",
             bottom: 0,
             backgroundColor: "#f7f8fc",
             pt: 2,
@@ -1161,7 +1239,15 @@ export default function JobForm() {
             Submit Job
           </Button>
         </Box>
+        </Paper>
+
+   
+
+
+       
       </Box>
     </Paper>
+
+    
   );
 }
