@@ -223,6 +223,8 @@ export default function ClientAttachmentForm() {
   const [offices, setOffices] = useState([])
   const [sections, setSections] = useState([])
   const [officers, setOfficers] = useState([])
+  const [modes, setModes] = useState([])
+  const [letterTypes, setLetterTypes] = useState([])
   const [formData, setFormData] = useState({
     ref_Category_id: "",
     letter_no: "",
@@ -259,7 +261,26 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-
+  async function fetchModeOfReceiving() {
+    try {
+      const res = await clientServices.getallReceivingModes();
+      setModes(res.data.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchLetterType() {
+    try {
+      const res = await clientServices.getallLetterTypes();
+      setLetterTypes(res.data.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
   async function fetchDepartment() {
     try {
       const res = await clientServices.getalldepartment();
@@ -391,6 +412,8 @@ export default function ClientAttachmentForm() {
     fetchCaption();
     fetchCategory();
     fetchClient();
+    fetchModeOfReceiving();
+    fetchLetterType();
     
   }, []);
 
@@ -591,10 +614,12 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   sx={field}
                 >
-                  <MenuItem value="incoming">Incoming</MenuItem>
-                  <MenuItem value="outgoing">Outgoing</MenuItem>
-                  <MenuItem value="internal">Internal</MenuItem>
-                  <MenuItem value="circular">Circular</MenuItem>
+                   {letterTypes.map((type) => (
+                    <MenuItem key={type.letter_code} value={type.letter_code}>
+                      {type.letter_type}
+                    </MenuItem>
+                  ))}
+           
                 </TextField>
               </Grid>
 
@@ -608,11 +633,12 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   sx={field}
                 >
-                  <MenuItem value="hand">By Hand</MenuItem>
-                  <MenuItem value="post">By Post</MenuItem>
-                  <MenuItem value="email">By Email</MenuItem>
-                  <MenuItem value="courier">By Courier</MenuItem>
-                  <MenuItem value="fax">By Fax</MenuItem>
+                    {modes.map((mode) => (
+                    <MenuItem key={mode.rec_code} value={mode.rec_code}>
+                      {mode.receiving_mode}
+                    </MenuItem>
+                  ))}
+                  
                 </TextField>
               </Grid>
 
