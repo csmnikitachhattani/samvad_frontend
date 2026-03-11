@@ -398,7 +398,7 @@ export default function JobForm() {
               />
             </Grid>
 
-            <Grid item size={{ xs: 12, md: 3 }}>
+            {/* <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 select
                 label="Is Client DPR"
@@ -411,7 +411,7 @@ export default function JobForm() {
                 <MenuItem value="Yes">Yes</MenuItem>
                 <MenuItem value="No">No</MenuItem>
               </TextField>
-            </Grid>
+            </Grid> */}
             {/* 
             <Grid item size={{xs:12, md:3}}>
               <TextField
