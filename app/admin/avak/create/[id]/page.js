@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
 import clientServices from "@/services/clientServices";
+import commonServices from "@/services/commonServices";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
@@ -216,6 +217,10 @@ export default function ClientAttachmentForm() {
   const { id } = useParams();
 
   const [captions, setCaptions] = useState([])
+  const [departments, setDepartments] = useState([])
+  const [districts, setDistricts] = useState([])
+  const [levels, setLevels] = useState([])
+  const [offices, setOffices] = useState([])
   const [formData, setFormData] = useState({
     ref_Category_id: "",
     letter_no: "",
@@ -256,7 +261,38 @@ export default function ClientAttachmentForm() {
   async function fetchDepartment() {
     try {
       const res = await clientServices.getalldepartment();
+      setDepartments(res.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchOfficeLevel() {
+    try {
+      const res = await clientServices.getOfficeLevels({deptCode:formData.baseDept});
       //setFormData(res);
+      setLevels(res.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchDistricts() {
+    try {
+      const res = await commonServices.getDistrict();
+      setDistricts(res.data.result);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchOffice(deptCode, distCode) {
+    try {
+      const res = await clientServices.getOfficeNames({deptCode, distCode});
+      setoffices(res.data.result);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -288,12 +324,22 @@ export default function ClientAttachmentForm() {
         section: res.data.data.section_code,
         officer: res.data.data.employee_code,
       }));
+    fetchDistricts();
+    fetchOfficeLevel();
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
       //setLoading(false);
     }
   }
+  useEffect(() => {
+    if(formData.baseDept&&formData.district){
+    console.log("hghghg", formData.district, formData.baseDept)
+    fetchOffice(formData.baseDept, formData.district);
+    }
+  },[formData.baseDept, formData.district])
+
+
   useEffect(() => {
     let finyear = localStorage.getItem('financialYear')
     const payload = {
@@ -319,6 +365,7 @@ export default function ClientAttachmentForm() {
     fetchCaption();
     fetchCategory();
     fetchClient();
+    
   }, []);
 
   const handleSubmit = async () => {
@@ -554,7 +601,11 @@ export default function ClientAttachmentForm() {
                   sx={field}
                 />
               </Grid>
-
+            </Grid>
+          </SectionCard>
+          {/* ── Section 3: Location & Office ── */}
+          <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+            <Grid container spacing={2.5}>
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
@@ -565,41 +616,50 @@ export default function ClientAttachmentForm() {
                   sx={field}
                 />
               </Grid>
-            </Grid>
-          </SectionCard>
-
-          {/* ── Section 3: Location & Office ── */}
-          <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
-            <Grid container spacing={2.5}>
-              <Grid item size={{ xs: 12, }}>
+              <Grid item size={{xs:12}}>
                 <TextField
+
                   fullWidth
+                  select
                   label="Base Department"
                   name="baseDept"
                   value={formData.baseDept}
                   onChange={handleChange}
                   sx={field}
-                />
+                >
+                  {departments.map((dept) => (
+                    <MenuItem key={dept.deptid} value={dept.deptid}>
+                      {dept.deptname}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, }}>
                 <TextField
+                 select
                   fullWidth
                   label="District"
                   name="district"
                   value={formData.district}
                   onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" />
-                        </svg>
-                      </InputAdornment>
-                    ),
-                  }}
+                  // InputProps={{
+                  //   startAdornment: (
+                  //     <InputAdornment position="start">
+                  //       <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  //         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" />
+                  //       </svg>
+                  //     </InputAdornment>
+                  //   ),
+                  // }}
                   sx={field}
-                />
+                >
+                   {districts.map((district) => (
+                    <MenuItem key={district.dstrictid} value={district.dstrictid}>
+                      {district.districtname}
+                    </MenuItem>
+                  ))}
+                  </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
@@ -612,10 +672,12 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   sx={field}
                 >
-                  <MenuItem value="state">State Level</MenuItem>
-                  <MenuItem value="district">District Level</MenuItem>
-                  <MenuItem value="block">Block Level</MenuItem>
-                  <MenuItem value="panchayat">Panchayat Level</MenuItem>
+                  
+                  {levels.map((level) => (
+                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
+                      {level.officeLevelName}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Grid>
 
@@ -627,7 +689,13 @@ export default function ClientAttachmentForm() {
                   value={formData.office}
                   onChange={handleChange}
                   sx={field}
-                />
+                >
+                    {offices.map((office) => (
+                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
+                      {level.officeLevelName}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>

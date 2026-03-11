@@ -11,8 +11,9 @@ const clientServices = {
   },
   getOfficeLevels: async (req)=>{
     const {distCode, deptCode} = req
+
     try {
-      const res = await axiosClient.get(`/manageMaster/getofficelevel/${deptCode}`);
+      const res = await axiosClient.get(`/ManageMaster/getofficelevel/B010`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -22,7 +23,7 @@ const clientServices = {
   getClientSection: async (req)=>{
     const {distCode, deptCode} = req
     try {
-      const res = await axiosClient.get(`/manageMaster/getofficelevel/${deptCode}`);
+      const res = await axiosClient.get(`/ManageMaster/getclientsection/${deptCode}`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -31,8 +32,9 @@ const clientServices = {
   },
   getOfficerSection: async (req)=>{
     const {distCode, deptCode} = req
+    
     try {
-      const res = await axiosClient.get(`/manageMaster/getofficer/${distCode}/${deptCode}`);
+      const res = await axiosClient.get(`/ManageMaster/getofficer/${distCode}/${deptCode}`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -41,6 +43,7 @@ const clientServices = {
   },
   getOfficeNames: async (req)=>{
     const {distCode, deptCode} = req
+    console.log("data",req)
     try {
       const res = await axiosClient.get(`/manageMaster/getofficename/${distCode}/${deptCode}`);
       return res.data;
