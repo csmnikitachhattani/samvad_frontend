@@ -14,6 +14,7 @@ import {
   MenuItem,
   Paper,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -190,7 +191,84 @@ export default function JobForm() {
       console.error("ERROR:", error.response?.data || error.message);
     }
   };
+
+  function SectionCard({ title, subtitle, children, accent = "#010a2a" }) {
+    return (
+      <Paper
+        elevation={0}
+        sx={{
+          borderRadius: "18px",
+          border: "1.5px solid #ebebf0",
+          overflow: "hidden",
+          mb: 3,
+          backgroundColor: "#fff",
+          transition: "box-shadow 0.2s ease",
+          "&:hover": { boxShadow: "0 4px 24px rgba(0,0,0,0.06)" },
+        }}
+      >
+        <Box
+          sx={{
+            px: 3,
+            py: 2.2,
+            borderBottom: "1.5px solid #f0f0f5",
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            background: "linear-gradient(135deg, #fafbff 0%, #f5f6fa 100%)",
+          }}
+        >
+          {/* <Box
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: "10px",
+              backgroundColor: `${accent}12`,
+              border: `1.5px solid ${accent}22`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            {icon}
+          </Box> */}
+          <Box>
+            <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", letterSpacing: "-0.1px" }}>
+              {title}
+            </Typography>
+            {subtitle && (
+              <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+                {subtitle}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+        <Box sx={{ p: 3 }}>{children}</Box>
+      </Paper>
+    );
+  }
   
+  const field = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "12px",
+      backgroundColor: "#f8f9fb",
+      fontSize: "0.875rem",
+      transition: "all 0.2s ease",
+      "& fieldset": { borderColor: "#e4e6ef", borderWidth: "1.5px" },
+      "&:hover": {
+        backgroundColor: "#f3f4f8",
+        "& fieldset": { borderColor: "#c5cadc" },
+      },
+      "&.Mui-focused": {
+        backgroundColor: "#fff",
+        boxShadow: "0 0 0 3px rgba(1,10,42,0.08)",
+        "& fieldset": { borderColor: "#010a2a", borderWidth: "1.5px" },
+      },
+    },
+    "& .MuiInputLabel-root": { color: "#9ca3af", fontSize: "0.875rem" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "#010a2a" },
+    "& .MuiInputBase-input": { color: "#111827", fontWeight: 500 },
+  };
  
 
   return (
@@ -443,14 +521,14 @@ export default function JobForm() {
           </Grid>
         </Paper>
            {/* ── Section 3: Location & Office ── */}
-           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+           <SectionCard  title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
               <Grid item size={{ xs: 12, }}>
                 <TextField
                   fullWidth
                   label="Base Department"
                   name="baseDept"
-                  value={formData.baseDept}
+                  value={data.baseDept}
                   onChange={handleChange}
                   sx={field}
                 />
@@ -461,7 +539,7 @@ export default function JobForm() {
                   fullWidth
                   label="District"
                   name="district"
-                  value={formData.district}
+                  value={data.district}
                   onChange={handleChange}
                   InputProps={{
                     startAdornment: (
@@ -482,7 +560,7 @@ export default function JobForm() {
                   fullWidth
                   label="Office Level"
                   name="officeLevel"
-                  value={formData.officeLevel}
+                  value={data.officeLevel}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -498,7 +576,7 @@ export default function JobForm() {
                   fullWidth
                   label="Office"
                   name="office"
-                  value={formData.office}
+                  value={data.office}
                   onChange={handleChange}
                   sx={field}
                 />
@@ -509,7 +587,7 @@ export default function JobForm() {
                   fullWidth
                   label="Section"
                   name="section"
-                  value={formData.section}
+                  value={data.section}
                   onChange={handleChange}
                   sx={field}
                 />
@@ -520,7 +598,7 @@ export default function JobForm() {
                   fullWidth
                   label="Officer"
                   name="officer"
-                  value={formData.officer}
+                  value={data.officer}
                   onChange={handleChange}
                   sx={field}
                 />
