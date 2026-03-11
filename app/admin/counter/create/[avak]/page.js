@@ -442,7 +442,91 @@ export default function JobForm() {
             </Grid>
           </Grid>
         </Paper>
+           {/* ── Section 3: Location & Office ── */}
+           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+            <Grid container spacing={2.5}>
+              <Grid item size={{ xs: 12, }}>
+                <TextField
+                  fullWidth
+                  label="Base Department"
+                  name="baseDept"
+                  value={formData.baseDept}
+                  onChange={handleChange}
+                  sx={field}
+                />
+              </Grid>
 
+              <Grid item size={{ xs: 12, }}>
+                <TextField
+                  fullWidth
+                  label="District"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" />
+                        </svg>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={field}
+                />
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Office Level"
+                  name="officeLevel"
+                  value={formData.officeLevel}
+                  onChange={handleChange}
+                  sx={field}
+                >
+                  <MenuItem value="state">State Level</MenuItem>
+                  <MenuItem value="district">District Level</MenuItem>
+                  <MenuItem value="block">Block Level</MenuItem>
+                  <MenuItem value="panchayat">Panchayat Level</MenuItem>
+                </TextField>
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Office"
+                  name="office"
+                  value={formData.office}
+                  onChange={handleChange}
+                  sx={field}
+                />
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Section"
+                  name="section"
+                  value={formData.section}
+                  onChange={handleChange}
+                  sx={field}
+                />
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Officer"
+                  name="officer"
+                  value={formData.officer}
+                  onChange={handleChange}
+                  sx={field}
+                />
+              </Grid>
+            </Grid>
+          </SectionCard>
         {/* ── Address Info ── */}
         <Paper
           elevation={0}
