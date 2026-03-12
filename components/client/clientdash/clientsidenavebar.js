@@ -110,6 +110,7 @@ const ClientSideNavbar = ({ isCollapsed }) => {
         background: "linear-gradient(180deg, #0F2027, #203A43, #2C5364)",
         boxShadow: "4px 0 12px rgba(0,0,0,0.35)",
         height: "100%",
+        mt: 25,
         overflowY: "auto", // allow scroll instead of hidden
       }}
     >

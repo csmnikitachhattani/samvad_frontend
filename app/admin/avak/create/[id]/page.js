@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
 import clientServices from "@/services/clientServices";
+import commonServices from "@/services/commonServices";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
@@ -214,8 +215,16 @@ export default function ClientAttachmentForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = useParams();
-
   const [captions, setCaptions] = useState([])
+  const [departments, setDepartments] = useState([])
+  const [districts, setDistricts] = useState([])
+  const [levels, setLevels] = useState([])
+  const [offices, setOffices] = useState([])
+  const [sections, setSections] = useState([])
+  const [officers, setOfficers] = useState([])
+  const [modes, setModes] = useState([])
+  const [letterTypes, setLetterTypes] = useState([])
+  const [categories, setCategories] = useState([])
   const [formData, setFormData] = useState({
     ref_Category_id: "",
     letter_no: "",
@@ -231,17 +240,14 @@ export default function ClientAttachmentForm() {
     section: "",
     officer: "",
     modeOfReceiving: "",
-    noOfPages: "",
+    files: "",
     letterType: "",
     remark: "",
   });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const [categories, setCategories] = useState([])
-
   async function fetchCategory() {
     try {
       const res = await clientServices.getAdvtCategory();
@@ -252,11 +258,84 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-
+  async function fetchModeOfReceiving() {
+    try {
+      const res = await clientServices.getallReceivingModes();
+      setModes(res.data.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchLetterType() {
+    try {
+      const res = await clientServices.getallLetterTypes();
+      setLetterTypes(res.data.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
   async function fetchDepartment() {
     try {
       const res = await clientServices.getalldepartment();
+      setDepartments(res.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchOfficeLevel(deptCode) {
+    try {
+      const res = await clientServices.getOfficeLevels({deptCode});
       //setFormData(res);
+      setLevels(res.result)
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchDistricts() {
+    try {
+      const res = await commonServices.getDistrict();
+      setDistricts(res.data.result);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchOffice(deptCode, distCode) {
+    try {
+      const res = await clientServices.getOfficeNames({deptCode, distCode});
+      console.log(res)
+      setOffices(res.result);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchSections(deptCode, distCode) {
+    try {
+      const res = await clientServices.getClientSection({deptCode, distCode});
+      console.log(res)
+      setSections(res.result);
+    } catch (error) {
+      console.error("Failed to fetch work orders", error);
+    } finally {
+      //setLoading(false);
+    }
+  }
+  async function fetchOfficers(deptCode, distCode) {
+    try {
+      const res = await clientServices.getOfficers({deptCode, distCode});
+      console.log(res)
+      setOfficers(res.result);
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -274,20 +353,21 @@ export default function ClientAttachmentForm() {
     }
   }
 
-  async function fetchClient() {
+  async function fetchClient(client) {
     try {
-      const res = await clientServices.getClientData();
+      const res = await clientServices.getClientData(client);
       console.log("console", res.data)
       //setFormData(res);
       setFormData((prev) => ({
         ...prev,
         baseDept: res.data.data.base_dept_code,
         district: res.data.data.district_code,
-        officeLevel: res.data.data.Office_code,
+        officeLevel: res.data.data.OfficeLevel,
         office: res.data.data.Office_code,
         section: res.data.data.section_code,
         officer: res.data.data.employee_code,
       }));
+    fetchDistricts();
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -295,18 +375,49 @@ export default function ClientAttachmentForm() {
     }
   }
   useEffect(() => {
+    if(formData.client !== ""){
+      fetchClient(formData.client)
+    }
+  },[formData.client])
+  useEffect(() => {
+    if(formData.baseDept&&formData.district){
+    fetchOfficeLevel(formData.baseDept)
+    fetchOffice(formData.baseDept, formData.district);
+    fetchSections(formData.baseDept, formData.district);
+    fetchOfficers(formData.baseDept, formData.district);
+    }
+  },[formData.baseDept, formData.district])
+  useEffect(() => {
+    if(formData.baseDept){
+    fetchOfficeLevel(formData.baseDept)
+    }
+  },[formData.baseDept,])
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return "";
+  
+    const [day, month, year] = dateStr.split("/");
+    return `${year}-${month}-${day}`;
+  };
+  useEffect(() => {
     let finyear = localStorage.getItem('financialYear')
     const payload = {
       "client_ref_id": id,
       "fin_year": finyear
     }
-
     async function fetchData() {
       try {
         const res = await adminServices.getClientRecord(payload);
         console.log(res)
         //const apiData = res?.data?.data || res?.data;
-        setFormData((prev) => ({ ...prev, ...res }));
+        setFormData((prev) => (
+          {
+           ...prev,
+           ...res ,
+           schedule_date: formatDateForInput(res.schedule_date),
+           receivingDate: formatDateForInput(res.letter_date),
+           client : res.client_sno_key
+
+          }));
         console.log("assigned", formData)
       } catch (error) {
         console.error("Failed to fetch work orders", error);
@@ -318,27 +429,30 @@ export default function ClientAttachmentForm() {
     fetchDepartment();
     fetchCaption();
     fetchCategory();
-    fetchClient();
+    fetchModeOfReceiving();
+    fetchLetterType();
+    
   }, []);
+
 
   const handleSubmit = async () => {
     //e.preventDefault();
     try {
       const payload = {
         subject: formData.subject,
-        avak_caption_cd: formData.ref_Category_id,
+        avak_category: formData.ref_Category_id,
         received_date: formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
         fixed_date: formData.fixedDate || "2026-03-12T12:54:48.276Z",
         tender_amt: Number(formData.tender_amt) || 0,
         letter_no: formData.letter_no,
         letter_date: formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
         caption_cd: formData.captionCd || "02",
-        total_pages: formData.noOfPages,
-        receiving_mode_code: '01',
-        letter_type_code: '01',
+        total_pages: String(formData.files),
+        receiving_mode_code: formData.modeOfReceiving,
+        letter_type_code: formData.letterType,
         remarks: formData.remark,
         financial_year: formData.financialYear || "2024-2025",
-        client_cd: formData.client || '2',
+        client_cd: String(formData.client),
         base_dept_code: formData.baseDept,
         office_code: formData.office,
         office_level_code: formData.officeLevel,
@@ -349,8 +463,7 @@ export default function ClientAttachmentForm() {
         client_address: formData.clientAddress || "Raipur",
         client_city: formData.clientCity || "Raipur",
         schedule_date: formData.schedule_date ? new Date(formData.schedule_date).toISOString() : null,
-        ref_id: id || "",
-        //avak_ref_id: formData.avakRefId || "",
+        ref_id: id ,
         create_update_flag_name: "Insert",                          // "C" = Create, "U" = Update
         entry_by_user_type_cd: "01",
         entry_by_user_id: "00100",                      // replace with auth user
@@ -362,7 +475,7 @@ export default function ClientAttachmentForm() {
       };
 
       const response = await axiosClient.post(
-        "http://103.79.34.50:8083/api/Client/create-update-avak",
+        "/Client/create-update-avak",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -518,10 +631,12 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   sx={field}
                 >
-                  <MenuItem value="incoming">Incoming</MenuItem>
-                  <MenuItem value="outgoing">Outgoing</MenuItem>
-                  <MenuItem value="internal">Internal</MenuItem>
-                  <MenuItem value="circular">Circular</MenuItem>
+                   {letterTypes.map((type) => (
+                    <MenuItem key={type.letter_code} value={type.letter_code}>
+                      {type.letter_type}
+                    </MenuItem>
+                  ))}
+           
                 </TextField>
               </Grid>
 
@@ -535,11 +650,12 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   sx={field}
                 >
-                  <MenuItem value="hand">By Hand</MenuItem>
-                  <MenuItem value="post">By Post</MenuItem>
-                  <MenuItem value="email">By Email</MenuItem>
-                  <MenuItem value="courier">By Courier</MenuItem>
-                  <MenuItem value="fax">By Fax</MenuItem>
+                    {modes.map((mode) => (
+                    <MenuItem key={mode.rec_code} value={mode.rec_code}>
+                      {mode.receiving_mode}
+                    </MenuItem>
+                  ))}
+                  
                 </TextField>
               </Grid>
 
@@ -547,14 +663,18 @@ export default function ClientAttachmentForm() {
                 <TextField
                   fullWidth
                   label="No. of Pages in Document"
-                  name="noOfPages"
+                  name="files"
                   type="number"
-                  value={formData.noOfPages}
+                  value={formData.files}
                   onChange={handleChange}
                   sx={field}
                 />
               </Grid>
-
+            </Grid>
+          </SectionCard>
+          {/* ── Section 3: Location & Office ── */}
+          <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+            <Grid container spacing={2.5}>
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
@@ -565,41 +685,41 @@ export default function ClientAttachmentForm() {
                   sx={field}
                 />
               </Grid>
-            </Grid>
-          </SectionCard>
-
-          {/* ── Section 3: Location & Office ── */}
-          <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
-            <Grid container spacing={2.5}>
-              <Grid item size={{ xs: 12, }}>
+              <Grid item size={{xs:12}}>
                 <TextField
+
                   fullWidth
+                  select
                   label="Base Department"
                   name="baseDept"
                   value={formData.baseDept}
                   onChange={handleChange}
                   sx={field}
-                />
+                >
+                  {departments.map((dept) => (
+                    <MenuItem key={dept.deptid} value={dept.deptid}>
+                      {dept.deptname}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, }}>
                 <TextField
+                 select
                   fullWidth
                   label="District"
                   name="district"
                   value={formData.district}
                   onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" />
-                        </svg>
-                      </InputAdornment>
-                    ),
-                  }}
                   sx={field}
-                />
+                >
+                   {districts.map((district) => (
+                    <MenuItem key={district.dstrictid} value={district.dstrictid}>
+                      {district.districtname}
+                    </MenuItem>
+                  ))}
+                  </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
@@ -612,22 +732,31 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   sx={field}
                 >
-                  <MenuItem value="state">State Level</MenuItem>
-                  <MenuItem value="district">District Level</MenuItem>
-                  <MenuItem value="block">Block Level</MenuItem>
-                  <MenuItem value="panchayat">Panchayat Level</MenuItem>
+                  
+                  {levels.map((level) => (
+                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
+                      {level.officeLevelName}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
+                  select
                   fullWidth
                   label="Office"
                   name="office"
                   value={formData.office}
                   onChange={handleChange}
                   sx={field}
-                />
+                >
+                    {offices.map((office) => (
+                    <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
+                      {office.officeName}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
@@ -638,18 +767,31 @@ export default function ClientAttachmentForm() {
                   value={formData.section}
                   onChange={handleChange}
                   sx={field}
-                />
+                > {sections.map((section) => (
+                  <MenuItem key={section} >
+                    {section}
+                  </MenuItem>
+                ))}
+
+                  </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
+                  select
                   fullWidth
                   label="Officer"
                   name="officer"
                   value={formData.officer}
                   onChange={handleChange}
                   sx={field}
-                />
+                >
+                    {officers.map((officer) => (
+                    <MenuItem key={officer.employeeId} value={officer.employeeId}>
+                      {officer.employeeName}
+                    </MenuItem>
+                  ))}
+                  </TextField>
               </Grid>
             </Grid>
           </SectionCard>

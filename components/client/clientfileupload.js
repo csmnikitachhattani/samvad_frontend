@@ -735,10 +735,7 @@ const ClientFileUpload = () => {
   </Box>
 
 </Stack>
-      {/* =================================== */}
-
-
-
+{/* =================================== */}
    {/* Upload Card */}
        {/* <Card sx={{ mb: 4, borderRadius: 3 }}>
       <CardContent>

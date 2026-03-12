@@ -1,10 +1,10 @@
 import axiosClient from "@/lib/axiosClient";
 
 const adminService = {
-  getServices: async () => {
+  getServices: async (cat) => {
     console.log("newspaper information")
     try {
-      const res = await axiosClient.get("/ManageMaster/getservicetype");
+      const res = await axiosClient.get(`/ManageMaster/getservicetype/?avak_cate_id=${cat}`);
       return res.data;
     } catch (err) {
       throw err; 
@@ -143,7 +143,7 @@ const adminService = {
       console.log("answer")
       throw err; // interceptor will format it
     }
-  }
+  },
 
  
 };
