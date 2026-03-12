@@ -668,7 +668,7 @@ import axios from "axios";
 
 import { useState, useEffect } from "react";
 
-//import { useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import axiosClient from "@/lib/axiosClient";
 
@@ -753,6 +753,9 @@ export default function JobForm() {
 
   const dispatch = useDispatch();
 
+   const params = useParams();
+  const avakId = params?.id;
+
   const [services, setServices] = useState([]);
 
   const durationOptions = [
@@ -773,15 +776,16 @@ export default function JobForm() {
 
     financial_year: "2024-2025",
 
-    avak_ref_id: "2024000002",
+    avak_ref_id:"" ,
+    // "2024000002"
 
     client_ref_id: "",
-    ref_no :"",
+
+    ref_no:"",
 
     is_client_dpr: "",
 
-    ref_no: "",
-
+  
     od_servicetype_id: "1",
 
     no_of_media_count: "",
@@ -1027,7 +1031,7 @@ export default function JobForm() {
 
 
   useEffect(() => {
-    // if (!avakId) return;
+    if (!avakId) return;
 
     const getAvakData = async () => {
       try {
@@ -1035,8 +1039,8 @@ export default function JobForm() {
           "http://103.79.34.50:8083/api/Client/get-avak-record",
 
           {
-            avak_ref_id: "2024000002",
-
+            // avak_ref_id: "2024000002",
+  avak_ref_id: avakId,
             fin_year: "2024-2025",
           },
         );
@@ -1046,7 +1050,8 @@ console.log("Officer from API:", avak.client_cd);
         setData((prev) => ({
           ...prev,
 
-          avak_ref_id: "2024000002",
+          avak_ref_id:avak.avak_ref_id,
+          // "2024000002"
 
           subject: avak.subject,
 
@@ -1127,7 +1132,7 @@ console.log("Officer from API:", avak.client_cd);
     };
 
     getAvakData();
-  }, []);
+  }, [avakId]);
 
   // avakId
 
