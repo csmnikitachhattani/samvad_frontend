@@ -126,12 +126,14 @@ export default function JobForm() {
       try {
         const res = await clientServices.getAvakDetail({avak_ref_id:avak, fin_year:'2024-2025'});
         console.log(res)
+        console.log(res.client_cd)
         setData((prev) => ({
             ...prev,
             financial_year: '2024-2025',
             subject: res.data.subject,
             avak_ref_id: avak,
             client_ref_id: res.data.client_ref_id,
+            client : res.data.client_cd,
           }));
         setData((prev) => ({ ...prev, ...res.data }));
       } catch (error) {
@@ -158,7 +160,6 @@ export default function JobForm() {
   useEffect(() => {
     getPublicIP()
   })
-
   async function fetchDepartment() {
     try {
       const res = await clientServices.getalldepartment();
@@ -222,7 +223,6 @@ export default function JobForm() {
       //setLoading(false);
     }
   }
-
   async function fetchClient(client) {
     try {
       const res = await clientServices.getClientData(client);
@@ -337,21 +337,6 @@ export default function JobForm() {
             background: "linear-gradient(135deg, #fafbff 0%, #f5f6fa 100%)",
           }}
         >
-          {/* <Box
-            sx={{
-              width: 36,
-              height: 36,
-              borderRadius: "10px",
-              backgroundColor: `${accent}12`,
-              border: `1.5px solid ${accent}22`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            {icon}
-          </Box> */}
           <Box>
             <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", letterSpacing: "-0.1px" }}>
               {title}
