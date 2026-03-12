@@ -410,6 +410,7 @@ const RequestTable = () => {
                         {row.forward_Status === "Y" && (
                           <Chip label="Forwarded" size="small" sx={{ borderRadius: "6px", backgroundColor: "#f0fdf4", color: "#15803d", fontWeight: 600, fontSize: "0.67rem", border: "1px solid #bbf7d0", height: 20 }} />
                         )}
+                        {!row.avak_Ref_Id && (
                         <Button
                           size="small"
                           variant="contained"
@@ -418,6 +419,7 @@ const RequestTable = () => {
                         >
                           Create Avak
                         </Button>
+                        )}
                         {row.reject_Remark && (
                           <Tooltip title={row.reject_Remark}>
                             <Typography variant="caption" sx={{ color: "#dc2626", fontSize: "0.68rem", cursor: "help" }}>

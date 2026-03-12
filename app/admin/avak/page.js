@@ -478,6 +478,7 @@ const AvakTable = () => {
                         >
                           View / Edit
                         </Button>
+                        
                         <Button
                           variant="contained"
                           size="small"
