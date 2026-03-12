@@ -92,6 +92,10 @@ export default function JobForm() {
     client_name: "",
     office_address: "",
     billing_client_cd: "",
+    billing_base_dept_code:"",
+    billing_office_code: "",
+    billing_district_code:'',
+    billing_section_code:"",
     billing_client_name: "",
     billing_address: "",
     office_code: "",
@@ -125,8 +129,6 @@ export default function JobForm() {
     async function fetchAvakDetails() {
       try {
         const res = await clientServices.getAvakDetail({avak_ref_id:avak, fin_year:'2024-2025'});
-        console.log(res)
-        console.log(res.client_cd)
         setData((prev) => ({
             ...prev,
             financial_year: '2024-2025',
@@ -134,6 +136,7 @@ export default function JobForm() {
             avak_ref_id: avak,
             client_ref_id: res.data.client_ref_id,
             client : res.data.client_cd,
+
           }));
         setData((prev) => ({ ...prev, ...res.data }));
       } catch (error) {
@@ -607,9 +610,9 @@ export default function JobForm() {
           </Grid>
         </Paper>
            {/* ── Section 3: Location & Office ── */}
-           <SectionCard  title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+           <SectionCard  title="Client Location" subtitle="" accent="#10b981">
             <Grid container spacing={2.5}>
-              <Grid item size={{ xs: 12, md: 4 }}>
+              {/* <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   label="Client"
@@ -618,7 +621,122 @@ export default function JobForm() {
                   onChange={handleChange}
                   sx={field}
                 />
+              </Grid> */}
+              <Grid item size={{xs:12}}>
+                <TextField
+
+                  fullWidth
+                  select
+                  label="Base Department"
+                  name="baseDept"
+                  value={data.baseDept}
+                  onChange={handleChange}
+                  sx={field}
+                >
+                  {departments.map((dept) => (
+                    <MenuItem key={dept.deptid} value={dept.deptid}>
+                      {dept.deptname}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
+
+              <Grid item size={{ xs: 12, }}>
+                <TextField
+                 select
+                  fullWidth
+                  label="District"
+                  name="district"
+                  value={data.district}
+                  onChange={handleChange}
+                  sx={field}
+                >
+                   {districts.map((district) => (
+                    <MenuItem key={district.dstrictid} value={district.dstrictid}>
+                      {district.districtname}
+                    </MenuItem>
+                  ))}
+                  </TextField>
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Office Level"
+                  name="officeLevel"
+                  value={data.officeLevel}
+                  onChange={handleChange}
+                  sx={field}
+                >
+                  
+                  {levels.map((level) => (
+                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
+                      {level.officeLevelName}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Office"
+                  name="office"
+                  value={data.office}
+                  onChange={handleChange}
+                  sx={field}
+                >
+                    {offices.map((office) => (
+                    <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
+                      {office.officeName}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Section"
+                  name="section"
+                  value={data.section}
+                  onChange={handleChange}
+                  sx={field}
+                > {sections.map((section) => (
+                  <MenuItem key={section} >
+                    {section}
+                  </MenuItem>
+                ))}
+
+                  </TextField>
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Officer"
+                  name="officer"
+                  value={data.officer}
+                  onChange={handleChange}
+                  sx={field}
+                >
+                    {officers.map((officer) => (
+                    <MenuItem key={officer.employeeId} value={officer.employeeId}>
+                      {officer.employeeName}
+                    </MenuItem>
+                  ))}
+                  </TextField>
+              </Grid>
+            </Grid>
+          </SectionCard>
+
+            {/* ── Section 3: Location & Office ── */}
+            <SectionCard  title="Billing Location" subtitle="" accent="#10b981">
+            <Grid container spacing={2.5}>
+            
               <Grid item size={{xs:12}}>
                 <TextField
 

@@ -452,7 +452,7 @@ export default function ClientAttachmentForm() {
         letter_type_code: formData.letterType,
         remarks: formData.remark,
         financial_year: formData.financialYear || "2024-2025",
-        client_cd: formData.client || '2',
+        client_cd: String(formData.client),
         base_dept_code: formData.baseDept,
         office_code: formData.office,
         office_level_code: formData.officeLevel,
