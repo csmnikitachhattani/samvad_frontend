@@ -116,6 +116,33 @@ const clientServices = {
     } catch (err) {
       throw err; // interceptor will format it"
     }
+  },
+  getClientName: async()=>{
+    try {
+      const res = await axiosClient.get("i/Client/GetClientName");
+      return res
+    }
+    catch (err){
+      throw err
+    }
+  },
+  getForwardUsers: async()=>{
+    try {
+      const res = await axiosClient.get("/Client/getForwardUsers?forward_by_user_id=00141");
+      return res
+    }
+    catch (err){
+      throw err
+    }
+  },
+  getActionList: async()=>{
+    try  {
+      const res = await axiosClient.get("/Client/getActionList");
+      return res
+    }
+    catch (err){
+      throw err
+    }
   }
 
 };
