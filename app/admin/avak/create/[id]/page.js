@@ -392,6 +392,12 @@ export default function ClientAttachmentForm() {
     fetchOfficeLevel(formData.baseDept)
     }
   },[formData.baseDept,])
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return "";
+  
+    const [day, month, year] = dateStr.split("/");
+    return `${year}-${month}-${day}`;
+  };
   useEffect(() => {
     let finyear = localStorage.getItem('financialYear')
     const payload = {
@@ -403,7 +409,15 @@ export default function ClientAttachmentForm() {
         const res = await adminServices.getClientRecord(payload);
         console.log(res)
         //const apiData = res?.data?.data || res?.data;
-        setFormData((prev) => ({ ...prev, ...res }));
+        setFormData((prev) => (
+          {
+           ...prev,
+           ...res ,
+           schedule_date: formatDateForInput(res.schedule_date),
+           receivingDate: formatDateForInput(res.letter_date),
+           client : res.client_sno_key
+
+          }));
         console.log("assigned", formData)
       } catch (error) {
         console.error("Failed to fetch work orders", error);
@@ -419,6 +433,7 @@ export default function ClientAttachmentForm() {
     fetchLetterType();
     
   }, []);
+
 
   const handleSubmit = async () => {
     //e.preventDefault();
