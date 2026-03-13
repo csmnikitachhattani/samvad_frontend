@@ -28,7 +28,29 @@ const field = {
   "& .MuiInputLabel-root.Mui-focused": { color: "#010a2a" },
   "& .MuiInputBase-input": { color: "#111827", fontWeight: 500 },
 };
-
+const handleSubmit = async () => {
+    try {
+      const payload = {
+        ref_id:      refId,                // from parent prop
+        forward_to:  form.forward_to,
+        action:      form.action,
+        reason:      form.reason,
+        remark:      form.remark,
+      };
+  
+      const response = await axiosClient.post(
+        "http://103.79.34.50:3000/api/Client/avak-forward",
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
+  
+      console.log("Forward SUCCESS:", response.data);
+      onSubmit?.(payload);
+      handleClose();
+    } catch (error) {
+      console.error("Forward ERROR:", error.response?.data || error.message);
+    }
+  };
 // ── Sample options — replace with your actual API data ────────────────────────
 const FORWARD_TO_OPTIONS = [
   { value: "dept_01", label: "Department — Finance" },
@@ -60,10 +82,10 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    onSubmit?.(form);
-    handleClose();
-  };
+//   const handleSubmit = () => {
+//     onSubmit?.(form);
+//     handleClose();
+//   };
 
   const handleClose = () => {
     setForm({ forward_to: "", action: "", reason: "", remark: "" });

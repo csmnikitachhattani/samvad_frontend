@@ -11,7 +11,6 @@ const adminControllerSlice = createSlice({
   },
   reducers: {
     toggleModal: (state, action) =>{
-      console.log("calling store function ")
       state.ModalShow= action?.payload?.show 
       console.log(state.ModalShow)
 
