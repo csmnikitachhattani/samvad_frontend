@@ -100,8 +100,10 @@ export default function JobForm() {
     billing_address: "",
     office_code: "",
     district_code: "",
+    base_dept_code: "",
+    district_code: "",
     remarks: "",
-    baseDept: '',
+    base_dept_code: '',
     office_level_code: '',
     office: '',
     section: '',
@@ -232,12 +234,12 @@ export default function JobForm() {
       console.log("console", res.data)
       setData((prev) => ({
         ...prev,
-        baseDept: res.data.data.base_dept_code,
-        district: res.data.data.district_code,
-        officeLevel: res.data.data.OfficeLevel,
-        office: res.data.data.Office_code,
-        section: res.data.data.section_code,
-        officer: res.data.data.employee_code,
+        base_dept_code: res.data.data?.base_dept_code,
+        district: res.data.data?.district_code,
+        officeLevel: res.data.data?.OfficeLevel,
+        office: res.data.data?.Office_code,
+        section: res.data.data?.section_code,
+        officer: res.data.data?.employee_code,
       }));
     fetchDistricts();
     } catch (error) {
@@ -252,18 +254,18 @@ export default function JobForm() {
     }
   },[data.client])
   useEffect(() => {
-    if(data.baseDept&&data.district){
-    fetchOfficeLevel(data.baseDept)
-    fetchOffice(data.baseDept, data.district);
-    fetchSections(data.baseDept, data.district);
-    fetchOfficers(data.baseDept, data.district);
+    if(data.base_dept_code&&data.district){
+    fetchOfficeLevel(data.base_dept_code)
+    fetchOffice(data.base_dept_code, data.district);
+    fetchSections(data.base_dept_code, data.district);
+    fetchOfficers(data.base_dept_code, data.district);
     }
-  },[data.baseDept, data.district])
+  },[data.base_dept_code, data.district])
   useEffect(() => {
-    if(data.baseDept){
-    fetchOfficeLevel(data.baseDept)
+    if(data.base_dept_code){
+    fetchOfficeLevel(data.base_dept_code)
     }
-  },[data.baseDept,])
+  },[data.base_dept_code,])
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
@@ -628,8 +630,8 @@ export default function JobForm() {
                   fullWidth
                   select
                   label="Base Department"
-                  name="baseDept"
-                  value={data.baseDept}
+                  name="base_dept_code"
+                  value={data.base_dept_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -743,8 +745,8 @@ export default function JobForm() {
                   fullWidth
                   select
                   label="Base Department"
-                  name="baseDept"
-                  value={data.baseDept}
+                  name="base_dept_code"
+                  value={data.base_dept_code}
                   onChange={handleChange}
                   sx={field}
                 >

@@ -47,7 +47,7 @@ const adminService = {
   getcounter: async () => {
     console.log("get all agencncy")
     try {
-      const res = await axiosClient.get("/OutDoorMediaTransaction/getoutdoorcounter");
+      const res = await axiosClient.get("/OutDoorMediaTransaction/getodmlvcounter");
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -57,7 +57,7 @@ const adminService = {
   getcounterDetail: async (id) => {
     console.log("get counter detail")
     try {
-      const res = await axiosClient.get(`/OutDoorMediaTransaction/getoutdoorcounter?id=${id}`);
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getodmlvcounter?id=${id}`);
       return res.data;
     } catch (err) {
       console.log("answer")
