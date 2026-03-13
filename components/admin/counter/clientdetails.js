@@ -21,6 +21,7 @@ export default function ClientDetails({ data, setData }) {
       [name]: value,
     }));
   };
+  
 
   // Base Department
   useEffect(() => {
@@ -87,7 +88,8 @@ export default function ClientDetails({ data, setData }) {
       .then((res) => setOfficers(res.data?.result || []));
       
   }, [data.baseDepartment, data.district_code]);
-
+console.log("Officer dropdown value:", data.officer);
+console.log("Officer list:", officers);
   return (
     <Grid container spacing={2.5}>
 
