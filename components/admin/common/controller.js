@@ -30,37 +30,7 @@ const field = {
   "& .MuiInputLabel-root.Mui-focused": { color: "#010a2a" },
   "& .MuiInputBase-input": { color: "#111827", fontWeight: 500 },
 };
-const handleSubmit = async () => {
-    try {
-      const payload = {
-        //ref_id:      refId,                // from parent prop
-        forward_to:  form.forward_to,
-        forward_to_type_cd: forward_to_type_cd,
-        forward_by_section_cd: forward_by,
-        forward_to_section_cd : forward_to,
-        action_cd:      form.action,
-        reason:      form.reason,
-        remark:      form.remark,
-        avak_ref_id_list: List,
-        forward_time: forward_time,
-        forward_date: forward_date,
-        financial_year: financial_year,
-        status_reason_cd: "",
-      };
-  
-      const response = await axiosClient.post(
-        "/api/Client/avak-forward",
-        payload,
-        { headers: { "Content-Type": "application/json" } }
-      );
-  
-      console.log("Forward SUCCESS:", response.data);
-      onSubmit?.(payload);
-      handleClose();
-    } catch (error) {
-      console.error("Forward ERROR:", error.response?.data || error.message);
-    }
-  };
+
 // ── Sample options — replace with your actual API data ────────────────────────
 const FORWARD_TO_OPTIONS = [
   { value: "dept_01", label: "Department — Finance" },
@@ -86,7 +56,7 @@ const ACTION_OPTIONS = [
 // ── ForwardDialog ─────────────────────────────────────────────────────────────
 export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
   const dispatch = useDispatch();
-  const ModalShow = useSelector((state) => state.adminController.ModalShow);
+  const {ModalShow :ModalShow , ref_id } = useSelector((state) => state.adminController);
   const [form, setForm] = useState({
     forward_to: "",
     action: "",
@@ -99,6 +69,37 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
       show: false,
     }))
   }
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        //ref_id:      refId,                // from parent prop
+        forward_to:  form.forward_to,
+        forward_to_type_cd: forward_to_type_cd,
+        forward_by_section_cd: forward_by,
+        forward_to_section_cd : forward_to,
+        action_cd:      form.action,
+        reason:      form.reason,
+        remark:      form.remark,
+        avak_ref_id_list: ref_id,
+        forward_time: forward_time,
+        forward_date: forward_date,
+        financial_year: financial_year,
+        status_reason_cd: "",
+      };
+  
+      const response = await axiosClient.post(
+        "/api/Client/avak-forward",
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
+  
+      console.log("Forward SUCCESS:", response.data);
+      onSubmit?.(payload);
+      handleClose();
+    } catch (error) {
+      console.error("Forward ERROR:", error.response?.data || error.message);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
