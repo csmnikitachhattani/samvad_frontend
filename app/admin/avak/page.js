@@ -297,7 +297,7 @@ const AvakTable = () => {
             }}
           />
           {/* Add New */}
-          <Button
+          {/* <Button
             variant="contained"
             size="small"
             onClick={() => router.push("/admin/client-attachment/new")}
@@ -315,7 +315,7 @@ const AvakTable = () => {
             }}
           >
             + New Entry
-          </Button>
+          </Button> */}
         </Box>
       </Box>
 
@@ -483,7 +483,7 @@ const AvakTable = () => {
                           }))}
                           sx={actionBtn("#010a2a", "#e8eaf6")}
                         >
-                          View / Edit
+                          Forward
                         </Button>
                         
                         <Button
