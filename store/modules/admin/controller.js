@@ -6,12 +6,13 @@ const adminControllerSlice = createSlice({
   initialState: {
     value: 0,
     ModalShow: false,
+    ref_id: null,
     statusModalShow: false,
-    
   },
   reducers: {
     toggleModal: (state, action) =>{
       state.ModalShow= action?.payload?.show 
+
       console.log(state.ModalShow)
 
     },

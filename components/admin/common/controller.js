@@ -71,11 +71,15 @@ const FORWARD_TO_OPTIONS = [
 ];
 
 const ACTION_OPTIONS = [
-  { value: "approve",  label: "Approve" },
-  { value: "reject",   label: "Reject" },
-  { value: "hold",     label: "Hold" },
-  { value: "forward",  label: "Forward" },
-  { value: "return",   label: "Return" },
+  { value: "03", label: "Mark" },
+  { value: "04", label: "Allocate Vendor" },
+  { value: "05", label: "Generate Notesheet" },
+  { value: "06", label: "Approve" },
+  { value: "07", label: "Generate RO" },
+  { value: "16", label: "Forward" },
+  { value: "17", label: "Cancel" },
+  { value: "20", label: "Cancel Alloted Vendor" },
+  { value: "21", label: "Delete Alloted Vendor" },
 ];
 
 
