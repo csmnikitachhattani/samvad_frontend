@@ -22,6 +22,9 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import clientServices from "@/services/clientServices";
+import ControllerModal from "@/components/admin/common/controller"
+import { useSelector, useDispatch } from "react-redux";
+import { toggleModal } from "@/store/modules/admin/controller";
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
 const searchField = {
@@ -183,6 +186,8 @@ function TableSkeleton() {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 const AvakTable = () => {
+  const dispatch = useDispatch();
+  //const ModalShow = useSelector((state) => state.adminController.ModalShow);
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -473,7 +478,9 @@ const AvakTable = () => {
                         <Button
                           variant="contained"
                           size="small"
-                          onClick={() => router.push(`/admin/client-attachment/${row.id}`)}
+                          onClick={() =>  dispatch(toggleModal({
+                            show: true,
+                          }))}
                           sx={actionBtn("#010a2a", "#e8eaf6")}
                         >
                           View / Edit
@@ -548,6 +555,7 @@ const AvakTable = () => {
           }}
         />
       </Box>
+      <ControllerModal />
     </Paper>
   );
 };

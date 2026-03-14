@@ -3,6 +3,7 @@ import realeaseReducer from "@/store/modules/newspaper/realeaseSlice";
 import vehicleReducer from "@/store/modules/outdoor/vehicleSlice"
 import displayReducer from "@/store/modules/outdoor/displaySlice"
 import notification from  "@/store/modules/snackbar/notificationSlice"
+import adminControllerReducer from "@/store/modules/admin/controller"
   
 
 const rootReducer = combineReducers({
@@ -10,6 +11,8 @@ const rootReducer = combineReducers({
   vehicle : vehicleReducer,
   display : displayReducer,
   notification : notification,
+  adminController : adminControllerReducer,
+
 });
 
 export default rootReducer;

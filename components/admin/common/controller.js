@@ -5,6 +5,8 @@ import {
   Box, Button, TextField, Typography, MenuItem, IconButton, Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleModal } from "@/store/modules/admin/controller";
 
 // ── Field style ───────────────────────────────────────────────────────────────
 const field = {
@@ -31,15 +33,23 @@ const field = {
 const handleSubmit = async () => {
     try {
       const payload = {
-        ref_id:      refId,                // from parent prop
+        //ref_id:      refId,                // from parent prop
         forward_to:  form.forward_to,
-        action:      form.action,
+        forward_to_type_cd: forward_to_type_cd,
+        forward_by_section_cd: forward_by,
+        forward_to_section_cd : forward_to,
+        action_cd:      form.action,
         reason:      form.reason,
         remark:      form.remark,
+        avak_ref_id_list: List,
+        forward_time: forward_time,
+        forward_date: forward_date,
+        financial_year: financial_year,
+        status_reason_cd: "",
       };
   
       const response = await axiosClient.post(
-        "http://103.79.34.50:3000/api/Client/avak-forward",
+        "/api/Client/avak-forward",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -68,14 +78,23 @@ const ACTION_OPTIONS = [
   { value: "return",   label: "Return" },
 ];
 
+
 // ── ForwardDialog ─────────────────────────────────────────────────────────────
 export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
+  const dispatch = useDispatch();
+  const ModalShow = useSelector((state) => state.adminController.ModalShow);
   const [form, setForm] = useState({
     forward_to: "",
     action: "",
     reason: "",
     remark: "",
   });
+
+  const closeUploadDialog = () => {
+    dispatch(toggleModal({
+      show: false,
+    }))
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,7 +115,7 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
 
   return (
     <Dialog
-      open={open}
+      open={ModalShow}
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
