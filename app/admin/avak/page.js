@@ -479,7 +479,7 @@ const AvakTable = () => {
                           variant="contained"
                           size="small"
                           onClick={() =>  dispatch(toggleModal({
-                            show: true,
+                            show: true, ref_id : row.avak_ref_id
                           }))}
                           sx={actionBtn("#010a2a", "#e8eaf6")}
                         >

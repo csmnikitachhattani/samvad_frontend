@@ -111,7 +111,7 @@ const clientServices = {
   },
   getFilesDetails: async()=>{
     try {
-      const res = await axiosClient.get("/Client/get-filese");
+      const res = await axiosClient.get("/Client/get-files");
       return res;
     } catch (err) {
       throw err; // interceptor will format it"
@@ -119,7 +119,7 @@ const clientServices = {
   },
   getClientName: async()=>{
     try {
-      const res = await axiosClient.get("i/Client/GetClientName");
+      const res = await axiosClient.get("/Client/GetClientName");
       return res
     }
     catch (err){

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Box, Button, TextField, Typography, MenuItem, IconButton, Divider,
@@ -7,6 +7,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "@/store/modules/admin/controller";
+import clientServices from "@/services/clientServices";
+const now = new Date();
+import axiosClient from "@/lib/axiosClient";
 
 // ── Field style ───────────────────────────────────────────────────────────────
 const field = {
@@ -69,26 +72,46 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
       show: false,
     }))
   }
+  useEffect(() => {
+    const userType = localStorage.getItem("loginusertypename");
+    if (!userType || userType !== "Department") {
+      router.push("/login"); // redirect if not authorized
+    }
+  }, []);
+  const [forwardUser, setForwardUser]= useState([])
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await clientServices.getForwardUsers();
+        setForwardUser(res.data);
+      } catch (error) {
+        console.error("Failed to fetch work orders", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
   const handleSubmit = async () => {
     try {
       const payload = {
         //ref_id:      refId,                // from parent prop
         forward_to:  form.forward_to,
-        forward_to_type_cd: forward_to_type_cd,
-        forward_by_section_cd: forward_by,
-        forward_to_section_cd : forward_to,
+        forward_to_type_cd: form.forward_to,
+        forward_by_section_cd: '00141',
+        forward_to_section_cd : form.forward_to,
         action_cd:      form.action,
         reason:      form.reason,
         remark:      form.remark,
         avak_ref_id_list: ref_id,
-        forward_time: forward_time,
-        forward_date: forward_date,
-        financial_year: financial_year,
-        status_reason_cd: "",
+        forward_time: new Date().toISOString().split("T")[0],
+        forward_date: now.toLocaleDateString("en-IN"),
+        financial_year: "2024-2025",
+        status_reason_cd: "reason",
       };
   
       const response = await axiosClient.post(
-        "/api/Client/avak-forward",
+        "/Client/avak-forward",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -113,7 +136,7 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
 
   const handleClose = () => {
     setForm({ forward_to: "", action: "", reason: "", remark: "" });
-    onClose?.();
+    closeUploadDialog?.();
   };
 
   const isValid = form.forward_to && form.action && form.reason.trim();
@@ -202,14 +225,14 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
             onChange={handleChange}
             sx={field}
           >
-            {FORWARD_TO_OPTIONS.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
+            {forwardUser.map((opt) => (
+              <MenuItem key={opt.forwad_to_user_id} value={opt.forwad_to_user_id}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <Box sx={{
                     width: 7, height: 7, borderRadius: "50%",
                     backgroundColor: "#010a2a", flexShrink: 0,
                   }} />
-                  {opt.label}
+                  {opt.username}
                 </Box>
               </MenuItem>
             ))}
