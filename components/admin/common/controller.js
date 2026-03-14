@@ -104,10 +104,11 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
         reason:      form.reason,
         remark:      form.remark,
         avak_ref_id_list: ref_id,
-        forward_time: new Date().toISOString().split("T")[0],
+        forward_time: '2026-03-14T22:45',
         forward_date: now.toLocaleDateString("en-IN"),
         financial_year: "2024-2025",
         status_reason_cd: "reason",
+        action_taken_by_type_cd: "00141",
       };
   
       const response = await axiosClient.post(
