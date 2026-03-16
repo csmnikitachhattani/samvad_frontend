@@ -460,10 +460,10 @@ useEffect(() => {
         <TextField
           select
           label="Billing Officer"
-          name="Billing_officer"
+          name="Billing_client_cd"
           fullWidth
           size="small"
-          value={data.Billing_officer || data.officer}
+          value={data.Billing_client_cd || data.client_cd}
           onChange={handleChange}
         >
           {officers.map((off) => (
