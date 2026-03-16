@@ -87,7 +87,7 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
       } catch (error) {
         console.error("Failed to fetch work orders", error);
       } finally {
-        setLoading(false);
+        //setLoading(false);
       }
     }
     fetchData();
@@ -103,7 +103,7 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
         action_cd:      form.action,
         reason:      form.reason,
         remark:      form.remark,
-        avak_ref_id_list: ref_id,
+        avak_ref_id_list: [ref_id,],
         forward_time: '2026-03-14T22:45',
         forward_date: now.toLocaleDateString("en-IN"),
         financial_year: "2024-2025",
