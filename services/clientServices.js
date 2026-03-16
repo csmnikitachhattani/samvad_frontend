@@ -10,9 +10,10 @@ const clientServices = {
     }
   },
   getOfficeLevels: async (req)=>{
-    const {distCode, de} = req
+    const { deptCode} = req
+    console.log("hgdkjkd", req)
     try {
-      const res = await axiosClient.get(`/ManageMaster/getofficelevel/B010`);
+      const res = await axiosClient.get(`/ManageMaster/getofficelevel/${deptCode}`);
       return res.data;
     } catch (err) {
       console.log("answer")
