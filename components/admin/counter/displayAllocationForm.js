@@ -35,7 +35,7 @@ export default function AllocationPage() {
     job_id: "",
     subject: "",
     ref_no: "",
-    od_servicetype_id: "1",
+   
     receipt_date: "",
     vendor_id: [],
     vendor_name: [],

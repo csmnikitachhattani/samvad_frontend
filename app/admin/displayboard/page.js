@@ -18,12 +18,26 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  Button,
   Tooltip,
   Stack,
   Badge,
   CircularProgress,
+   Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid
 } from "@mui/material";
+
+import CloseIcon from "@mui/icons-material/Close";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
+
+
 import SearchIcon from "@mui/icons-material/Search";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -35,7 +49,7 @@ const theme = createTheme({
   palette: {
     mode: "dark",
     primary: { main: "#6366f1" },
-    background: { default: "#d6d1d1", paper: "#f0eaea" },
+    background: { default: "#ffffff", paper: "#ffffff" },
     text: { primary: "#000000", secondary: "#ffffff" },
   },
   typography: {
@@ -100,7 +114,7 @@ const compareValues = (a, b, key, order) => {
   return 0;
 };
 
-const truncateText = (text, maxLength = 10) => {
+const truncateText = (text, maxLength = 50) => {
   if (!text) return "—";
   const str = String(text);
   return str.length > maxLength ? str.slice(0, maxLength) + " ..." : str;
@@ -112,10 +126,24 @@ export default function JobDataTable() {
   const [loading, setLoading] = useState(false);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
   const [search, setSearch] = useState("");
   const [orderBy, setOrderBy] = useState("job_id");
   const [order, setOrder] = useState("asc");
+
+  const [openFilesModal, setOpenFilesModal] = useState(false);
+const [filesData, setFilesData] = useState([]);
+const [filesLoading, setFilesLoading] = useState(false);
+
+const groupedFiles = useMemo(() => {
+  return filesData.reduce((acc, file) => {
+    const category = file.category || "Documents";
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(file);
+    return acc;
+  }, {});
+}, [filesData]);
+
 
   /* ─── API CALL ─── */
   const fetchJobs = async () => {
@@ -124,6 +152,7 @@ export default function JobDataTable() {
 
       // 🔴 Replace with your actual API endpoint
       const res = await axios.get(
+       
         "http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoordbcounter",
       );
 
@@ -159,13 +188,14 @@ export default function JobDataTable() {
     return sorted.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }, [sorted, page, rowsPerPage]);
 
+// ===================Handle Edit =====================
   const handleEdit = (row) => {
     console.log("Edit clicked:", row);
 
     // Navigate to edit page with job_id
     router.push(`/admin/counter/edit/${row.job_id}`);
   };
-
+// ===================Handle Allocation=====================
   const handleAllocation = (row) => {
     console.log("Allocation clicked:", row);
 
@@ -182,10 +212,49 @@ export default function JobDataTable() {
     }
   };
 
+
   const handleRefresh = () => {
     fetchJobs();
     setPage(0);
   };
+
+// ===================Handle View File=====================
+
+  const BASE_URL = "http://103.79.34.50:8083";
+
+const handleViewFiles = async (row) => {
+  try {
+    setFilesLoading(true);
+
+    if (!row.upload_doc_path) {
+      setFilesData([]);
+      setOpenFilesModal(true);
+      return;
+    }
+
+    const filePath = row.upload_doc_path;
+    const fileName = filePath.split("/").pop();
+
+    const fileObj = {
+      link_name: `${BASE_URL}/${filePath}`,   // ✅ base url added
+      content_type: fileName.toLowerCase().endsWith(".pdf")
+        ? "application/pdf"
+        : "image/jpeg",
+      file_size_in_bytes: 0,
+      category: "Uploaded Document",
+    };
+
+    setFilesData([fileObj]);
+    setOpenFilesModal(true);
+
+  } catch (err) {
+    console.error("File fetch error", err);
+    setFilesData([]);
+  } finally {
+    setFilesLoading(false);
+  }
+};
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -273,7 +342,7 @@ export default function JobDataTable() {
             mb: 2,
             "& .MuiOutlinedInput-root": {
               borderRadius: "999px",
-              bgcolor: "rgba(161, 15, 15, 0.05)",
+              bgcolor: "rgba(255, 255, 255, 0.05)",
               backdropFilter: "blur(8px)",
               color: "#181717",
               fontWeight: 500,
@@ -324,13 +393,13 @@ export default function JobDataTable() {
               <TableHead>
                 <TableRow
                   sx={{
-                    background: "linear-gradient(135deg, #1f2937, #0f172a)",
+                    background: "linear-gradient(135deg, #ffffff, #f3f3f3)",
                   }}
                 >
                   <TableCell
                     sx={{
-                      color: "#f6f6f6",
-                      background: "black",
+                      color: "#000000",
+                      background: "white",
                       fontWeight: 800,
                       fontSize: "0.8rem",
                       letterSpacing: "0.6px",
@@ -343,8 +412,8 @@ export default function JobDataTable() {
                     <TableCell
                       key={col.id}
                       sx={{
-                        background: "black",
-                        color: "#f0f0f0",
+                       color: "#000000",
+                      background: "white",
                         fontWeight: 800,
                         fontSize: "0.8rem",
                         letterSpacing: "0.6px",
@@ -359,7 +428,7 @@ export default function JobDataTable() {
                           direction={orderBy === col.id ? order : "asc"}
                           onClick={() => handleSort(col.id)}
                           sx={{
-                            color: "#f2f3f4 !important",
+                            color: "#000000 !important",
                             fontWeight: 800,
                             "& .MuiTableSortLabel-icon": {
                               color: "#f2f3f4 !important",
@@ -475,12 +544,32 @@ export default function JobDataTable() {
                                   fontWeight: 500,
                                 }}
                               >
-                                {truncateText(row?.[col.id], 10)}
+                                {truncateText(row?.[col.id], 30)}
                               </Typography>
                             </Tooltip>
-                          ) : (
-                            (row?.[col.id] ?? "—")
-                          )}
+                          // ) : (
+                          //   (row?.[col.id] ?? "—")
+                          // )}
+                          ) : col.id === "job_id" ? (
+  <Stack direction="row" spacing={1} alignItems="center">
+    <Typography fontWeight={600}>{row.job_id}</Typography>
+
+<Button
+  size="small"
+  startIcon={<VisibilityIcon />}
+  onClick={() => handleViewFiles(row)}
+  sx={{
+    textTransform: "none",
+    fontSize: "0.7rem",
+    minWidth: "auto",
+  }}
+>
+  Files
+</Button>
+  </Stack>
+) : (
+  row?.[col.id] ?? "—"
+)}
                         </TableCell>
                       ))}
                     </TableRow>
@@ -547,6 +636,151 @@ export default function JobDataTable() {
           />
         </Paper>
       </Box>
+  
+
+
+<Dialog
+  open={openFilesModal}
+  onClose={() => setOpenFilesModal(false)}
+  fullWidth
+  maxWidth="md"
+>
+  {/* Header */}
+  <DialogTitle
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      fontWeight: 600,
+      background: "#f5f7fb",
+      borderBottom: "1px solid #eee",
+    }}
+  >
+    View Attachments
+
+    <IconButton
+      onClick={() => setOpenFilesModal(false)}
+      size="small"
+      sx={{
+        background: "#ab0000",
+        "&:hover": { background: "#931d1d" },
+      }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+
+  {/* Content */}
+  <DialogContent dividers sx={{ background: "#fafbff" }}>
+    {filesLoading ? (
+      <Box sx={{ textAlign: "center", py: 5 }}>
+        <CircularProgress />
+      </Box>
+    ) : filesData.length === 0 ? (
+      <Typography align="center" sx={{ py: 4 }}>
+        No files found
+      </Typography>
+    ) : (
+      Object.entries(groupedFiles).map(([category, files]) => (
+        <Box key={category} mb={4}>
+          {/* Category Title */}
+          <Typography
+            sx={{
+              mb: 2,
+              fontWeight: 600,
+              color: "#1a237e",
+              borderLeft: "4px solid #3949ab",
+              pl: 1,
+            }}
+          >
+            {category}
+          </Typography>
+
+          {/* File Grid */}
+          <Grid container spacing={2}>
+            {files.map((file, index) => {
+              const fileUrl = file.link_name;
+
+              const isImage = file.content_type?.startsWith("image");
+              const isPdf = file.content_type === "application/pdf";
+
+              return (
+                <Grid item xs={6} md={3} key={index}>
+                  <Box
+                    onClick={() => window.open(fileUrl, "_blank")}
+                    sx={{
+                      borderRadius: 2,
+                      border: "1px solid #e0e0e0",
+                      background: "#fff",
+                      p: 1,
+                      textAlign: "center",
+                      cursor: "pointer",
+                      transition: "all 0.25s ease",
+                      "&:hover": {
+                        boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
+                        transform: "scale(1.03)",
+                      },
+                    }}
+                  >
+                    {/* Preview */}
+                    <Box
+                      sx={{
+                        height: 110,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: 1,
+                      }}
+                    >
+                      {isImage ? (
+                        <img
+                          src={fileUrl}
+                          alt="preview"
+                          style={{
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            borderRadius: 6,
+                          }}
+                        />
+                      ) : isPdf ? (
+                        <PictureAsPdfIcon
+                          sx={{ fontSize: 55, color: "#d32f2f" }}
+                        />
+                      ) : (
+                        <InsertDriveFileIcon
+                          sx={{ fontSize: 55, color: "#09abf6" }}
+                        />
+                      )}
+                    </Box>
+
+                    {/* File Name */}
+                    <Typography
+                      variant="caption"
+                      noWrap
+                      sx={{ fontWeight: 500 }}
+                    >
+                      {file.link_name?.split("/").pop()}
+                    </Typography>
+
+                    {/* File Size */}
+                    <Typography
+                      variant="caption"
+                      display="block"
+                      color="text.secondary"
+                    >
+                      {(file.file_size_in_bytes / (1024 * 1024)).toFixed(2)} MB
+                    </Typography>
+                  </Box>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
+      ))
+    )}
+  </DialogContent>
+</Dialog>
+
     </ThemeProvider>
   );
 }

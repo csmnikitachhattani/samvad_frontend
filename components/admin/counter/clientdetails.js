@@ -187,10 +187,10 @@ console.log("Officer list:", officers);
   <TextField
     select
     label="Officer"
-    name="officer"
+    name="client_cd"
     fullWidth
     size="small"
-    value={data.officer || ""}
+    value={data.client_cd || ""}
     onChange={handleChange}
   >
     {officers.map((off) => (
