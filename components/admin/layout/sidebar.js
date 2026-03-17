@@ -21,50 +21,67 @@ const [openMenu, setOpenMenu] = useState(null);
 
 // better active check for nested routes
 const isActive = (path) => pathname.startsWith(path);
-  const menuItems = [
-    { 
-      label: "Dashboard", 
-      path: "/admin",
-      icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
-    },
-    {
-      label: "Agency",
-      path: "/admin/agency",
-      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Display Boards",
-      path: "/admin/display",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Vehicle Boards",
-      path: "/admin/vehicle",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Mini Bus Boards",
-      path: "/admin/bus",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Counter",
-      path: "/admin/counter",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Workorders",
-      path: "/admin/workorder",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Bill Entry",
-      path: "/newspaper/bill-entry",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-   
-  ];
 
+
+const menuItems = [
+  { 
+    label: "Dashboard", 
+    path: "/admin",
+    icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
+  },
+
+  {
+    label: "Agency",
+    path: "/admin/agency",
+    icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  },
+
+  // ✅ FIXED: Submenu moved here
+  {
+    label: "Display Boards",
+    icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    submenu: [
+      {
+        label: "Counter Entry",
+        path: "/admin/displayboard/counter",
+      },
+      {
+        label: "DisplayBoard",
+        path: "/admin/displayboard",
+      },
+      {
+        label: "Notsheet",
+        path: "/admin/display/reports",
+      },
+    ],
+  },
+
+  {
+    label: "Vehicle Boards",
+    path: "/admin/vehicle",
+    icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  },
+  {
+    label: "Mini Bus Boards",
+    path: "/admin/bus",
+    icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  },
+  {
+    label: "Counter",
+    path: "/admin/counter",
+    icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  },
+  {
+    label: "Workorders",
+    path: "/admin/workorder",
+    icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  },
+  {
+    label: "Bill Entry",
+    path: "/newspaper/bill-entry",
+    icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  },
+];
   return (
     <Box
       sx={{
