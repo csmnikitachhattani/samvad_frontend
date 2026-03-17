@@ -1,10 +1,10 @@
 import axiosClient from "@/lib/axiosClient";
 
 const adminService = {
-  getServices: async () => {
+  getServices: async (cat) => {
     console.log("newspaper information")
     try {
-      const res = await axiosClient.get("/ManageMaster/getservicetype");
+      const res = await axiosClient.get(`/ManageMaster/getservicetype/?avak_cate_id=${cat}`);
       return res.data;
     } catch (err) {
       throw err; 
@@ -47,7 +47,7 @@ const adminService = {
   getcounter: async () => {
     console.log("get all agencncy")
     try {
-      const res = await axiosClient.get("/OutDoorMediaTransaction/getoutdoorcounter");
+      const res = await axiosClient.get("/OutDoorMediaTransaction/getodmlvcounter");
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -57,7 +57,7 @@ const adminService = {
   getcounterDetail: async (id) => {
     console.log("get counter detail")
     try {
-      const res = await axiosClient.get(`/OutDoorMediaTransaction/getoutdoorcounter?id=${id}`);
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getodmlvcounter?id=${id}`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -87,7 +87,17 @@ const adminService = {
   getClientRequestList: async () => {
     console.log("get request Client List")
     try {
-      const res = await axiosClient.get(`/Client/get-client-requests?finYear=2024-2025`);
+      const res = await axiosClient.get(`/Client/getclientadvtrequests?financial_year=2024-2025&action=get_forwarded&user_id=00100`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getAllocationtList: async () => {
+    console.log("get request Client List")
+    try {
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getlvjoballocation`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -133,7 +143,7 @@ const adminService = {
       console.log("answer")
       throw err; // interceptor will format it
     }
-  }
+  },
 
  
 };

@@ -246,7 +246,8 @@ const AgencyForm = () => {
     async function fetchStates() {
       try {
         const response = await commonServices.getStates();
-        setStates(response.data?.data || []);
+        console.log(response.data?.result)
+        setStates(response.data?.result || []);
       } catch (error) {
         console.error("Failed to fetch states", error);
       }
@@ -254,7 +255,7 @@ const AgencyForm = () => {
     async function fetchDistrict() {
       try {
         const response = await commonServices.getDistrict();
-        setDistricts(response.data?.data || []);
+        setDistricts(response.data?.result || []);
       } catch (error) {
         console.error("Failed to fetch districts", error);
       }
@@ -374,8 +375,8 @@ const AgencyForm = () => {
                 sx={field}
               >
                 {states.map((s) => (
-                  <MenuItem key={s.state_code} value={s.state_code}>
-                    {s.state_name}
+                  <MenuItem key={s.stateCode} value={s.stateCode}>
+                    {s.stateName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -401,8 +402,8 @@ const AgencyForm = () => {
                 sx={field}
               >
                 {districts.map((s) => (
-                  <MenuItem key={s.district_code} value={s.district_code}>
-                    {s.district_name}
+                  <MenuItem key={s.dstrictid} value={s.dstrictid}>
+                    {s.districtname}
                   </MenuItem>
                 ))}
               </TextField>

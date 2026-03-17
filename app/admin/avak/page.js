@@ -21,6 +21,10 @@ import {
   Skeleton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import clientServices from "@/services/clientServices";
+import ControllerModal from "@/components/admin/common/controller"
+import { useSelector, useDispatch } from "react-redux";
+import { toggleModal } from "@/store/modules/admin/controller";
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
 const searchField = {
@@ -181,7 +185,9 @@ function TableSkeleton() {
 }
 
 // ── Main component ─────────────────────────────────────────────────────────────
-const ClientAttachmentTable = () => {
+const AvakTable = () => {
+  const dispatch = useDispatch();
+  //const ModalShow = useSelector((state) => state.adminController.ModalShow);
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -193,74 +199,10 @@ const ClientAttachmentTable = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        // const response = await adminServices.getClientAttachments();
-        // setData(response?.result || []);
-
-        // ── Mock data for preview ──
-        setData([
-          {
-            id: 1,
-            letterNo: "LTR/2024/001",
-            receivingDate: "2024-03-15",
-            category: "tender",
-            contentCategory: "outdoor_media",
-            tenderAmount: 250000,
-            publicationDate: "2024-03-20",
-            client: "Madhya Pradesh Tourism",
-            baseDept: "Tourism Dept",
-            district: "Bhopal",
-            officeLevel: "state",
-            office: "Main Secretariat",
-            section: "Advertising",
-            officer: "Rajesh Kumar",
-            modeOfReceiving: "email",
-            noOfPages: 12,
-            letterType: "incoming",
-            remark: "Urgent tender for highway billboard campaign",
-          },
-          {
-            id: 2,
-            letterNo: "LTR/2024/002",
-            receivingDate: "2024-03-18",
-            category: "general",
-            contentCategory: "classified",
-            tenderAmount: 0,
-            publicationDate: "2024-03-22",
-            client: "MPPKVVCL",
-            baseDept: "Energy Dept",
-            district: "Indore",
-            officeLevel: "district",
-            office: "District Office",
-            section: "PR Cell",
-            officer: "Sunita Patel",
-            modeOfReceiving: "hand",
-            noOfPages: 5,
-            letterType: "outgoing",
-            remark: "",
-          },
-          {
-            id: 3,
-            letterNo: "LTR/2024/003",
-            receivingDate: "2024-03-20",
-            category: "tender",
-            contentCategory: "printing",
-            tenderAmount: 180000,
-            publicationDate: "2024-03-25",
-            client: "MP Health Services",
-            baseDept: "Health Dept",
-            district: "Jabalpur",
-            officeLevel: "district",
-            office: "CMO Office",
-            section: "Admin",
-            officer: "Dr. Amit Singh",
-            modeOfReceiving: "courier",
-            noOfPages: 20,
-            letterType: "incoming",
-            remark: "Annual health awareness campaign prints",
-          },
-        ]);
+        const res = await clientServices.getAdvtList({fin_year:'2024-2025', datatype:'AvakList',});
+        setData(res.data);
       } catch (error) {
-        console.error("Failed to fetch client attachments", error);
+        console.error("Failed to fetch work orders", error);
       } finally {
         setLoading(false);
       }
@@ -330,7 +272,7 @@ const ClientAttachmentTable = () => {
           </Box>
           <Box>
             <Typography variant="subtitle1" fontWeight={700} sx={{ color: "#111827", letterSpacing: "-0.2px" }}>
-              Client Attachments
+              Avak List
             </Typography>
             <Typography variant="caption" sx={{ color: "#9ca3af" }}>
               {loading ? "Loading…" : `${filteredRows.length} record${filteredRows.length !== 1 ? "s" : ""} found`}
@@ -355,7 +297,7 @@ const ClientAttachmentTable = () => {
             }}
           />
           {/* Add New */}
-          <Button
+          {/* <Button
             variant="contained"
             size="small"
             onClick={() => router.push("/admin/client-attachment/new")}
@@ -373,7 +315,7 @@ const ClientAttachmentTable = () => {
             }}
           >
             + New Entry
-          </Button>
+          </Button> */}
         </Box>
       </Box>
 
@@ -429,14 +371,17 @@ const ClientAttachmentTable = () => {
 
                     {/* Letter No */}
                     <TableCell sx={{ ...bodyCell, minWidth: 150 }}>
+                    <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", fontSize: "0.82rem" }}>
+                        {row.subject|| "—"}
+                      </Typography>
                       <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", fontSize: "0.82rem" }}>
-                        {row.letterNo || "—"}
+                        {row.letter_no|| "—"}
                       </Typography>
                       <Box display="flex" gap={0.6} mt={0.5} flexWrap="wrap">
-                        <LetterTypeBadge value={row.letterType} />
+                        <LetterTypeBadge value={row.letter_type} />
                       </Box>
                       <Typography variant="caption" sx={{ color: "#9ca3af", display: "block", mt: 0.4 }}>
-                        Recv: {fmt(row.receivingDate)}
+                        Recv: {fmt(row.received_date)}
                       </Typography>
                     </TableCell>
 
@@ -456,9 +401,9 @@ const ClientAttachmentTable = () => {
                     {/* Category */}
                     <TableCell sx={{ ...bodyCell, minWidth: 140 }}>
                       <Stack spacing={0.6}>
-                        <CategoryBadge value={row.contentCategory} />
+                        <CategoryBadge value={row.cat_text} />
                         <Chip
-                          label={row.category ? row.category.charAt(0).toUpperCase() + row.category.slice(1) : "—"}
+                          label={row.cat_text ? row.cat_text.charAt(0).toUpperCase() + row.cat_text.slice(1) : "—"}
                           size="small"
                           sx={{
                             borderRadius: "7px",
@@ -490,11 +435,11 @@ const ClientAttachmentTable = () => {
                       <Box display="flex" flexDirection="column" gap={0.5}>
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <Typography variant="caption" sx={{ color: "#9ca3af", fontSize: "0.68rem", fontWeight: 600, textTransform: "uppercase", width: 30 }}>Pub</Typography>
-                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.publicationDate)}</Typography>
+                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.caption_publish_date)}</Typography>
                         </Box>
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <Typography variant="caption" sx={{ color: "#9ca3af", fontSize: "0.68rem", fontWeight: 600, textTransform: "uppercase", width: 30 }}>Rcv</Typography>
-                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.receivingDate)}</Typography>
+                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.received_date)}</Typography>
                         </Box>
                       </Box>
                     </TableCell>
@@ -515,13 +460,13 @@ const ClientAttachmentTable = () => {
                     {/* Mode / Pages */}
                     <TableCell sx={{ ...bodyCell, minWidth: 120 }}>
                       <Stack spacing={0.6} alignItems="flex-start">
-                        <ModePill value={row.modeOfReceiving} />
+                        <ModePill value={row.receiving_mode} />
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
                             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/>
                           </svg>
                           <Typography variant="caption" sx={{ color: "#6b7280", fontWeight: 600 }}>
-                            {row.noOfPages} pages
+                            {row.total_pages} pages
                           </Typography>
                         </Box>
                       </Stack>
@@ -533,18 +478,21 @@ const ClientAttachmentTable = () => {
                         <Button
                           variant="contained"
                           size="small"
-                          onClick={() => router.push(`/admin/client-attachment/${row.id}`)}
+                          onClick={() =>  dispatch(toggleModal({
+                            show: true, ref_id : row.avak_ref_id
+                          }))}
                           sx={actionBtn("#010a2a", "#e8eaf6")}
                         >
-                          View / Edit
+                          Forward
                         </Button>
+                        
                         <Button
                           variant="contained"
                           size="small"
-                          onClick={() => router.push(`/admin/client-attachment/${row.id}/process`)}
+                          onClick={() => router.push(`/admin/counter/create/${row.avak_ref_id}`)}
                           sx={actionBtn("#10b981", "#ecfdf5")}
                         >
-                          Process
+                          Process to counter
                         </Button>
                         <Button
                           variant="contained"
@@ -607,8 +555,9 @@ const ClientAttachmentTable = () => {
           }}
         />
       </Box>
+      <ControllerModal />
     </Paper>
   );
 };
 
-export default ClientAttachmentTable;
+export default AvakTable;
