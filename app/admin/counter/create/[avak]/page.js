@@ -138,6 +138,10 @@ export default function JobForm() {
             avak_ref_id: avak,
             client_ref_id: res.data.client_ref_id,
             client : res.data.client_cd,
+            billing_base_dept_code:res.base_dept_cod,
+            billing_office_code: res.office_code,
+            billing_district_code:res.district_code,
+            billing_section_code:res.section,
 
           }));
         setData((prev) => ({ ...prev, ...res.data }));
