@@ -352,7 +352,6 @@ export default function ClientAttachmentForm() {
       //setLoading(false);
     }
   }
-
   async function fetchClient(client) {
     try {
       const res = await clientServices.getClientData(client);
@@ -433,8 +432,6 @@ export default function ClientAttachmentForm() {
     fetchLetterType();
     
   }, []);
-
-
   const handleSubmit = async () => {
     //e.preventDefault();
     try {
@@ -781,8 +778,8 @@ export default function ClientAttachmentForm() {
                   select
                   fullWidth
                   label="Officer"
-                  name="officer"
-                  value={formData.officer}
+                  name="client_cd"
+                  value={formData.client_cd}
                   onChange={handleChange}
                   sx={field}
                 >

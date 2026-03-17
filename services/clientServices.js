@@ -10,9 +10,10 @@ const clientServices = {
     }
   },
   getOfficeLevels: async (req)=>{
-    const {distCode, de} = req
+    const { deptCode} = req
+    console.log("hgdkjkd", req)
     try {
-      const res = await axiosClient.get(`/ManageMaster/getofficelevel/B010`);
+      const res = await axiosClient.get(`/ManageMaster/getofficelevel/${deptCode}`);
       return res.data;
     } catch (err) {
       console.log("answer")
@@ -111,7 +112,7 @@ const clientServices = {
   },
   getFilesDetails: async()=>{
     try {
-      const res = await axiosClient.get("/Client/get-filese");
+      const res = await axiosClient.get("/Client/get-files");
       return res;
     } catch (err) {
       throw err; // interceptor will format it"
@@ -119,7 +120,7 @@ const clientServices = {
   },
   getClientName: async()=>{
     try {
-      const res = await axiosClient.get("i/Client/GetClientName");
+      const res = await axiosClient.get("/Client/GetClientName");
       return res
     }
     catch (err){

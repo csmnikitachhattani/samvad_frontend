@@ -99,13 +99,12 @@ export default function JobForm() {
     billing_client_name: "",
     billing_address: "",
     office_code: "",
-    district_code: "",
     base_dept_code: "",
     district_code: "",
     remarks: "",
     base_dept_code: '',
     office_level_code: '',
-    office: '',
+    office_code: '',
     section: '',
     ip_address: "",
     client: "",
@@ -133,6 +132,7 @@ export default function JobForm() {
         const res = await clientServices.getAvakDetail({avak_ref_id:avak, fin_year:'2024-2025'});
         setData((prev) => ({
             ...prev,
+            ...res,
             financial_year: '2024-2025',
             subject: res.data.subject,
             avak_ref_id: avak,
@@ -236,7 +236,7 @@ export default function JobForm() {
         ...prev,
         base_dept_code: res.data.data?.base_dept_code,
         district: res.data.data?.district_code,
-        officeLevel: res.data.data?.OfficeLevel,
+        office_level_code: res.data.data?.OfficeLevel,
         office: res.data.data?.Office_code,
         section: res.data.data?.section_code,
         officer: res.data.data?.employee_code,
@@ -250,22 +250,23 @@ export default function JobForm() {
   }
   useEffect(() => {
     if(data.client !== ""){
-      fetchClient(data.client)
+      //fetchClient(data.client)
     }
   },[data.client])
   useEffect(() => {
-    if(data.base_dept_code&&data.district){
+    console.log("gtyugyugyug",data.base_dept_code,data.district_code)
+    if(data.base_dept_code&&data.district_code){
     fetchOfficeLevel(data.base_dept_code)
-    fetchOffice(data.base_dept_code, data.district);
-    fetchSections(data.base_dept_code, data.district);
-    fetchOfficers(data.base_dept_code, data.district);
+    fetchOffice(data.base_dept_code, data.district_code);
+    fetchSections(data.base_dept_code, data.district_code);
+    fetchOfficers(data.base_dept_code, data.district_code);
     }
-  },[data.base_dept_code, data.district])
-  useEffect(() => {
-    if(data.base_dept_code){
-    fetchOfficeLevel(data.base_dept_code)
-    }
-  },[data.base_dept_code,])
+  },[data.base_dept_code, data.district_code])
+  // useEffect(() => {
+  //   if(data.base_dept_code){
+  //   fetchOfficeLevel(data.base_dept_code)
+  //   }
+  // },[data.base_dept_code,])
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
@@ -648,8 +649,8 @@ export default function JobForm() {
                  select
                   fullWidth
                   label="District"
-                  name="district"
-                  value={data.district}
+                  name="district_code"
+                  value={data.district_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -666,8 +667,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Office Level"
-                  name="officeLevel"
-                  value={data.officeLevel}
+                  name="office_level_code"
+                  value={data.office_level_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -685,8 +686,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Office"
-                  name="office"
-                  value={data.office}
+                  name="office_code"
+                  value={data.office_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -763,8 +764,8 @@ export default function JobForm() {
                  select
                   fullWidth
                   label="District"
-                  name="district"
-                  value={data.district}
+                  name="district_code"
+                  value={data.district_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -781,8 +782,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Office Level"
-                  name="officeLevel"
-                  value={data.officeLevel}
+                  name="office_level_code"
+                  value={data.office_level_code}
                   onChange={handleChange}
                   sx={field}
                 >

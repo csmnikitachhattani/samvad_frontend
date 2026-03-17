@@ -771,100 +771,192 @@ export default function JobForm() {
   ];
 
 
-  const [data, setData] = useState({
-    job_id: "",
+  // const [data, setData] = useState({
+  //   job_id: "",
 
-    financial_year: "2024-2025",
+  //   financial_year: "2024-2025",
 
-    avak_ref_id:"" ,
-    // "2024000002"
+  //   avak_ref_id:"" ,
+  //   // "2024000002"
 
-    client_ref_id: "",
+  //   client_ref_id: "",
 
-    ref_no:"",
+  //   ref_no:"",
 
-    is_client_dpr: "",
+  //   is_client_dpr: "",
 
   
-    od_servicetype_id: "1",
+  //   od_servicetype_id: "1",
 
-    no_of_media_count: "",
+  //   no_of_media_count: "",
 
-    subject: "",
+  //   subject: "",
 
-    startDate: "",
+  //   startDate: "",
 
-    duration: "",
+  //   duration: "",
 
-    endDate: "",
+  //   endDate: "",
 
-    client_cd: "",
+  //   client_cd: "",
 
-    client_name: "",
+  //   client_name: "",
 
-    office_address: "",
+  //   office_address: "",
 
-    office_code: "",
+  //   office_code: "",
 
-    district_code: "",
+  //   district_code: "",
 
-    remarks: "",
+  //   remarks: "",
 
-    ip_address: "",
+  //   ip_address: "",
 
-    entry_user_name: "nikita",
+  //   entry_user_name: "nikita",
 
-    files: null,
+  //   files: null,
 
-    baseDepartment: "",
+  //   baseDepartment: "",
 
-    officeLevel: "",
+  //   officeLevel: "",
 
-    section: "",
+  //   section: "",
 
-    officer: "",
+  //   officer: "",
 
-    designation: "",
+  //   designation: "",
 
-    // hidden AVAK fields
+  //   // hidden AVAK fields
 
-    client_prarup_code: "",
+  //   client_prarup_code: "",
 
-    caption_cd: "",
+  //   caption_cd: "",
 
-    tender_amt: "",
+  //   tender_amt: "",
 
-    schedule_date: "",
+  //   schedule_date: "",
 
-    fixed_date: "",
+  //   fixed_date: "",
 
-    is_post_ro: "",
+  //   is_post_ro: "",
 
-    letter_type_code: "",
+  //   letter_type_code: "",
 
-    received_date: "",
+  //   received_date: "",
 
-    letter_no: "",
+  //   letter_no: "",
 
-    letter_date: "",
+  //   letter_date: "",
 
-    receiving_mode_code: "",
+  //   receiving_mode_code: "",
 
-    Avak_category: "",
+  //   Avak_category: "",
 
-    // billing
+  //   // billing
 
-    Billing_client_cd: "",
+  //   Billing_client_cd: "",
 
-    Billing_office_code:"",
-    Billing_client_name: "",
+  //   Billing_office_code:"",
+  //   Billing_client_name: "",
 
-    Billing_address: "",
-    Billing_section_code: "",
-    Billing_officer: "",
-    Billing_client_prarup_code:"",
+  //   Billing_address: "",
+  //   Billing_section_code: "",
+  //   Billing_officer: "",
+  //   Billing_client_prarup_code:"",
   
-  });
+  // });
+
+
+const [data, setData] = useState({
+  job_id: "",
+
+  financial_year: "2024-2025",
+
+  avak_ref_id: "",
+  client_ref_id: "",
+
+  ref_no: "",
+
+  is_client_dpr: "",
+
+  od_servicetype_id: "1",
+
+  no_of_media_count: "",
+
+  subject: "",
+
+  startDate: "",
+  duration: "",
+  endDate: "",
+
+  ref_date: "",
+  receipt_date: "",
+
+  client_cd: "",
+  client_name: "",
+
+  office_address: "",
+
+  office_code: "",
+  district_code: "",
+
+  remarks: "",
+
+  ip_address: "",
+
+  entry_user_name: "nikita",
+
+  entry_by_user_id: "00100",
+  entry_by_user_type_cd: "02",
+  modify_by_user_type_cd: "",
+
+  action_by_section_cd: "03",
+  user_type_cd: "02",
+  forward_to_section_cd: "07",
+
+  files: [],
+
+  upload_doc_path: "",
+
+  baseDepartment: "",
+  officeLevel: "",
+  section: "",
+  officer: "",
+  designation: "",
+
+  // API office structure fields
+  base_dept_code: "",
+  office_level_code: "",
+  section_code: "",
+
+  // hidden AVAK fields
+  client_prarup_code: "",
+  caption_cd: "",
+  tender_amt: "",
+  schedule_date: "",
+  fixed_date: "",
+  is_post_ro: "",
+  letter_type_code: "",
+  received_date: "",
+  letter_no: "",
+  letter_date: "",
+  receiving_mode_code: "",
+  Avak_category: "",
+
+  // billing
+  Billing_client_cd: "",
+  Billing_office_code: "",
+  Billing_client_name: "",
+  Billing_address: "",
+  Billing_section_code: "",
+  Billing_officer: "",
+  Billing_client_prarup_code: "",
+
+  Billing_base_dept_code: "",
+  Billing_office_level_code: "",
+  Billing_district_code: ""
+});
+
 
   useEffect(() => {
     async function fetchServices() {
@@ -904,132 +996,334 @@ export default function JobForm() {
     getPublicIP();
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
 
-    try {
-      const payload = new FormData();
+//     try {
+//       const payload = new FormData();
 
-      payload.append("job_id", data.job_id);
+//       // payload.append("job_id", data.job_id);
+//       // payload.append("financial_year", data.financial_year);
+//       // payload.append("client_ref_id", data.client_ref_id);
+//       // payload.append("avak_ref_id", data.avak_ref_id);
+//       // payload.append("is_client_dpr", data.is_client_dpr);
+//       // payload.append("ref_no", data.letter_no);
+//       // payload.append("od_servicetype_id", data.od_servicetype_id);
+//       // payload.append("subject", data.subject);
+//       // payload.append("no_of_media_count", data.no_of_media_count);
+//       // payload.append("StartDate", data.startDate);
+//       // payload.append("EndDate", data.endDate);
+//       // payload.append("client_cd", data.client_cd,);
+//       // payload.append("client_name",data.client_name)
+//       // payload.append("office_address", data.office_address);
 
-      payload.append("financial_year", data.financial_year);
+//       // payload.append("ref_no", data.ref_no);
 
-      payload.append("client_ref_id", data.client_ref_id);
-      payload.append("ref_no", data.letter_no);
-      
+//       // payload.append("remarks", data.remarks);
 
-      payload.append("avak_ref_id", data.avak_ref_id);
+//       // payload.append("ip_address", getPublicIP());
 
-      payload.append("is_client_dpr", data.is_client_dpr);
+//       // payload.append("entry_user_name", data.entry_user_name);
 
-      payload.append("ref_no", data.ref_no);
+//       // payload.append("entry_by_user_id", "00100");
 
-      payload.append("od_servicetype_id", data.od_servicetype_id);
 
-      payload.append("no_of_media_count", data.no_of_media_count);
+//       // payload.append("baseDepartment", data.baseDepartment);
 
-      payload.append("subject", data.subject);
+//       // payload.append("district_code", data.district_code);
 
-      payload.append("startDate", data.startDate);
+//       // payload.append("officeLevel", data.officeLevel);
 
-      payload.append("endDate", data.endDate);
+//       // payload.append("office_code", data.office_code);
 
-      payload.append("office_address", data.office_address);
+//       // payload.append("section", data.section);
 
-      payload.append("remarks", data.remarks);
+//       // payload.append("officer", data.officer);
 
-      payload.append("ip_address", getPublicIP());
+//       // payload.append("designation", data.designation);
 
-      payload.append("entry_user_name", data.entry_user_name);
+//       // // billing_details
 
-      payload.append("entry_by_user_id", "00100");
+//       // payload.append(
+//       //   "Billing_client_cd",
+//       //   data.Billing_client_cd || data.client_cd,
+//       // );
 
-      payload.append("client_cd", data.client_cd,);
+//       // payload.append(
+//       //   "Billing_client_name",
+//       //   data.Billing_client_name || data.client_name,
+//       // );
 
-      payload.append("baseDepartment", data.baseDepartment);
+//       // payload.append("Billing_address", data.Billing_address);
 
-      payload.append("district_code", data.district_code);
+//       // payload.append(
+//       //   "Billing_base_dept_code",
+//       //   data.Billing_base_dept_code || data.baseDepartment,
+//       // );
 
-      payload.append("officeLevel", data.officeLevel);
+//       // payload.append(
+//       //   "Billing_office_level_code",
+//       //   data.Billing_office_level_code || data.officeLevel,
+//       // );
 
-      payload.append("office_code", data.office_code);
+//       // payload.append(
+//       //   "Billing_office_code",
+//       //   data.Billing_office_code || data.office_code,
+//       // );
 
-      payload.append("section", data.section);
+//       // payload.append(
+//       //   "Billing_section_code",
+//       //   data.Billing_section_code || data.section,
+//       // );
 
-      payload.append("officer", data.officer);
+//       // payload.append("Billing_officer", data.Billing_officer || data.officer);
 
-      payload.append("designation", data.designation);
+//       // payload.append(
+//       //   "Billing_client_prarup_code",
+//       //   data.Billing_client_prarup_code,
+//       // );
 
-      // billing_details
+//       // if (data.files) {
+//       //   payload.append("files", data.files);
+//       // }
 
-      payload.append(
-        "Billing_client_cd",
-        data.Billing_client_cd || data.client_cd,
-      );
 
-      payload.append(
-        "Billing_client_name",
-        data.Billing_client_name || data.client_name,
-      );
 
-      payload.append("Billing_address", data.Billing_address);
+// // Basic Details
+// payload.append("job_id", data.job_id);
+// payload.append("financial_year", data.financial_year);
+// payload.append("client_ref_id", data.client_ref_id);
+// payload.append("avak_ref_id", data.avak_ref_id);
+// payload.append("is_client_dpr", data.is_client_dpr);
 
-      payload.append(
-        "Billing_base_dept_code",
-        data.Billing_base_dept_code || data.baseDepartment,
-      );
+// payload.append("ref_no", data.letter_no);
+// payload.append("ref_date", data.ref_date);
+// payload.append("receipt_date", data.receipt_date);
 
-      payload.append(
-        "Billing_office_level_code",
-        data.Billing_office_level_code || data.officeLevel,
-      );
+// payload.append("od_servicetype_id", data.od_servicetype_id);
+// payload.append("subject", data.subject);
+// payload.append("no_of_media_count", data.no_of_media_count);
 
-      payload.append(
-        "Billing_office_code",
-        data.Billing_office_code || data.office_code,
-      );
+// payload.append("StartDate", data.startDate);
+// payload.append("EndDate", data.endDate);
 
-      payload.append(
-        "Billing_section_code",
-        data.Billing_section_code || data.section,
-      );
+// // Client Details
+// payload.append("client_cd", data.client_cd);
+// payload.append("client_name", data.client_name);
+// payload.append("office_address", data.office_address);
 
-      payload.append("Billing_officer", data.Billing_officer || data.officer);
+// // Office Details
+// payload.append("base_dept_code", data.baseDepartment);
+// payload.append("office_level_code", data.officeLevel);
+// payload.append("office_code", data.office_code);
+// payload.append("district_code", data.district_code);
+// payload.append("section_code", data.section);
 
-      payload.append(
-        "Billing_client_prarup_code",
-        data.Billing_client_prarup_code,
-      );
+// // Remarks
+// payload.append("remarks", data.remarks);
 
-      if (data.files) {
-        payload.append("files", data.files);
-      }
+// // System Info
+// payload.append("ip_address", getPublicIP());
+// payload.append("entry_user_name", data.entry_user_name);
+// payload.append("entry_by_user_id", "00100");
 
-      for (let pair of payload.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+// // User Type & Workflow
+// payload.append("entry_by_user_type_cd", data.entry_by_user_type_cd);
+// payload.append("modify_by_user_type_cd", data.modify_by_user_type_cd);
+// payload.append("user_type_cd", data.user_type_cd);
+// payload.append("action_by_section_cd", data.action_by_section_cd);
+// payload.append("forward_to_section_cd", data.forward_to_section_cd);
 
-      const response = await axiosClient.post(
-        "http://103.79.34.50:8083/api/OutDoorMediaTransaction/dbsavecounter",
+// // Billing Details
+// payload.append(
+//   "Billing_client_cd",
+//   data.Billing_client_cd || data.client_cd
+// );
 
-        payload,
+// payload.append(
+//   "Billing_client_name",
+//   data.Billing_client_name || data.client_name
+// );
 
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
-      );
+// payload.append("Billing_address", data.Billing_address);
 
-      dispatch(showNotification({ message: "Saved!", severity: "success" }));
+// payload.append(
+//   "Billing_base_dept_code",
+//   data.billing_base_dept_code || data.baseDepartment
+// );
 
-      router.push(`/admin/counter`);
+// payload.append(
+//   "Billing_office_level_code",
+//   data.billing_office_level_code || data.officeLevel
+// );
 
-      console.log("SUCCESS:", response.data);
-    } catch (error) {
-      console.error("ERROR:", error.response?.data || error.message);
+// payload.append(
+//   "Billing_office_code",
+//   data.Billing_office_code || data.office_code
+// );
+
+// payload.append(
+//   "Billing_district_code",
+//   data.billing_district_code || data.district_code
+// );
+
+// payload.append(
+//   "Billing_section_code",
+//   data.Billing_section_code || data.section
+// );
+
+// payload.append(
+//   "Billing_client_prarup_code",
+//   data.Billing_client_prarup_code
+// );
+
+// // Upload Document Path (if needed)
+// payload.append("upload_doc_path", data.upload_doc_path || "");
+
+// // File Upload
+// if (data.files && data.files.length > 0) {
+//   for (let i = 0; i < data.files.length; i++) {
+//     payload.append("files", data.files[i]);
+//   }
+// }
+//       for (let pair of payload.entries()) {
+//         console.log(pair[0], pair[1]);
+//       }
+
+//       const response = await axiosClient.post(
+//         "http://103.79.34.50:8083/api/OutDoorMediaTransaction/save-db-counter",
+
+//         payload,
+
+//         {
+//           headers: { "Content-Type": "multipart/form-data" },
+//         },
+//       );
+
+//       dispatch(showNotification({ message: "Saved!", severity: "success" }));
+
+//       router.push(`/admin/counter`);
+
+//       console.log("SUCCESS:", response.data);
+//     } catch (error) {
+//       console.error("ERROR:", error.response?.data || error.message);
+//     }
+//   };
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const ip = await getPublicIP();
+
+    const payload = new FormData();
+
+    payload.append("job_id", data.job_id);
+    payload.append("financial_year", data.financial_year);
+    payload.append("client_ref_id", data.client_ref_id);
+    payload.append("avak_ref_id", data.avak_ref_id);
+    payload.append("is_client_dpr", data.is_client_dpr);
+
+    payload.append("ref_no", data.ref_no);
+    payload.append("ref_date", data.ref_date);
+    payload.append("receipt_date", data.receipt_date);
+
+    payload.append("od_servicetype_id", data.od_servicetype_id);
+    payload.append("subject", data.subject);
+    payload.append("no_of_media_count", data.no_of_media_count);
+
+    payload.append("StartDate", data.startDate);
+    payload.append("EndDate", data.endDate);
+
+    payload.append("client_cd", data.client_cd);
+    payload.append("client_name", data.client_name);
+    payload.append("office_address", data.office_address);
+
+    payload.append("base_dept_code", data.baseDepartment);
+    payload.append("office_level_code", data.officeLevel);
+    payload.append("office_code", data.office_code);
+    payload.append("district_code", data.district_code);
+    payload.append("section_code", data.section);
+
+    payload.append("remarks", data.remarks);
+
+    payload.append("ip_address", ip);
+    payload.append("entry_user_name", data.entry_user_name);
+    payload.append("entry_by_user_id", data.entry_by_user_id);
+
+    payload.append("entry_by_user_type_cd", data.entry_by_user_type_cd);
+    payload.append("modify_by_user_type_cd", data.modify_by_user_type_cd);
+    payload.append("user_type_cd", data.user_type_cd);
+    payload.append("action_by_section_cd", data.action_by_section_cd);
+    payload.append("forward_to_section_cd", data.forward_to_section_cd);
+
+    payload.append(
+      "Billing_client_cd",
+      data.Billing_client_cd || data.client_cd
+    );
+
+    payload.append(
+      "Billing_client_name",
+      data.Billing_client_name || data.client_name
+    );
+
+    payload.append("Billing_address", data.Billing_address);
+
+    payload.append(
+      "Billing_base_dept_code",
+      data.Billing_base_dept_code || data.baseDepartment
+    );
+
+    payload.append(
+      "Billing_office_level_code",
+      data.Billing_office_level_code || data.officeLevel
+    );
+
+    payload.append(
+      "Billing_office_code",
+      data.Billing_office_code || data.office_code
+    );
+
+    payload.append(
+      "Billing_district_code",
+      data.Billing_district_code || data.district_code
+    );
+
+    payload.append(
+      "Billing_section_code",
+      data.Billing_section_code || data.section
+    );
+
+    payload.append(
+      "Billing_client_prarup_code",
+      data.Billing_client_prarup_code
+    );
+
+    payload.append("upload_doc_path", data.upload_doc_path || "");
+
+    if (data.files && data.files.length > 0) {
+      data.files.forEach((file) => {
+        payload.append("files", file);
+      });
     }
-  };
 
+    const response = await axiosClient.post(
+      "http://103.79.34.50:8083/api/OutDoorMediaTransaction/save-db-counter",
+      payload,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
 
+    dispatch(showNotification({ message: "Saved!", severity: "success" }));
+
+    router.push(`/admin/displayboard`);
+
+    console.log("SUCCESS:", response.data);
+
+  } catch (error) {
+    console.error("ERROR:", error.response?.data || error.message);
+  }
+};
   useEffect(() => {
     if (!avakId) return;
 
@@ -1485,70 +1779,6 @@ console.log("Officer from API:", avak.client_cd);
               </Box>
             </Grid>
 
-            <Grid item size={{ xs: 12, md: 6 }}>
-              <Box
-                component="label"
-                htmlFor="file-upload"
-                sx={{
-                  display: "flex",
-
-                  flexDirection: "column",
-
-                  alignItems: "center",
-
-                  justifyContent: "center",
-
-                  gap: 1,
-
-                  p: 3,
-
-                  borderRadius: "10px",
-
-                  border: "2px dashed #d0d4e8",
-
-                  backgroundColor: "#f4f5f7",
-
-                  cursor: "pointer",
-
-                  transition: "all 0.2s ease",
-
-                  "&:hover": {
-                    borderColor: "#5c7cfa",
-
-                    backgroundColor: "#eef1ff",
-                  },
-                }}
-              >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
-                    stroke="#8a90a0"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#5a6072", fontWeight: 500 }}
-                >
-                  {data.files ? data.files.name : "Click to upload Metter"}
-                </Typography>
-
-                <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
-                  Any format accepted
-                </Typography>
-
-                <input
-                  id="file-upload"
-                  hidden
-                  type="file"
-                  name="files"
-                  onChange={handleChange}
-                />
-              </Box>
-            </Grid>
           </Grid>
 
           {/* ── Submit Bar ── */}

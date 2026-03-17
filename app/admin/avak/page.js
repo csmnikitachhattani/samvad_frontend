@@ -22,6 +22,9 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import clientServices from "@/services/clientServices";
+import ControllerModal from "@/components/admin/common/controller"
+import { useSelector, useDispatch } from "react-redux";
+import { toggleModal } from "@/store/modules/admin/controller";
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
 const searchField = {
@@ -183,6 +186,8 @@ function TableSkeleton() {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 const AvakTable = () => {
+  const dispatch = useDispatch();
+  //const ModalShow = useSelector((state) => state.adminController.ModalShow);
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -292,7 +297,7 @@ const AvakTable = () => {
             }}
           />
           {/* Add New */}
-          <Button
+          {/* <Button
             variant="contained"
             size="small"
             onClick={() => router.push("/admin/client-attachment/new")}
@@ -310,7 +315,7 @@ const AvakTable = () => {
             }}
           >
             + New Entry
-          </Button>
+          </Button> */}
         </Box>
       </Box>
 
@@ -370,7 +375,7 @@ const AvakTable = () => {
                         {row.subject|| "—"}
                       </Typography>
                       <Typography variant="body2" fontWeight={700} sx={{ color: "#111827", fontSize: "0.82rem" }}>
-                        {row.letter_no_date|| "—"}
+                        {row.letter_no|| "—"}
                       </Typography>
                       <Box display="flex" gap={0.6} mt={0.5} flexWrap="wrap">
                         <LetterTypeBadge value={row.letter_type} />
@@ -396,9 +401,9 @@ const AvakTable = () => {
                     {/* Category */}
                     <TableCell sx={{ ...bodyCell, minWidth: 140 }}>
                       <Stack spacing={0.6}>
-                        <CategoryBadge value={row.contentCategory} />
+                        <CategoryBadge value={row.cat_text} />
                         <Chip
-                          label={row.category ? row.category.charAt(0).toUpperCase() + row.category.slice(1) : "—"}
+                          label={row.cat_text ? row.cat_text.charAt(0).toUpperCase() + row.cat_text.slice(1) : "—"}
                           size="small"
                           sx={{
                             borderRadius: "7px",
@@ -430,7 +435,7 @@ const AvakTable = () => {
                       <Box display="flex" flexDirection="column" gap={0.5}>
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <Typography variant="caption" sx={{ color: "#9ca3af", fontSize: "0.68rem", fontWeight: 600, textTransform: "uppercase", width: 30 }}>Pub</Typography>
-                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.publicationDate)}</Typography>
+                          <Typography variant="caption" sx={{ color: "#374151", fontWeight: 600 }}>{fmt(row.caption_publish_date)}</Typography>
                         </Box>
                         <Box display="flex" alignItems="center" gap={0.5}>
                           <Typography variant="caption" sx={{ color: "#9ca3af", fontSize: "0.68rem", fontWeight: 600, textTransform: "uppercase", width: 30 }}>Rcv</Typography>
@@ -473,10 +478,12 @@ const AvakTable = () => {
                         <Button
                           variant="contained"
                           size="small"
-                          onClick={() => router.push(`/admin/client-attachment/${row.id}`)}
+                          onClick={() =>  dispatch(toggleModal({
+                            show: true, ref_id : row.avak_ref_id
+                          }))}
                           sx={actionBtn("#010a2a", "#e8eaf6")}
                         >
-                          View / Edit
+                          Forward
                         </Button>
                         
                         <Button
@@ -548,6 +555,7 @@ const AvakTable = () => {
           }}
         />
       </Box>
+      <ControllerModal />
     </Paper>
   );
 };

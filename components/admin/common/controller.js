@@ -1,10 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Box, Button, TextField, Typography, MenuItem, IconButton, Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleModal } from "@/store/modules/admin/controller";
+import clientServices from "@/services/clientServices";
+const now = new Date();
+import axiosClient from "@/lib/axiosClient";
 
 // ── Field style ───────────────────────────────────────────────────────────────
 const field = {
@@ -28,18 +33,86 @@ const field = {
   "& .MuiInputLabel-root.Mui-focused": { color: "#010a2a" },
   "& .MuiInputBase-input": { color: "#111827", fontWeight: 500 },
 };
-const handleSubmit = async () => {
+
+// ── Sample options — replace with your actual API data ────────────────────────
+const FORWARD_TO_OPTIONS = [
+  { value: "dept_01", label: "Department — Finance" },
+  { value: "dept_02", label: "Department — Legal" },
+  { value: "dept_03", label: "Department — Operations" },
+  { value: "user_01", label: "User — Admin Officer" },
+  { value: "user_02", label: "User — Section Head" },
+];
+
+const ACTION_OPTIONS = [
+  { value: "03", label: "Mark" },
+  { value: "04", label: "Allocate Vendor" },
+  { value: "05", label: "Generate Notesheet" },
+  { value: "06", label: "Approve" },
+  { value: "07", label: "Generate RO" },
+  { value: "16", label: "Forward" },
+  { value: "17", label: "Cancel" },
+  { value: "20", label: "Cancel Alloted Vendor" },
+  { value: "21", label: "Delete Alloted Vendor" },
+];
+
+
+// ── ForwardDialog ─────────────────────────────────────────────────────────────
+export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
+  const dispatch = useDispatch();
+  const {ModalShow :ModalShow , ref_id } = useSelector((state) => state.adminController);
+  const [form, setForm] = useState({
+    forward_to: "",
+    action: "",
+    reason: "",
+    remark: "",
+  });
+
+  const closeUploadDialog = () => {
+    dispatch(toggleModal({
+      show: false,
+    }))
+  }
+  useEffect(() => {
+    const userType = localStorage.getItem("loginusertypename");
+    if (!userType || userType !== "Department") {
+      router.push("/login"); // redirect if not authorized
+    }
+  }, []);
+  const [forwardUser, setForwardUser]= useState([])
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await clientServices.getForwardUsers();
+        setForwardUser(res.data);
+      } catch (error) {
+        console.error("Failed to fetch work orders", error);
+      } finally {
+        //setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+  const handleSubmit = async () => {
     try {
       const payload = {
-        ref_id:      refId,                // from parent prop
+        //ref_id:      refId,                // from parent prop
         forward_to:  form.forward_to,
-        action:      form.action,
+        forward_to_type_cd: form.forward_to,
+        forward_by_section_cd: '00141',
+        forward_to_section_cd : form.forward_to,
+        action_cd:      form.action,
         reason:      form.reason,
         remark:      form.remark,
+        avak_ref_id_list: [ref_id,],
+        forward_time: '2026-03-14T22:45',
+        forward_date: now.toLocaleDateString("en-IN"),
+        financial_year: "2024-2025",
+        status_reason_cd: "reason",
+        action_taken_by_type_cd: "00141",
       };
   
       const response = await axiosClient.post(
-        "http://103.79.34.50:3000/api/Client/avak-forward",
+        "/Client/avak-forward",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -51,31 +124,6 @@ const handleSubmit = async () => {
       console.error("Forward ERROR:", error.response?.data || error.message);
     }
   };
-// ── Sample options — replace with your actual API data ────────────────────────
-const FORWARD_TO_OPTIONS = [
-  { value: "dept_01", label: "Department — Finance" },
-  { value: "dept_02", label: "Department — Legal" },
-  { value: "dept_03", label: "Department — Operations" },
-  { value: "user_01", label: "User — Admin Officer" },
-  { value: "user_02", label: "User — Section Head" },
-];
-
-const ACTION_OPTIONS = [
-  { value: "approve",  label: "Approve" },
-  { value: "reject",   label: "Reject" },
-  { value: "hold",     label: "Hold" },
-  { value: "forward",  label: "Forward" },
-  { value: "return",   label: "Return" },
-];
-
-// ── ForwardDialog ─────────────────────────────────────────────────────────────
-export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
-  const [form, setForm] = useState({
-    forward_to: "",
-    action: "",
-    reason: "",
-    remark: "",
-  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,14 +137,14 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
 
   const handleClose = () => {
     setForm({ forward_to: "", action: "", reason: "", remark: "" });
-    onClose?.();
+    closeUploadDialog?.();
   };
 
   const isValid = form.forward_to && form.action && form.reason.trim();
 
   return (
     <Dialog
-      open={open}
+      open={ModalShow}
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
@@ -178,14 +226,14 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
             onChange={handleChange}
             sx={field}
           >
-            {FORWARD_TO_OPTIONS.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
+            {forwardUser.map((opt) => (
+              <MenuItem key={opt.forwad_to_user_id} value={opt.forwad_to_user_id}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <Box sx={{
                     width: 7, height: 7, borderRadius: "50%",
                     backgroundColor: "#010a2a", flexShrink: 0,
                   }} />
-                  {opt.label}
+                  {opt.username}
                 </Box>
               </MenuItem>
             ))}
