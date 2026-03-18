@@ -89,6 +89,7 @@ export default function JobForm() {
     ref_date: "",
     receipt_date: "",
     client_cd: "",
+    letter_no: "",
     client_name: "",
     office_address: "",
     billing_client_cd: "",
@@ -138,10 +139,12 @@ export default function JobForm() {
             avak_ref_id: avak,
             client_ref_id: res.data.client_ref_id,
             client : res.data.client_cd,
-            billing_base_dept_code:res.base_dept_cod,
-            billing_office_code: res.office_code,
-            billing_district_code:res.district_code,
-            billing_section_code:res.section,
+            billing_base_dept_code:res.data.base_dept_code,
+            billing_office_code: res.data.office_code,
+            billing_district_code:res.data.district_code,
+            billing_office_level_code : res.data.office_level_code,
+            billing_section_code:res.data.section,
+            billing_client_cd : res.data.client_cd
 
           }));
         setData((prev) => ({ ...prev, ...res.data }));
@@ -278,40 +281,43 @@ export default function JobForm() {
     try {
       const payload = new FormData();
 
-      payload.append("job_id", data.job_id);
+      //payload.append("job_id", data.job_id);
       payload.append("financial_year", data.financial_year);
       payload.append("client_ref_id", data.client_ref_id);
       payload.append("avak_ref_id", data.avak_ref_id);
-      payload.append("is_client_dpr", data.is_client_dpr);
-      payload.append("ref_no", data.ref_no);
-      payload.append("od_servicetype_id", data.od_servicetype_id);
+      //payload.append("is_client_dpr", data.is_client_dpr);
+      payload.append("ref_no", data.letter_no);
+      payload.append("od_servicetype_id", 2);
       payload.append("subject", data.subject);
-      payload.append("startDate", data.startDate);
-      payload.append("endDate", data.endDate);
+      payload.append("StartDate", data.startDate);
+      payload.append("EndDate", data.endDate);
       payload.append("office_address", data.office_address);
       payload.append("billing_address", data.billing_address);
       payload.append("office_level_code", data.office_level_code)
       payload.append("district_code", data.district_code)
       payload.append("remarks", data.remarks);
-      payload.append("ip_address", getPublicIP());
+      payload.append("ip_address", '103.79.34.50');
       payload.append("entry_user_name", data.entry_user_name);
-      payload.append("entry_by_user_id", "00100");
+      payload.append("entry_by_user_id", "01");
       payload.append("client_cd", "00020");
-      payload.append("baseDepartment", data.baseDepartment);
+      payload.append("base_dept_code", data.base_dept_code);
       payload.append("district_code", data.district_code);
-      payload.append("officeLevel", data.officeLevel);
+      payload.append("office_level_code", data.office_level_code);
       payload.append("office_code", data.office_code);
-      payload.append("section", data.section);
-      payload.append("officer", data.officer);
-      payload.append("designation", data.designation);
+      payload.append("section", 0);
+      payload.append("officer", data.client_cd);
+      //payload.append("designation", data.designation);
       payload.append("Billing_client_cd", data.billing_client_name ||data.client_name);
       payload.append("Billing_client_cd", data.billing_client_cd ||data.client_cd);
       payload.append("Billing_address", data.billing_address);
-      payload.append("Billing_base_dept_code", data.billing_base_dept_code ||data.baseDepartment);
-      payload.append("Billing_office_level_code", data.billing_office_level_code||data.officeLevel);
-      payload.append("Billing_office_code", data.billing_office_code|| data.office_code);
-      payload.append("Billing_section_code", data.billing_section_code||data.section);
-      payload.append("Billing_officer", data.billing_officer||data.officer);
+      payload.append("Billing_base_dept_code", data.billing_base_dept_code);
+      payload.append("Billing_office_level_code", data.billing_office_level_code);
+      payload.append("Billing_office_code", data.billing_office_code);
+      payload.append("Billing_section_code", 0);
+      payload.append("Billing_officer", data.billing_client_cd);
+      payload.append("owner_user_type_cd", '01');
+      //payload.append("user_type_cd", '0100');
+  
 
 
       if (data.files) {
@@ -323,7 +329,7 @@ export default function JobForm() {
       }
 
       const response = await axiosClient.post(
-        "/outDoorMediaTransaction/savecounter",
+        "/outDoorMediaTransaction/save-lv-counter",
         payload,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -688,7 +694,7 @@ export default function JobForm() {
                   fullWidth
                   label="Office Level"
                   name="office_level_code"
-                  value={data.officeLevel}
+                  value={data.office_level_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -741,8 +747,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Officer"
-                  name="officer"
-                  value={data.officer}
+                  name="client_cd"
+                  value={data.client_cd}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -857,7 +863,7 @@ export default function JobForm() {
                   fullWidth
                   label="Officer"
                   name="billing_client_name"
-                  value={data.billing_client_name}
+                  value={data.billing_client_cd}
                   onChange={handleChange}
                   sx={field}
                 >
