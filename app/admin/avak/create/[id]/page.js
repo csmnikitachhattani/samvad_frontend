@@ -437,12 +437,18 @@ export default function ClientAttachmentForm() {
     try {
       const payload = {
         subject: formData.subject,
+        is_post_ro: "N", // required by SP
+        avak_ref_id: "", // keep empty for Insert
         avak_category: formData.ref_Category_id,
-        received_date: formData.receivingDate ? new Date(formData.receivingDate).toISOString() : null,
-        fixed_date: formData.fixedDate || "2026-03-12T12:54:48.276Z",
+        received_date: formData.receivingDate
+          ? new Date(formData.receivingDate).toISOString().slice(0, 10)
+          : null,
+        fixed_date: formData.fixedDate ? "Y" : "N",
         tender_amt: Number(formData.tender_amt) || 0,
         letter_no: formData.letter_no,
-        letter_date: formData.letterDate ? new Date(formData.letterDate).toISOString() : null,
+        letter_date: formData.letterDate
+          ? new Date(formData.letterDate).toISOString().slice(0, 10)
+          : null,
         caption_cd: formData.captionCd || "02",
         total_pages: String(formData.files),
         receiving_mode_code: formData.modeOfReceiving,
@@ -455,20 +461,22 @@ export default function ClientAttachmentForm() {
         office_level_code: formData.officeLevel,
         district_code: formData.district,
         section_code: formData.section,
-        client_prarup_code: formData.clientPrarupCode || '2',
+        client_prarup_code: formData.clientPrarupCode || "2",
         client_name: formData.clientName || "sde",
         client_address: formData.clientAddress || "Raipur",
         client_city: formData.clientCity || "Raipur",
-        schedule_date: formData.schedule_date ? new Date(formData.schedule_date).toISOString() : null,
-        ref_id: id ,
-        create_update_flag_name: "Insert",                          // "C" = Create, "U" = Update
+        schedule_date: formData.schedule_date
+          ? new Date(formData.schedule_date).toISOString().slice(0, 10)
+          : null,
+        ref_id: id,
+        create_update_flag_name: "Insert",
         entry_by_user_type_cd: "01",
-        entry_by_user_id: "00100",                      // replace with auth user
+        entry_by_user_id: "00100",
         entry_by_section_cd: formData.section || "",
         client_exist: "Y",
-        entry_date: new Date().toISOString(),
+        entry_date: new Date().toISOString().slice(0, 10),
         entry_time: new Date().toTimeString().split(" ")[0],
-        ip_address: "103.79.34.50",               // replace with real IP
+        ip_address: "103.79.34.50",
       };
 
       const response = await axiosClient.post(
