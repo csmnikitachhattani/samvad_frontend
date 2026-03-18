@@ -237,20 +237,38 @@ export default function WorkOrderForm() {
 
   const handleSubmit = async () => {
     const payload = {
+      // financialYear: formData.financial_year,
+      // avakRefId: formData.avak_ref_id,
+      // jobNo: formData.job_id,
+      // dprJobRefNo: "",
+      // woDate: new Date().toISOString(),
+      // entryIpAddress: "string",
+      // entryByUserId: "string",
+      // entryByUsername: "nikita",
       financialYear: formData.financial_year,
       avakRefId: formData.avak_ref_id,
       jobNo: formData.job_id,
-      dprJobRefNo: "",
-      woDate: new Date().toISOString(),
-      entryIpAddress: "string",
-      entryByUserId: "string",
-      entryByUsername: "nikita",
+      dprJobRefNo: formData.ref_no,
+      woDate: formData.receipt_date,
+      woSubject: formData.subject,
+      clientCd: formData.client_cd,
+      billingClientCd: formData.billing_Client_cd,
+      billingOfficeCode: formData.billing_office_code,
+      clientGrpCd: formData.client_grp_cd,
+      odServicetypeId: formData.od_servicetype_id,
+      startDate: formData.start_date,
+      endDate: formData.end_date,
+      commisionPercentage: formData.commision_Percentage,
+      gstPercentage: formData.gst_percentage,
+      entryIpAddress: "127.0.0.1",
+      entryByUserId: "1",
+      entryByUsername: "admin",
       details: vehicles.filter((item) => item.selected === true),
     };
 
     axiosClient
       .post(
-        "http://103.79.34.50:8083/api/OutDoorMediaTransaction/saveledvehicleallocationdetails",
+        "/OutDoorMediaTransaction/odm-lv-allocation-save",
         payload
       )
       .then((response) => {
@@ -355,7 +373,7 @@ export default function WorkOrderForm() {
         </Box>
 
         <Grid container spacing={2.5}>
-          <Grid item size={{xs:12, md:3}}>
+          <Grid item size={{ xs: 12, md: 3 }}>
             <TextField
               fullWidth
               InputProps={{
@@ -369,7 +387,7 @@ export default function WorkOrderForm() {
             />
           </Grid>
 
-          <Grid item size={{xs:12, md:3}}>
+          <Grid item size={{ xs: 12, md: 3 }}>
             <TextField
               fullWidth
               InputProps={{
@@ -383,7 +401,7 @@ export default function WorkOrderForm() {
             />
           </Grid>
 
-          <Grid item size={{xs:12, md:3}}>
+          <Grid item size={{ xs: 12, md: 3 }}>
             <TextField
               fullWidth
               InputProps={{
@@ -397,7 +415,7 @@ export default function WorkOrderForm() {
             />
           </Grid>
 
-          <Grid item size={{xs:12, md:3}}>
+          <Grid item size={{ xs: 12, md: 3 }}>
             <TextField
               fullWidth
               label="WO Subject"
@@ -411,7 +429,7 @@ export default function WorkOrderForm() {
             />
           </Grid>
 
-          <Grid item size={{xs:12, md:6}}>
+          <Grid item size={{ xs: 12, md: 6 }}>
             <TextField
               select
               fullWidth
@@ -433,10 +451,10 @@ export default function WorkOrderForm() {
                 <MenuItem key={vendor.AgencyID} value={vendor.AgencyID}>
                   {/* <ListItemText primary={vendor.AgencyName} > */}
                   <Chip
-              //icon={icon}
-              label={vendor.AgencyName}
-              
-            />
+                    //icon={icon}
+                    label={vendor.AgencyName}
+
+                  />
                 </MenuItem>
               ))}
             </TextField>

@@ -138,6 +138,10 @@ export default function JobForm() {
             avak_ref_id: avak,
             client_ref_id: res.data.client_ref_id,
             client : res.data.client_cd,
+            billing_base_dept_code:res.base_dept_cod,
+            billing_office_code: res.office_code,
+            billing_district_code:res.district_code,
+            billing_section_code:res.section,
 
           }));
         setData((prev) => ({ ...prev, ...res.data }));
@@ -293,6 +297,22 @@ export default function JobForm() {
       payload.append("entry_user_name", data.entry_user_name);
       payload.append("entry_by_user_id", "00100");
       payload.append("client_cd", "00020");
+      payload.append("baseDepartment", data.baseDepartment);
+      payload.append("district_code", data.district_code);
+      payload.append("officeLevel", data.officeLevel);
+      payload.append("office_code", data.office_code);
+      payload.append("section", data.section);
+      payload.append("officer", data.officer);
+      payload.append("designation", data.designation);
+      payload.append("Billing_client_cd", data.billing_client_name ||data.client_name);
+      payload.append("Billing_client_cd", data.billing_client_cd ||data.client_cd);
+      payload.append("Billing_address", data.billing_address);
+      payload.append("Billing_base_dept_code", data.billing_base_dept_code ||data.baseDepartment);
+      payload.append("Billing_office_level_code", data.billing_office_level_code||data.officeLevel);
+      payload.append("Billing_office_code", data.billing_office_code|| data.office_code);
+      payload.append("Billing_section_code", data.billing_section_code||data.section);
+      payload.append("Billing_officer", data.billing_officer||data.officer);
+
 
       if (data.files) {
         payload.append("files", data.files);
@@ -668,7 +688,7 @@ export default function JobForm() {
                   fullWidth
                   label="Office Level"
                   name="office_level_code"
-                  value={data.office_level_code}
+                  value={data.officeLevel}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -746,8 +766,8 @@ export default function JobForm() {
                   fullWidth
                   select
                   label="Base Department"
-                  name="base_dept_code"
-                  value={data.base_dept_code}
+                  name="billing_base_dept_code"
+                  value={data.billing_base_dept_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -782,8 +802,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Office Level"
-                  name="office_level_code"
-                  value={data.office_level_code}
+                  name="billing_office_level_code"
+                  value={data.billing_office_level_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -800,9 +820,9 @@ export default function JobForm() {
                 <TextField
                   select
                   fullWidth
-                  label="Office"
-                  name="office"
-                  value={data.office}
+                  label="Billing Office"
+                  name="billing_office_code"
+                  value={data.billing_office_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -817,9 +837,9 @@ export default function JobForm() {
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Section"
-                  name="section"
-                  value={data.section}
+                  label="Billing Section"
+                  name="Billing CSection ode"
+                  value={data.billing_section_code}
                   onChange={handleChange}
                   sx={field}
                 > {sections.map((section) => (
@@ -836,8 +856,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Officer"
-                  name="officer"
-                  value={data.officer}
+                  name="billing_client_name"
+                  value={data.billing_client_name}
                   onChange={handleChange}
                   sx={field}
                 >
