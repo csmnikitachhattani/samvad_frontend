@@ -297,7 +297,7 @@ export default function JobForm() {
       payload.append("entry_user_name", data.entry_user_name);
       payload.append('action_by_section_cd', '03')
       payload.append("entry_by_user_id", "01");
-      payload.append("client_cd", "00020");
+      payload.append("client_cd", data.client_cd);
       payload.append("base_dept_code", data.base_dept_code);
       payload.append("district_code", data.district_code);
       payload.append("office_level_code", data.office_level_code);
