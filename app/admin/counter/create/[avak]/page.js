@@ -298,6 +298,7 @@ export default function JobForm() {
       payload.append("remarks", data.remarks);
       payload.append("ip_address", '103.79.34.50');
       payload.append("entry_user_name", data.entry_user_name);
+      payload.append('action_by_section_cd', '03')
       payload.append("entry_by_user_id", "01");
       payload.append("client_cd", "00020");
       payload.append("base_dept_code", data.base_dept_code);
@@ -305,12 +306,13 @@ export default function JobForm() {
       payload.append("office_level_code", data.office_level_code);
       payload.append("office_code", data.office_code);
       payload.append("section", 0);
-      payload.append("officer", data.client_cd);
+      // payload.append("client_cd", data.client_cd);
       //payload.append("designation", data.designation);
-      payload.append("Billing_client_cd", data.billing_client_name ||data.client_name);
+      payload.append("Billing_client_name", data.billing_client_name ||data.client_name);
       payload.append("Billing_client_cd", data.billing_client_cd ||data.client_cd);
       payload.append("Billing_address", data.billing_address);
       payload.append("Billing_base_dept_code", data.billing_base_dept_code);
+      payload.append("Billing_district_code", data.billing_district_code);
       payload.append("Billing_office_level_code", data.billing_office_level_code);
       payload.append("Billing_office_code", data.billing_office_code);
       payload.append("Billing_section_code", 0);
