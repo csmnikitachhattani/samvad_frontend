@@ -17,11 +17,6 @@ import {
   MenuItem,
   Paper,
   Chip,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
   InputAdornment,
 } from "@mui/material";
 import axiosClient from "@/lib/axiosClient";
@@ -49,7 +44,6 @@ const field = {
   "& .MuiInputLabel-root.Mui-focused": { color: "#010a2a" },
   "& .MuiInputBase-input": { color: "#111827", fontWeight: 500 },
 };
-
 
 
 // ── Section Card ──────────────────────────────────────────────────────────────
@@ -145,14 +139,33 @@ const IconMeta = () => (
 );
 
 // ── Content Category Radio ─────────────────────────────────────────────────────
-
-function ContentCategoryRadio({ value, onChange, categories }) {
+function ContentCategoryRadio({ value, onChange, categories, hasError }) {
   return (
     <Box>
-      <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", mb: 1.5, display: "block" }}>
-        Content Category
+      <Typography
+        variant="caption"
+        sx={{
+          color: hasError ? "#d32f2f" : "#9ca3af",
+          fontWeight: 600,
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
+          mb: 1.5,
+          display: "block",
+        }}
+      >
+        Content Category *
       </Typography>
-      <Box display="flex" flexWrap="wrap" gap={1.2}>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={1.2}
+        sx={{
+          p: hasError ? 1.5 : 0,
+          borderRadius: "12px",
+          border: hasError ? "1.5px solid #d32f2f" : "1.5px solid transparent",
+          transition: "all 0.2s ease",
+        }}
+      >
         {categories.map((cat) => {
           const active = value === cat.catId;
           return (
@@ -177,7 +190,6 @@ function ContentCategoryRadio({ value, onChange, categories }) {
                 },
               }}
             >
-              {/* radio dot */}
               <Box
                 sx={{
                   width: 15,
@@ -206,6 +218,11 @@ function ContentCategoryRadio({ value, onChange, categories }) {
           );
         })}
       </Box>
+      {hasError && (
+        <Typography variant="caption" sx={{ color: "#d32f2f", mt: 0.5, display: "block", ml: 0.5 }}>
+          Content category is required
+        </Typography>
+      )}
     </Box>
   );
 }
@@ -215,16 +232,20 @@ export default function ClientAttachmentForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = useParams();
-  const [captions, setCaptions] = useState([])
-  const [departments, setDepartments] = useState([])
-  const [districts, setDistricts] = useState([])
-  const [levels, setLevels] = useState([])
-  const [offices, setOffices] = useState([])
-  const [sections, setSections] = useState([])
-  const [officers, setOfficers] = useState([])
-  const [modes, setModes] = useState([])
-  const [letterTypes, setLetterTypes] = useState([])
-  const [categories, setCategories] = useState([])
+  const [captions, setCaptions] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [levels, setLevels] = useState([]);
+  const [offices, setOffices] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [officers, setOfficers] = useState([]);
+  const [modes, setModes] = useState([]);
+  const [letterTypes, setLetterTypes] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  // ── Validation errors state ──────────────────────────────────────────────────
+  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     ref_Category_id: "",
     letter_no: "",
@@ -244,59 +265,88 @@ export default function ClientAttachmentForm() {
     letterType: "",
     remark: "",
   });
+
+  // ── handleChange clears the field's error on edit ───────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (value !== "" && value !== null && value !== undefined) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
+
+  // ── Validation ───────────────────────────────────────────────────────────────
+  const validate = () => {
+    const rules = {
+      ref_Category_id: "Content category is required",
+      letter_no:       "Letter No is required",
+      receivingDate:   "Receiving Date is required",
+      caption_cd:      "Category is required",
+      tender_amt:      "Tender Amount is required",
+      schedule_date:   "Publication Date is required",
+      letterType:      "Letter Type is required",
+      modeOfReceiving: "Mode of Receiving is required",
+      files:           "No. of Pages is required",
+      client:          "Client is required",
+      baseDept:        "Base Department is required",
+      district:        "District is required",
+      officeLevel:     "Office Level is required",
+      office:          "Office is required",
+      officer:         "Officer is required",
+      remark:          "Remark is required",
+    };
+
+    const newErrors = {};
+    Object.entries(rules).forEach(([key, msg]) => {
+      const val = formData[key];
+      if (val === undefined || val === null || String(val).trim() === "") {
+        newErrors[key] = msg;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // ── Data fetchers ─────────────────────────────────────────────────────────────
   async function fetchCategory() {
     try {
       const res = await clientServices.getAdvtCategory();
       setCategories(res.data.data);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch categories", error);
     }
   }
   async function fetchModeOfReceiving() {
     try {
       const res = await clientServices.getallReceivingModes();
-      setModes(res.data.result)
+      setModes(res.data.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch modes", error);
     }
   }
   async function fetchLetterType() {
     try {
       const res = await clientServices.getallLetterTypes();
-      setLetterTypes(res.data.result)
+      setLetterTypes(res.data.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch letter types", error);
     }
   }
   async function fetchDepartment() {
     try {
       const res = await clientServices.getalldepartment();
-      setDepartments(res.result)
+      setDepartments(res.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch departments", error);
     }
   }
   async function fetchOfficeLevel(deptCode) {
     try {
-      const res = await clientServices.getOfficeLevels({deptCode});
-      //setFormData(res);
-      setLevels(res.result)
+      const res = await clientServices.getOfficeLevels({ deptCode });
+      setLevels(res.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch office levels", error);
     }
   }
   async function fetchDistricts() {
@@ -304,42 +354,31 @@ export default function ClientAttachmentForm() {
       const res = await commonServices.getDistrict();
       setDistricts(res.data.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch districts", error);
     }
   }
   async function fetchOffice(deptCode, distCode) {
     try {
-      const res = await clientServices.getOfficeNames({deptCode, distCode});
-      console.log(res)
+      const res = await clientServices.getOfficeNames({ deptCode, distCode });
       setOffices(res.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch offices", error);
     }
   }
   async function fetchSections(deptCode, distCode) {
     try {
-      const res = await clientServices.getClientSection({deptCode, distCode});
-      console.log(res)
+      const res = await clientServices.getClientSection({ deptCode, distCode });
       setSections(res.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch sections", error);
     }
   }
   async function fetchOfficers(deptCode, distCode) {
     try {
-      const res = await clientServices.getOfficers({deptCode, distCode});
-      console.log(res)
+      const res = await clientServices.getOfficers({ deptCode, distCode });
       setOfficers(res.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch officers", error);
     }
   }
   async function fetchCaption() {
@@ -347,16 +386,12 @@ export default function ClientAttachmentForm() {
       const res = await clientServices.getAdvtCaption();
       setCaptions(res.data.result);
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch captions", error);
     }
   }
   async function fetchClient(client) {
     try {
       const res = await clientServices.getClientData(client);
-      console.log("console", res.data)
-      //setFormData(res);
       setFormData((prev) => ({
         ...prev,
         baseDept: res.data.data.base_dept_code,
@@ -366,62 +401,50 @@ export default function ClientAttachmentForm() {
         section: res.data.data.section_code,
         officer: res.data.data.employee_code,
       }));
-    fetchDistricts();
+      fetchDistricts();
     } catch (error) {
-      console.error("Failed to fetch work orders", error);
-    } finally {
-      //setLoading(false);
+      console.error("Failed to fetch client", error);
     }
   }
+
   useEffect(() => {
-    if(formData.client !== ""){
-      fetchClient(formData.client)
-    }
-  },[formData.client])
+    if (formData.client !== "") fetchClient(formData.client);
+  }, [formData.client]);
+
   useEffect(() => {
-    if(formData.baseDept&&formData.district){
-    fetchOfficeLevel(formData.baseDept)
-    fetchOffice(formData.baseDept, formData.district);
-    fetchSections(formData.baseDept, formData.district);
-    fetchOfficers(formData.baseDept, formData.district);
+    if (formData.baseDept && formData.district) {
+      fetchOfficeLevel(formData.baseDept);
+      fetchOffice(formData.baseDept, formData.district);
+      fetchSections(formData.baseDept, formData.district);
+      fetchOfficers(formData.baseDept, formData.district);
     }
-  },[formData.baseDept, formData.district])
+  }, [formData.baseDept, formData.district]);
+
   useEffect(() => {
-    if(formData.baseDept){
-    fetchOfficeLevel(formData.baseDept)
-    }
-  },[formData.baseDept,])
+    if (formData.baseDept) fetchOfficeLevel(formData.baseDept);
+  }, [formData.baseDept]);
+
   const formatDateForInput = (dateStr) => {
     if (!dateStr) return "";
-  
     const [day, month, year] = dateStr.split("/");
     return `${year}-${month}-${day}`;
   };
+
   useEffect(() => {
-    let finyear = localStorage.getItem('financialYear')
-    const payload = {
-      "client_ref_id": id,
-      "fin_year": finyear
-    }
+    let finyear = localStorage.getItem("financialYear");
+    const payload = { client_ref_id: id, fin_year: finyear };
     async function fetchData() {
       try {
         const res = await adminServices.getClientRecord(payload);
-        console.log(res)
-        //const apiData = res?.data?.data || res?.data;
-        setFormData((prev) => (
-          {
-           ...prev,
-           ...res ,
-           schedule_date: formatDateForInput(res.schedule_date),
-           receivingDate: formatDateForInput(res.letter_date),
-           client : res.client_sno_key
-
-          }));
-        console.log("assigned", formData)
+        setFormData((prev) => ({
+          ...prev,
+          ...res,
+          schedule_date: formatDateForInput(res.schedule_date),
+          receivingDate: formatDateForInput(res.letter_date),
+          client: res.client_sno_key,
+        }));
       } catch (error) {
-        console.error("Failed to fetch work orders", error);
-      } finally {
-        //setLoading(false);
+        console.error("Failed to fetch record", error);
       }
     }
     fetchData();
@@ -430,15 +453,24 @@ export default function ClientAttachmentForm() {
     fetchCategory();
     fetchModeOfReceiving();
     fetchLetterType();
-    
   }, []);
+
+  // ── Submit ────────────────────────────────────────────────────────────────────
   const handleSubmit = async () => {
-    //e.preventDefault();
+    const isValid = validate();
+    if (!isValid) {
+      // Scroll to first error field
+      const firstErrorKey = Object.keys(errors)[0];
+      const el = document.querySelector(`[name="${firstErrorKey}"]`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
     try {
       const payload = {
         subject: formData.subject,
-        is_post_ro: "N", // required by SP
-        avak_ref_id: "", // keep empty for Insert
+        is_post_ro: "N",
+        avak_ref_id: "",
         avak_category: formData.ref_Category_id,
         received_date: formData.receivingDate
           ? new Date(formData.receivingDate).toISOString().slice(0, 10)
@@ -479,18 +511,21 @@ export default function ClientAttachmentForm() {
         ip_address: "103.79.34.50",
       };
 
-      const response = await axiosClient.post(
-        "/Client/create-update-avak",
-        payload,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const response = await axiosClient.post("/Client/create-update-avak", payload, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
       router.push("/admin/counter");
       console.log("SUCCESS:", response.data);
     } catch (error) {
       console.error("ERROR:", error.response?.data || error.message);
-      dispatch(showNotification({ message: error.response?.data?.message || "Save failed!", severity: "error" }));
+      dispatch(
+        showNotification({
+          message: error.response?.data?.message || "Save failed!",
+          severity: "error",
+        })
+      );
     }
   };
 
@@ -548,21 +583,28 @@ export default function ClientAttachmentForm() {
           <SectionCard icon={<IconCategory />} title="Content Category" subtitle="Select the type of media content" accent="#6366f1">
             <ContentCategoryRadio
               value={formData.ref_Category_id}
-              onChange={(val) => setFormData((prev) => ({ ...prev, ref_Category_id: val }))}
+              onChange={(val) => {
+                setFormData((prev) => ({ ...prev, ref_Category_id: val }));
+                setErrors((prev) => ({ ...prev, ref_Category_id: "" }));
+              }}
               categories={categories}
+              hasError={!!errors.ref_Category_id}
             />
           </SectionCard>
 
           {/* ── Section 2: Document Info ── */}
-          <SectionCard icon={<IconDoc />} title="Document Details" subtitle="Letter and caption_cd reference information" accent="#010a2a">
+          <SectionCard icon={<IconDoc />} title="Document Details" subtitle="Letter and caption reference information" accent="#010a2a">
             <Grid container spacing={2.5}>
+
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Letter No"
+                  label="Letter No *"
                   name="letter_no"
                   value={formData.letter_no}
                   onChange={handleChange}
+                  error={!!errors.letter_no}
+                  helperText={errors.letter_no}
                   sx={field}
                 />
               </Grid>
@@ -570,12 +612,14 @@ export default function ClientAttachmentForm() {
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Receiving Date"
+                  label="Receiving Date *"
                   name="receivingDate"
                   type="date"
                   InputLabelProps={{ shrink: true }}
                   value={formData.receivingDate}
                   onChange={handleChange}
+                  error={!!errors.receivingDate}
+                  helperText={errors.receivingDate}
                   sx={field}
                 />
               </Grid>
@@ -584,10 +628,12 @@ export default function ClientAttachmentForm() {
                 <TextField
                   select
                   fullWidth
-                  label="Category"
+                  label="Category *"
                   name="caption_cd"
                   value={formData.caption_cd}
                   onChange={handleChange}
+                  error={!!errors.caption_cd}
+                  helperText={errors.caption_cd}
                   sx={field}
                 >
                   {captions.map((cap) => (
@@ -601,13 +647,19 @@ export default function ClientAttachmentForm() {
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Tender Amount"
+                  label="Tender Amount *"
                   name="tender_amt"
                   type="number"
                   value={formData.tender_amt}
                   onChange={handleChange}
+                  error={!!errors.tender_amt}
+                  helperText={errors.tender_amt}
                   InputProps={{
-                    startAdornment: <InputAdornment position="start"><Typography sx={{ color: "#9ca3af", fontSize: "0.85rem", fontWeight: 600 }}>₹</Typography></InputAdornment>,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography sx={{ color: "#9ca3af", fontSize: "0.85rem", fontWeight: 600 }}>₹</Typography>
+                      </InputAdornment>
+                    ),
                   }}
                   sx={field}
                 />
@@ -616,12 +668,14 @@ export default function ClientAttachmentForm() {
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Publication Date"
+                  label="Publication Date *"
                   name="schedule_date"
                   type="date"
                   InputLabelProps={{ shrink: true }}
                   value={formData.schedule_date}
                   onChange={handleChange}
+                  error={!!errors.schedule_date}
+                  helperText={errors.schedule_date}
                   sx={field}
                 />
               </Grid>
@@ -630,18 +684,19 @@ export default function ClientAttachmentForm() {
                 <TextField
                   select
                   fullWidth
-                  label="Letter Type"
+                  label="Letter Type *"
                   name="letterType"
                   value={formData.letterType}
                   onChange={handleChange}
+                  error={!!errors.letterType}
+                  helperText={errors.letterType}
                   sx={field}
                 >
-                   {letterTypes.map((type) => (
+                  {letterTypes.map((type) => (
                     <MenuItem key={type.letter_code} value={type.letter_code}>
                       {type.letter_type}
                     </MenuItem>
                   ))}
-           
                 </TextField>
               </Grid>
 
@@ -649,56 +704,66 @@ export default function ClientAttachmentForm() {
                 <TextField
                   select
                   fullWidth
-                  label="Mode of Receiving"
+                  label="Mode of Receiving *"
                   name="modeOfReceiving"
                   value={formData.modeOfReceiving}
                   onChange={handleChange}
+                  error={!!errors.modeOfReceiving}
+                  helperText={errors.modeOfReceiving}
                   sx={field}
                 >
-                    {modes.map((mode) => (
+                  {modes.map((mode) => (
                     <MenuItem key={mode.rec_code} value={mode.rec_code}>
                       {mode.receiving_mode}
                     </MenuItem>
                   ))}
-                  
                 </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="No. of Pages in Document"
+                  label="No. of Pages in Document *"
                   name="files"
                   type="number"
                   value={formData.files}
                   onChange={handleChange}
+                  error={!!errors.files}
+                  helperText={errors.files}
                   sx={field}
                 />
               </Grid>
+
             </Grid>
           </SectionCard>
+
           {/* ── Section 3: Location & Office ── */}
           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
+
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Client"
+                  label="Client *"
                   name="client"
                   value={formData.client}
                   onChange={handleChange}
+                  error={!!errors.client}
+                  helperText={errors.client}
                   sx={field}
                 />
               </Grid>
-              <Grid item size={{xs:12}}>
-                <TextField
 
+              <Grid item size={{ xs: 12 }}>
+                <TextField
                   fullWidth
                   select
-                  label="Base Department"
+                  label="Base Department *"
                   name="baseDept"
                   value={formData.baseDept}
                   onChange={handleChange}
+                  error={!!errors.baseDept}
+                  helperText={errors.baseDept}
                   sx={field}
                 >
                   {departments.map((dept) => (
@@ -709,35 +774,38 @@ export default function ClientAttachmentForm() {
                 </TextField>
               </Grid>
 
-              <Grid item size={{ xs: 12, }}>
+              <Grid item size={{ xs: 12 }}>
                 <TextField
-                 select
+                  select
                   fullWidth
-                  label="District"
+                  label="District *"
                   name="district"
                   value={formData.district}
                   onChange={handleChange}
+                  error={!!errors.district}
+                  helperText={errors.district}
                   sx={field}
                 >
-                   {districts.map((district) => (
+                  {districts.map((district) => (
                     <MenuItem key={district.dstrictid} value={district.dstrictid}>
                       {district.districtname}
                     </MenuItem>
                   ))}
-                  </TextField>
+                </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   select
                   fullWidth
-                  label="Office Level"
+                  label="Office Level *"
                   name="officeLevel"
                   value={formData.officeLevel}
                   onChange={handleChange}
+                  error={!!errors.officeLevel}
+                  helperText={errors.officeLevel}
                   sx={field}
                 >
-                  
                   {levels.map((level) => (
                     <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
                       {level.officeLevelName}
@@ -750,13 +818,15 @@ export default function ClientAttachmentForm() {
                 <TextField
                   select
                   fullWidth
-                  label="Office"
+                  label="Office *"
                   name="office"
                   value={formData.office}
                   onChange={handleChange}
+                  error={!!errors.office}
+                  helperText={errors.office}
                   sx={field}
                 >
-                    {offices.map((office) => (
+                  {offices.map((office) => (
                     <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
                       {office.officeName}
                     </MenuItem>
@@ -764,6 +834,7 @@ export default function ClientAttachmentForm() {
                 </TextField>
               </Grid>
 
+              {/* Section — not required, kept as plain field */}
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
@@ -772,32 +843,33 @@ export default function ClientAttachmentForm() {
                   value={formData.section}
                   onChange={handleChange}
                   sx={field}
-                > {sections.map((section) => (
-                  <MenuItem key={section} >
-                    {section}
-                  </MenuItem>
-                ))}
-
-                  </TextField>
+                >
+                  {sections.map((section) => (
+                    <MenuItem key={section}>{section}</MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   select
                   fullWidth
-                  label="Officer"
-                  name="client_cd"
-                  value={formData.client_cd}
+                  label="Officer *"
+                  name="officer"
+                  value={formData.officer}
                   onChange={handleChange}
+                  error={!!errors.officer}
+                  helperText={errors.officer}
                   sx={field}
                 >
-                    {officers.map((officer) => (
+                  {officers.map((officer) => (
                     <MenuItem key={officer.employeeId} value={officer.employeeId}>
                       {officer.employeeName}
                     </MenuItem>
                   ))}
-                  </TextField>
+                </TextField>
               </Grid>
+
             </Grid>
           </SectionCard>
 
@@ -805,10 +877,12 @@ export default function ClientAttachmentForm() {
           <SectionCard icon={<IconMeta />} title="Additional Remarks" subtitle="Any notes or supplementary information" accent="#8b5cf6">
             <TextField
               fullWidth
-              label="Remark"
+              label="Remark *"
               name="remark"
               value={formData.remark}
               onChange={handleChange}
+              error={!!errors.remark}
+              helperText={errors.remark}
               multiline
               rows={3}
               sx={field}
@@ -834,7 +908,7 @@ export default function ClientAttachmentForm() {
             }}
           >
             <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-              All fields marked are required
+              Fields marked with * are required
             </Typography>
             <Box display="flex" gap={1.5}>
               <Button
@@ -854,7 +928,6 @@ export default function ClientAttachmentForm() {
                 Cancel
               </Button>
               <Button
-                //type="submit"
                 variant="contained"
                 size="medium"
                 onClick={handleSubmit}
