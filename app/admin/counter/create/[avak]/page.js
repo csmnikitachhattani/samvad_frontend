@@ -280,12 +280,9 @@ export default function JobForm() {
 
     try {
       const payload = new FormData();
-
-      //payload.append("job_id", data.job_id);
       payload.append("financial_year", data.financial_year);
       payload.append("client_ref_id", data.client_ref_id);
       payload.append("avak_ref_id", data.avak_ref_id);
-      //payload.append("is_client_dpr", data.is_client_dpr);
       payload.append("ref_no", data.letter_no);
       payload.append("od_servicetype_id", 2);
       payload.append("subject", data.subject);
@@ -306,8 +303,6 @@ export default function JobForm() {
       payload.append("office_level_code", data.office_level_code);
       payload.append("office_code", data.office_code);
       payload.append("section", 0);
-      // payload.append("client_cd", data.client_cd);
-      //payload.append("designation", data.designation);
       payload.append("Billing_client_name", data.billing_client_name ||data.client_name);
       payload.append("Billing_client_cd", data.billing_client_cd ||data.client_cd);
       payload.append("Billing_address", data.billing_address);
