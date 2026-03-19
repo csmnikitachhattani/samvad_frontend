@@ -220,31 +220,73 @@ const groupedFiles = useMemo(() => {
 
 // ===================Handle View File=====================
 
-  const BASE_URL = "http://103.79.34.50:8083";
+ 
+  // const BASE_URL = "http://103.79.34.50:8083";
+
+// const handleViewFiles = async (row) => {
+//   try {
+//     setFilesLoading(true);
+
+//     if (!row.upload_doc_path) {
+//       setFilesData([]);
+//       setOpenFilesModal(true);
+//       return;
+//     }
+
+//     const filePath = row.upload_doc_path;
+//     const fileName = filePath.split("/").pop();
+
+//     const fileObj = {
+//       link_name: `${BASE_URL}/${filePath}`,   // ✅ base url added
+//       content_type: fileName.toLowerCase().endsWith(".pdf")
+//         ? "application/pdf"
+//         : "image/jpeg",
+//       file_size_in_bytes: 0,
+//       category: "Uploaded Document",
+//     };
+
+//     setFilesData([fileObj]);
+//     setOpenFilesModal(true);
+
+//   } catch (err) {
+//     console.error("File fetch error", err);
+//     setFilesData([]);
+//   } finally {
+//     setFilesLoading(false);
+//   }
+// };
+
+
+const BASE_URL = "http://103.79.34.50:8083";
 
 const handleViewFiles = async (row) => {
   try {
     setFilesLoading(true);
 
-    if (!row.upload_doc_path) {
+    const res = await axios.get(
+      `${BASE_URL}/api/OutDoorMediaTransaction/get-odm-db-counter-files`,
+      {
+        params: {
+          financial_year: row.financial_year,
+          job_no: row.job_id, // ⚠️ make sure this matches your row key
+        },
+      }
+    );
+
+    if (!res.data || res.data.length === 0) {
       setFilesData([]);
       setOpenFilesModal(true);
       return;
     }
 
-    const filePath = row.upload_doc_path;
-    const fileName = filePath.split("/").pop();
+    const files = res.data.map((file) => ({
+      link_name: `${BASE_URL}/${file.file_path}`, // ✅ full URL
+      content_type: file.content_type,
+      file_size_in_bytes: file.file_size_in_bytes,
+      category: file.categary_cd,
+    }));
 
-    const fileObj = {
-      link_name: `${BASE_URL}/${filePath}`,   // ✅ base url added
-      content_type: fileName.toLowerCase().endsWith(".pdf")
-        ? "application/pdf"
-        : "image/jpeg",
-      file_size_in_bytes: 0,
-      category: "Uploaded Document",
-    };
-
-    setFilesData([fileObj]);
+    setFilesData(files);
     setOpenFilesModal(true);
 
   } catch (err) {
@@ -254,7 +296,6 @@ const handleViewFiles = async (row) => {
     setFilesLoading(false);
   }
 };
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -706,6 +747,7 @@ const handleViewFiles = async (row) => {
 
               return (
                 <Grid item xs={6} md={3} key={index}>
+ 
                   <Box
                     onClick={() => window.open(fileUrl, "_blank")}
                     sx={{

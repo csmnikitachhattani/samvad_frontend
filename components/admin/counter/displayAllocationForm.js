@@ -1,3 +1,427 @@
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { useParams } from "next/navigation";
+// import axiosClient from "@/lib/axiosClient";
+// import adminServices from "@/services/adminServices";
+
+// import {
+//   Box,
+//   Card,
+//   CardContent,
+//   Typography,
+//   Grid,
+//   TextField,
+//   CircularProgress,
+//   Alert,
+//   Divider,
+//   Paper,
+//   MenuItem,
+//   ListItemText,
+//   Button,
+//   Table,
+//   TableHead,
+//   TableRow,
+//   TableCell,
+//   TableBody,
+//   Checkbox,
+// } from "@mui/material";
+
+// export default function AllocationPage() {
+//   const { id } = useParams();
+
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+
+//   const [vendors, setVendors] = useState([]);
+//   const [selectedVendors, setSelectedVendors] = useState([]);
+//   const [displayBoards, setDisplayBoards] = useState([]);
+
+//   // ✅ FULL FORM (ALL API FIELDS)
+//   const [formData, setFormData] = useState({
+//     job_no: "",
+//     financial_year: "",
+//     avak_ref_id: "",
+//     Client_Ref: "",
+//     // wo_date: "",
+//     subject: "",
+
+//     client_cd: "",
+//     client_name: "",
+//     office_address: "",
+
+//     billing_Client_cd: "",
+//     billing_client_name: "",
+//     billing_address: "",
+//     billing_office_code: "",
+//     billing_base_dept_code: "",
+//     billing_office_level_code: "",
+//     billing_district_code: "",
+//     billing_section_code: "",
+//     billing_officer_code: "",
+//     billing_client_prarup_code: "",
+
+//     client_grp_cd: "",
+//     od_servicetype_id: 0,
+
+//     start_date: "",
+//     end_date: "",
+//     ref_date: "",
+//     receipt_date: "",
+
+//     commision_Percentage: 0,
+//     gst_percentage: "",
+
+//     section_code: "",
+//     base_dept_code: "",
+//     office_level_code: "",
+//     office_code: "",
+//     officer_code: "",
+//     district_code: "",
+
+//     remarks: "",
+//     is_client_dpr: "",
+
+//     // audit
+//     ip_address: "",
+//     entry_by_user_id: "",
+//     entry_by_username: "",
+//     entry_by_user_type_cd: "",
+//     modify_by_user_type_cd: "",
+//     action_by_section_cd: "",
+//     user_type_cd: "",
+//     forward_to_section_cd: "",
+//     no_of_media_count:"",
+//     upload_doc_path: "",
+//   });
+
+//   const formatDate = (d) => (d ? d.split("T")[0] : "");
+
+//   const handleChange = (field, value) => {
+//     setFormData((prev) => ({ ...prev, [field]: value }));
+//   };
+
+//   // ================= FETCH DISPLAY BOARD
+//   const fetchDisplayBoards = async (agencyIds) => {
+//     try {
+//       const res = await axiosClient.post(
+//         "/ManageMaster/getalldisplayboards",
+//         { agencyIds }
+//       );
+
+//       const boards = res.data.result || [];
+
+//       setDisplayBoards(
+//         boards.map((b) => ({
+//           ...b,
+//           selected: false,
+//           rate: 0,
+//           // media_unit_count: 0,
+//           no_of_spot: 120,
+//           total_rate: 0,
+//         }))
+//       );
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+
+//   // ================= GET DATA
+//   useEffect(() => {
+//     if (!id) return;
+
+//     const fetchData = async () => {
+//       try {
+//         const res = await axiosClient.get(
+//           `http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoordbcounter?id=${id}`
+//         );
+
+//         const job = res.data;
+
+//         // ✅ AUTO FILL ALL
+//         setFormData((prev) => ({
+//           ...prev,
+//           ...job,
+//           job_no: job.job_id,
+//           Client_Ref: job.client_ref_id,
+//           subject: job.subject,
+//           billing_Client_cd: job.billing_client_cd,
+//           start_date: job.startDate,
+//           end_date: job.endDate,
+//           no_of_media_count:job.no_of_media_count,
+//         }));
+
+//         const resV = await adminServices.getVendorList(
+//           job.od_servicetype_id
+//         );
+//         setVendors(resV.result || []);
+//       } catch (err) {
+//         setError("Failed to load");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, [id]);
+
+//   // ================= VENDOR
+//   const handleVendorChange = async (ids) => {
+//     setSelectedVendors(ids);
+//     if (ids.length) await fetchDisplayBoards(ids);
+//     else setDisplayBoards([]);
+//   };
+
+//   // ================= TABLE
+//   const handleRowChange = (i, field, value) => {
+//     const updated = [...displayBoards];
+//     updated[i][field] = value;
+
+//     const r = Number(updated[i].rate || 0);
+//     const q = Number(updated[i].no_of_media_count || 0);
+//     updated[i].total_rate = r * q;
+
+//     setDisplayBoards(updated);
+//   };
+
+//   const toggleSelect = (i) => {
+//     const updated = [...displayBoards];
+//     updated[i].selected = !updated[i].selected;
+//     setDisplayBoards(updated);
+//   };
+
+//   const isAllSelected =
+//     displayBoards.length &&
+//     displayBoards.every((r) => r.selected);
+
+//   const isIndeterminate =
+//     displayBoards.some((r) => r.selected) && !isAllSelected;
+
+//   const handleSelectAll = () => {
+//     setDisplayBoards((prev) =>
+//       prev.map((r) => ({ ...r, selected: !isAllSelected }))
+//     );
+//   };
+
+//   // ================= SUBMIT
+//   const handleSubmit = async () => {
+//     try {
+//       const detailList = displayBoards
+//         .filter((r) => r.selected)
+//         .map((r) => ({
+//           vendor_id: r.agencyID,
+//           vendor_name: r.agencyName,
+//           vendor_cate_id: "",
+//           vendor_cate: "",
+//           display_board_id: r.displayBoardID,
+//           description: r.locationName,
+//           rate: r.rate,
+//           media_unit_count: r.media_unit_count,
+//           no_of_spot: r.no_of_spot,
+//           total_rate: r.total_rate,
+//           start_date: formData.start_date,
+//           end_date: formData.end_date,
+//         }));
+
+//       const payload = {
+//   financial_year: formData.financial_year,
+//   avak_ref_id: formData.avak_ref_id,
+//   job_no: formData.job_no,
+//   Client_Ref: formData.Client_Ref,
+//   // wo_date: formData.wo_date || formData.start_date,
+//   subject: formData.subject,
+
+//   client_cd: formData.client_cd,
+//   billing_Client_cd: formData.billing_Client_cd,
+//   billing_office_code: formData.billing_office_code,
+//   // client_grp_cd: formData.client_grp_cd,
+
+//   // od_servicetype_id: formData.od_servicetype_id,
+
+//   start_date: formData.start_date,
+//   end_date: formData.end_date,
+
+//   commision_Percentage: Number(formData.commision_Percentage || 0),
+//   gst_percentage: formData.gst_percentage || "0",
+
+//   entry_ip_address: "127.0.0.1",
+//   entry_by_user_id: "00100",
+//   entry_by_username: "nikita",
+
+//   detailList: displayBoards
+//     .filter((r) => r.selected)
+//     .map((r) => ({
+//       vendor_id: String(r.agencyID),
+//       vendor_name: r.agencyName,
+//       vendor_cate_id: "",
+//       vendor_cate: "",
+//       display_board_id: r.displayBoardID,
+//       description: r.locationName,
+//       rate: Number(r.rate || 0),
+//       media_unit_count: Number(r.media_unit_count || 0),
+//       no_of_spot: Number(r.no_of_spot || 0),
+//       total_rate: Number(r.total_rate || 0),
+//       start_date: formData.start_date,
+//       end_date: formData.end_date,
+//     })),
+// };
+
+//       console.log("FINAL PAYLOAD:", payload);
+
+//       await axiosClient.post(
+//         "http://103.79.34.50:8083/api/OutDoorMediaTransaction/db-job-allocation-save",
+//         payload
+//       );
+
+//       alert("✅ Saved");
+//     } catch (err) {
+//       console.error(err);
+//       alert("❌ Failed");
+//     }
+//   };
+
+//   if (loading) return <CircularProgress />;
+//   if (error) return <Alert severity="error">{error}</Alert>;
+
+//   return (
+//     <Box p={2}>
+//       <Paper sx={{ p: 2, mb: 2, bgcolor: "#030236", color: "#fff" }}>
+//         <Typography variant="h6">Allocation Dashboard</Typography>
+//       </Paper>
+
+//       <Card>
+//         <CardContent>
+//           <Typography variant="h6">Job Details</Typography>
+//           <Divider sx={{ mb: 2 }} />
+
+//           {/* ✅ FULL GRID AUTO + INPUT */}
+//           <Grid container spacing={2}>
+//             {Object.keys(formData).map((key) => (
+//               <Grid item xs={3} key={key}>
+//                 <TextField
+//                   label={key}
+//                   value={formData[key] || ""}
+//                   onChange={(e) => handleChange(key, e.target.value)}
+//                   fullWidth
+//                   size="small"
+//                 />
+//               </Grid>
+//             ))}
+
+//             {/* Vendor */}
+//             <Grid item xs={6}>
+//               <TextField
+//                 select
+//                 fullWidth
+
+//                 label="Vendors"
+//                 SelectProps={{
+//                   multiple: true,
+//                   renderValue: (selected) =>
+//                     vendors
+//                       .filter((v) => selected.includes(v.AgencyID))
+//                       .map((v) => v.AgencyName)
+//                       .join(", "),
+//                 }}
+//                 value={selectedVendors}
+//                 onChange={(e) => handleVendorChange(e.target.value)}
+//               >
+//                 {vendors.map((v) => (
+//                   <MenuItem key={v.AgencyID} value={v.AgencyID}>
+//                     <ListItemText primary={v.AgencyName} />
+//                   </MenuItem>
+//                 ))}
+//               </TextField>
+//             </Grid>
+//           </Grid>
+//         </CardContent>
+//       </Card>
+
+//       {/* TABLE */}
+//       <Box mt={3}>
+//         <Table>
+//           <TableHead>
+//             <TableRow>
+//               <TableCell>Board No.</TableCell>
+//               <TableCell>Agency</TableCell>
+//               <TableCell>Location</TableCell>
+//               <TableCell>Rate</TableCell>
+//               <TableCell>No Of Media</TableCell>
+//               <TableCell>Spot Repetation</TableCell>
+//               <TableCell>Total Amount</TableCell>
+//               <TableCell align="center">
+//                 <Checkbox
+//                   checked={isAllSelected}
+//                   indeterminate={isIndeterminate}
+//                   onChange={handleSelectAll}
+//                 />
+//               </TableCell>
+//             </TableRow>
+//           </TableHead>
+
+//           <TableBody>
+//             {displayBoards.map((r, i) => (
+//               <TableRow key={i}>
+//                 <TableCell>{r.displayBoardNo}</TableCell>
+//                 <TableCell>{r.agencyName}</TableCell>
+//                 <TableCell>{r.locationName}</TableCell>
+
+//                 <TableCell>
+//                   <TextField
+//                     type="number"
+//                     value={r.rate}
+//                     onChange={(e) =>
+//                       handleRowChange(i, "rate", e.target.value)
+//                     }
+//                   />
+//                 </TableCell>
+
+//                 <TableCell>
+//                   <TextField
+//                     type="number"
+//                     value={formData.no_of_media_count}
+//                     onChange={(e) =>
+//                       handleRowChange(i, "no_of_media_count", e.target.value)
+//                     }
+//                   />
+//                 </TableCell>
+
+//                 <TableCell>
+//                   <TextField
+//                     type="number"
+//                     value={r.no_of_spot}
+//                     onChange={(e) =>
+//                       handleRowChange(i, "no_of_spot", e.target.value)
+//                     }
+//                   />
+//                 </TableCell>
+
+//                 <TableCell>{r.total_rate}</TableCell>
+
+//                 <TableCell align="center">
+//                   <Checkbox
+//                     checked={r.selected}
+//                     onChange={() => toggleSelect(i)}
+//                   />
+//                 </TableCell>
+//               </TableRow>
+//             ))}
+//           </TableBody>
+//         </Table>
+//       </Box>
+
+//       <Box mt={3}>
+//         <Button variant="contained" onClick={handleSubmit}>
+//           Submit
+//         </Button>
+//       </Box>
+//     </Box>
+//   );
+// }
+
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -18,7 +442,13 @@ import {
   Paper,
   MenuItem,
   ListItemText,
-  Button,   
+  Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Checkbox,
 } from "@mui/material";
 
 export default function AllocationPage() {
@@ -26,70 +456,107 @@ export default function AllocationPage() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [data, setData] = useState(null);
 
+  const [vendors, setVendors] = useState([]);
+  const [selectedVendors, setSelectedVendors] = useState([]);
+  const [displayBoards, setDisplayBoards] = useState([]);
+
+  // ✅ FULL FORM STATE (ALL FIELDS)
   const [formData, setFormData] = useState({
-    main_id: 0,
+    job_no: "",
     financial_year: "",
     avak_ref_id: "",
-    job_id: "",
+    Client_Ref: "",
+    client_name: "",
     subject: "",
-    ref_no: "",
-   
-    receipt_date: "",
-    vendor_id: [],
-    vendor_name: [],
     client_cd: "",
     billing_Client_cd: "",
     billing_office_code: "",
-    client_grp_cd: "",
     start_date: "",
     end_date: "",
-    commision_Percentage: 0,
-    commission_amount: 0,
-    amount_with_commission: 0,
-    gst_percentage: "",
-    gst_amount: 0,
-    toatl_amount: 0,
-    detailList: [],
+    // commision_Percentage: 0,
+    // gst_percentage: "",
+    no_of_media_count: "",
   });
 
-  const [vendors, setVendors] = useState([]);
+  // ✅ ONLY THESE WILL SHOW IN UI
+  const inputFields = [
+    { name: "job_no", label: "Job No" },
+    { name: "financial_year", label: "Financial Year" },
+    { name: "Client_Ref", label: "Client Ref" },
+  { name: "client_name", label: "Client Name" }, 
+    { name: "subject", label: "Subject" },
+    { name: "start_date", label: "Start Date", type: "date" },
+    { name: "end_date", label: "End Date", type: "date" },
+    // { name: "commision_Percentage", label: "Commission %" },
+    // { name: "gst_percentage", label: "GST %" },
+    { name: "no_of_media_count", label: "No Of Media" },
+  ];
 
-  const formatDate = (date) => {
-    if (!date) return "";
-    return date.split("T")[0];
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // -------------------------------
-  // FETCH MAIN JOB DATA
+  // ================= FETCH DISPLAY BOARD
+  const fetchDisplayBoards = async (agencyIds) => {
+    try {
+      const res = await axiosClient.post(
+        "/ManageMaster/getalldisplayboards",
+        { agencyIds }
+      );
 
+      const boards = res.data.result || [];
+
+      setDisplayBoards(
+        boards.map((b) => ({
+          ...b,
+          selected: false,
+          rate: 0,
+          no_of_spot: 120,
+          total_rate: 0,
+          media_unit_count: formData.no_of_media_count || 0,
+        }))
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ================= FETCH DATA
   useEffect(() => {
     if (!id) return;
+    const formatDate = (date) => {
+  if (!date) return "";
+  return date.split("T")[0];
+};
 
     const fetchData = async () => {
       try {
-        setLoading(true);
-        setError("");
-
         const res = await axiosClient.get(
-          `http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoordbcounter?id=${id}`,
+          `http://103.79.34.50:8083/api/OutDoorMediaTransaction/getoutdoordbcounter?id=${id}`
         );
 
-        // console.log(" API Data:", res.data);
+        const job = res.data;
 
-        const apiData = res?.data?.data || res?.data;
-        const job = Array.isArray(apiData) ? apiData[0] : apiData;
+        setFormData((prev) => ({
+          ...prev,
+          ...job,
+          job_no: job.job_id,
+          Client_Ref: job.client_ref_id,
+           client_name: job.client_name, 
+          subject: job.subject,
+          billing_Client_cd: job.billing_client_cd,
+        start_date: formatDate(job.StartDate),
+end_date: formatDate(job.EndDate),
+          no_of_media_count: job.no_of_media_count,
+        }));
 
-        setData(job);
-
-        // Fetch vendor list using serviceTypeID
-        if (job?.od_servicetype_id) {
-          fetchServiceTypes(job.od_servicetype_id);
-        }
+        const resV = await adminServices.getVendorList(
+          job.od_servicetype_id
+        );
+        setVendors(resV.result || []);
       } catch (err) {
-        console.error("❌ Error fetching data:", err);
-        setError(err.message || "Failed to fetch allocation data");
+        setError("Failed to load");
       } finally {
         setLoading(false);
       }
@@ -98,195 +565,191 @@ export default function AllocationPage() {
     fetchData();
   }, [id]);
 
-  // -------------------------------
-  // FETCH VENDORS
+  // ================= VENDOR CHANGE
+  const handleVendorChange = async (ids) => {
+    setSelectedVendors(ids);
+    if (ids.length) await fetchDisplayBoards(ids);
+    else setDisplayBoards([]);
+  };
 
-  async function fetchServiceTypes(serviceTypeId) {
-    try {
-      const response = await adminServices.getVendorList(serviceTypeId);
-      console.log("🟡 Vendor Response:", response);
+  // ================= TABLE CHANGE
+  const handleRowChange = (i, field, value) => {
+    const updated = [...displayBoards];
+    updated[i][field] = value;
 
-      setVendors(response.result || []);
-    } catch (error) {
-      console.error("❌ Failed to fetch vendors", error);
-    }
-  }
+    const r = Number(updated[i].rate || 0);
+    const q = Number(updated[i].media_unit_count || 0);
 
+    updated[i].total_rate = r * q;
 
-  const handleSubmit = () => {};
+    setDisplayBoards(updated);
+  };
 
-  // -------------------------------
-  // UI STARTS HERE
+  const toggleSelect = (i) => {
+    const updated = [...displayBoards];
+    updated[i].selected = !updated[i].selected;
+    setDisplayBoards(updated);
+  };
 
+  const isAllSelected =
+    displayBoards.length &&
+    displayBoards.every((r) => r.selected);
 
-  if (loading) {
-    return (
-      <Box
-        display="flex"
-        height="70vh"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <CircularProgress size={60} />
-      </Box>
+  const isIndeterminate =
+    displayBoards.some((r) => r.selected) && !isAllSelected;
+
+  const handleSelectAll = () => {
+    setDisplayBoards((prev) =>
+      prev.map((r) => ({ ...r, selected: !isAllSelected }))
     );
-  }
+  };
 
-  if (error) {
-    return (
-      <Box p={3}>
-        <Alert severity="error" variant="filled">
-          {error}
-        </Alert>
-      </Box>
+  // ================= SUBMIT
+  // const handleSubmit = async () => {
+  //   try {
+  //     const payload = {
+  //       ...formData,
+
+  //       detailList: displayBoards
+  //         .filter((r) => r.selected)
+  //         .map((r) => ({
+  //           vendor_id: String(r.agencyID),
+  //           vendor_name: r.agencyName,
+  //           display_board_id: r.displayBoardID,
+  //           locationName: r.locationName,
+  //            description:"",
+  //           rate: Number(r.rate || 0),
+  //           media_unit_count: Number(r.media_unit_count || 0),
+  //           no_of_spot: Number(r.no_of_spot || 0),
+  //           total_rate: Number(r.total_rate || 0),
+  //           start_date: r.StartDate,
+  //           end_date: r.EndDate,
+  //         })),
+  //     };
+
+  //     console.log("FINAL PAYLOAD:", payload);
+
+  //     await axiosClient.post(
+  //       "http://103.79.34.50:8083/api/OutDoorMediaTransaction/db-job-allocation-save",
+  //       payload
+  //     );
+
+  //     alert("✅ Saved");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("❌ Failed");
+  //   }
+  // };
+
+
+  const toISO = (date) => {
+  if (!date) return null;
+  return new Date(date).toISOString();
+};
+
+const handleSubmit = async () => {
+  try {
+    const payload = {
+      financial_year: formData.financial_year || "",
+      avak_ref_id: formData.avak_ref_id || "",
+      job_no: formData.job_no || "",
+
+      // ✅ REQUIRED BY API
+      dpr_job_ref_no: formData.Client_Ref || "",
+      wo_date: toISO(formData.start_date), // or separate field if you have
+      wo_subject: formData.subject || "",
+
+      client_cd: formData.client_cd || "",
+      billing_Client_cd: formData.billing_Client_cd || "",
+      billing_office_code: formData.billing_office_code || "",
+
+      client_grp_cd: formData.client_grp_cd || "",
+      od_servicetype_id: Number(formData.od_servicetype_id || 0),
+
+      start_date: toISO(formData.start_date),
+      end_date: toISO(formData.end_date),
+
+      commision_Percentage: Number(formData.commision_Percentage || 0),
+      gst_percentage: formData.gst_percentage || "0",
+
+      entry_ip_address: "127.0.0.1",
+      entry_by_user_id: "00100",
+      entry_by_username: "nikita",
+
+      detailList: displayBoards
+        .filter((r) => r.selected)
+        .map((r) => ({
+          vendor_id: String(r.agencyID),
+          vendor_name: r.agencyName,
+          vendor_cate_id: "",
+          vendor_cate: "",
+          display_board_id: Number(r.displayBoardID),
+          description: r.locationName || "",
+
+          rate: Number(r.rate || 0),
+          media_unit_count: Number(r.media_unit_count || 0),
+          no_of_spot: Number(r.no_of_spot || 0),
+          total_rate: Number(r.total_rate || 0),
+
+          start_date: toISO(formData.start_date),
+          end_date: toISO(formData.end_date),
+        })),
+    };
+
+    console.log("FINAL API PAYLOAD:", payload);
+
+    await axiosClient.post(
+      "http://103.79.34.50:8083/api/OutDoorMediaTransaction/db-job-allocation-save",
+      payload
     );
+
+    alert("✅ Saved Successfully");
+  } catch (err) {
+    console.error("API ERROR:", err.response?.data || err.message);
+    alert("❌ Failed to Save");
   }
+};
+
+  if (loading) return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <Box bgcolor="#f5f8fc" minHeight="100vh">
-      {/* Header */}
-      <Paper
-        elevation={3}
-        sx={{
-          p: 1,
-          mb: 1,
-          borderRadius: 3,
-          // background: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
-          background: "rgb(3,2,54)",
-          color: "#fff",
-        }}
-      >
-        <Typography variant="h6" fontWeight="bold">
-          Allocation Dashboard
-        </Typography>
-        <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-          Job ID: {data?.job_id || id}
-        </Typography>
+    <Box p={2}>
+      <Paper sx={{ p: 2, mb: 2, bgcolor: "#030236", color: "#fff" }}>
+        <Typography variant="h6">Allocation Dashboard</Typography>
       </Paper>
 
-      {/* Main Card */}
-      <Card
-        elevation={4}
-        sx={{ borderRadius: 0, boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}
-      >
+      <Card>
         <CardContent>
-          <Typography variant="h6" fontWeight="bold" gutterBottom>
-            Job Details
-          </Typography>
+          <Typography variant="h6">Job Details</Typography>
+          <Divider sx={{ mb: 2 }} />
 
-          <Divider sx={{ mb: 3 }} />
+          {/* ✅ SHOW ONLY REQUIRED INPUTS */}
+          <Grid container spacing={2}>
+            {inputFields.map((field) => (
+              <Grid item xs={3} key={field.name}>
+                <TextField
+                  label={field.label}
+                  type={field.type || "text"}
+                  value={formData[field.name] || ""}
+                  onChange={(e) =>
+                    handleChange(field.name, e.target.value)
+                  }
+                  fullWidth
+                  size="small"
+                  InputLabelProps={
+                    field.type === "date" ? { shrink: true } : {}
+                  }
+                />
+              </Grid>
+            ))}
 
-          <Grid container spacing={3} alignItems="center" justifyContent="center">
-            {/* Financial Year */}
-
-            <Grid item size={{ xs: 12, md: 2 }}>
-              <TextField
-                label="Financial Year"
-                fullWidth
-                size="small"
-                value={data?.financial_year || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Avak Ref Id */}
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Avak Ref Id"
-                fullWidth
-                size="small"
-                value={data?.avak_ref_id || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Ref No */}
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Reference No"
-                fullWidth
-                size="small"
-                value={data?.ref_no || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Start Date */}
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Start Date"
-                type="date"
-                fullWidth
-                size="small"
-                value={formatDate(data?.startDate)}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* End Date */}
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="End Date"
-                type="date"
-                size="small"
-                fullWidth
-                value={formatDate(data?.endDate)}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Service Type */}
-
-            <Grid item size={{ xs: 12, md: 2 }}>
-              <TextField
-                label="Service Type ID"
-                fullWidth
-                size="small"
-                value={data?.od_servicetype_id || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Subject */}
-
-            <Grid item size={{ xs: 12, md: 6 }}>
-              <TextField
-                label="Subject"
-                fullWidth
-                size="small"
-                multiline
-                rows={2}
-                value={data?.subject || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Client Info */}
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                label="Client Name"
-                fullWidth
-                size="small"
-                value={data?.client_name || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Vendor Select */}
-            <Grid item size={{ xs: 12, md: 4 }}>
+            {/* Vendor */}
+           <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
               <TextField
                 select
                 fullWidth
-                label="Vendor"
-                name="vendor_id"
-                size="small"
+                label="Vendors"
                 SelectProps={{
                   multiple: true,
                   renderValue: (selected) =>
@@ -295,61 +758,104 @@ export default function AllocationPage() {
                       .map((v) => v.AgencyName)
                       .join(", "),
                 }}
-                value={formData.vendor_id}
-                onChange={(e) => {
-                  const selectedIds = e.target.value;
-
-                  const selectedVendors = vendors.filter((v) =>
-                    selectedIds.includes(v.AgencyID),
-                  );
-
-                  setFormData({
-                    ...formData,
-                    vendor_id: selectedIds,
-                    vendor_name: selectedVendors.map((v) => v.AgencyName),
-                  });
-                }}
+                value={selectedVendors}
+                onChange={(e) =>
+                  handleVendorChange(e.target.value)
+                }
               >
-                {vendors.map((vendor) => (
-                  <MenuItem key={vendor.AgencyID} value={vendor.AgencyID}>
-                    <ListItemText primary={vendor.AgencyName} />
+                {vendors.map((v) => (
+                  <MenuItem key={v.AgencyID} value={v.AgencyID}>
+                    <ListItemText primary={v.AgencyName} />
                   </MenuItem>
                 ))}
               </TextField>
             </Grid>
-            {/* GST */}
-            <Grid item size={{ xs: 12, md: 2 }}>
-              <TextField
-                label="GST %"
-                fullWidth
-                size="small"
-                value={data?.gst_percentage || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-            {/* Total Amount */}
-            <Grid item size={{ xs: 12, md: 2 }}>
-              <TextField
-                label="Total Amount"
-                fullWidth
-                size="small"
-                value={data?.toatl_amount || ""}
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-
-          
           </Grid>
         </CardContent>
       </Card>
 
-{/* table data here */}
+      {/* TABLE */}
+      <Box mt={3}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Board No.</TableCell>
+              <TableCell>Agency</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Rate</TableCell>
+              <TableCell>No Of Media</TableCell>
+              <TableCell>Spot Repetition</TableCell>
+              <TableCell>Total Amount</TableCell>
+              <TableCell align="center">
+                <Checkbox
+                  checked={isAllSelected}
+                  indeterminate={isIndeterminate}
+                  onChange={handleSelectAll}
+                />
+              </TableCell>
+            </TableRow>
+          </TableHead>
 
-<Box>here show table data</Box>
+          <TableBody>
+            {displayBoards.map((r, i) => (
+              <TableRow key={i}>
+                <TableCell>{r.displayBoardNo}</TableCell>
+                <TableCell>{r.agencyName}</TableCell>
+                <TableCell>{r.locationName}</TableCell>
 
+                <TableCell>
+                  <TextField
+                    type="number"
+                    value={r.rate}
+                    onChange={(e) =>
+                      handleRowChange(i, "rate", e.target.value)
+                    }
+                  />
+                </TableCell>
 
- <Box mt={3}>
+                <TableCell>
+                  <TextField
+                    type="number"
+                    value={r.media_unit_count}
+                    onChange={(e) =>
+                      handleRowChange(
+                        i,
+                        "media_unit_count",
+                        e.target.value
+                      )
+                    }
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <TextField
+                    type="number"
+                    value={r.no_of_spot}
+                    onChange={(e) =>
+                      handleRowChange(
+                        i,
+                        "no_of_spot",
+                        e.target.value
+                      )
+                    }
+                  />
+                </TableCell>
+
+                <TableCell>{r.total_rate}</TableCell>
+
+                <TableCell align="center">
+                  <Checkbox
+                    checked={r.selected}
+                    onChange={() => toggleSelect(i)}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+
+      <Box mt={3}>
         <Button variant="contained" onClick={handleSubmit}>
           Submit
         </Button>
@@ -357,7 +863,3 @@ export default function AllocationPage() {
     </Box>
   );
 }
-
-
-
-

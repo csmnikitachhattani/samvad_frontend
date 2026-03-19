@@ -42,11 +42,11 @@ const menuItems = [
     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     submenu: [
       {
-        label: "Counter Entry",
+        label: " Display Board Avk List",
         path: "/admin/displayboard/counter",
       },
       {
-        label: "DisplayBoard",
+        label: "Counter List",
         path: "/admin/displayboard",
       },
       {
