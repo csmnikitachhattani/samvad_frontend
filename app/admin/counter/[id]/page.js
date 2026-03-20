@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 import Chip from '@mui/material/Chip';
+import { getDuration } from "@/utils/dateUtils";
+
 
 import {
   Box,
@@ -104,17 +106,20 @@ export default function WorkOrderForm() {
 
   const transformAgencyToDetails = (agencies, startDate, endDate) => {
     if (!Array.isArray(agencies)) return [];
+    console.log(startDate, formatDateForInput(startDate))
     return agencies.map((agency) => ({
+
       vendorId: agency.AgencyId?.toString() || "",
       vendorName: agency.AgencyName || "",
       vendorCateId: agency.ServiceId?.toString() || "",
       vendorCate: "outdoor media",
       ledVehicleId: agency.VehicleId,
+      VehicleNo : agency.VehicleNo,
       description: "",
       rate: 12,
       noOfVehicle: 1,
       noOfProgramme: 4,
-      totalRate: 12,
+      totalRate: 12 * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
       startDate: formatDateForInput(startDate),
       endDate: formatDateForInput(endDate),
       selected: false,
@@ -237,14 +242,6 @@ export default function WorkOrderForm() {
 
   const handleSubmit = async () => {
     const payload = {
-      // financialYear: formData.financial_year,
-      // avakRefId: formData.avak_ref_id,
-      // jobNo: formData.job_id,
-      // dprJobRefNo: "",
-      // woDate: new Date().toISOString(),
-      // entryIpAddress: "string",
-      // entryByUserId: "string",
-      // entryByUsername: "nikita",
       financialYear: formData.financial_year,
       avakRefId: formData.avak_ref_id,
       jobNo: formData.job_id,
@@ -280,7 +277,7 @@ export default function WorkOrderForm() {
         console.error("ERROR:", error.response?.data || error.message);
         dispatch(
           showNotification({
-            message: error.response?.data?.message || "Save failed!",
+            message: error.response?.data || "Save failed!",
             severity: "error",
           })
         );
@@ -490,7 +487,7 @@ export default function WorkOrderForm() {
           <Table size="small">
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
-                {["Vehicle", "Owner", "Agency", "Rate", "Total", "Start", "End", ""].map(
+                {["Vehicle", "Vehicle No", "Agency", "Rate", "Total", "Start", "End", ""].map(
                   (col, i) => (
                     <TableCell
                       key={i}
@@ -524,13 +521,13 @@ export default function WorkOrderForm() {
                   }}
                 >
                   <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
-                    {row.noOfVehicle}
+                    {row.ledVehicleId}
                   </TableCell>
                   <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
                     {row.vendorName}
                   </TableCell>
                   <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
-                    {row.vendorCate}
+                    {row.VehicleNo}
                   </TableCell>
 
                   <TableCell>
