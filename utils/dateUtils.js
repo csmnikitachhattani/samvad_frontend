@@ -13,11 +13,11 @@ export function getDuration(start_date, end_date) {
   
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   
-    const diffMonths =
-      (end.getFullYear() - start.getFullYear()) * 12 +
-      (end.getMonth() - start.getMonth());
+    // const diffMonths =
+    //   (end.getFullYear() - start.getFullYear()) * 12 +
+    //   (end.getMonth() - start.getMonth());
   
-    const diffYears = end.getFullYear() - start.getFullYear();
+    //const diffYears = end.getFullYear() - start.getFullYear();
     console.log(diffDays)
     return diffDays
   }

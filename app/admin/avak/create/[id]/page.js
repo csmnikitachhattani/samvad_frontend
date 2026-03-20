@@ -18,6 +18,8 @@ import {
   Paper,
   Chip,
   InputAdornment,
+  Checkbox,
+  FormControlLabel, Collapse,
 } from "@mui/material";
 import axiosClient from "@/lib/axiosClient";
 
@@ -264,13 +266,17 @@ export default function ClientAttachmentForm() {
     files: "",
     letterType: "",
     remark: "",
+    isIndividual: false,
   });
 
   // ── handleChange clears the field's error on edit ───────────────────────────
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (value !== "" && value !== null && value !== undefined) {
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;  // ← handles checkbox
+  
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
+  
+    if (newValue !== "" && newValue !== null && newValue !== undefined) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
@@ -736,7 +742,45 @@ export default function ClientAttachmentForm() {
 
             </Grid>
           </SectionCard>
-
+          <Paper elevation={0} sx={{
+        mb: 3, px: 3, py: 2,
+        borderRadius: "14px", border: "1.5px solid #ebebf0",
+        background: "linear-gradient(135deg, #fafbff 0%, #f5f6fa 100%)",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        flexWrap: "wrap", gap: 1,
+      }}>
+        <Box>
+          <Typography variant="body2" fontWeight={700} sx={{ color: "#111827" }}>
+            Client Type
+          </Typography>
+          <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+            {formData.isIndividual
+              ? "Showing individual person fields"
+              : "Showing organisation / company fields"}
+          </Typography>
+        </Box>
+ 
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formData.isIndividual}
+              name="isIndividual"
+              onChange={handleChange}
+              sx={{
+                color: "#c5cae9",
+                "&.Mui-checked": { color: "#010a2a" },
+                "& .MuiSvgIcon-root": { fontSize: 20 },
+              }}
+            />
+          }
+          label={
+            <Typography variant="body2" fontWeight={600} sx={{ color: "#374151", userSelect: "none" }}>
+              Individual / Person
+            </Typography>
+          }
+          sx={{ m: 0 }}
+        />
+      </Paper>
           {/* ── Section 3: Location & Office ── */}
           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
@@ -869,6 +913,68 @@ export default function ClientAttachmentForm() {
                   ))}
                 </TextField>
               </Grid>
+
+              <Grid item size={{ xs: 12, md: 12 }}>
+                <TextField
+                  fullWidth
+                  label="Client Name *"
+                  name="client_name"
+                  value={formData.client_name}
+                  onChange={handleChange}
+                  error={!!errors.client}
+                  helperText={errors.client}
+                  sx={field}
+                />
+              </Grid>
+            </Grid>
+          </SectionCard>
+
+             {/* ── Section 3: Indivisual Client Location & Office ── */}
+             <SectionCard icon={<IconOffice />} title="Client Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+            <Grid container spacing={2.5}>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Client Name *"
+                  name="client_name"
+                  value={formData.client_name}
+                  onChange={handleChange}
+                  error={!!errors.client}
+                  helperText={errors.client}
+                  sx={field}
+                />
+              </Grid>
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Client Address *"
+                  name="client_address"
+                  value={formData.client_address}
+                  onChange={handleChange}
+                  error={!!errors.client}
+                  helperText={errors.client}
+                  sx={field}
+                />
+              </Grid>
+
+
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Client City *"
+                  name="client_city"
+                  value={formData.client_city}
+                  onChange={handleChange}
+                  error={!!errors.client}
+                  helperText={errors.client}
+                  sx={field}
+                />
+              </Grid>
+
+
+
 
             </Grid>
           </SectionCard>
