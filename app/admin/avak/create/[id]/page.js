@@ -782,6 +782,7 @@ export default function ClientAttachmentForm() {
         />
       </Paper>
           {/* ── Section 3: Location & Office ── */}
+          {formData.isIndividual ?(
           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
 
@@ -928,9 +929,7 @@ export default function ClientAttachmentForm() {
               </Grid>
             </Grid>
           </SectionCard>
-
-             {/* ── Section 3: Indivisual Client Location & Office ── */}
-             <SectionCard icon={<IconOffice />} title="Client Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+          ):(<SectionCard icon={<IconOffice />} title="Client Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
 
               <Grid item size={{ xs: 12, md: 4 }}>
@@ -972,12 +971,9 @@ export default function ClientAttachmentForm() {
                   sx={field}
                 />
               </Grid>
-
-
-
-
             </Grid>
           </SectionCard>
+          )}
 
           {/* ── Section 4: Remarks ── */}
           <SectionCard icon={<IconMeta />} title="Additional Remarks" subtitle="Any notes or supplementary information" accent="#8b5cf6">
