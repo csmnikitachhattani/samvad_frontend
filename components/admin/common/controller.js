@@ -59,7 +59,7 @@ const ACTION_OPTIONS = [
 // ── ForwardDialog ─────────────────────────────────────────────────────────────
 export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
   const dispatch = useDispatch();
-  const {ModalShow :ModalShow , ref_id } = useSelector((state) => state.adminController);
+  const { ModalShow: ModalShow, ref_id } = useSelector((state) => state.adminController);
   const [form, setForm] = useState({
     forward_to: "",
     action: "",
@@ -78,7 +78,22 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
       router.push("/login"); // redirect if not authorized
     }
   }, []);
-  const [forwardUser, setForwardUser]= useState([])
+  const [forwardUser, setForwardUser] = useState([])
+
+  const nowTime = async () => {
+    const now = new Date();
+    console.log(now)
+
+    const time =
+      now.getHours().toString().padStart(2, "0") +
+      ":" +
+      now.getMinutes().toString().padStart(2, "0") +
+      ":" +
+      now.getSeconds().toString().padStart(2, "0");
+    console.log(time)
+    return time
+  }
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -93,30 +108,38 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
     fetchData();
   }, []);
   const handleSubmit = async () => {
+    const now = new Date();
+    console.log(now)
+
+    const time =
+      now.getHours().toString().padStart(2, "0") +
+      ":" +
+      now.getMinutes().toString().padStart(2, "0") +
+      ":" +
+      now.getSeconds().toString().padStart(2, "0");
     try {
       const payload = {
-        //ref_id:      refId,                // from parent prop
-        forward_to:  form.forward_to,
-        forward_to_type_cd: form.forward_to,
-        forward_by_section_cd: '00141',
-        forward_to_section_cd : form.forward_to,
-        action_cd:      form.action,
-        reason:      form.reason,
-        remark:      form.remark,
-        avak_ref_id_list: [ref_id,],
-        forward_time: '2026-03-14T22:45',
-        forward_date: now.toLocaleDateString("en-IN"),
+        avak_ref_id_list: ref_id,
+        forward_to: form.forward_to,
+        forward_to_type_cd: "08",
+        forward_date: "2026-03-23T05:40:12.228Z",
+        forward_time: time,
+        action_cd: form.action,
+        status_reason_cd: "08",
         financial_year: "2024-2025",
-        status_reason_cd: "reason",
-        action_taken_by_type_cd: "00141",
+        forward_by_section_cd: "05",
+        forward_to_section_cd: "08",
+        action_taken_by: "00141",
+        action_taken_by_type_cd: "03",
+        remark: "ok"
       };
-  
+
       const response = await axiosClient.post(
         "/Client/avak-forward",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
-  
+
       console.log("Forward SUCCESS:", response.data);
       onSubmit?.(payload);
       handleClose();
@@ -130,10 +153,10 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-//   const handleSubmit = () => {
-//     onSubmit?.(form);
-//     handleClose();
-//   };
+  //   const handleSubmit = () => {
+  //     onSubmit?.(form);
+  //     handleClose();
+  //   };
 
   const handleClose = () => {
     setForm({ forward_to: "", action: "", reason: "", remark: "" });
@@ -183,7 +206,7 @@ export default function ForwardDialog({ open, onClose, onSubmit, refId }) {
           >
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
               <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"
-                stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </Box>
           <Box>
