@@ -229,6 +229,8 @@ function ContentCategoryRadio({ value, onChange, categories, hasError }) {
   );
 }
 
+
+
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function ClientAttachmentForm() {
   const dispatch = useDispatch();
@@ -395,6 +397,17 @@ export default function ClientAttachmentForm() {
       console.error("Failed to fetch captions", error);
     }
   }
+  async function fetchClientName(base_dept_cd, district_cd, client_cd, section_cd, office_level_cd,  office_cd) {
+    try {
+      const res = await clientServices.getClientName({ base_dept_cd, district_cd, client_cd, section_cd, office_level_cd, office_cd });
+      setFormData((prev) => ({
+        ...prev,
+        client_name: res.data.data.base_dept_code,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch officers", error);
+    }
+  }
   async function fetchClient(client) {
     try {
       const res = await clientServices.getClientData(client);
@@ -406,6 +419,7 @@ export default function ClientAttachmentForm() {
         office: res.data.data.Office_code,
         section: res.data.data.section_code,
         officer: res.data.data.employee_code,
+        
       }));
       fetchDistricts();
     } catch (error) {
@@ -423,6 +437,11 @@ export default function ClientAttachmentForm() {
       fetchOffice(formData.baseDept, formData.district);
       fetchSections(formData.baseDept, formData.district);
       fetchOfficers(formData.baseDept, formData.district);
+    }
+  }, [formData.baseDept, formData.district]);
+  useEffect(() => {
+    if (formData.baseDept && formData.district && formData.office && formData.section && formData.client && formData.officeLevel ) {
+       fetch
     }
   }, [formData.baseDept, formData.district]);
 
