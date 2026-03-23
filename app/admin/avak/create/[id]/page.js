@@ -801,7 +801,7 @@ export default function ClientAttachmentForm() {
         />
       </Paper>
           {/* ── Section 3: Location & Office ── */}
-          {formData.isIndividual ?(
+          {!formData.isIndividual ?(
           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
 
