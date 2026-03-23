@@ -163,9 +163,10 @@ const clientServices = {
       throw err
     }
   },
-  getClientName: async()=>{
+  getClientName: async(req)=>{
+    const {client_cd, base_dept_cd, office_cd, office_level_cd, district_cd, section_cd} = req
     try {
-      const res = await axiosClient.get("/Client/GetClientName");
+      const res = await axiosClient.get(`/Client/GetClientName?client_cd=${client_cd}&base_dept_code=${base_dept_code}&office_code=${office_code}&office_level_code=${office_level_code}&district_code=${district_code}&section_code=${section_cd}`);
       return res
     }
     catch (err){
