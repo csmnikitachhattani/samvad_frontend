@@ -163,6 +163,15 @@ const clientServices = {
       throw err
     }
   },
+  getClientName: async()=>{
+    try {
+      const res = await axiosClient.get("/Client/GetClientName");
+      return res
+    }
+    catch (err){
+      throw err
+    }
+  }
 
 };
 

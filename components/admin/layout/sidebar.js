@@ -39,10 +39,28 @@ const isActive = (path) => pathname.startsWith(path);
       path: "/admin/agency/agencyuser",
       icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
+    // {
+    //   label: "Display Boards",
+    //   path: "/admin/display",
+    //   icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    // },
     {
       label: "Display Boards",
-      path: "/admin/display",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+      submenu: [
+        {
+          label: " Display Board Avk List",
+          path: "/admin/displayboard/counter",
+        },
+        {
+          label: "Counter List",
+          path: "/admin/displayboard",
+        },
+        {
+          label: "Notsheet",
+          path: "/admin/display/reports",
+        },
+      ],
     },
     {
       label: "Vehicle Boards",
@@ -326,10 +344,87 @@ const isActive = (path) => pathname.startsWith(path);
 
     <List sx={{ px: 0 }}>
 
-    {menu.map((item, i) => (
+    {/* {menuItems.map((item, i) => (
         <SidebarItem key={i} item={item} />
-      ))}
+      ))} */}
 
+{menuItems.map((item) => {
+    const hasSubmenu = Array.isArray(item.submenu);
+
+    return (
+      <Box key={item.label}>
+        {/* Parent Menu */}
+        <ListItemButton
+          onClick={() => {
+            if (hasSubmenu) {
+              setOpenMenu(openMenu === item.label ? null : item.label);
+            } else {
+              router.push(item.path);
+            }
+          }}
+          sx={{
+            borderRadius: "12px",
+            mb: 0.5,py: 1,px: 1,bgcolor:isActive(item.path) || openMenu === item.label
+                ? "rgba(255,255,255,0.25)"
+                : "transparent",
+            border:
+              isActive(item.path) || openMenu === item.label
+                ? "1px solid rgba(255,255,255,0.4)"
+                : "1px solid transparent",
+            transition: "all 0.3s",
+            "&:hover": {
+              bgcolor: "rgba(255,255,255,0.2)",
+              transform: "translateX(6px)",
+            },
+          }}
+        >
+          {item.icon}
+          <ListItemText
+            primary={item.label}
+            primaryTypographyProps={{
+              fontWeight: 600,
+              fontSize: "0.75rem",
+            }}
+          />
+          {hasSubmenu &&
+            (openMenu === item.label ? <ExpandLess /> : <ExpandMore />)}
+        </ListItemButton>
+
+        {/* Submenu */}
+        {hasSubmenu && (
+          <Collapse in={openMenu === item.label} timeout="auto" unmountOnExit>
+            <List sx={{ pl: 4 }}>
+              {item.submenu.map((sub) => (
+                <ListItemButton
+                  key={sub.path}
+                  onClick={() => router.push(sub.path)}
+                  sx={{
+                    borderRadius: "10px",
+                    mb: 0.5,
+                    py: 0.75,
+                    bgcolor: isActive(sub.path)
+                      ? "rgba(255,255,255,0.2)"
+                      : "transparent",
+                    "&:hover": {
+                      bgcolor: "rgba(255,255,255,0.15)",
+                    },
+                  }}
+                >
+                  <ListItemText
+                    primary={sub.label}
+                    primaryTypographyProps={{
+                      fontSize: "0.7rem",
+                      fontWeight: isActive(sub.path) ? 600 : 500,
+                    }}
+                  />
+                </ListItemButton>
+              ))}
+            </List>
+          </Collapse>
+        )}
+      </Box>
+    );
+  })}
 </List>
 
       </Box>
