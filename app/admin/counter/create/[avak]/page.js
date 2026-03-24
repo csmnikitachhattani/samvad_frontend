@@ -634,24 +634,6 @@ console.log("here console images")
             </Grid>
             <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
-                select
-                label="Duration"
-                value={data.duration}
-                name="duration"
-                onChange={handleChange}
-                fullWidth
-                sx={grayField}
-              >
-                {durationOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
                 label="End Date"
                 type="date"
                 name="endDate"
