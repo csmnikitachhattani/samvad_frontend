@@ -550,6 +550,7 @@ export default function ClientAttachmentForm() {
         district_code: formData.district,
         section_code: formData.section,
         client_prarup_code: formData.clientPrarupCode || "2",
+        client_name: formData.client_name,
         // client_name: formData.clientName || "sde",
         // client_address: formData.clientAddress || "Raipur",
         // client_city: formData.clientCity || "Raipur",
