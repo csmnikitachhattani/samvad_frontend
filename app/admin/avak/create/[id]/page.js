@@ -259,6 +259,7 @@ export default function ClientAttachmentForm() {
     schedule_date: "",
     client: "",
     baseDept: "",
+    client_name: "",
     district: "",
     officeLevel: "",
     office: "",
@@ -397,15 +398,23 @@ export default function ClientAttachmentForm() {
       console.error("Failed to fetch captions", error);
     }
   }
-  async function fetchClientName(base_dept_cd, district_cd, client_cd, section_cd, office_level_cd,  office_cd) {
+  async function fetchClientName() {
     try {
-      const res = await clientServices.getClientName({ base_dept_cd, district_cd, client_cd, section_cd, office_level_cd, office_cd });
+      const payload = {
+        base_dept_cd: formData.baseDept,
+        district_cd: formData.district,
+        client_cd: formData.officer,
+        section_cd: formData.section,
+        office_level_cd: formData.officeLevel,
+        office_cd: formData.office,
+      };
+      const res = await clientServices.getClientName(payload);
       setFormData((prev) => ({
         ...prev,
-        client_name: res.data.data.base_dept_code,
+        client_name: res?.data?.[0]?.client_name || "",
       }));
     } catch (error) {
-      console.error("Failed to fetch officers", error);
+      console.error("Failed to fetch client name", error);
     }
   }
   async function fetchClient(client) {
@@ -426,7 +435,35 @@ export default function ClientAttachmentForm() {
       console.error("Failed to fetch client", error);
     }
   }
-
+   useEffect(() => {
+    const {
+      baseDept,
+      district,
+      office,
+      section,
+      officer,
+      officeLevel,
+    } = formData;
+  
+    if (
+      baseDept &&
+      district &&
+      office &&
+      section &&
+      officer &&
+      officeLevel
+    ) {
+      fetchClientName();
+    }
+  
+  }, [
+    formData.baseDept,
+    formData.district,
+    formData.office,
+    formData.section,
+    formData.officer,
+    formData.officeLevel,
+  ]);
   useEffect(() => {
     if (formData.client !== "") fetchClient(formData.client);
   }, [formData.client]);
@@ -439,12 +476,6 @@ export default function ClientAttachmentForm() {
       fetchOfficers(formData.baseDept, formData.district);
     }
   }, [formData.baseDept, formData.district]);
-  useEffect(() => {
-    if (formData.baseDept && formData.district && formData.office && formData.section && formData.client && formData.officeLevel ) {
-       fetch
-    }
-  }, [formData.baseDept, formData.district]);
-
   useEffect(() => {
     if (formData.baseDept) fetchOfficeLevel(formData.baseDept);
   }, [formData.baseDept]);

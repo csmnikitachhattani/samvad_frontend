@@ -165,6 +165,7 @@ const clientServices = {
   },
   getClientName: async(req)=>{
     const {client_cd, base_dept_cd, office_cd, office_level_cd, district_cd, section_cd} = req
+    console.log(req)
     try {
       const res = await axiosClient.get(`/Client/GetClientName?client_cd=${client_cd}&base_dept_code=${base_dept_cd}&office_code=${office_cd}&office_level_code=${office_level_cd}&district_code=${district_cd}&section_code=${section_cd}`);
       return res
