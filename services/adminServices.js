@@ -116,7 +116,7 @@ const adminService = {
   },
   submitNotesheet: async (payload) =>{
     try {
-      const res = await axiosClient.post(`/OutDoorMediaTransaction/lvnotesheetprocess`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-notesheet-process`, payload);
       return res;
     } catch (err) {
       console.log("answer")
