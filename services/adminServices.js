@@ -115,7 +115,6 @@ const adminService = {
     }
   },
   submitNotesheet: async (payload) =>{
-    console.log("post notesheet detail")
     try {
       const res = await axiosClient.post(`/OutDoorMediaTransaction/lvnotesheetprocess`, payload);
       return res;
@@ -125,7 +124,6 @@ const adminService = {
     }
   },
   ApprovedNotesheet: async (payload) =>{
-    console.log("post notesheet detail")
     try {
       const res = await axiosClient.post(`/OutDoorMediaTransaction/approveledvehicle`, payload);
       return res;
@@ -135,9 +133,53 @@ const adminService = {
     }
   },
   proceedWorkload: async (payload) =>{
-    console.log("post notesheet detail")
     try {
       const res = await axiosClient.post(`/OutDoorMediaTransaction/lvworkorder`, payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmRateCategory: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-lv-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmRateTender: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-lv-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmRateWorkTypes: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-lv-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmRateDuration: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-lv-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmRateWorkList: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-lv-get-rate-parameters', payload);
       return res;
     } catch (err) {
       console.log("answer")
