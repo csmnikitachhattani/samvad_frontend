@@ -490,7 +490,7 @@ export default function AllocationPage() {
     { name: "end_date", label: "End Date", type: "date" },
     // { name: "commision_Percentage", label: "Commission %" },
     // { name: "gst_percentage", label: "GST %" },
-    { name: "no_of_media_count", label: "No Of Media" },
+    // { name: "no_of_media_count", label: "No Of Media" },
   ];
 
   const handleChange = (field, value) => {
@@ -726,7 +726,7 @@ const handleSubmit = async () => {
 
           {/* ✅ SHOW ONLY REQUIRED INPUTS */}
           <Grid container spacing={2}>
-            {inputFields.map((field) => (
+            {/* {inputFields.map((field) => (
               <Grid item xs={3} key={field.name}>
                 <TextField
                   label={field.label}
@@ -742,9 +742,103 @@ const handleSubmit = async () => {
                   }
                 />
               </Grid>
-            ))}
+            ))} */}
 
-            {/* Vendor */}
+  {/* {inputFields.map((field) => (
+    <Grid item xs={3} key={field.name}>
+      <Box>
+        <Typography variant="caption" color="text.secondary">
+          {field.label}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          sx={{
+            mt: 0.5,
+            p: 1,
+            border: "1px solid #e0e0e0",
+            borderRadius: "4px",
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          {formData[field.name] || "-"}
+        </Typography>
+      </Box>
+    </Grid>
+  ))}
+ */}
+
+ {/* {inputFields.map((field) => (
+  <Grid item xs={3} key={field.name}>
+    <Box>
+     
+      <Typography
+        variant="caption"
+        sx={{ fontWeight: 600, color: "#555" }}
+      >
+        {field.label}
+      </Typography>
+
+    
+      <Typography
+        variant="body2"
+        sx={{
+          mt: 0.5,
+          color: "#000",
+        }}
+      >
+        {formData[field.name] || "-"}
+      </Typography>
+    </Box>
+  </Grid>
+))} */}
+
+
+{inputFields.map((field) => (
+  <Grid item size={{xs:12,sm:6,md:3}} key={field.name}>
+    <Box
+      sx={{
+        p: 1.5,
+        borderRadius: "10px",
+        background: "linear-gradient(135deg, #f8fafc, #eef2f7)",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+        transition: "0.3s",
+        "&:hover": {
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          transform: "translateY(-2px)",
+        },
+      }}
+    >
+      {/* Label */}
+      <Typography
+        variant="caption"
+        sx={{
+          fontWeight: 600,
+          color: "#6b7280",
+          letterSpacing: "0.5px",
+        }}
+      >
+        {field.label}
+      </Typography>
+
+      {/* Value */}
+      <Typography
+        variant="body1"
+        sx={{
+          mt: 0.5,
+          fontWeight: 600,
+          color: "#111827",
+        }}
+      >
+        {formData[field.name] || "-"}
+      </Typography>
+    </Box>
+  </Grid>
+))}
+
+
+
+  {/* Vendor */}
            <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
               <TextField
                 select
@@ -770,7 +864,12 @@ const handleSubmit = async () => {
                 ))}
               </TextField>
             </Grid>
-          </Grid>
+
+</Grid>
+
+
+          
+          
         </CardContent>
       </Card>
 
@@ -816,11 +915,12 @@ const handleSubmit = async () => {
                 <TableCell>
                   <TextField
                     type="number"
-                    value={r.media_unit_count}
+                    // value={r.media_unit_count}
+                    value={r.no_of_media_count}
                     onChange={(e) =>
                       handleRowChange(
                         i,
-                        "media_unit_count",
+                        "no_of_media_count",
                         e.target.value
                       )
                     }

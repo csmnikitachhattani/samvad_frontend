@@ -6,22 +6,23 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardIcon from "@mui/icons-material/Dashboard"
 
-
+import Link from "next/link";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  
 
 const [openMenu, setOpenMenu] = useState(null);
 
 // better active check for nested routes
 const isActive = (path) => pathname.startsWith(path);
-
   const menuItems = [
     { 
       label: "Dashboard", 
@@ -289,67 +290,6 @@ const isActive = (path) => pathname.startsWith(path);
       </div>
     );
   };
-   
-
-// const menuItems = [
-//   { 
-//     label: "Dashboard", 
-//     path: "/admin",
-//     icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
-//   },
-
-//   {
-//     label: "Agency",
-//     path: "/admin/agency",
-//     icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-//   },
-
-//   // ✅ FIXED: Submenu moved here
-//   {
-//     label: "Display Boards",
-//     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-//     submenu: [
-//       {
-//         label: " Display Board Avk List",
-//         path: "/admin/displayboard/counter",
-//       },
-//       {
-//         label: "Counter List",
-//         path: "/admin/displayboard",
-//       },
-//       {
-//         label: "Notsheet",
-//         path: "/admin/display/reports",
-//       },
-//     ],
-//   },
-
-//   {
-//     label: "Vehicle Boards",
-//     path: "/admin/vehicle",
-//     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-//   },
-//   {
-//     label: "Mini Bus Boards",
-//     path: "/admin/bus",
-//     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-//   },
-//   {
-//     label: "Counter",
-//     path: "/admin/counter",
-//     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-//   },
-//   {
-//     label: "Workorders",
-//     path: "/admin/workorder",
-//     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-//   },
-//   {
-//     label: "Bill Entry",
-//     path: "/newspaper/bill-entry",
-//     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-//   },
-// ];
   return (
     <Box
       sx={{
@@ -400,39 +340,55 @@ const isActive = (path) => pathname.startsWith(path);
 
   
 
-        <List sx={{ px: 0 }}>
-  {menuItems.map((item) => {
+    <List sx={{ px: 0 }}>
+
+    {/* {menuItems.map((item, i) => (
+        <SidebarItem key={i} item={item} />
+      ))} */}
+
+{menuItems.map((item) => {
     const hasSubmenu = Array.isArray(item.submenu);
 
     return (
       <Box key={item.label}>
+        {/* Parent Menu */}
         <ListItemButton
           onClick={() => {
             if (hasSubmenu) {
               setOpenMenu(openMenu === item.label ? null : item.label);
-            } else if (item.path) {
+            } else {
               router.push(item.path);
             }
           }}
           sx={{
             borderRadius: "12px",
-            mb: 0.5,
-            py: 1,
-            px: 1,
-            bgcolor:
-              (item.path && isActive(item.path)) ||
-              openMenu === item.label
+            mb: 0.5,py: 1,px: 1,bgcolor:isActive(item.path) || openMenu === item.label
                 ? "rgba(255,255,255,0.25)"
                 : "transparent",
+            border:
+              isActive(item.path) || openMenu === item.label
+                ? "1px solid rgba(255,255,255,0.4)"
+                : "1px solid transparent",
+            transition: "all 0.3s",
+            "&:hover": {
+              bgcolor: "rgba(255,255,255,0.2)",
+              transform: "translateX(6px)",
+            },
           }}
         >
           {item.icon}
-          <ListItemText primary={item.label} />
-
+          <ListItemText
+            primary={item.label}
+            primaryTypographyProps={{
+              fontWeight: 600,
+              fontSize: "0.75rem",
+            }}
+          />
           {hasSubmenu &&
             (openMenu === item.label ? <ExpandLess /> : <ExpandMore />)}
         </ListItemButton>
 
+        {/* Submenu */}
         {hasSubmenu && (
           <Collapse in={openMenu === item.label}>
             <List sx={{ pl: 4 }}>
