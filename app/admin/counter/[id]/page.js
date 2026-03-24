@@ -60,6 +60,10 @@ export default function WorkOrderForm() {
   const [vendors, setVendors] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [tenders, setTenders] = useState([]);
+  const [workTypes, setWorkTypes] = useState([]);
+  const [rateDurations, setRateDurations] = useState([]);
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -114,7 +118,7 @@ export default function WorkOrderForm() {
       vendorCateId: agency.ServiceId?.toString() || "",
       vendorCate: "outdoor media",
       ledVehicleId: agency.VehicleId,
-      VehicleNo : agency.VehicleNo,
+      VehicleNo: agency.VehicleNo,
       description: "",
       rate: 12,
       noOfVehicle: 1,
@@ -167,7 +171,7 @@ export default function WorkOrderForm() {
           amount_with_commission: response.amount_with_commission || 2004000,
           gst_percentage: response.gst_percentage ?? "",
           gst_amount: response.gst_amount || 78,
-          toatl_amount: response.toatl_amount || 78 ,
+          toatl_amount: response.toatl_amount || 78,
           detailList:
             response.detailList?.length > 0 ? response.detailList : prev.detailList,
         }));
@@ -425,7 +429,92 @@ export default function WorkOrderForm() {
               sx={grayField}
             />
           </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <TextField
+              fullWidth
+              select
+              label="Category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              sx={grayField}
+            >
+              {categories.map((item) => (
+                <MenuItem key={item.id} value={item.year}>
+                  {item.year}
+                </MenuItem>
+              ))}
 
+            </TextField>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+          <TextField
+            fullWidth
+            select
+            label="Tenders"
+            name="tender"
+            value={formData.tender}
+            onChange={handleChange}
+            sx={grayField}
+          >
+            {tenders.map((item) => (
+              <MenuItem key={item.id} value={item.year}>
+                {item.year}
+              </MenuItem>
+            ))}
+          </TextField>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+          <TextField
+            fullWidth
+            select
+            label="Work Types"
+            name="work_type"
+            value={formData.work_type}
+            onChange={handleChange}
+            sx={grayField}
+          >
+            {workTypes.map((item) => (
+              <MenuItem key={item.id} value={item.year}>
+                {item.year}
+              </MenuItem>
+            ))}
+          </TextField>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+          <TextField
+            fullWidth
+            select
+            label="Rate Duration"
+            name="rate_duration_id"
+            value={formData.rate_duration_id}
+            onChange={handleChange}
+            sx={grayField}
+          >
+            {rateDurations.map((item) => (
+              <MenuItem key={item.id} value={item.year}>
+                {item.year}
+              </MenuItem>
+            ))}
+          </TextField>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+          <TextField
+            fullWidth
+            select
+            label="Work List"
+            name="work_list_id"
+            value={formData.work_list_id}
+            onChange={handleChange}
+            sx={grayField}
+          >
+            {workTypes.map((item) => (
+              <MenuItem key={item.id} value={item.year}>
+                {item.year}
+              </MenuItem>
+            ))}
+          </TextField>
+          </Grid>
           <Grid item size={{ xs: 12, md: 6 }}>
             <TextField
               select

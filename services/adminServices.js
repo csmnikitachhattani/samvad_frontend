@@ -2,7 +2,6 @@ import axiosClient from "@/lib/axiosClient";
 
 const adminService = {
   getServices: async (cat) => {
-    console.log("newspaper information")
     try {
       const res = await axiosClient.get(`/ManageMaster/getservicetype/?avak_cate_id=${cat}`);
       return res.data;
@@ -11,7 +10,6 @@ const adminService = {
     }
   },
   getAgency: async () => {
-    console.log("get all agencncy")
     try {
       const res = await axiosClient.get("/ManageMaster/allagency");
       return res.data;
@@ -21,13 +19,10 @@ const adminService = {
     }
   },
   createAgency: async (updateData) => {
-    console.log("newspaper information", updateData)
     try {
       const payload = {
-        
         ...updateData,
       };
-
       const res = await axiosClient.post("/ManageMaster/createagency", payload);
       return res.data;
     } catch (err) {
@@ -35,7 +30,6 @@ const adminService = {
     }
   },
   getMiniBusList: async () => {
-    console.log("get all mini bus")
     try {
       const res = await axiosClient.get("/ManageMaster/get-all-bus");
       return res.data;
@@ -45,7 +39,6 @@ const adminService = {
     }
   },
   getcounter: async () => {
-    console.log("get all agencncy")
     try {
       const res = await axiosClient.get("/OutDoorMediaTransaction/getodmlvcounter");
       return res.data;
@@ -55,7 +48,6 @@ const adminService = {
     }
   },
   getcounterDetail: async (id) => {
-    console.log("get counter detail")
     try {
       const res = await axiosClient.get(`/OutDoorMediaTransaction/getodmlvcounter?id=${id}`);
       return res.data;
@@ -65,7 +57,6 @@ const adminService = {
     }
   },
   getVendorList: async (id) => {
-    console.log("get counter detail")
     try {
       const res = await axiosClient.get(`/ManageMaster/getagencybyserviceid/${id}`);
       return res.data;
@@ -75,7 +66,6 @@ const adminService = {
     }
   },
   getClientRecord: async (payload) => {
-    console.log("get counter detail")
     try {
       const res = await axiosClient.post(`/Client/get-client-request-record/`, payload);
       return res.data;
@@ -85,7 +75,6 @@ const adminService = {
     }
   },
   getClientRequestList: async () => {
-    console.log("get request Client List")
     try {
       const res = await axiosClient.get(`/Client/getclientadvtrequests?financial_year=2024-2025&action=get_forwarded&user_id=00100`);
       return res.data;
