@@ -87,7 +87,7 @@ export default function JobForm() {
     od_servicetype_id: "",
     subject: "",
     startDate: "",
-    duration: '',
+    duration: "",
     endDate: "",
     ref_date: "",
     receipt_date: "",
@@ -95,87 +95,96 @@ export default function JobForm() {
     letter_no: "",
     client_name: "",
     office_address: "",
+  
     billing_client_cd: "",
-    billing_base_dept_code:"",
+    billing_base_dept_code: "",
     billing_office_code: "",
-    billing_district_code:'',
-    billing_section_code:"",
+    billing_district_code: "",
+    billing_section_code: "",
     billing_client_name: "",
     billing_address: "",
+  
     office_code: "",
     base_dept_code: "",
     district_code: "",
+    section: "",
+    office_level_code: "",
+  
     remarks: "",
-    base_dept_code: '',
-    office_level_code: '',
-    office_code: '',
-    section: '',
     ip_address: "",
     client: "",
+  
     entry_user_name: "nikita",
+    entry_by_user_id: "00100",
+    entry_by_user_type_cd: "02",
+    modify_by_user_type_cd: "",
+  
+    action_by_section_cd: "03",
+    user_type_cd: "02",
+    forward_to_section_cd: "07",
+  
     files: null,
-    Avak_category: '',
   });
 
 
-useEffect(() => {
-  console.log(avak)
-  if (!avak) return;
-console.log("here console images")
-  const fetchAvakFiles = async () => {
-    try {
-      const res = await axiosClient.get(
-        `http://103.79.34.50:8083/api/Client/getavakfiles`,
-        {
-          params: {
-            financial_year: "2024-2025" ,
-            avak_ref_id: avak,
-          },
-        }
-      );
-
-      setAvakFiles(res.data || []);
-    } catch (error) {
-      console.error("File fetch error", error);
-    }
-  };
-
-  fetchAvakFiles();
-}, [avakId, data.financial_year]);
   useEffect(() => {
-  if(data.Avak_category){
-    async function fetchServices() {
+    console.log(avak)
+    if (!avak) return;
+    console.log("here console images")
+    const fetchAvakFiles = async () => {
       try {
-        const response = await adminServices.getServices(data.Avak_category);
-        setServices(response?.result || []);
+        const res = await axiosClient.get(
+          `http://103.79.34.50:8083/api/Client/getavakfiles`,
+          {
+            params: {
+              financial_year: "2024-2025",
+              avak_ref_id: avak,
+            },
+          }
+        );
+
+        setAvakFiles(res.data || []);
       } catch (error) {
-        console.error("Failed to fetch services", error);
+        console.error("File fetch error", error);
       }
+    };
+
+    fetchAvakFiles();
+  }, [avakId, data.financial_year]);
+  useEffect(() => {
+    if (data.Avak_category) {
+      async function fetchServices() {
+        try {
+          const response = await adminServices.getServices(data.Avak_category);
+          setServices(response?.result || []);
+        } catch (error) {
+          console.error("Failed to fetch services", error);
+        }
+      }
+      fetchServices();
     }
-    fetchServices();
-  }
   }, [data.Avak_category]);
   const { avak } = useParams();
   useEffect(() => {
     async function fetchAvakDetails() {
       try {
-        const res = await clientServices.getAvakDetail({avak_ref_id:avak, fin_year:'2024-2025'});
+        const res = await clientServices.getAvakDetail({ avak_ref_id: avak, fin_year: '2024-2025' });
         setData((prev) => ({
-            ...prev,
-            ...res,
-            financial_year: '2024-2025',
-            subject: res.data.subject,
-            avak_ref_id: avak,
-            client_ref_id: res.data.client_ref_id,
-            client : res.data.client_cd,
-            billing_base_dept_code:res.data.base_dept_code,
-            billing_office_code: res.data.office_code,
-            billing_district_code:res.data.district_code,
-            billing_office_level_code : res.data.office_level_code,
-            billing_section_code:res.data.section,
-            billing_client_cd : res.data.client_cd
+          ...prev,
+          ...res,
+          financial_year: '2024-2025',
+          subject: res.data.subject,
+          avak_ref_id: avak,
+          client_ref_id: res.data.client_ref_id,
+          client: res.data.client_cd,
+          billing_base_dept_code: res.data.base_dept_code,
+          billing_office_code: res.data.office_code,
+          billing_district_code: res.data.district_code,
+          billing_office_level_code: res.data.office_level_code,
+          billing_section_code: res.data.section,
+          billing_client_cd: res.data.client_cd
 
-          }));
+        }));
         setData((prev) => ({ ...prev, ...res.data }));
       } catch (error) {
         console.error("Failed to fetch services", error);
@@ -187,10 +196,21 @@ console.log("here console images")
   }, []);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    // setData((prev) => ({
+    //   ...prev,
+    //   [name]: files ? files[0] : value,
+    // }));
+    if (name === "files") {
+      setData((prev) => ({
+        ...prev,
+        files: files && files.length ? Array.from(files) : [],
+      }));
+    } else {
+      setData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
   async function getPublicIP() {
     const res = await fetch("https://api.ipify.org?format=json");
@@ -213,7 +233,7 @@ console.log("here console images")
   }
   async function fetchOfficeLevel(deptCode) {
     try {
-      const res = await clientServices.getOfficeLevels({deptCode});
+      const res = await clientServices.getOfficeLevels({ deptCode });
       setLevels(res.result)
     } catch (error) {
       console.error("Failed to fetch work orders", error);
@@ -233,7 +253,7 @@ console.log("here console images")
   }
   async function fetchOffice(deptCode, distCode) {
     try {
-      const res = await clientServices.getOfficeNames({deptCode, distCode});
+      const res = await clientServices.getOfficeNames({ deptCode, distCode });
       console.log(res)
       setOffices(res.result);
     } catch (error) {
@@ -244,7 +264,7 @@ console.log("here console images")
   }
   async function fetchSections(deptCode, distCode) {
     try {
-      const res = await clientServices.getClientSection({deptCode, distCode});
+      const res = await clientServices.getClientSection({ deptCode, distCode });
       console.log(res)
       setSections(res.result);
     } catch (error) {
@@ -255,7 +275,7 @@ console.log("here console images")
   }
   async function fetchOfficers(deptCode, distCode) {
     try {
-      const res = await clientServices.getOfficers({deptCode, distCode});
+      const res = await clientServices.getOfficers({ deptCode, distCode });
       console.log(res)
       setOfficers(res.result);
     } catch (error) {
@@ -277,7 +297,7 @@ console.log("here console images")
         section: res.data.data?.section_code,
         officer: res.data.data?.employee_code,
       }));
-    fetchDistricts();
+      fetchDistricts();
     } catch (error) {
       console.error("Failed to fetch work orders", error);
     } finally {
@@ -285,91 +305,246 @@ console.log("here console images")
     }
   }
   useEffect(() => {
-    if(data.client !== ""){
+    if (data.client !== "") {
       //fetchClient(data.client)
     }
-  },[data.client])
+  }, [data.client])
   useEffect(() => {
-    console.log("gtyugyugyug",data.base_dept_code,data.district_code)
-    if(data.base_dept_code&&data.district_code){
-    fetchOfficeLevel(data.base_dept_code)
-    fetchOffice(data.base_dept_code, data.district_code);
-    fetchSections(data.base_dept_code, data.district_code);
-    fetchOfficers(data.base_dept_code, data.district_code);
+    console.log("gtyugyugyug", data.base_dept_code, data.district_code)
+    if (data.base_dept_code && data.district_code) {
+      fetchOfficeLevel(data.base_dept_code)
+      fetchOffice(data.base_dept_code, data.district_code);
+      fetchSections(data.base_dept_code, data.district_code);
+      fetchOfficers(data.base_dept_code, data.district_code);
     }
-  },[data.base_dept_code, data.district_code])
+  }, [data.base_dept_code, data.district_code])
   // useEffect(() => {
   //   if(data.base_dept_code){
   //   fetchOfficeLevel(data.base_dept_code)
   //   }
   // },[data.base_dept_code,])
 
-  const handleSubmit = async (e) => { 
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
+  //   try {
+  //     const payload = new FormData();
+  //     payload.append("financial_year", data.financial_year);
+  //     payload.append("client_ref_id", data.client_ref_id);
+  //     payload.append("avak_ref_id", data.avak_ref_id);
+  //     payload.append("ref_no", data.letter_no);
+  //     payload.append("od_servicetype_id", 2);
+  //     payload.append("subject", data.subject);
+  //     payload.append("StartDate", data.startDate);
+  //     payload.append("EndDate", data.endDate);
+  //     payload.append("office_address", data.office_address);
+  //     payload.append("billing_address", data.billing_address);
+  //     payload.append("office_level_code", data.office_level_code)
+  //     payload.append("district_code", data.district_code)
+  //     payload.append("remarks", data.remarks);
+  //     payload.append("ip_address", '103.79.34.50');
+  //     payload.append("client_cd", data.client_cd);
+  //     payload.append("base_dept_code", data.base_dept_code);
+  //     payload.append("district_code", data.district_code);
+  //     payload.append("office_level_code", data.office_level_code);
+  //     payload.append("office_code", data.office_code);
+  //     payload.append("section", 0);
+  //     payload.append("Billing_client_name", data.billing_client_name || data.client_name);
+  //     payload.append("Billing_client_cd", data.billing_client_cd || data.client_cd);
+  //     payload.append("Billing_address", data.billing_address);
+  //     payload.append("Billing_base_dept_code", data.billing_base_dept_code);
+  //     payload.append("Billing_district_code", data.billing_district_code);
+  //     payload.append("Billing_office_level_code", data.billing_office_level_code);
+  //     payload.append("Billing_office_code", data.billing_office_code);
+  //     payload.append("Billing_section_code", 0);
+  //     payload.append("Billing_officer", data.billing_client_cd);
+  //     payload.append("owner_user_type_cd", '01');
+  //     payload.append("owner_user_id", '00141');
+  //     payload.append("entry_user_name", data.entry_user_name);
+  //     payload.append("entry_by_user_type_cd", data.entry_by_user_type_cd);
+  //     payload.append("modify_by_user_type_cd", data.modify_by_user_type_cd);
+  //     payload.append("user_type_cd", data.user_type_cd);
+  //     payload.append("action_by_section_cd", data.action_by_section_cd);
+  //     payload.append("forward_to_section_cd", data.forward_to_section_cd);
+  //     payload.append("user_type_cd", '01');
+
+
+
+  //     if (data.files) {
+  //       payload.append("files", data.files);
+  //     }
+
+  //     for (let pair of payload.entries()) {
+  //       console.log(pair[0], pair[1]);
+  //     }
+
+  //     const response = await axiosClient.post(
+  //       "/outDoorMediaTransaction/save-lv-counter",
+  //       payload,
+  //       {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       }
+  //     );
+
+  //     dispatch(showNotification({ message: "Saved!", severity: "success" }));
+  //     router.push(`/admin/counter`);
+  //     console.log("SUCCESS:", response.data);
+  //   } catch (error) {
+  //     console.error("ERROR:", error.response?.data || error.message);
+  //   }
+  // };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
     try {
+      const ip = await getPublicIP();
+  
       const payload = new FormData();
+  
+      // ===== BASIC =====
+      payload.append("job_id", data.job_id);
       payload.append("financial_year", data.financial_year);
       payload.append("client_ref_id", data.client_ref_id);
       payload.append("avak_ref_id", data.avak_ref_id);
-      payload.append("ref_no", data.letter_no);
-      payload.append("od_servicetype_id", 2);
+      payload.append("is_client_dpr", data.is_client_dpr);
+  
+      payload.append("ref_no", data.ref_no || data.letter_no);
+      payload.append("ref_date", data.ref_date);
+      payload.append("receipt_date", data.receipt_date);
+  
+      payload.append("od_servicetype_id", data.od_servicetype_id || 2);
       payload.append("subject", data.subject);
+      payload.append("no_of_media_count", data.no_of_media_count || 0);
+  
       payload.append("StartDate", data.startDate);
       payload.append("EndDate", data.endDate);
-      payload.append("office_address", data.office_address);
-      payload.append("billing_address", data.billing_address);
-      payload.append("office_level_code", data.office_level_code)
-      payload.append("district_code", data.district_code)
-      payload.append("remarks", data.remarks);
-      payload.append("ip_address", '103.79.34.50');
-      payload.append("entry_user_name", data.entry_user_name);
-      payload.append('action_by_section_cd', '03')
-      payload.append("entry_by_user_id", "01");
-      payload.append("client_cd", data.client_cd);
-      payload.append("base_dept_code", data.base_dept_code);
-      payload.append("district_code", data.district_code);
-      payload.append("office_level_code", data.office_level_code);
-      payload.append("office_code", data.office_code);
-      payload.append("section", 0);
-      payload.append("Billing_client_name", data.billing_client_name ||data.client_name);
-      payload.append("Billing_client_cd", data.billing_client_cd ||data.client_cd);
-      payload.append("Billing_address", data.billing_address);
-      payload.append("Billing_base_dept_code", data.billing_base_dept_code);
-      payload.append("Billing_district_code", data.billing_district_code);
-      payload.append("Billing_office_level_code", data.billing_office_level_code);
-      payload.append("Billing_office_code", data.billing_office_code);
-      payload.append("Billing_section_code", 0);
-      payload.append("Billing_officer", data.billing_client_cd);
-      payload.append("owner_user_type_cd", '01');
-      //payload.append("user_type_cd", '0100');
   
-
-
-      if (data.files) {
-        payload.append("files", data.files);
+      // ===== CLIENT =====
+      payload.append("client_cd", data.client_cd);
+      payload.append("client_name", data.client_name);
+      payload.append("office_address", data.office_address);
+  
+      payload.append("base_dept_code", data.base_dept_code || data.baseDepartment);
+      payload.append("office_level_code", data.office_level_code || data.officeLevel);
+      payload.append("office_code", data.office_code);
+      payload.append("district_code", data.district_code);
+      payload.append("section_code", data.section || 0);
+  
+      payload.append("remarks", data.remarks);
+  
+      // ===== USER =====
+      payload.append("ip_address", ip);
+  
+      payload.append("entry_user_name", data.entry_user_name);
+      payload.append("entry_by_user_id", data.entry_by_user_id);
+  
+      payload.append("entry_by_user_type_cd", data.entry_by_user_type_cd);
+      payload.append("modify_by_user_type_cd", data.modify_by_user_type_cd);
+      payload.append("user_type_cd", data.user_type_cd || "01");
+  
+      payload.append("action_by_section_cd", data.action_by_section_cd);
+      payload.append("forward_to_section_cd", data.forward_to_section_cd);
+  
+      payload.append("owner_user_type_cd", data.owner_user_type_cd || "01");
+      payload.append("owner_user_id", data.owner_user_id || "00141");
+  
+      // ===== BILLING =====
+      payload.append(
+        "Billing_client_cd",
+        data.billing_client_cd || data.client_cd
+      );
+  
+      payload.append(
+        "Billing_client_name",
+        data.billing_client_name || data.client_name
+      );
+  
+      payload.append(
+        "Billing_address",
+        data.billing_address || data.office_address
+      );
+  
+      payload.append(
+        "Billing_base_dept_code",
+        data.billing_base_dept_code || data.base_dept_code
+      );
+  
+      payload.append(
+        "Billing_office_level_code",
+        data.billing_office_level_code || data.office_level_code
+      );
+  
+      payload.append(
+        "Billing_office_code",
+        data.billing_office_code || data.office_code
+      );
+  
+      payload.append(
+        "Billing_district_code",
+        data.billing_district_code || data.district_code
+      );
+  
+      payload.append(
+        "Billing_section_code",
+        data.billing_section_code || 0
+      );
+  
+      payload.append(
+        "Billing_client_prarup_code",
+        data.Billing_client_prarup_code || ""
+      );
+  
+      payload.append(
+        "Billing_officer",
+        data.billing_client_cd || ""
+      );
+  
+      payload.append(
+        "upload_doc_path",
+        data.upload_doc_path || ""
+      );
+  
+      // ===== FILES =====
+      if (data.files && data.files.length > 0) {
+        data.files.forEach((file) => {
+          payload.append("files[]", file);
+        });
       }
-
+  
+      // ===== DEBUG =====
       for (let pair of payload.entries()) {
         console.log(pair[0], pair[1]);
       }
-
+  
+      // ===== API =====
       const response = await axiosClient.post(
         "/outDoorMediaTransaction/save-lv-counter",
         payload,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-
-      dispatch(showNotification({ message: "Saved!", severity: "success" }));
+  
+      dispatch(
+        showNotification({
+          message: "Saved!",
+          severity: "success",
+        })
+      );
+  
       router.push(`/admin/counter`);
+  
       console.log("SUCCESS:", response.data);
+  
     } catch (error) {
-      console.error("ERROR:", error.response?.data || error.message);
+      console.error(
+        "ERROR:",
+        error.response?.data || error.message
+      );
     }
   };
-
   function SectionCard({ title, subtitle, children, accent = "#010a2a" }) {
     return (
       <Paper
@@ -410,7 +585,7 @@ console.log("here console images")
       </Paper>
     );
   }
-  
+
   const field = {
     "& .MuiOutlinedInput-root": {
       borderRadius: "12px",
@@ -432,7 +607,7 @@ console.log("here console images")
     "& .MuiInputLabel-root.Mui-focused": { color: "#010a2a" },
     "& .MuiInputBase-input": { color: "#111827", fontWeight: 500 },
   };
- 
+
 
   return (
     <Paper
@@ -504,97 +679,97 @@ console.log("here console images")
       </Box>
 
       <Box component="form" >
-      {/* ── Reference Info ── */}
-<Paper
-  elevation={0}
-  sx={{
-    p: 3,
-    mb: 3,
-    borderRadius: "14px",
-    backgroundColor: "#ffffff",
-    border: "1px solid #e8eaf0",
-  }}
->
-  <SectionHeader title="Reference Information" />
-  <Grid container spacing={2.5} alignItems="center">
-    
-    {/* Financial Year */}
-    <Grid item size={{ xs: 12, md: 3 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
-        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          Financial Year
-        </Typography>
-        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
-          {data.financial_year || "—"}
-        </Typography>
-      </Box>
-    </Grid>
+        {/* ── Reference Info ── */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 3,
+            borderRadius: "14px",
+            backgroundColor: "#ffffff",
+            border: "1px solid #e8eaf0",
+          }}
+        >
+          <SectionHeader title="Reference Information" />
+          <Grid container spacing={2.5} alignItems="center">
 
-    {/* Client Ref ID */}
-    <Grid item size={{ xs: 12, md: 3 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
-        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          Client Ref ID
+            {/* Financial Year */}
+            <Grid item size={{ xs: 12, md: 3 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+                <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Financial Year
         </Typography>
-        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
-          {data.client_ref_id || "—"}
-        </Typography>
-      </Box>
-    </Grid>
+                <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+                  {data.financial_year || "—"}
+                </Typography>
+              </Box>
+            </Grid>
 
-    {/* AVAK Ref ID */}
-    <Grid item size={{ xs: 12, md: 3 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
-        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          AVAK Ref ID
+            {/* Client Ref ID */}
+            <Grid item size={{ xs: 12, md: 3 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+                <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Client Ref ID
         </Typography>
-        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
-          {data.avak_ref_id || "—"}
-        </Typography>
-      </Box>
-    </Grid>
+                <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+                  {data.client_ref_id || "—"}
+                </Typography>
+              </Box>
+            </Grid>
 
-    {/* Ref No */}
-    <Grid item size={{ xs: 12, md: 3 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
-        <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          Ref No
+            {/* AVAK Ref ID */}
+            <Grid item size={{ xs: 12, md: 3 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+                <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  AVAK Ref ID
         </Typography>
-        <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
-          {data.ref_no || "—"}
-        </Typography>
-      </Box>
-    </Grid>
+                <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+                  {data.avak_ref_id || "—"}
+                </Typography>
+              </Box>
+            </Grid>
 
-    {/* Service Type — still interactive */}
-    <Grid item size={{ xs: 12, md: 3 }}>
-      <TextField
-        select
-        label="Service Type"
-        name="od_servicetype_id"
-        fullWidth
-        value={data.od_servicetype_id}
-        onChange={handleChange}
-        sx={grayField}
-      >
-        {services.length > 0 ? (
-          services.map((s) => (
-            <MenuItem key={s.serviceId} value={s.serviceId}>
-              {s.serviceName}
-            </MenuItem>
-          ))
-        ) : (
-          <MenuItem disabled>
-            <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-              No services available
+            {/* Ref No */}
+            <Grid item size={{ xs: 12, md: 3 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+                <Typography variant="caption" sx={{ color: "#9ca3af", fontWeight: 500, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Ref No
+        </Typography>
+                <Typography variant="body2" sx={{ color: "#111827", fontWeight: 600, fontSize: "0.92rem" }}>
+                  {data.ref_no || "—"}
+                </Typography>
+              </Box>
+            </Grid>
+
+            {/* Service Type — still interactive */}
+            <Grid item size={{ xs: 12, md: 3 }}>
+              <TextField
+                select
+                label="Service Type"
+                name="od_servicetype_id"
+                fullWidth
+                value={data.od_servicetype_id}
+                onChange={handleChange}
+                sx={grayField}
+              >
+                {services.length > 0 ? (
+                  services.map((s) => (
+                    <MenuItem key={s.serviceId} value={s.serviceId}>
+                      {s.serviceName}
+                    </MenuItem>
+                  ))
+                ) : (
+                    <MenuItem disabled>
+                      <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+                        No services available
             </Typography>
-          </MenuItem>
-        )}
-      </TextField>
-    </Grid>
+                    </MenuItem>
+                  )}
+              </TextField>
+            </Grid>
 
-  </Grid>
-</Paper>
+          </Grid>
+        </Paper>
 
         {/* ── Job Details ── */}
         <Paper
@@ -646,10 +821,10 @@ console.log("here console images")
             </Grid>
           </Grid>
         </Paper>
-           {/* ── Section 3: Location & Office ── */}
-           <SectionCard  title="Client Location" subtitle="" accent="#10b981">
-            <Grid container spacing={2.5}>
-              {/* <Grid item size={{ xs: 12, md: 4 }}>
+        {/* ── Section 3: Location & Office ── */}
+        <SectionCard title="Client Location" subtitle="" accent="#10b981">
+          <Grid container spacing={2.5}>
+            {/* <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   label="Client"
@@ -659,231 +834,231 @@ console.log("here console images")
                   sx={field}
                 />
               </Grid> */}
-              <Grid item size={{xs:12}}>
-                <TextField
+            <Grid item size={{ xs: 12 }}>
+              <TextField
 
-                  fullWidth
-                  select
-                  label="Base Department"
-                  name="base_dept_code"
-                  value={data.base_dept_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                  {departments.map((dept) => (
-                    <MenuItem key={dept.deptid} value={dept.deptid}>
-                      {dept.deptname}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, }}>
-                <TextField
-                 select
-                  fullWidth
-                  label="District"
-                  name="district_code"
-                  value={data.district_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                   {districts.map((district) => (
-                    <MenuItem key={district.dstrictid} value={district.dstrictid}>
-                      {district.districtname}
-                    </MenuItem>
-                  ))}
-                  </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Office Level"
-                  name="office_level_code"
-                  value={data.office_level_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                  
-                  {levels.map((level) => (
-                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
-                      {level.officeLevelName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Office"
-                  name="office_code"
-                  value={data.office_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                    {offices.map((office) => (
-                    <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
-                      {office.officeName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Section"
-                  name="section"
-                  value={data.section}
-                  onChange={handleChange}
-                  sx={field}
-                > {sections.map((section) => (
-                  <MenuItem key={section} >
-                    {section}
+                fullWidth
+                select
+                label="Base Department"
+                name="base_dept_code"
+                value={data.base_dept_code}
+                onChange={handleChange}
+                sx={field}
+              >
+                {departments.map((dept) => (
+                  <MenuItem key={dept.deptid} value={dept.deptid}>
+                    {dept.deptname}
                   </MenuItem>
                 ))}
-
-                  </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Officer"
-                  name="client_cd"
-                  value={data.client_cd}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                    {officers.map((officer) => (
-                    <MenuItem key={officer.employeeId} value={officer.employeeId}>
-                      {officer.employeeName}
-                    </MenuItem>
-                  ))}
-                  </TextField>
-              </Grid>
+              </TextField>
             </Grid>
-          </SectionCard>
 
-            {/* ── Section 3: Location & Office ── */}
-            <SectionCard  title="Billing Location" subtitle="" accent="#10b981">
-            <Grid container spacing={2.5}>
-            
-              <Grid item size={{xs:12}}>
-                <TextField
-
-                  fullWidth
-                  select
-                  label="Base Department"
-                  name="billing_base_dept_code"
-                  value={data.billing_base_dept_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                  {departments.map((dept) => (
-                    <MenuItem key={dept.deptid} value={dept.deptid}>
-                      {dept.deptname}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, }}>
-                <TextField
-                 select
-                  fullWidth
-                  label="District"
-                  name="district_code"
-                  value={data.district_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                   {districts.map((district) => (
-                    <MenuItem key={district.dstrictid} value={district.dstrictid}>
-                      {district.districtname}
-                    </MenuItem>
-                  ))}
-                  </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Office Level"
-                  name="billing_office_level_code"
-                  value={data.billing_office_level_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                  
-                  {levels.map((level) => (
-                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
-                      {level.officeLevelName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Billing Office"
-                  name="billing_office_code"
-                  value={data.billing_office_code}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                    {offices.map((office) => (
-                    <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
-                      {office.officeName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Billing Section"
-                  name="Billing CSection ode"
-                  value={data.billing_section_code}
-                  onChange={handleChange}
-                  sx={field}
-                > {sections.map((section) => (
-                  <MenuItem key={section} >
-                    {section}
+            <Grid item size={{ xs: 12, }}>
+              <TextField
+                select
+                fullWidth
+                label="District"
+                name="district_code"
+                value={data.district_code}
+                onChange={handleChange}
+                sx={field}
+              >
+                {districts.map((district) => (
+                  <MenuItem key={district.dstrictid} value={district.dstrictid}>
+                    {district.districtname}
                   </MenuItem>
                 ))}
-
-                  </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Officer"
-                  name="billing_client_name"
-                  value={data.billing_client_cd}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                    {officers.map((officer) => (
-                    <MenuItem key={officer.employeeId} value={officer.employeeId}>
-                      {officer.employeeName}
-                    </MenuItem>
-                  ))}
-                  </TextField>
-              </Grid>
+              </TextField>
             </Grid>
-          </SectionCard>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                fullWidth
+                label="Office Level"
+                name="office_level_code"
+                value={data.office_level_code}
+                onChange={handleChange}
+                sx={field}
+              >
+
+                {levels.map((level) => (
+                  <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
+                    {level.officeLevelName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                fullWidth
+                label="Office"
+                name="office_code"
+                value={data.office_code}
+                onChange={handleChange}
+                sx={field}
+              >
+                {offices.map((office) => (
+                  <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
+                    {office.officeName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                fullWidth
+                label="Section"
+                name="section"
+                value={data.section}
+                onChange={handleChange}
+                sx={field}
+              > {sections.map((section) => (
+                <MenuItem key={section} >
+                  {section}
+                </MenuItem>
+              ))}
+
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                fullWidth
+                label="Officer"
+                name="client_cd"
+                value={data.client_cd}
+                onChange={handleChange}
+                sx={field}
+              >
+                {officers.map((officer) => (
+                  <MenuItem key={officer.employeeId} value={officer.employeeId}>
+                    {officer.employeeName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+        </SectionCard>
+
+        {/* ── Section 3: Location & Office ── */}
+        <SectionCard title="Billing Location" subtitle="" accent="#10b981">
+          <Grid container spacing={2.5}>
+
+            <Grid item size={{ xs: 12 }}>
+              <TextField
+
+                fullWidth
+                select
+                label="Base Department"
+                name="billing_base_dept_code"
+                value={data.billing_base_dept_code}
+                onChange={handleChange}
+                sx={field}
+              >
+                {departments.map((dept) => (
+                  <MenuItem key={dept.deptid} value={dept.deptid}>
+                    {dept.deptname}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, }}>
+              <TextField
+                select
+                fullWidth
+                label="District"
+                name="district_code"
+                value={data.district_code}
+                onChange={handleChange}
+                sx={field}
+              >
+                {districts.map((district) => (
+                  <MenuItem key={district.dstrictid} value={district.dstrictid}>
+                    {district.districtname}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                fullWidth
+                label="Office Level"
+                name="billing_office_level_code"
+                value={data.billing_office_level_code}
+                onChange={handleChange}
+                sx={field}
+              >
+
+                {levels.map((level) => (
+                  <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
+                    {level.officeLevelName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                fullWidth
+                label="Billing Office"
+                name="billing_office_code"
+                value={data.billing_office_code}
+                onChange={handleChange}
+                sx={field}
+              >
+                {offices.map((office) => (
+                  <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
+                    {office.officeName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                fullWidth
+                label="Billing Section"
+                name="Billing CSection ode"
+                value={data.billing_section_code}
+                onChange={handleChange}
+                sx={field}
+              > {sections.map((section) => (
+                <MenuItem key={section} >
+                  {section}
+                </MenuItem>
+              ))}
+
+              </TextField>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                fullWidth
+                label="Officer"
+                name="billing_client_name"
+                value={data.billing_client_cd}
+                onChange={handleChange}
+                sx={field}
+              >
+                {officers.map((officer) => (
+                  <MenuItem key={officer.employeeId} value={officer.employeeId}>
+                    {officer.employeeName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+        </SectionCard>
         {/* ── Address Info ── */}
         <Paper
           elevation={0}
@@ -962,58 +1137,55 @@ console.log("here console images")
         >
           <SectionHeader title="Attachment" />
           <Box>
-          <Grid item xs={12} md={6}>
-    <Box>
-      <Typography fontWeight={600} mb={1}>
-        Avak Files
-      </Typography>
+            <Grid item xs={12} md={6}>
+              <Box>
+                <Typography fontWeight={600} mb={1}>Avak Files</Typography>
+                <Box display="flex" gap={2} flexWrap="wrap" sx={{ margin: '10px' }}>
+                  {avakFiles.length === 0 && (
+                    <Typography variant="caption">No files</Typography>
+                  )}
 
-      <Box display="flex" gap={2} flexWrap="wrap" sx={{margin: '10px'}}>
-        {avakFiles.length === 0 && (
-          <Typography variant="caption">No files</Typography>
-        )}
+                  {avakFiles.map((file) => {
+                    const isImage = file.content_type?.includes("image");
+                    const isPDF = file.content_type?.includes("pdf");
 
-        {avakFiles.map((file) => {
-          const isImage = file.content_type?.includes("image");
-          const isPDF = file.content_type?.includes("pdf");
+                    const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
 
-          const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
-
-          return (
-            <Box
-              key={file.id}
-              onClick={() => handleOpenFile(file)}
-              sx={{
-                width: 100,
-                height: 100,
-                border: "1px solid #ddd",
-                borderRadius: 2,
-                overflow: "hidden",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#fff",
-                "&:hover": { boxShadow: 3 },
-              }}
-            >
-              {isImage ? (
-                <img
-                  src={fileUrl}
-                  alt="file"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : isPDF ? (
-                <Typography variant="caption">PDF</Typography>
-              ) : (
-                <Typography variant="caption">FILE</Typography>
-              )}
-            </Box>
-          );
-        })}
-      </Box>
-    </Box>
-  </Grid>
+                    return (
+                      <Box
+                        key={file.id}
+                        onClick={() => handleOpenFile(file)}
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          border: "1px solid #ddd",
+                          borderRadius: 2,
+                          overflow: "hidden",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "#fff",
+                          "&:hover": { boxShadow: 3 },
+                        }}
+                      >
+                        {isImage ? (
+                          <img
+                            src={fileUrl}
+                            alt="file"
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                        ) : isPDF ? (
+                          <Typography variant="caption">PDF</Typography>
+                        ) : (
+                              <Typography variant="caption">FILE</Typography>
+                            )}
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Box>
+            </Grid>
           </Box>
           <Box
             component="label"
@@ -1059,7 +1231,7 @@ console.log("here console images")
               onChange={handleChange}
             />
           </Box>
-          
+
         </Paper>
 
         {/* ── Submit Bar ── */}
