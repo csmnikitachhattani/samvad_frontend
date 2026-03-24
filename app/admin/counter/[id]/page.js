@@ -64,6 +64,8 @@ export default function WorkOrderForm() {
   const [tenders, setTenders] = useState([]);
   const [workTypes, setWorkTypes] = useState([]);
   const [rateDurations, setRateDurations] = useState([]);
+  const [workList, setWorkList] = useState([]);
+  const [rateList, setRateList] = useState([]);
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -508,7 +510,7 @@ export default function WorkOrderForm() {
             onChange={handleChange}
             sx={grayField}
           >
-            {workTypes.map((item) => (
+            {workList.map((item) => (
               <MenuItem key={item.id} value={item.year}>
                 {item.year}
               </MenuItem>
