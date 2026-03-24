@@ -144,6 +144,33 @@ const clientServices = {
     catch (err){
       throw err
     }
+  },
+  getAvakFilesList: async()=>{
+    try  {
+      const res = await axiosClient.get("/Client/getavakfiles");
+      return res
+    }
+    catch (err){
+      throw err
+    }
+  },
+  getCounterFilesList: async()=>{
+    try  {
+      const res = await axiosClient.get("/Client/getcounterfiles");
+      return res
+    }
+    catch (err){
+      throw err
+    }
+  },
+  getClientName: async()=>{
+    try {
+      const res = await axiosClient.get("/Client/GetClientName");
+      return res
+    }
+    catch (err){
+      throw err
+    }
   }
 
 };

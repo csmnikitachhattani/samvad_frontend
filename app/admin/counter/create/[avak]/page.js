@@ -89,6 +89,7 @@ export default function JobForm() {
     ref_date: "",
     receipt_date: "",
     client_cd: "",
+    letter_no: "",
     client_name: "",
     office_address: "",
     billing_client_cd: "",
@@ -138,6 +139,12 @@ export default function JobForm() {
             avak_ref_id: avak,
             client_ref_id: res.data.client_ref_id,
             client : res.data.client_cd,
+            billing_base_dept_code:res.data.base_dept_code,
+            billing_office_code: res.data.office_code,
+            billing_district_code:res.data.district_code,
+            billing_office_level_code : res.data.office_level_code,
+            billing_section_code:res.data.section,
+            billing_client_cd : res.data.client_cd
 
           }));
         setData((prev) => ({ ...prev, ...res.data }));
@@ -273,26 +280,42 @@ export default function JobForm() {
 
     try {
       const payload = new FormData();
-
-      payload.append("job_id", data.job_id);
       payload.append("financial_year", data.financial_year);
       payload.append("client_ref_id", data.client_ref_id);
       payload.append("avak_ref_id", data.avak_ref_id);
-      payload.append("is_client_dpr", data.is_client_dpr);
-      payload.append("ref_no", data.ref_no);
-      payload.append("od_servicetype_id", data.od_servicetype_id);
+      payload.append("ref_no", data.letter_no);
+      payload.append("od_servicetype_id", 2);
       payload.append("subject", data.subject);
-      payload.append("startDate", data.startDate);
-      payload.append("endDate", data.endDate);
+      payload.append("StartDate", data.startDate);
+      payload.append("EndDate", data.endDate);
       payload.append("office_address", data.office_address);
       payload.append("billing_address", data.billing_address);
       payload.append("office_level_code", data.office_level_code)
       payload.append("district_code", data.district_code)
       payload.append("remarks", data.remarks);
-      payload.append("ip_address", getPublicIP());
+      payload.append("ip_address", '103.79.34.50');
       payload.append("entry_user_name", data.entry_user_name);
-      payload.append("entry_by_user_id", "00100");
-      payload.append("client_cd", "00020");
+      payload.append('action_by_section_cd', '03')
+      payload.append("entry_by_user_id", "01");
+      payload.append("client_cd", data.client_cd);
+      payload.append("base_dept_code", data.base_dept_code);
+      payload.append("district_code", data.district_code);
+      payload.append("office_level_code", data.office_level_code);
+      payload.append("office_code", data.office_code);
+      payload.append("section", 0);
+      payload.append("Billing_client_name", data.billing_client_name ||data.client_name);
+      payload.append("Billing_client_cd", data.billing_client_cd ||data.client_cd);
+      payload.append("Billing_address", data.billing_address);
+      payload.append("Billing_base_dept_code", data.billing_base_dept_code);
+      payload.append("Billing_district_code", data.billing_district_code);
+      payload.append("Billing_office_level_code", data.billing_office_level_code);
+      payload.append("Billing_office_code", data.billing_office_code);
+      payload.append("Billing_section_code", 0);
+      payload.append("Billing_officer", data.billing_client_cd);
+      payload.append("owner_user_type_cd", '01');
+      //payload.append("user_type_cd", '0100');
+  
+
 
       if (data.files) {
         payload.append("files", data.files);
@@ -303,7 +326,7 @@ export default function JobForm() {
       }
 
       const response = await axiosClient.post(
-        "/outDoorMediaTransaction/savecounter",
+        "/outDoorMediaTransaction/save-lv-counter",
         payload,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -721,8 +744,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Officer"
-                  name="officer"
-                  value={data.officer}
+                  name="client_cd"
+                  value={data.client_cd}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -746,8 +769,8 @@ export default function JobForm() {
                   fullWidth
                   select
                   label="Base Department"
-                  name="base_dept_code"
-                  value={data.base_dept_code}
+                  name="billing_base_dept_code"
+                  value={data.billing_base_dept_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -782,8 +805,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Office Level"
-                  name="office_level_code"
-                  value={data.office_level_code}
+                  name="billing_office_level_code"
+                  value={data.billing_office_level_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -800,9 +823,9 @@ export default function JobForm() {
                 <TextField
                   select
                   fullWidth
-                  label="Office"
-                  name="office"
-                  value={data.office}
+                  label="Billing Office"
+                  name="billing_office_code"
+                  value={data.billing_office_code}
                   onChange={handleChange}
                   sx={field}
                 >
@@ -817,9 +840,9 @@ export default function JobForm() {
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Section"
-                  name="section"
-                  value={data.section}
+                  label="Billing Section"
+                  name="Billing CSection ode"
+                  value={data.billing_section_code}
                   onChange={handleChange}
                   sx={field}
                 > {sections.map((section) => (
@@ -836,8 +859,8 @@ export default function JobForm() {
                   select
                   fullWidth
                   label="Officer"
-                  name="officer"
-                  value={data.officer}
+                  name="billing_client_name"
+                  value={data.billing_client_cd}
                   onChange={handleChange}
                   sx={field}
                 >
