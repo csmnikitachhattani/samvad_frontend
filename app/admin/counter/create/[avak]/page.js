@@ -59,6 +59,8 @@ function SectionHeader({ title }) {
 export default function JobForm() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const params = useParams();
+  const avakId = params?.id;
   const [services, setServices] = useState([]);
   const [departments, setDepartments] = useState([])
   const [districts, setDistricts] = useState([])
@@ -66,6 +68,7 @@ export default function JobForm() {
   const [offices, setOffices] = useState([])
   const [sections, setSections] = useState([])
   const [officers, setOfficers] = useState([])
+  const [avakFiles, setAvakFiles] = useState([]);
   const durationOptions = [
     { value: "1week", label: "1 Week" },
     { value: "2week", label: "2 Weeks" },
@@ -113,6 +116,32 @@ export default function JobForm() {
     files: null,
     Avak_category: '',
   });
+
+
+useEffect(() => {
+  console.log(avak)
+  if (!avak) return;
+console.log("here console images")
+  const fetchAvakFiles = async () => {
+    try {
+      const res = await axiosClient.get(
+        `http://103.79.34.50:8083/api/Client/getavakfiles`,
+        {
+          params: {
+            financial_year: "2024-2025" ,
+            avak_ref_id: avak,
+          },
+        }
+      );
+
+      setAvakFiles(res.data || []);
+    } catch (error) {
+      console.error("File fetch error", error);
+    }
+  };
+
+  fetchAvakFiles();
+}, [avakId, data.financial_year]);
   useEffect(() => {
   if(data.Avak_category){
     async function fetchServices() {
@@ -950,6 +979,60 @@ export default function JobForm() {
           }}
         >
           <SectionHeader title="Attachment" />
+          <Box>
+          <Grid item xs={12} md={6}>
+    <Box>
+      <Typography fontWeight={600} mb={1}>
+        Avak Files
+      </Typography>
+
+      <Box display="flex" gap={2} flexWrap="wrap" sx={{margin: '10px'}}>
+        {avakFiles.length === 0 && (
+          <Typography variant="caption">No files</Typography>
+        )}
+
+        {avakFiles.map((file) => {
+          const isImage = file.content_type?.includes("image");
+          const isPDF = file.content_type?.includes("pdf");
+
+          const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+
+          return (
+            <Box
+              key={file.id}
+              onClick={() => handleOpenFile(file)}
+              sx={{
+                width: 100,
+                height: 100,
+                border: "1px solid #ddd",
+                borderRadius: 2,
+                overflow: "hidden",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#fff",
+                "&:hover": { boxShadow: 3 },
+              }}
+            >
+              {isImage ? (
+                <img
+                  src={fileUrl}
+                  alt="file"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : isPDF ? (
+                <Typography variant="caption">PDF</Typography>
+              ) : (
+                <Typography variant="caption">FILE</Typography>
+              )}
+            </Box>
+          );
+        })}
+      </Box>
+    </Box>
+  </Grid>
+          </Box>
           <Box
             component="label"
             htmlFor="file-upload"
@@ -994,6 +1077,7 @@ export default function JobForm() {
               onChange={handleChange}
             />
           </Box>
+          
         </Paper>
 
         {/* ── Submit Bar ── */}

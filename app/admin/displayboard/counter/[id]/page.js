@@ -1441,9 +1441,6 @@ const [data, setData] = useState({
     getPublicIP();
   });
 
-
-
-
 useEffect(() => {
   if (!avakId) return;
 
@@ -1475,122 +1472,6 @@ const handleOpenFile = (file) => {
   window.open(fileUrl, "_blank");
 };
 
-
-
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-
-//   try {
-//     const ip = await getPublicIP();
-
-//     const payload = new FormData();
-
-//     payload.append("job_id", data.job_id);
-//     payload.append("financial_year", data.financial_year);
-//     payload.append("client_ref_id", data.client_ref_id);
-//     payload.append("avak_ref_id", data.avak_ref_id);
-//     payload.append("is_client_dpr", data.is_client_dpr);
-
-//     payload.append("ref_no", data.ref_no);
-//     payload.append("ref_date", data.ref_date);
-//     payload.append("receipt_date", data.receipt_date);
-
-//     payload.append("od_servicetype_id", data.od_servicetype_id);
-//     payload.append("subject", data.subject);
-//     payload.append("no_of_media_count", data.no_of_media_count);
-
-//     payload.append("StartDate", data.startDate);
-//     payload.append("EndDate", data.endDate);
-
-//     payload.append("client_cd", data.client_cd);
-//     payload.append("client_name", data.client_name);
-//     payload.append("office_address", data.office_address);
-
-//     payload.append("base_dept_code", data.baseDepartment);
-//     payload.append("office_level_code", data.officeLevel);
-//     payload.append("office_code", data.office_code);
-//     payload.append("district_code", data.district_code);
-//     payload.append("section_code", data.section);
-
-//     payload.append("remarks", data.remarks);
-
-//     payload.append("ip_address", ip);
-//     payload.append("entry_user_name", data.entry_user_name);
-//     payload.append("entry_by_user_id", data.entry_by_user_id);
-
-//     payload.append("entry_by_user_type_cd", data.entry_by_user_type_cd);
-//     payload.append("modify_by_user_type_cd", data.modify_by_user_type_cd);
-//     payload.append("user_type_cd", data.user_type_cd);
-//     payload.append("action_by_section_cd", data.action_by_section_cd);
-//     payload.append("forward_to_section_cd", data.forward_to_section_cd);
-
-//     payload.append(
-//       "Billing_client_cd",
-//       data.Billing_client_cd || data.client_cd
-//     );
-
-//     payload.append(
-//       "Billing_client_name",
-//       data.Billing_client_name || data.client_name
-//     );
-
-//     payload.append("Billing_address", data.Billing_address);
-
-//     payload.append(
-//       "Billing_base_dept_code",
-//       data.Billing_base_dept_code || data.baseDepartment
-//     );
-
-//     payload.append(
-//       "Billing_office_level_code",
-//       data.Billing_office_level_code || data.officeLevel
-//     );
-
-//     payload.append(
-//       "Billing_office_code",
-//       data.Billing_office_code || data.office_code
-//     );
-
-//     payload.append(
-//       "Billing_district_code",
-//       data.Billing_district_code || data.district_code
-//     );
-
-//     payload.append(
-//       "Billing_section_code",
-//       data.Billing_section_code || data.section
-//     );
-
-//     payload.append(
-//       "Billing_client_prarup_code",
-//       data.Billing_client_prarup_code
-//     );
-
-//     payload.append("upload_doc_path", data.upload_doc_path || "");
-
-//     if (data.files && data.files.length > 0) {
-//       data.files.forEach((file) => {
-//         payload.append("files", file);
-//       });
-//     }
-
-//     const response = await axiosClient.post(
-//       "http://103.79.34.50:8083/api/OutDoorMediaTransaction/save-db-counter",
-//       payload,
-//       { headers: { "Content-Type": "multipart/form-data" } }
-//     );
-
-//     dispatch(showNotification({ message: "Saved!", severity: "success" }));
-
-//     router.push(`/admin/displayboard`);
-
-//     console.log("SUCCESS:", response.data);
-
-//   } catch (error) {
-//     console.error("ERROR:", error.response?.data || error.message);
-//   }
-// };
-  
 
 const handleSubmit = async (e) => {
   e.preventDefault();
