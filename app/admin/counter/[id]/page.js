@@ -194,6 +194,57 @@ export default function WorkOrderForm() {
 
     fetchCounters();
   }, [id]);
+  async function fetchCategories(serviceTypeId) {
+    try {
+      const response = await adminServices.getOdmRateCategory(serviceTypeId);
+      setVendors(response.result);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
+  async function fetchTenders(serviceTypeId) {
+    try {
+      const response = await adminServices.getOdmRateTender(serviceTypeId);
+      setVendors(response.result);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
+  async function fetchWorkTypes(serviceTypeId) {
+    try {
+      const response = await adminServices.getOdmRateWorkTypes(serviceTypeId);
+      setVendors(response.result);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
+  async function fetchRateDurations(serviceTypeId) {
+    try {
+      const response = await adminServices.getOdmRateDuration(serviceTypeId);
+      setVendors(response.result);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
+  async function fetchWorkList(serviceTypeId) {
+    try {
+      const response = await adminServices.getOdmRateWorkList(serviceTypeId);
+      setVendors(response.result);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
+  async function fetchRateList(serviceTypeId) {
+    try {
+      const response = await adminServices.getOdmRateWorkList(serviceTypeId);
+      setVendors(response.result);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
+  useEffect(() => {
+    
+  }, [id]);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -221,24 +272,24 @@ export default function WorkOrderForm() {
     setFormData({ ...formData, detailList: updatedDetails });
   };
 
-  const addRow = () => {
-    setFormData({
-      ...formData,
-      detailList: [
-        ...formData.detailList,
-        {
-          display_board_id: 0,
-          description: "",
-          rate: 0,
-          media_unit_count: 0,
-          no_of_spot: 0,
-          total_rate: 0,
-          start_date: "",
-          end_date: "",
-        },
-      ],
-    });
-  };
+  // const addRow = () => {
+  //   setFormData({
+  //     ...formData,
+  //     detailList: [
+  //       ...formData.detailList,
+  //       {
+  //         display_board_id: 0,
+  //         description: "",
+  //         rate: 0,
+  //         media_unit_count: 0,
+  //         no_of_spot: 0,
+  //         total_rate: 0,
+  //         start_date: "",
+  //         end_date: "",
+  //       },
+  //     ],
+  //   });
+  // };
 
   const handleVehicleChange = (vehicleId, field, value) => {
     setVehicles((prev) =>
@@ -511,6 +562,23 @@ export default function WorkOrderForm() {
             sx={grayField}
           >
             {workList.map((item) => (
+              <MenuItem key={item.id} value={item.year}>
+                {item.year}
+              </MenuItem>
+            ))}
+          </TextField>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+          <TextField
+            fullWidth
+            select
+            label="Rate List"
+            name="rate_id"
+            value={formData.rate_id}
+            onChange={handleChange}
+            sx={grayField}
+          >
+            {rateList.map((item) => (
               <MenuItem key={item.id} value={item.year}>
                 {item.year}
               </MenuItem>
