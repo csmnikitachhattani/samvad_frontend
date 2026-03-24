@@ -74,6 +74,9 @@ export default function WorkOrderForm() {
     subject: "",
     dpr_job_ref_no: "",
     //wo_date: "",
+    category: '',
+    tender: '',
+    work_type: '',
     vendor_id: [],
     vendor_name: [],
     client_cd: "",
@@ -147,6 +150,7 @@ export default function WorkOrderForm() {
   }, [formData.vendor_id]);
 
   useEffect(() => {
+
     async function fetchCounters() {
       try {
         const response = await adminServices.getcounterDetail(id);
@@ -194,34 +198,62 @@ export default function WorkOrderForm() {
 
     fetchCounters();
   }, [id]);
-  async function fetchCategories(serviceTypeId) {
+  async function fetchCategories() {
+    const payload={
+      "tender_cate_cd": "29",
+      "param": "search",
+      "search_param": "category_id"
+    }
     try {
-      const response = await adminServices.getOdmRateCategory(serviceTypeId);
-      setVendors(response.result);
+      const response = await adminServices.getOdmRateCategory(payload);
+      console.log(response)
+      setCategories(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
   }
-  async function fetchTenders(serviceTypeId) {
+  async function fetchTenders() {
+    const payload = {
+      "tender_cate_cd": formData.category,
+      "param": "search",
+      "search_param": "tender_id",
+      "flag": "1",
+      "status": "W"
+    }
     try {
-      const response = await adminServices.getOdmRateTender(serviceTypeId);
-      setVendors(response.result);
+      const response = await adminServices.getOdmRateTender(payload);
+      setTenders(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
   }
-  async function fetchWorkTypes(serviceTypeId) {
+  async function fetchWorkTypes() {
+    const payload = {
+        "tender_cate_cd": "29",
+        "tender_type_id": "02",
+        "tender_id": formData.tender,
+        "param": "search",
+        "search_param": "work_type_id"
+    }
     try {
-      const response = await adminServices.getOdmRateWorkTypes(serviceTypeId);
-      setVendors(response.result);
+      const response = await adminServices.getOdmRateWorkTypes(payload);
+      setWorkTypes(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
   }
-  async function fetchRateDurations(serviceTypeId) {
+  async function fetchRateDurations() {
+    const payload = {
+      "tender_cate_cd": "29",
+      "tender_type_id": "02",
+      "tender_id": formData.tender,
+      "work_type_id": formData.work_type,
+      "param": "search",
+      "search_param": "rate_duration"
+    }
     try {
-      const response = await adminServices.getOdmRateDuration(serviceTypeId);
-      setVendors(response.result);
+      const response = await adminServices.getOdmRateDuration(payload);
+      setRateDurations(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
@@ -242,9 +274,24 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
+  useEffect(()=>{
+    if(formData.category){
+      fetchTenders()
+    }
+  }, [formData.category])
+  useEffect(()=>{
+    if(formData.tender){
+      fetchWorkTypes()
+    }
+  }, [formData.tender])
+  useEffect(()=>{
+    if(formData.work_type){
+      fetchRateDurations()
+    }
+  },[formData.work_type])
   useEffect(() => {
-    
-  }, [id]);
+    fetchCategories()
+  }, []);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -493,8 +540,8 @@ export default function WorkOrderForm() {
               sx={grayField}
             >
               {categories.map((item) => (
-                <MenuItem key={item.id} value={item.year}>
-                  {item.year}
+                <MenuItem key={item.tender_cate_cd} value={item.tender_cate_cd}>
+                  {item.tender_cate_text}
                 </MenuItem>
               ))}
 
@@ -511,8 +558,8 @@ export default function WorkOrderForm() {
             sx={grayField}
           >
             {tenders.map((item) => (
-              <MenuItem key={item.id} value={item.year}>
-                {item.year}
+              <MenuItem key={item.Tender_Id} value={item.Tender_Id}>
+                {item.Tender_Id}
               </MenuItem>
             ))}
           </TextField>
@@ -528,8 +575,8 @@ export default function WorkOrderForm() {
             sx={grayField}
           >
             {workTypes.map((item) => (
-              <MenuItem key={item.id} value={item.year}>
-                {item.year}
+              <MenuItem key={item.work_type_cd} value={item.work_type_cd}>
+                {item.work_type_text}
               </MenuItem>
             ))}
           </TextField>
@@ -545,8 +592,8 @@ export default function WorkOrderForm() {
             sx={grayField}
           >
             {rateDurations.map((item) => (
-              <MenuItem key={item.id} value={item.year}>
-                {item.year}
+              <MenuItem key={item.rate_duration_id} value={item.rate_duration_id}>
+                {item.rate_duration}
               </MenuItem>
             ))}
           </TextField>
