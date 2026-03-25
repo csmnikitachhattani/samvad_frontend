@@ -72,13 +72,20 @@ const DataSetUI = () => {
       setError("");
       setSuccess("");
       const payload = {
-        jobNo: job_id,
-        avakRefId: avak_ref,
-        financialYear: "2024-2025",
-        notesheetByUserId: "00078",
-        notesheetByUserName: "Nikita",
-        notesheetByIp: "103.79.34.50",
-        details: records,
+        financial_year: "string",
+        avak_ref_id:  avak_ref,
+        job_no: job_id,
+        notesheet_by_user_id: "00078",
+        notesheet_by_username: "Nikita",
+        notesheet_by_ip: "103.79.34.50",
+        action_done_fully: "string",
+        action_cd: "03",
+        action_name: "string",
+        status_reason_cd: "string",
+        notesheet_by_section_cd: "string",
+        notesheet_by_type_cd: "string",
+        remark: "string",
+        newDetailList: records,
       };
       await adminServices.submitNotesheet(payload);
       setSuccess("NoteSheet Generated submitted successfully.");

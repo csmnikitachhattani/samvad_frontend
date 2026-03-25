@@ -229,6 +229,8 @@ function ContentCategoryRadio({ value, onChange, categories, hasError }) {
   );
 }
 
+
+
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function ClientAttachmentForm() {
   const dispatch = useDispatch();
@@ -257,6 +259,7 @@ export default function ClientAttachmentForm() {
     schedule_date: "",
     client: "",
     baseDept: "",
+    client_name: "",
     district: "",
     officeLevel: "",
     office: "",
@@ -395,6 +398,25 @@ export default function ClientAttachmentForm() {
       console.error("Failed to fetch captions", error);
     }
   }
+  async function fetchClientName() {
+    try {
+      const payload = {
+        base_dept_cd: formData.baseDept,
+        district_cd: formData.district,
+        client_cd: formData.officer,
+        section_cd: formData.section,
+        office_level_cd: formData.officeLevel,
+        office_cd: formData.office,
+      };
+      const res = await clientServices.getClientName(payload);
+      setFormData((prev) => ({
+        ...prev,
+        client_name: res?.data?.[0]?.client_name || "",
+      }));
+    } catch (error) {
+      console.error("Failed to fetch client name", error);
+    }
+  }
   async function fetchClient(client) {
     try {
       const res = await clientServices.getClientData(client);
@@ -406,13 +428,42 @@ export default function ClientAttachmentForm() {
         office: res.data.data.Office_code,
         section: res.data.data.section_code,
         officer: res.data.data.employee_code,
+        
       }));
       fetchDistricts();
     } catch (error) {
       console.error("Failed to fetch client", error);
     }
   }
-
+   useEffect(() => {
+    const {
+      baseDept,
+      district,
+      office,
+      section,
+      officer,
+      officeLevel,
+    } = formData;
+  
+    if (
+      baseDept &&
+      district &&
+      office &&
+      section &&
+      officer &&
+      officeLevel
+    ) {
+      fetchClientName();
+    }
+  
+  }, [
+    formData.baseDept,
+    formData.district,
+    formData.office,
+    formData.section,
+    formData.officer,
+    formData.officeLevel,
+  ]);
   useEffect(() => {
     if (formData.client !== "") fetchClient(formData.client);
   }, [formData.client]);
@@ -425,7 +476,6 @@ export default function ClientAttachmentForm() {
       fetchOfficers(formData.baseDept, formData.district);
     }
   }, [formData.baseDept, formData.district]);
-
   useEffect(() => {
     if (formData.baseDept) fetchOfficeLevel(formData.baseDept);
   }, [formData.baseDept]);
@@ -500,9 +550,11 @@ export default function ClientAttachmentForm() {
         district_code: formData.district,
         section_code: formData.section,
         client_prarup_code: formData.clientPrarupCode || "2",
-        // client_name: formData.clientName || "sde",
-        // client_address: formData.clientAddress || "Raipur",
-        // client_city: formData.clientCity || "Raipur",
+        client_name: formData.client_name,
+        ...(formData.isIndividual && {
+        client_address: formData.clientAddress || 'NA',
+        client_city: formData.clientCity || "NA",
+        }),
         schedule_date: formData.schedule_date
           ? new Date(formData.schedule_date).toISOString().slice(0, 10)
           : null,
@@ -782,7 +834,7 @@ export default function ClientAttachmentForm() {
         />
       </Paper>
           {/* ── Section 3: Location & Office ── */}
-          {formData.isIndividual ?(
+          {!formData.isIndividual ?(
           <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
 

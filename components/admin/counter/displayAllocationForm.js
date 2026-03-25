@@ -724,76 +724,8 @@ const handleSubmit = async () => {
           <Typography variant="h6">Job Details</Typography>
           <Divider sx={{ mb: 2 }} />
 
-          {/* ✅ SHOW ONLY REQUIRED INPUTS */}
+         
           <Grid container spacing={2}>
-            {/* {inputFields.map((field) => (
-              <Grid item xs={3} key={field.name}>
-                <TextField
-                  label={field.label}
-                  type={field.type || "text"}
-                  value={formData[field.name] || ""}
-                  onChange={(e) =>
-                    handleChange(field.name, e.target.value)
-                  }
-                  fullWidth
-                  size="small"
-                  InputLabelProps={
-                    field.type === "date" ? { shrink: true } : {}
-                  }
-                />
-              </Grid>
-            ))} */}
-
-  {/* {inputFields.map((field) => (
-    <Grid item xs={3} key={field.name}>
-      <Box>
-        <Typography variant="caption" color="text.secondary">
-          {field.label}
-        </Typography>
-
-        <Typography
-          variant="body2"
-          sx={{
-            mt: 0.5,
-            p: 1,
-            border: "1px solid #e0e0e0",
-            borderRadius: "4px",
-            backgroundColor: "#f9f9f9",
-          }}
-        >
-          {formData[field.name] || "-"}
-        </Typography>
-      </Box>
-    </Grid>
-  ))}
- */}
-
- {/* {inputFields.map((field) => (
-  <Grid item xs={3} key={field.name}>
-    <Box>
-     
-      <Typography
-        variant="caption"
-        sx={{ fontWeight: 600, color: "#555" }}
-      >
-        {field.label}
-      </Typography>
-
-    
-      <Typography
-        variant="body2"
-        sx={{
-          mt: 0.5,
-          color: "#000",
-        }}
-      >
-        {formData[field.name] || "-"}
-      </Typography>
-    </Box>
-  </Grid>
-))} */}
-
-
 {inputFields.map((field) => (
   <Grid item size={{xs:12,sm:6,md:3}} key={field.name}>
     <Box
@@ -835,9 +767,6 @@ const handleSubmit = async () => {
     </Box>
   </Grid>
 ))}
-
-
-
   {/* Vendor */}
            <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
               <TextField

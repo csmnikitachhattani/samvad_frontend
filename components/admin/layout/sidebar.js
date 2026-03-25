@@ -290,8 +290,6 @@ const isActive = (path) => pathname.startsWith(path);
       </div>
     );
   };
-   
-
   return (
     <Box
       sx={{
@@ -392,31 +390,14 @@ const isActive = (path) => pathname.startsWith(path);
 
         {/* Submenu */}
         {hasSubmenu && (
-          <Collapse in={openMenu === item.label} timeout="auto" unmountOnExit>
+          <Collapse in={openMenu === item.label}>
             <List sx={{ pl: 4 }}>
               {item.submenu.map((sub) => (
                 <ListItemButton
                   key={sub.path}
                   onClick={() => router.push(sub.path)}
-                  sx={{
-                    borderRadius: "10px",
-                    mb: 0.5,
-                    py: 0.75,
-                    bgcolor: isActive(sub.path)
-                      ? "rgba(255,255,255,0.2)"
-                      : "transparent",
-                    "&:hover": {
-                      bgcolor: "rgba(255,255,255,0.15)",
-                    },
-                  }}
                 >
-                  <ListItemText
-                    primary={sub.label}
-                    primaryTypographyProps={{
-                      fontSize: "0.7rem",
-                      fontWeight: isActive(sub.path) ? 600 : 500,
-                    }}
-                  />
+                  <ListItemText primary={sub.label} />
                 </ListItemButton>
               ))}
             </List>
