@@ -38,6 +38,13 @@ export default function AuthGuard({ children }) {
       }
     }
 
+    if (role === "Outdoor") {
+      if (!pathname.startsWith("/outdoor")) {
+        router.replace("/outdoor");
+        return;
+      }
+    }
+
     setLoading(false);
   }, [pathname]);
 

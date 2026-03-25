@@ -43,6 +43,7 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
     rcPhotoPath: "",
     createdBy: "",
     createdIpAddress: "",
+    specification: "",
   });
   const createVehicle = async () => {
     try {
@@ -54,7 +55,7 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
       formData.append("OwnerName", data.ownerName);
       formData.append("FitnessUpto", "2026-01-26T14:20:06.038Z");
       formData.append("InsuranceUpto", "2026-01-26T14:20:06.038Z");
-
+      formData.append("InsuranceUpto", specification);
       // File
       if (data.rcPhotoFile) {
         formData.append("RcPhotoFile", data.rcPhotoFile);
@@ -267,6 +268,18 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
                 size="small"
                 InputLabelProps={{ shrink: true }}
                 value={data.insuranceUpto}
+                onChange={handleChange}
+              />
+            </Grid>
+            
+            <Grid item size={{ xs: 12, md: 12 }}>
+              <TextField
+                label="Specification"
+                name="specification"
+                fullWidth
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                value={data.specification}
                 onChange={handleChange}
               />
             </Grid>
