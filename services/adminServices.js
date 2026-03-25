@@ -175,6 +175,15 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getOdmRateList: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-lv-get-rate-allocation', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
 
  
 };

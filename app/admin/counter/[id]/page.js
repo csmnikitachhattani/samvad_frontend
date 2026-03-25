@@ -77,6 +77,9 @@ export default function WorkOrderForm() {
     category: '',
     tender: '',
     work_type: '',
+    rate_duration_id : '',
+    work_list_id: '',
+    rate_id: '',
     vendor_id: [],
     vendor_name: [],
     client_cd: "",
@@ -258,18 +261,29 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
-  async function fetchWorkList(serviceTypeId) {
+  async function fetchWorkList() {
+    const payload = {
+      "tender_cate_cd": "29",
+      "tender_id": formData.tender,
+      "work_detail_id": "00004",
+      "param": "Work"
+    }
     try {
-      const response = await adminServices.getOdmRateWorkList(serviceTypeId);
-      setVendors(response.result);
+      const response = await adminServices.getOdmRateWorkList(payload);
+      setWorkList(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
   }
-  async function fetchRateList(serviceTypeId) {
+  async function fetchRateList() {
+    const payload = {
+      "tender_cate_id": "29",
+      "work_type_cd": String(formData.work_type),
+      "work_cd": formData.work_list_id
+    }
     try {
-      const response = await adminServices.getOdmRateWorkList(serviceTypeId);
-      setVendors(response.result);
+      const response = await adminServices.getOdmRateList(payload);
+      setRateList(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
@@ -289,6 +303,17 @@ export default function WorkOrderForm() {
       fetchRateDurations()
     }
   },[formData.work_type])
+  useEffect(()=>{
+    if(formData.rate_duration_id){
+      fetchWorkList()
+    }
+  },[formData.rate_duration_id])
+  useEffect(()=>{
+    if(formData.work_list_id){
+      fetchRateList()
+    }
+  },[formData.work_list_id])
+
   useEffect(() => {
     fetchCategories()
   }, []);
@@ -609,8 +634,8 @@ export default function WorkOrderForm() {
             sx={grayField}
           >
             {workList.map((item) => (
-              <MenuItem key={item.id} value={item.year}>
-                {item.year}
+              <MenuItem key={item.work_cd} value={item.work_cd}>
+                {item.work_detail_text}
               </MenuItem>
             ))}
           </TextField>
@@ -626,8 +651,8 @@ export default function WorkOrderForm() {
             sx={grayField}
           >
             {rateList.map((item) => (
-              <MenuItem key={item.id} value={item.year}>
-                {item.year}
+              <MenuItem key={item.Impanel_rate_id} value={item.Impanel_rate_id}>
+                {item.impanel_rate}
               </MenuItem>
             ))}
           </TextField>
