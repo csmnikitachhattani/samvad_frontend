@@ -125,7 +125,7 @@ export default function WorkOrderForm() {
 
       vendorId: agency.AgencyId?.toString() || "",
       vendorName: agency.AgencyName || "",
-      vendorCateId: agency.ServiceId?.toString() || "",
+      vendorCateId: agency.ServiceId?.toString() || "7",
       vendorCate: "outdoor media",
       ledVehicleId: agency.VehicleId,
       VehicleNo: agency.VehicleNo,
