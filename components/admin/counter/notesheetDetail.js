@@ -78,12 +78,12 @@ const DataSetUI = () => {
         notesheet_by_user_id: "00078",
         notesheet_by_username: "Nikita",
         notesheet_by_ip: "103.79.34.50",
-        action_done_fully: "string",
-        action_cd: "03",
-        action_name: "string",
-        status_reason_cd: "string",
-        notesheet_by_section_cd: "string",
-        notesheet_by_type_cd: "string",
+        action_done_fully: "1",
+        action_cd: "05",
+        action_name: "Generate Notesheet",
+        status_reason_cd: "01",
+        notesheet_by_section_cd: "03",
+        notesheet_by_type_cd: "17",
         remark: "string",
         newDetailList: records,
       };
@@ -128,7 +128,7 @@ const DataSetUI = () => {
   const columns = [
     { label: "Vehicle ID", key: "ledVehicleId", mono: true },
     { label: "Rate",       key: "rate",         fmt: true },
-    { label: "Vehicles",   key: "no_of_vehicle" },
+    //{ label: "Vehicles",   key: "no_of_vehicle" },
     { label: "Programme",  key: "no_of_programme" },
     { label: "Total",      key: "total_rate",   fmt: true, bold: true },
     { label: "Start Date", key: "start_date",   date: true },
@@ -255,6 +255,7 @@ function BodyRow({ row, columns, fmt }) {
     >
       {columns.map((c) => {
         let val = row[c.key];
+        console.log(val)
         if (c.fmt)  val = fmt(val);
         if (c.date) val = val?.split("T")[0] ?? "—";
         return (
