@@ -62,6 +62,7 @@ export default function WorkOrderForm() {
   const [selected, setSelected] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tenders, setTenders] = useState([]);
+  const [selectedRate, setSelectedRate] = useState(null);
   const [workTypes, setWorkTypes] = useState([]);
   const [rateDurations, setRateDurations] = useState([]);
   const [workList, setWorkList] = useState([]);
@@ -77,7 +78,7 @@ export default function WorkOrderForm() {
     category: '',
     tender: '',
     work_type: '',
-    rate_duration_id : '',
+    rate_duration_id: '',
     work_list_id: '',
     rate_id: '',
     vendor_id: [],
@@ -98,6 +99,7 @@ export default function WorkOrderForm() {
     entry_ip_address: "",
     entry_by_user_id: "",
     entry_by_username: "",
+    billing_Client_cd: "",
     detailList: [
       {
         display_board_id: 0,
@@ -128,10 +130,10 @@ export default function WorkOrderForm() {
       ledVehicleId: agency.VehicleId,
       VehicleNo: agency.VehicleNo,
       description: "",
-      rate: 12,
+      rate: selectedRate.impanel_rate,
       noOfVehicle: 1,
       noOfProgramme: 4,
-      totalRate: 12 * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
+      totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
       startDate: formatDateForInput(startDate),
       endDate: formatDateForInput(endDate),
       selected: false,
@@ -170,7 +172,7 @@ export default function WorkOrderForm() {
           vendor_id: response.vendor_id ?? [],
           vendor_name: response.vendor_name ?? [],
           client_cd: response.client_cd ?? "",
-          billing_Client_cd: response.billing_Client_cd ?? "",
+          billing_Client_cd: response.billing_client_cd ?? "",
           billing_office_code: response.billing_office_code ?? "",
           client_grp_cd: response.client_grp_cd ?? "",
           start_date: response.startDate ?? "",
@@ -202,7 +204,7 @@ export default function WorkOrderForm() {
     fetchCounters();
   }, [id]);
   async function fetchCategories() {
-    const payload={
+    const payload = {
       "tender_cate_cd": "29",
       "param": "search",
       "search_param": "category_id"
@@ -232,11 +234,11 @@ export default function WorkOrderForm() {
   }
   async function fetchWorkTypes() {
     const payload = {
-        "tender_cate_cd": "29",
-        "tender_type_id": "02",
-        "tender_id": formData.tender,
-        "param": "search",
-        "search_param": "work_type_id"
+      "tender_cate_cd": "29",
+      "tender_type_id": "02",
+      "tender_id": formData.tender,
+      "param": "search",
+      "search_param": "work_type_id"
     }
     try {
       const response = await adminServices.getOdmRateWorkTypes(payload);
@@ -288,31 +290,31 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
-  useEffect(()=>{
-    if(formData.category){
+  useEffect(() => {
+    if (formData.category) {
       fetchTenders()
     }
   }, [formData.category])
-  useEffect(()=>{
-    if(formData.tender){
+  useEffect(() => {
+    if (formData.tender) {
       fetchWorkTypes()
     }
   }, [formData.tender])
-  useEffect(()=>{
-    if(formData.work_type){
+  useEffect(() => {
+    if (formData.work_type) {
       fetchRateDurations()
     }
-  },[formData.work_type])
-  useEffect(()=>{
-    if(formData.rate_duration_id){
+  }, [formData.work_type])
+  useEffect(() => {
+    if (formData.rate_duration_id) {
       fetchWorkList()
     }
-  },[formData.rate_duration_id])
-  useEffect(()=>{
-    if(formData.work_list_id){
+  }, [formData.rate_duration_id])
+  useEffect(() => {
+    if (formData.work_list_id) {
       fetchRateList()
     }
-  },[formData.work_list_id])
+  }, [formData.work_list_id])
 
   useEffect(() => {
     fetchCategories()
@@ -344,24 +346,6 @@ export default function WorkOrderForm() {
     setFormData({ ...formData, detailList: updatedDetails });
   };
 
-  // const addRow = () => {
-  //   setFormData({
-  //     ...formData,
-  //     detailList: [
-  //       ...formData.detailList,
-  //       {
-  //         display_board_id: 0,
-  //         description: "",
-  //         rate: 0,
-  //         media_unit_count: 0,
-  //         no_of_spot: 0,
-  //         total_rate: 0,
-  //         start_date: "",
-  //         end_date: "",
-  //       },
-  //     ],
-  //   });
-  // };
 
   const handleVehicleChange = (vehicleId, field, value) => {
     setVehicles((prev) =>
@@ -370,6 +354,13 @@ export default function WorkOrderForm() {
   };
 
   const handleSubmit = async () => {
+    const total = vehicles
+  .filter((item) => item.selected === true)
+  .reduce((sum, item) => sum + Number(item.totalRate || 0), 0);
+  const commission = total * 0.02;
+  const gst = total * 0.18;
+
+  console.log(total);
     const payload = {
       financialYear: formData.financial_year,
       avakRefId: formData.avak_ref_id,
@@ -382,10 +373,11 @@ export default function WorkOrderForm() {
       billingOfficeCode: formData.billing_office_code,
       clientGrpCd: formData.client_grp_cd,
       odServicetypeId: formData.od_servicetype_id,
-      startDate: formData.start_date,
-      endDate: formData.end_date,
-      commisionPercentage: formData.commision_Percentage,
-      gstPercentage: formData.gst_percentage,
+      woDate: new Date(formData.start_date).toISOString(),
+      startDate: new Date(formData.start_date).toISOString(),
+      endDate: new Date(formData.end_date).toISOString(),
+      commisionPercentage: "2",
+      gstPercentage: "18",
       entryIpAddress: "127.0.0.1",
       entryByUserId: "1",
       entryByUsername: "admin",
@@ -573,89 +565,105 @@ export default function WorkOrderForm() {
             </TextField>
           </Grid>
           <Grid item size={{ xs: 12, md: 3 }}>
-          <TextField
-            fullWidth
-            select
-            label="Tenders"
-            name="tender"
-            value={formData.tender}
-            onChange={handleChange}
-            sx={grayField}
-          >
-            {tenders.map((item) => (
-              <MenuItem key={item.Tender_Id} value={item.Tender_Id}>
-                {item.Tender_Id}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              fullWidth
+              select
+              label="Tenders"
+              name="tender"
+              value={formData.tender}
+              onChange={handleChange}
+              sx={grayField}
+            >
+              {tenders.map((item) => (
+                <MenuItem key={item.Tender_Id} value={item.Tender_Id}>
+                  {item.Tender_Id}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid item size={{ xs: 12, md: 3 }}>
-          <TextField
-            fullWidth
-            select
-            label="Work Types"
-            name="work_type"
-            value={formData.work_type}
-            onChange={handleChange}
-            sx={grayField}
-          >
-            {workTypes.map((item) => (
-              <MenuItem key={item.work_type_cd} value={item.work_type_cd}>
-                {item.work_type_text}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              fullWidth
+              select
+              label="Work Types"
+              name="work_type"
+              value={formData.work_type}
+              onChange={handleChange}
+              sx={grayField}
+            >
+              {workTypes.map((item) => (
+                <MenuItem key={item.work_type_cd} value={item.work_type_cd}>
+                  {item.work_type_text}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid item size={{ xs: 12, md: 3 }}>
-          <TextField
-            fullWidth
-            select
-            label="Rate Duration"
-            name="rate_duration_id"
-            value={formData.rate_duration_id}
-            onChange={handleChange}
-            sx={grayField}
-          >
-            {rateDurations.map((item) => (
-              <MenuItem key={item.rate_duration_id} value={item.rate_duration_id}>
-                {item.rate_duration}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              fullWidth
+              select
+              label="Rate Duration"
+              name="rate_duration_id"
+              value={formData.rate_duration_id}
+              onChange={handleChange}
+              sx={grayField}
+            >
+              {rateDurations.map((item) => (
+                <MenuItem key={item.rate_duration_id} value={item.rate_duration_id}>
+                  {item.rate_duration}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid item size={{ xs: 12, md: 3 }}>
-          <TextField
-            fullWidth
-            select
-            label="Work List"
-            name="work_list_id"
-            value={formData.work_list_id}
-            onChange={handleChange}
-            sx={grayField}
-          >
-            {workList.map((item) => (
-              <MenuItem key={item.work_cd} value={item.work_cd}>
-                {item.work_detail_text}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              fullWidth
+              select
+              label="Work List"
+              name="work_list_id"
+              value={formData.work_list_id}
+              onChange={handleChange}
+              sx={grayField}
+            >
+              {workList.map((item) => (
+                <MenuItem key={item.work_cd} value={item.work_cd}>
+                  {item.work_detail_text}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid item size={{ xs: 12, md: 3 }}>
-          <TextField
-            fullWidth
-            select
-            label="Rate List"
-            name="rate_id"
-            value={formData.rate_id}
-            onChange={handleChange}
-            sx={grayField}
-          >
-            {rateList.map((item) => (
-              <MenuItem key={item.Impanel_rate_id} value={item.Impanel_rate_id}>
-                {item.impanel_rate}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              fullWidth
+              select
+              label="Rate List"
+              name="rate_id"
+              value={formData.rate_id}
+              onChange={(e) => {
+                const id = e.target.value;
+
+                const obj = rateList.find(
+                  (item) => item.Impanel_rate_id === id
+                );
+
+                setFormData({
+                  ...formData,
+                  rate_id: id,
+                });
+
+                setSelectedRate(obj); // whole object
+              }}
+              sx={grayField}
+            >
+              {rateList.map((item) => (
+                <MenuItem
+                  key={item.Impanel_rate_id}
+                  value={item.Impanel_rate_id}
+                >
+                  {item.impanel_rate}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid item size={{ xs: 12, md: 6 }}>
             <TextField
@@ -677,11 +685,8 @@ export default function WorkOrderForm() {
             >
               {vendors.map((vendor) => (
                 <MenuItem key={vendor.AgencyID} value={vendor.AgencyID}>
-                  {/* <ListItemText primary={vendor.AgencyName} > */}
                   <Chip
-                    //icon={icon}
                     label={vendor.AgencyName}
-
                   />
                 </MenuItem>
               ))}

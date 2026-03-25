@@ -117,8 +117,6 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
     console.log(data.ip);
     return data.ip
   }
-  
-
   const handleChange = (e) => {
    
     const { name, value, files } = e.target; 
@@ -139,7 +137,6 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
     });
     
   };
-
   const fieldStyle = {
     "& .MuiOutlinedInput-root": {
       borderRadius: "10px",
