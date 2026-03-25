@@ -29,6 +29,7 @@ const DataSetUI = () => {
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [records, setRecords] = useState([]);
+  const [financial_year, setFinancial_year] = useState('')
 
   useEffect(() => {
     if (job_id && avak_ref) fetchRecords(job_id, avak_ref);
@@ -40,6 +41,8 @@ const DataSetUI = () => {
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
       setRecords(transformAgencyToDetails(response?.data?.records));
+      setFinancial_year(response?.data?.records[0]?.financial_year)
+      //setRecords(response?.data?.records)
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -47,22 +50,22 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
-
+  
   const transformAgencyToDetails = (agencies) => {
     if (!Array.isArray(agencies)) return [];
     return agencies.map((agency) => ({
-      vendorId: agency.vendor_id?.toString() || "",
-      vendorName: agency.vendor_name || "",
-      vendorCateId: agency.vendor_cate_id?.toString() || "",
-      vendorCate: "outdoor media",
-      ledVehicleId: agency.led_vehicle_id,
-      description: agency.description,
+      vendor_id: agency.vendor_id,
+      vendor_name: agency.vendor_name,
+      vendor_cate_id: "7",
+      vendor_cate: agency.vendor_cate,
+      led_vehicle_id: String(agency.led_vehicle_id),
+      description: "",
       rate: agency.rate,
-      noOfVehicle: 1,
-      noOfProgramme: 4,
-      totalRate: agency.total_rate,
-      startDate: agency.start_date,
-      endDate: agency.end_date,
+      no_of_vehicle: agency.no_of_vehicle,
+      no_of_programme: agency.no_of_programme,
+      total_rate: agency.total_rate,
+      start_date: agency.start_date,
+      end_date: agency.end_date
     }));
   };
 
@@ -71,8 +74,9 @@ const DataSetUI = () => {
       setSubmitting(true);
       setError("");
       setSuccess("");
+     
       const payload = {
-        financial_year: "string",
+        financial_year: financial_year,
         avak_ref_id:  avak_ref,
         job_no: job_id,
         notesheet_by_user_id: "00078",
