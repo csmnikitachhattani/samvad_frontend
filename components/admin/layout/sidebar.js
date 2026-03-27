@@ -5,13 +5,14 @@ import PersonIcon from "@mui/icons-material/Person";
 import DescriptionIcon from "@mui/icons-material/Description";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardIcon from "@mui/icons-material/Dashboard"
+import MenuService from "@/services/MenuServices";
 
 import Link from "next/link";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 export default function Sidebar() {
@@ -20,90 +21,91 @@ export default function Sidebar() {
   
 
 const [openMenu, setOpenMenu] = useState(null);
+const [fullMenu, setFullMenu] = useState([])
 
 // better active check for nested routes
 const isActive = (path) => pathname.startsWith(path);
-  const menuItems = [
-    { 
-      label: "Dashboard", 
-      path: "/admin",
-      icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
-    },
-    {
-      label: "Agency",
-      path: "/admin/agency",
-      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Agency User",
-      path: "/admin/agency/agencyuser",
-      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    // {
-    //   label: "Display Boards",
-    //   path: "/admin/display",
-    //   icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    // },
-    {
-      label: "Display Boards",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-      submenu: [
-        {
-          label: " Display Board Avk List",
-          path: "/admin/displayboard/counter",
-        },
-        {
-          label: "Counter List",
-          path: "/admin/displayboard",
-        },
-        {
-          label: "Notsheet",
-          path: "/admin/display/reports",
-        },
-      ],
-    },
-    {
-      label: "Vehicle Boards",
-      path: "/admin/vehicle",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Mini Bus Boards",
-      path: "/admin/bus",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "request",
-      path: "/admin/request",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Avak",
-      path: "/admin/avak",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Counter",
-      path: "/admin/counter",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Allocated",
-      path: "/admin/allocation",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Workorders",
-      path: "/admin/workorder",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
-    {
-      label: "Bill Entry",
-      path: "/newspaper/bill-entry",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-    },
+  // const menuItems = [
+  //   { 
+  //     label: "Dashboard", 
+  //     path: "/admin",
+  //     icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
+  //   },
+  //   {
+  //     label: "Agency",
+  //     path: "/admin/agency",
+  //     icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "Agency User",
+  //     path: "/admin/agency/agencyuser",
+  //     icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   // {
+  //   //   label: "Display Boards",
+  //   //   path: "/admin/display",
+  //   //   icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   // },
+  //   {
+  //     label: "Display Boards",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //     submenu: [
+  //       {
+  //         label: " Display Board Avk List",
+  //         path: "/admin/displayboard/counter",
+  //       },
+  //       {
+  //         label: "Counter List",
+  //         path: "/admin/displayboard",
+  //       },
+  //       {
+  //         label: "Notsheet",
+  //         path: "/admin/display/reports",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     label: "Vehicle Boards",
+  //     path: "/admin/vehicle",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "Mini Bus Boards",
+  //     path: "/admin/bus",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "request",
+  //     path: "/admin/request",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "Avak",
+  //     path: "/admin/avak",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "Counter",
+  //     path: "/admin/counter",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "Allocated",
+  //     path: "/admin/allocation",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "Workorders",
+  //     path: "/admin/workorder",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
+  //   {
+  //     label: "Bill Entry",
+  //     path: "/newspaper/bill-entry",
+  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+  //   },
    
-  ];
+  // ];
   const menu = [
     {
       name: "Master",
@@ -160,7 +162,38 @@ const isActive = (path) => pathname.startsWith(path);
       ],
     },
   ];
-  
+  const [menuItems, setMenuItems] = useState([]);
+  const transformMenuData = (data) => {
+  return data.map(menu => ({
+    label: menu.menu_nm,
+    path: "/admin", // parent click fallback
+    submenu: menu.submenus?.flatMap(sub =>
+      sub.forms.map(form => ({
+        label: form.form_display_name,
+        path: `/admin/${form.forms_code}`, // dynamic route
+      }))
+    ) || [],
+  }));
+};
+  const fetchMenuOptions = async () => {
+    try {
+      
+      const response = await MenuService.getFullMenu();
+      console.log(response)
+      const formatted = transformMenuData(response.data);
+      setMenuItems(formatted);
+    } catch (err) {
+      //setError("Failed to load allocation records");
+      console.error(err);
+    } finally {
+      //setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    fetchMenuOptions()
+  }, [])
+
   const SidebarItem = ({ item, depth = 0 }) => {
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
@@ -338,7 +371,6 @@ const isActive = (path) => pathname.startsWith(path);
           </Typography>
         </Box>
 
-  
 
     <List sx={{ px: 0 }}>
 
