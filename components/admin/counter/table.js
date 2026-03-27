@@ -52,13 +52,21 @@ const AdvtDownloadTable = ({ rows = [] }) => {
     async function Approved(job_id, avak_ref_id, fin_year) {
         try {
             const payload = {
-                financialYear: fin_year,
-                avakRefId: avak_ref_id,
-                jobNo: job_id,
-                approvalAction: "A",
-                approvedByUserId: "000078",
-                approvedByUsername: "string",
-                approvedByIp: "103.79.34.50"
+                financial_year: fin_year,
+                avak_ref_id: avak_ref_id,
+                job_no: job_id,
+                ro_no_list: "string",
+                approval_action: "A",
+                approved_by_user_id: "00141",
+                approved_by_username: "bheem sahu",
+                approved_by_ip: "103.68.78.89",
+                action_cd: "06",
+                status_reason_cd: "01",
+                action_name: "Approve",
+                remark: "string",
+                approved_by_type_cd: "01",
+                approved_by_section_cd: "05"
+                
             };
             const response = await adminServices.ApprovedNotesheet(payload);
             // setData(response || []);

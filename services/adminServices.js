@@ -114,7 +114,7 @@ const adminService = {
   },
   ApprovedNotesheet: async (payload) =>{
     try {
-      const res = await axiosClient.post(`/OutDoorMediaTransaction/approveledvehicle`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-db-approve-job-allocation`, payload);
       return res;
     } catch (err) {
       console.log("answer")
