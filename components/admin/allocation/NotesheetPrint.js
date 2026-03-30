@@ -67,7 +67,7 @@ export default function WorkOrder() {
     fontWeight: "bold", fontSize: 11, background: "#f0f0f0", verticalAlign: "middle",
   };
   const tdStyle = {
-    border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top",
+    border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top",  height: "70px",
   };
 
   return (
