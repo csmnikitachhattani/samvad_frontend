@@ -25,87 +25,87 @@ const [fullMenu, setFullMenu] = useState([])
 
 // better active check for nested routes
 const isActive = (path) => pathname.startsWith(path);
-  // const menuItems = [
-  //   { 
-  //     label: "Dashboard", 
-  //     path: "/admin",
-  //     icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
-  //   },
-  //   {
-  //     label: "Agency",
-  //     path: "/admin/agency",
-  //     icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "Agency User",
-  //     path: "/admin/agency/agencyuser",
-  //     icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   // {
-  //   //   label: "Display Boards",
-  //   //   path: "/admin/display",
-  //   //   icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   // },
-  //   {
-  //     label: "Display Boards",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //     submenu: [
-  //       {
-  //         label: " Display Board Avk List",
-  //         path: "/admin/displayboard/counter",
-  //       },
-  //       {
-  //         label: "Counter List",
-  //         path: "/admin/displayboard",
-  //       },
-  //       {
-  //         label: "Notsheet",
-  //         path: "/admin/display/reports",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     label: "Vehicle Boards",
-  //     path: "/admin/vehicle",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "Mini Bus Boards",
-  //     path: "/admin/bus",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "request",
-  //     path: "/admin/request",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "Avak",
-  //     path: "/admin/avak",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "Counter",
-  //     path: "/admin/counter",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "Allocated",
-  //     path: "/admin/allocation",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "Workorders",
-  //     path: "/admin/workorder",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
-  //   {
-  //     label: "Bill Entry",
-  //     path: "/newspaper/bill-entry",
-  //     icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-  //   },
+  const Items = [
+    { 
+      label: "Dashboard", 
+      path: "/admin",
+      icon: <DashboardIcon sx={{ mr: 2, fontSize: "1.4rem" }} /> 
+    },
+    {
+      label: "Agency",
+      path: "/admin/agency",
+      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Agency User",
+      path: "/admin/agency/agencyuser",
+      icon: <PersonIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    // {
+    //   label: "Display Boards",
+    //   path: "/admin/display",
+    //   icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    // },
+    {
+      label: "Display Boards",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+      submenu: [
+        {
+          label: " Display Board Avk List",
+          path: "/admin/displayboard/counter",
+        },
+        {
+          label: "Counter List",
+          path: "/admin/displayboard",
+        },
+        {
+          label: "Notsheet",
+          path: "/admin/display/reports",
+        },
+      ],
+    },
+    {
+      label: "Vehicle Boards",
+      path: "/admin/vehicle",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Mini Bus Boards",
+      path: "/admin/bus",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "request",
+      path: "/admin/request",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Avak",
+      path: "/admin/avak",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Counter",
+      path: "/admin/counter",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Allocated",
+      path: "/admin/allocation",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Workorders",
+      path: "/admin/workorder",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
+    {
+      label: "Bill Entry",
+      path: "/newspaper/bill-entry",
+      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    },
    
-  // ];
+  ];
   const menu = [
     {
       name: "Master",
@@ -170,7 +170,7 @@ const isActive = (path) => pathname.startsWith(path);
     submenu: menu.submenus?.flatMap(sub =>
       sub.forms.map(form => ({
         label: form.form_display_name,
-        path: `/admin/${form.forms_code}`, // dynamic route
+        path: `/admin/${form.form_path_name}`, // dynamic route
       }))
     ) || [],
   }));
@@ -248,6 +248,7 @@ const isActive = (path) => pathname.startsWith(path);
                 width: isActive ? 6 : 4,
                 height: isActive ? 6 : 4,
                 borderRadius: "50%",
+                
                 backgroundColor: isActive ? "#fff" : "rgba(255,255,255,0.3)",
                 flexShrink: 0,
                 transition: "all 0.15s ease",
@@ -374,9 +375,9 @@ const isActive = (path) => pathname.startsWith(path);
 
     <List sx={{ px: 0 }}>
 
-    {/* {menuItems.map((item, i) => (
+    {Items.map((item, i) => (
         <SidebarItem key={i} item={item} />
-      ))} */}
+      ))}
 
 {menuItems.map((item) => {
     const hasSubmenu = Array.isArray(item.submenu);
