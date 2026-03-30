@@ -3,24 +3,17 @@ import { useState } from "react";
 
 const defaultRows = [
   {
-    id: 1, workType: "PRODUCTION", sno: 1, roNum: "0562687/262", Vehicle_No: 'CG04MH3959',
-    roSubject: "LED Mounted (Per day Minimum 4 Programme) Size 12X8 Feet LED Screen (p6). equipped with GPS System , Audion Visual Equipment and Generator Along with LED Screen LED Technian",
-    unit: "Master Version", frqucy: "4", totDays: "5 days",
-    totDur: "5x1=5 Min(s)", date: "NA", rate: "₹5", totAmt: "37500.00",
+    id: 1, workType: "PRODUCTION", sno: 1, roNum: "0562687/262",
+    roSubject: "05 मिनट की धान खरीदी पर आधारित 01 स्टोरी निर्माण और प्रसारण की कार्यांतर स्वीकृति।",
+    unit: "Master Version", frqucy: "NA", totDays: "1 SPECIAL STORY",
+    totDur: "5x1=5 Min(s)", date: "NA", rate: "State Rate: 7500.00, 1 to 5 Min(s)", totAmt: "37500.00",
   },
   {
-    id: 2, workType: "TELECAST", sno: 2, roNum: "0562687/9", Vehicle_No: 'CG04MH3959',
-    roSubject: "LED Mounted (Per day Minimum 4 Programme) Size 12X8 Feet LED Screen (p6). equipped with GPS System , Audion Visual Equipment and Generator Along with LED Screen LED Technian",
-    unit: "06 AM-12 NOON", frqucy: "4", totDays: "5 days",
-    totDur: "181x1x5=905 Sec(s)", date: "08/12/2025 - 12/12/2025", rate: "₹6", totAmt: "33847.00",
+    id: 2, workType: "TELECAST", sno: 2, roNum: "0562687/9",
+    roSubject: "वी से विकास पर आधारित 181 सेकेण्ड का टी.व्ही स्पॉट 08 दिसम्बर 2025 से 05 दिनों तक प्रसारण की कार्यांतर स्वीकृति।",
+    unit: "06 AM-12 NOON", frqucy: "1 time(s)", totDays: "5 days",
+    totDur: "181x1x5=905 Sec(s)", date: "08/12/2025 - 12/12/2025", rate: "DAVP: 374.00 per 10 Sec(s)", totAmt: "33847.00",
   },
-  {
-    id: 3, workType: "TELECAST", sno: 2, roNum: "0562687/9", Vehicle_No: 'CG04MH3959',
-    roSubject: "LED Mounted (Per day Minimum 4 Programme) Size 12X8 Feet LED Screen (p6). equipped with GPS System , Audion Visual Equipment and Generator Along with LED Screen LED Technian",
-    unit: "06 AM-12 NOON", frqucy: "4", totDays: "5 days",
-    totDur: "181x1x5=905 Sec(s)", date: "08/12/2025 - 12/12/2025", rate: "₹6", totAmt: "33847.00",
-  },
-
 ];
 
 export default function WorkOrder() {
@@ -108,7 +101,7 @@ export default function WorkOrder() {
 
         {/* TITLE */}
         <div style={{ ...s.center, ...s.bold, fontSize: 15, margin: "6px 0" }}>
-          Mounted Vehicle NoteSheet
+          Electronic Media Work Order
         </div>
 
         <div style={{ borderTop: "1px solid #000", margin: "6px 0" }} />
@@ -142,44 +135,44 @@ export default function WorkOrder() {
             <tr>
               {/* <th style={{ ...thStyle, width: 70 }}>work type</th> */}
               <th style={{ ...thStyle, width: 28 }}>S.N o.</th>
-              <th style={{ ...thStyle, width: 55 }}>Vehicle No</th>
-              <th style={{ ...thStyle }}>Subject</th>
-              {/* <th style={{ ...thStyle, width: 55 }}>Unit</th> */}
-              <th style={{ ...thStyle, width: 48 }}>Programme</th>
+              <th style={{ ...thStyle, width: 55 }}>RO Num</th>
+              <th style={{ ...thStyle }}>RO Subject</th>
+              <th style={{ ...thStyle, width: 55 }}>Unit</th>
+              <th style={{ ...thStyle, width: 48 }}>Frqucy</th>
               <th style={{ ...thStyle, width: 44 }}>tot. days</th>
-              {/* <th style={{ ...thStyle, width: 70 }}>Tot. Dur.</th> */}
-              <th style={{ ...thStyle, width: 80 }}>Start Date-EndDate</th>
+              <th style={{ ...thStyle, width: 70 }}>Tot. Dur.</th>
+              <th style={{ ...thStyle, width: 80 }}>Date</th>
               <th style={{ ...thStyle, width: 90 }}>Rate</th>
               <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
-              {/* <th style={{ ...thStyle, width: 28 }} className="no-print">✕</th> */}
+              <th style={{ ...thStyle, width: 28 }} className="no-print">✕</th>
             </tr>
           </thead>
           <tbody>
             {rows.map(r => (
               <tr key={r.id}>
-                {/* <td style={tdStyle}><F value={r.workType} onChange={v => updateRow(r.id, "workType", v)} /></td> */}
+                <td style={tdStyle}><F value={r.workType} onChange={v => updateRow(r.id, "workType", v)} /></td>
                 <td style={{ ...tdStyle, textAlign: "center" }}>{r.sno}</td>
-                <td style={tdStyle}><F value={r.Vehicle_No} onChange={v => updateRow(r.id, "Vehicle_No", v)} /></td>
+                <td style={tdStyle}><F value={r.roNum} onChange={v => updateRow(r.id, "roNum", v)} /></td>
                 <td style={tdStyle}><F value={r.roSubject} onChange={v => updateRow(r.id, "roSubject", v)} multiline /></td>
-                {/* <td style={tdStyle}><F value={r.unit} onChange={v => updateRow(r.id, "unit", v)} multiline /></td> */}
+                <td style={tdStyle}><F value={r.unit} onChange={v => updateRow(r.id, "unit", v)} multiline /></td>
                 <td style={tdStyle}><F value={r.frqucy} onChange={v => updateRow(r.id, "frqucy", v)} /></td>
                 <td style={tdStyle}><F value={r.totDays} onChange={v => updateRow(r.id, "totDays", v)} /></td>
-                {/* <td style={tdStyle}><F value={r.totDur} onChange={v => updateRow(r.id, "totDur", v)} multiline /></td> */}
+                <td style={tdStyle}><F value={r.totDur} onChange={v => updateRow(r.id, "totDur", v)} multiline /></td>
                 <td style={tdStyle}><F value={r.date} onChange={v => updateRow(r.id, "date", v)} multiline /></td>
                 <td style={tdStyle}><F value={r.rate} onChange={v => updateRow(r.id, "rate", v)} multiline /></td>
                 <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
                   <F value={r.totAmt} onChange={v => updateRow(r.id, "totAmt", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
                 </td>
-                {/* <td style={{ ...tdStyle, textAlign: "center" }} className="no-print">
+                <td style={{ ...tdStyle, textAlign: "center" }} className="no-print">
                   <button onClick={() => removeRow(r.id)}
                     style={{ background: "none", border: "none", cursor: "pointer", color: "#c00", fontSize: 13 }}>✕</button>
-                </td> */}
+                </td>
               </tr>
             ))}
             <tr>
-              <td colSpan={7} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td colSpan={10} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>{totalAmt.toFixed(2)}</td>
-              {/* <td className="no-print" style={tdStyle} /> */}
+              <td className="no-print" style={tdStyle} />
             </tr>
           </tbody>
         </table>
