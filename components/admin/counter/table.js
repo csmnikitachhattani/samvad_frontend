@@ -55,7 +55,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                 financial_year: fin_year,
                 avak_ref_id: avak_ref_id,
                 job_no: job_id,
-                ro_no_list: "string",
+                ro_no_list: "",
                 approval_action: "A",
                 approved_by_user_id: "00141",
                 approved_by_username: "bheem sahu",
