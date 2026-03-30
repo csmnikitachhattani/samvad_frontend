@@ -167,7 +167,7 @@ export default function WorkOrder() {
                 {/* <td style={tdStyle}><F value={r.totDur} onChange={v => updateRow(r.id, "totDur", v)} multiline /></td> */}
                 <td style={tdStyle}><F value={r.date} onChange={v => updateRow(r.id, "date", v)} multiline /></td>
                 <td style={tdStyle}><F value={r.rate} onChange={v => updateRow(r.id, "rate", v)} multiline /></td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹
                   <F value={r.totAmt} onChange={v => updateRow(r.id, "totAmt", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
                 </td>
                 {/* <td style={{ ...tdStyle, textAlign: "center" }} className="no-print">
@@ -178,7 +178,7 @@ export default function WorkOrder() {
             ))}
             <tr>
               <td colSpan={7} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>{totalAmt.toFixed(2)}</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
               {/* <td className="no-print" style={tdStyle} /> */}
             </tr>
           </tbody>
