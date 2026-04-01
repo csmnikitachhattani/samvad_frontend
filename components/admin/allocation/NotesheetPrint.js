@@ -28,6 +28,7 @@ export default function WorkOrder() {
   const [clientName, setClientName] = useState("अपर संचालक (इले.मी.), संचालनालय जनसंपर्क विभाग, रायपुर");
   const [subject, setSubject] = useState("माह दिसम्बर 2025ः शासकीय योजनाओं एवं कार्यक्रमों का समाचार चैनलों, एफएम रेडियो, आकाशवाणी और सिनेमाघरों के माध्यम से प्रचार-प्रसार की कार्यांतर कार्यादेश की स्वीकृति बाबत्।");
   const [clientRef, setClientRef] = useState("पत्र क्रमांक- 220696/EM/39/26/जसंस, दिनांक 09-02-2026 / 10752 / 0562687 / 25-26 / छ.ग.स. / इले.मी. / 2026 / Dated :- 13/02/2026");
+  const [topDescription, setTopDescription] = useState("पत्र क्रमांक- 220696/EM/39/26/जसंस, दिनांक 09-02-2026 / 10752 / 0562687 / 25-26 / छ.ग.स. / इले.मी. / 2026 / Dated :- 13/02/2026");
   const [rows, setRows] = useState(defaultRows);
 
   const updateRow = (id, field, val) =>
@@ -114,21 +115,26 @@ export default function WorkOrder() {
         <div style={{ borderTop: "1px solid #000", margin: "6px 0" }} />
 
         {/* CLIENT NAME */}
-        <div style={{ display: "flex", border: "1px solid #000", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+        <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Name :</span>
           <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /></span>
         </div>
 
         {/* SUBJECT */}
-        <div style={{ display: "flex", border: "1px solid #000", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+        <div style={{ display: "flex",  padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Subject :</span>
           <span style={{ flex: 1 }}><F value={subject} onChange={setSubject} multiline /></span>
         </div>
 
         {/* CLIENT REF */}
-        <div style={{ display: "flex", border: "1px solid #000", padding: "4px 6px", gap: 4 }}>
+        <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Ref :</span>
           <span style={{ flex: 1 }}><F value={clientRef} onChange={setClientRef} multiline /></span>
+        </div>
+
+        {/* CLIENT REF */}
+        <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
+          <span style={{ flex: 1 }}><F value={topDescription} onChange={setClientRef} multiline /></span>
         </div>
 
         {/* WORK TABLE HEADING */}
@@ -142,14 +148,14 @@ export default function WorkOrder() {
             <tr>
               {/* <th style={{ ...thStyle, width: 70 }}>work type</th> */}
               <th style={{ ...thStyle, width: 28 }}>S.N o.</th>
-              <th style={{ ...thStyle, width: 55 }}>Vehicle No</th>
+              <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
               <th style={{ ...thStyle }}>Subject</th>
               {/* <th style={{ ...thStyle, width: 55 }}>Unit</th> */}
-              <th style={{ ...thStyle, width: 48 }}>Programme</th>
+              <th style={{ ...thStyle, width: 20 }}>Programme</th>
               <th style={{ ...thStyle, width: 44 }}>tot. days</th>
               {/* <th style={{ ...thStyle, width: 70 }}>Tot. Dur.</th> */}
-              <th style={{ ...thStyle, width: 80 }}>Start Date-EndDate</th>
-              <th style={{ ...thStyle, width: 90 }}>Rate</th>
+              <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
+              <th style={{ ...thStyle, width: 40 }}>Rate</th>
               <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
               {/* <th style={{ ...thStyle, width: 28 }} className="no-print">✕</th> */}
             </tr>
@@ -185,13 +191,22 @@ export default function WorkOrder() {
         </table>
 
         {/* SIGNATURES */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 40, gap: 8, textAlign: "center" }}>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>Prepared By</div></div>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>Checked By</div></div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 60, gap: 8, textAlign: "center" }}>
+          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>महाप्रबंधक</div></div>
+          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>कृपया अनुमोदनार्थ</div></div>
           <div>
-            <div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>Authorised Signatory</div>
-            <div style={{ fontSize: 10, marginTop: 2 }}>Chhattisgarh Samvad</div>
+            <div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>उपमहाप्रबंधक</div>
+            {/* <div style={{ fontSize: 10, marginTop: 2 }}>Chhattisgarh Samvad</div> */}
           </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 70, gap: 8, textAlign: "center" }}>
+          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>अतिरिक्त मुख्य कार्यपालन अधिकारी</div></div>
+          {/* <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>कृपया अनुमोदनार्थ</div></div>
+          <div>
+            <div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>उपमहाप्रबंधक</div>
+            // {/* <div style={{ fontSize: 10, marginTop: 2 }}>Chhattisgarh Samvad</div> 
+          </div> */}
         </div>
 
       </div>
