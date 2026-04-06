@@ -170,7 +170,7 @@ const isActive = (path) => pathname.startsWith(path);
     submenu: menu.submenus?.flatMap(sub =>
       sub.forms.map(form => ({
         label: form.form_display_name,
-        path: `/admin/${form.form_path_name}`, // dynamic route
+        path: `${form.form_path_name}`, // dynamic route
       }))
     ) || [],
   }));
@@ -248,7 +248,7 @@ const isActive = (path) => pathname.startsWith(path);
                 width: isActive ? 6 : 4,
                 height: isActive ? 6 : 4,
                 borderRadius: "50%",
-                
+
                 backgroundColor: isActive ? "#fff" : "rgba(255,255,255,0.3)",
                 flexShrink: 0,
                 transition: "all 0.15s ease",
@@ -375,9 +375,9 @@ const isActive = (path) => pathname.startsWith(path);
 
     <List sx={{ px: 0 }}>
 
-    {Items.map((item, i) => (
+    {/* {Items.map((item, i) => (
         <SidebarItem key={i} item={item} />
-      ))}
+      ))} */}
 
 {menuItems.map((item) => {
     const hasSubmenu = Array.isArray(item.submenu);
@@ -390,7 +390,7 @@ const isActive = (path) => pathname.startsWith(path);
             if (hasSubmenu) {
               setOpenMenu(openMenu === item.label ? null : item.label);
             } else {
-              router.push(item.path);
+              router.push('/'+item.path);
             }
           }}
           sx={{
@@ -428,7 +428,13 @@ const isActive = (path) => pathname.startsWith(path);
               {item.submenu.map((sub) => (
                 <ListItemButton
                   key={sub.path}
-                  onClick={() => router.push(sub.path)}
+                  onClick={() => {
+                    const path = sub.path.startsWith("/")
+                      ? sub.path
+                      : `/${sub.path}`;
+                    
+                    router.push(path);
+                  }}
                 >
                   <ListItemText primary={sub.label} />
                 </ListItemButton>

@@ -6,7 +6,7 @@ const MenuService = {
     
     try {
       const res = await axiosClient.get(`http://localhost:3080/api/mainmenu/menu`, {
-        params: { user_id: '00141', user_type: '17' },
+        params: { user_id: '00011', user_type: '01' },
       });
       return res.data;
     } catch (err) {
