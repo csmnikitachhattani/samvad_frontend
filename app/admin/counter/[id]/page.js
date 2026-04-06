@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 import Chip from '@mui/material/Chip';
 import { getDuration } from "@/utils/dateUtils";
-
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import {
   Box,
@@ -28,6 +28,9 @@ import {
   TableRow,
   Checkbox,
   ListItemText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 
 // ─── Shared sx helpers ────────────────────────────────────────────────────────
@@ -35,6 +38,7 @@ const grayField = {
   "& .MuiOutlinedInput-root": {
     borderRadius: "10px",
     backgroundColor: "#f4f5f7",
+    height: "40px",
     "& fieldset": { borderColor: "#e2e4ea" },
     "&:hover fieldset": { borderColor: "#010a2a" },
     "&.Mui-focused fieldset": { borderColor: "#010a2a" },
@@ -468,7 +472,6 @@ export default function WorkOrderForm() {
           </Typography>
         </Box>
       </Box>
-
       {/* ── Work Order Details Card ── */}
       <Paper
         elevation={0}
@@ -698,6 +701,53 @@ export default function WorkOrderForm() {
           </Grid>
         </Grid>
       </Paper>
+
+      
+      <Paper
+        elevation={0}
+        sx={{
+          p: 3,
+          mb: 3,
+          borderRadius: "14px",
+          backgroundColor: "#ffffff",
+          border: "1px solid #e8eaf0",
+        }}
+      >   <Accordion>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography>Form Details</Typography>
+      </AccordionSummary>
+
+      <AccordionDetails>
+        <Grid container spacing={2}>
+          
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Name"
+              variant="outlined"
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Phone"
+              variant="outlined"
+            />
+          </Grid>
+
+        </Grid>
+      </AccordionDetails>
+      </Accordion>
+        </Paper>
 
       {/* ── Vehicle Details Card ── */}
       <Paper
