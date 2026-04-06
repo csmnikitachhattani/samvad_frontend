@@ -1,49 +1,29 @@
 "use client";
-import React from "react";
-import {useEffect } from 'react'
 import Table from "@/components/admin/counter/table";
-import { Box, Button } from "@mui/material";
-import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { Tabs, Tab, Box } from "@mui/material";
 
-function AdminIndex() {
-  const router = useRouter();
-  async function getPublicIP() {
-    const res = await fetch("https://api.ipify.org?format=json");
-    const data = await res.json();
-    console.log(data.ip);
-  }
-  useEffect(()=>{
-    getPublicIP()
-  })
-  
+// import DisplayBoardTable from "@/components/admin/counter/table";
+import DisplayBoardTable from "@/components/admin/counter/display/table";
+
+export default function TabView() {
+  const [activeTab, setActiveTab] = useState("mounted");
+
+  const handleChange = (e, value) => {
+    setActiveTab(value);
+  };
+
   return (
     <Box>
-      {/* Top bar */}
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "flex-end",
-          mb: 2,
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={() => router.push("/admin/counter/create")}
-          sx={{  background: "#010a2a",
-          color: "#fff",
-          textTransform: "capitalize",}}
-        >
-          Create Counter
-        </Button>
-      </Box>
+      <Tabs value={activeTab} onChange={handleChange}>
+        <Tab label="Mounted Vehicle" value="mounted" />
+        <Tab label="Display Board" value="display" />
+      </Tabs>
 
-      {/* Table */}
-      <Box sx={{ width: "100%" }}>
-        <Table />
+      <Box mt={2}>
+        {activeTab === "mounted" && <Table />}
+        {activeTab === "display" && <DisplayBoardTable />}
       </Box>
     </Box>
   );
 }
-
-export default AdminIndex;
