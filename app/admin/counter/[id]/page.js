@@ -208,6 +208,7 @@ export default function WorkOrderForm() {
       "tender_cate_cd": "29",
       "param": "search",
       "search_param": "category_id"
+      
     }
     try {
       const response = await adminServices.getOdmRateCategory(payload);
@@ -268,7 +269,10 @@ export default function WorkOrderForm() {
       "tender_cate_cd": "29",
       "tender_id": formData.tender,
       "work_detail_id": "00004",
-      "param": "Work"
+      "param": "",
+      "work_type_id": "0",
+      "search_param": "rate_duration"
+
     }
     try {
       const response = await adminServices.getOdmRateWorkList(payload);
