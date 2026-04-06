@@ -23,11 +23,13 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableData,
   TableContainer,
   TableHead,
   TableRow,
   Checkbox,
   ListItemText,
+  Radio,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -70,7 +72,8 @@ export default function WorkOrderForm() {
   const [workTypes, setWorkTypes] = useState([]);
   const [rateDurations, setRateDurations] = useState([]);
   const [workList, setWorkList] = useState([]);
-  const [rateList, setRateList] = useState([]);
+  const [selectedRow, setSelectedRow] = useState('');
+  //const [rateList, setRateList] = useState([]);
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -118,6 +121,10 @@ export default function WorkOrderForm() {
     ],
   });
 
+  const rateList = [
+    { Impanel_rate_id: 1, impanel_rate: 5000 ,  AgencyName: "ABC Pvt Ltd" },
+    { Impanel_rate_id: 2, impanel_rate: 8000 ,  AgencyName: "Samvad"},
+  ];
   const formatDateForInput = (dateString) => {
     return dateString?.split("T")[0];
   };
@@ -273,7 +280,7 @@ export default function WorkOrderForm() {
       "tender_cate_cd": "29",
       "tender_id": formData.tender,
       "work_detail_id": "00004",
-      "param": "",
+      "param": "get",
       "work_type_id": "0",
       "search_param": "rate_duration"
 
@@ -564,7 +571,7 @@ export default function WorkOrderForm() {
               sx={grayField}
             >
               {categories.map((item) => (
-                <MenuItem key={item.tender_cate_cd} value={item.tender_cate_cd}>
+                <MenuItem key={item.tender_cate_id} value={item.tender_cate_id}>
                   {item.tender_cate_text}
                 </MenuItem>
               ))}
@@ -622,7 +629,28 @@ export default function WorkOrderForm() {
               ))}
             </TextField>
           </Grid>
-          <Grid item size={{ xs: 12, md: 3 }}>
+        </Grid>
+      </Paper>
+
+      
+      <Paper
+        elevation={0}
+        sx={{
+          p: 3,
+          mb: 3,
+          borderRadius: "14px",
+          backgroundColor: "#ffffff",
+          border: "1px solid #e8eaf0",
+        }}
+      >   <Accordion>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography>Form Details</Typography>
+      </AccordionSummary>
+
+      <AccordionDetails>
+        <Grid container spacing={2}>
+          
+        <Grid item size={{ xs: 12, md: 3 }}>
             <TextField
               fullWidth
               select
@@ -639,8 +667,8 @@ export default function WorkOrderForm() {
               ))}
             </TextField>
           </Grid>
-          <Grid item size={{ xs: 12, md: 3 }}>
-            <TextField
+          <Grid item size={{ xs: 12, md: 12 }}>
+            {/* <TextField
               fullWidth
               select
               label="Rate List"
@@ -670,7 +698,64 @@ export default function WorkOrderForm() {
                   {item.impanel_rate}
                 </MenuItem>
               ))}
+            </TextField> */}
+            <TableContainer>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell>Select</TableCell>
+        <TableCell>Vendor Name</TableCell>
+        <TableCell>Tender Type</TableCell>
+        <TableCell>Rate</TableCell>
+      </TableRow>
+    </TableHead>
+
+    <TableBody>
+      {rateList.map((row) => (
+        <TableRow key={row.Impanel_rate_id}>
+          
+          {/* ✅ Radio */}
+          <TableCell>
+            <Radio
+              checked={selectedRow === row.Impanel_rate_id}
+              onChange={() => {
+                setSelectedRow(row.Impanel_rate_id);
+                setSelectedRate(row); // 🔥 important for vehicle logic
+              }}
+            />
+          </TableCell>
+
+          {/* ✅ Vendor Name */}
+          <TableCell>{row.AgencyName}</TableCell>
+
+          {/* ✅ Tender Type */}
+          <TableCell>
+            <TextField
+              select
+              size="small"
+              defaultValue=""
+              sx={{ minWidth: 120 }}
+            >
+              <MenuItem value="">Select</MenuItem>
+              <MenuItem value="Open">Open</MenuItem>
+              <MenuItem value="Closed">Closed</MenuItem>
             </TextField>
+          </TableCell>
+
+          {/* ✅ Rate */}
+          <TableCell>
+            <TextField
+              value={row.impanel_rate}
+              size="small"
+              disabled
+            />
+          </TableCell>
+
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer>
           </Grid>
           <Grid item size={{ xs: 12, md: 6 }}>
             <TextField
@@ -699,50 +784,7 @@ export default function WorkOrderForm() {
               ))}
             </TextField>
           </Grid>
-        </Grid>
-      </Paper>
-
-      
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 3,
-          borderRadius: "14px",
-          backgroundColor: "#ffffff",
-          border: "1px solid #e8eaf0",
-        }}
-      >   <Accordion>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography>Form Details</Typography>
-      </AccordionSummary>
-
-      <AccordionDetails>
-        <Grid container spacing={2}>
-          
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Name"
-              variant="outlined"
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Email"
-              variant="outlined"
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Phone"
-              variant="outlined"
-            />
-          </Grid>
+        
 
         </Grid>
       </AccordionDetails>
