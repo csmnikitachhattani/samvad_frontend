@@ -145,10 +145,10 @@ export default function WorkOrderForm() {
       ledVehicleId: agency.VehicleId,
       VehicleNo: agency.VehicleNo,
       description: "",
-      rate: selectedRate.impanel_rate,
+      //rate: selectedRate.impanel_rate,
       noOfVehicle: 1,
       noOfProgramme: 4,
-      totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
+      //totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
       startDate: formatDateForInput(startDate),
       endDate: formatDateForInput(endDate),
       selected: false,
@@ -170,7 +170,6 @@ export default function WorkOrderForm() {
   }, [formData.vendor_id]);
 
   useEffect(() => {
-
     async function fetchCounters() {
       try {
         const response = await adminServices.getcounterDetail(id);
@@ -331,7 +330,6 @@ export default function WorkOrderForm() {
       fetchRateList()
     }
   }, [formData.work_list_id || selectedWork])
-
   useEffect(() => {
     fetchCategories()
   }, []);
@@ -715,37 +713,6 @@ export default function WorkOrderForm() {
                 </Box>
               </Grid>
               <Grid item size={{ xs: 12, md: 6 }}>
-                {/* <TextField
-              fullWidth
-              select
-              label="Rate List"
-              name="rate_id"
-              value={formData.rate_id}
-              onChange={(e) => {
-                const id = e.target.value;
-
-                const obj = rateList.find(
-                  (item) => item.Impanel_rate_id === id
-                );
-
-                setFormData({
-                  ...formData,
-                  rate_id: id,
-                });
-
-                setSelectedRate(obj); // whole object
-              }}
-              sx={grayField}
-            >
-              {rateList.map((item) => (
-                <MenuItem
-                  key={item.Impanel_rate_id}
-                  value={item.Impanel_rate_id}
-                >
-                  {item.impanel_rate}
-                </MenuItem>
-              ))}
-            </TextField> */}
                <Box sx={{border: '1px solid #e5e5e5'}}>
                <TableContainer>
                   <Table>
