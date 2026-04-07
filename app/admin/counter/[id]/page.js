@@ -751,18 +751,29 @@ export default function WorkOrderForm() {
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Vendor Name</TableCell>
-                        {/* <TableCell>Tender Type</TableCell> */}
+                      <TableCell>No.</TableCell>
+                      <TableCell>day</TableCell>
+                      <TableCell>Vendor Name</TableCell>
                         <TableCell>Rate</TableCell>
                         <TableCell>Select</TableCell>
                       </TableRow>
                     </TableHead>
 
                     <TableBody>
-                      {rateList.map((row) => (
+                      {rateList.map((row, index) => (
                         <TableRow key={row.Impanel_rate_id}>
-
-                          {/* ✅ Radio */}
+                           <TableCell>{index+1}</TableCell>
+                           <TableCell>{row.rate_duration}</TableCell>
+                          <TableCell>{row.vendor_OrgName}</TableCell>
+                          {/* ✅ Rate */}
+                          <TableCell>
+                            {/* <TextField
+                              value={row.impanel_rate}
+                              size="small"
+                              disabled
+                            /> */}
+                            {row.impanel_rate}
+                          </TableCell>
                           <TableCell>
                             <Radio
                               checked={selectedRow === row.Impanel_rate_id}
@@ -770,21 +781,6 @@ export default function WorkOrderForm() {
                                 setSelectedRow(row.Impanel_rate_id);
                                 setSelectedRate(row); // 🔥 important for vehicle logic
                               }}
-                            />
-                          </TableCell>
-
-                          {/* ✅ Vendor Name */}
-                          <TableCell>{row.AgencyName}</TableCell>
-
-                         
-                          
-
-                          {/* ✅ Rate */}
-                          <TableCell>
-                            <TextField
-                              value={row.impanel_rate}
-                              size="small"
-                              disabled
                             />
                           </TableCell>
 
