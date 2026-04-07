@@ -72,6 +72,7 @@ export default function WorkOrderForm() {
   const [workTypes, setWorkTypes] = useState([]);
   const [rateDurations, setRateDurations] = useState([]);
   const [workList, setWorkList] = useState([]);
+  const [selectedWorkType, setSelectedWorkType] = useState('');
   const [selectedRow, setSelectedRow] = useState('');
   //const [rateList, setRateList] = useState([]);
   const [formData, setFormData] = useState({
@@ -122,8 +123,12 @@ export default function WorkOrderForm() {
   });
 
   const rateList = [
-    { Impanel_rate_id: 1, impanel_rate: 5000 ,  AgencyName: "ABC Pvt Ltd" },
-    { Impanel_rate_id: 2, impanel_rate: 8000 ,  AgencyName: "Samvad"},
+    { Impanel_rate_id: 1, impanel_rate: 5000, AgencyName: "ABC Pvt Ltd" },
+    { Impanel_rate_id: 2, impanel_rate: 8000, AgencyName: "Samvad" },
+  ];
+  const WorkNa = [
+    { Impanel_rate_id: 1, impanel_rate: 5000, AgencyName: "ABC Pvt Ltd" },
+    { Impanel_rate_id: 2, impanel_rate: 8000, AgencyName: "Samvad" },
   ];
   const formatDateForInput = (dateString) => {
     return dateString?.split("T")[0];
@@ -219,7 +224,7 @@ export default function WorkOrderForm() {
       "tender_cate_cd": "29",
       "param": "search",
       "search_param": "category_id"
-      
+
     }
     try {
       const response = await adminServices.getOdmRateCategory(payload);
@@ -277,12 +282,17 @@ export default function WorkOrderForm() {
   }
   async function fetchWorkList() {
     const payload = {
-      "tender_cate_cd": "29",
-      "tender_id": formData.tender,
-      "work_detail_id": "00004",
-      "param": "get",
-      "work_type_id": "0",
-      "search_param": "rate_duration"
+
+        "tender_cate_cd": "29",
+      
+        "tender_id": "T202429001",
+      
+        "work_type_id": "239",
+      
+        "param": "get"
+      
+      
+       
 
     }
     try {
@@ -370,12 +380,12 @@ export default function WorkOrderForm() {
 
   const handleSubmit = async () => {
     const total = vehicles
-  .filter((item) => item.selected === true)
-  .reduce((sum, item) => sum + Number(item.totalRate || 0), 0);
-  const commission = total * 0.02;
-  const gst = total * 0.18;
+      .filter((item) => item.selected === true)
+      .reduce((sum, item) => sum + Number(item.totalRate || 0), 0);
+    const commission = total * 0.02;
+    const gst = total * 0.18;
 
-  console.log(total);
+    console.log(total);
     const payload = {
       financialYear: formData.financial_year,
       avakRefId: formData.avak_ref_id,
@@ -632,7 +642,7 @@ export default function WorkOrderForm() {
         </Grid>
       </Paper>
 
-      
+
       <Paper
         elevation={0}
         sx={{
@@ -643,15 +653,15 @@ export default function WorkOrderForm() {
           border: "1px solid #e8eaf0",
         }}
       >   <Accordion>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography>Form Details</Typography>
-      </AccordionSummary>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Form Details</Typography>
+          </AccordionSummary>
 
-      <AccordionDetails>
-        <Grid container spacing={2}>
-          
-        <Grid item size={{ xs: 12, md: 3 }}>
-            <TextField
+          <AccordionDetails>
+            <Grid container spacing={2}>
+
+              <Grid item size={{ xs: 12, md: 6 }}>
+                {/* <TextField
               fullWidth
               select
               label="Work List"
@@ -665,10 +675,58 @@ export default function WorkOrderForm() {
                   {item.work_detail_text}
                 </MenuItem>
               ))}
-            </TextField>
-          </Grid>
-          <Grid item size={{ xs: 12, md: 12 }}>
-            {/* <TextField
+
+            </TextField> */}
+                <Box sx={{ border: '1px solid #e5e5e5' }}>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>work Cd</TableCell>
+                          <TableCell width="400px">Work</TableCell>
+                          {/* <TableCell>Rate</TableCell> */}
+                          
+                          <TableCell>Select</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {workList.map((row, index) => (
+                          <TableRow key={row.Impanel_rate_id}>
+
+                            {/* ✅ Radio */}
+                            
+
+                            {/* ✅ Vendor Name */}
+                            <TableCell>
+                              <div>{index+1}
+                             </div>
+                            </TableCell>
+
+                            {/* ✅ Tender Type */}
+                            <TableCell>
+                        <div>{row.work}</div>
+                            </TableCell>
+
+                            <TableCell>
+                              <Radio
+                                checked={selectedRow === row.work_cd}
+                                onChange={() => {
+                                  setSelectedRow(row.Impanel_rate_id);
+                                  setSelectedRate(row); // 🔥 important for vehicle logic
+                                }}
+                              />
+                            </TableCell>
+
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              </Grid>
+              <Grid item size={{ xs: 12, md: 6 }}>
+                {/* <TextField
               fullWidth
               select
               label="Rate List"
@@ -699,97 +757,88 @@ export default function WorkOrderForm() {
                 </MenuItem>
               ))}
             </TextField> */}
-            <TableContainer>
-  <Table>
-    <TableHead>
-      <TableRow>
-        <TableCell>Select</TableCell>
-        <TableCell>Vendor Name</TableCell>
-        <TableCell>Tender Type</TableCell>
-        <TableCell>Rate</TableCell>
-      </TableRow>
-    </TableHead>
+               <Box sx={{border: '1px solid #e5e5e5'}}>
+               <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Vendor Name</TableCell>
+                        {/* <TableCell>Tender Type</TableCell> */}
+                        <TableCell>Rate</TableCell>
+                        <TableCell>Select</TableCell>
+                      </TableRow>
+                    </TableHead>
 
-    <TableBody>
-      {rateList.map((row) => (
-        <TableRow key={row.Impanel_rate_id}>
-          
-          {/* ✅ Radio */}
-          <TableCell>
-            <Radio
-              checked={selectedRow === row.Impanel_rate_id}
-              onChange={() => {
-                setSelectedRow(row.Impanel_rate_id);
-                setSelectedRate(row); // 🔥 important for vehicle logic
-              }}
-            />
-          </TableCell>
+                    <TableBody>
+                      {rateList.map((row) => (
+                        <TableRow key={row.Impanel_rate_id}>
 
-          {/* ✅ Vendor Name */}
-          <TableCell>{row.AgencyName}</TableCell>
+                          {/* ✅ Radio */}
+                          <TableCell>
+                            <Radio
+                              checked={selectedRow === row.Impanel_rate_id}
+                              onChange={() => {
+                                setSelectedRow(row.Impanel_rate_id);
+                                setSelectedRate(row); // 🔥 important for vehicle logic
+                              }}
+                            />
+                          </TableCell>
 
-          {/* ✅ Tender Type */}
-          <TableCell>
-            <TextField
-              select
-              size="small"
-              defaultValue=""
-              sx={{ minWidth: 120 }}
-            >
-              <MenuItem value="">Select</MenuItem>
-              <MenuItem value="Open">Open</MenuItem>
-              <MenuItem value="Closed">Closed</MenuItem>
-            </TextField>
-          </TableCell>
+                          {/* ✅ Vendor Name */}
+                          <TableCell>{row.AgencyName}</TableCell>
 
-          {/* ✅ Rate */}
-          <TableCell>
-            <TextField
-              value={row.impanel_rate}
-              size="small"
-              disabled
-            />
-          </TableCell>
+                         
+                          
 
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-</TableContainer>
-          </Grid>
-          <Grid item size={{ xs: 12, md: 6 }}>
-            <TextField
-              select
-              fullWidth
-              label="Vendor"
-              SelectProps={{ multiple: true }}
-              value={formData.vendor_id || []}
-              onChange={(e) => {
-                const selectedIds = e.target.value;
-                const selectedVendors = vendors.filter((v) => selectedIds.includes(v.AgencyID));
-                setFormData({
-                  ...formData,
-                  vendor_id: selectedIds,
-                  vendor_name: selectedVendors.map((v) => v.AgencyName),
-                });
-              }}
-              sx={grayField}
-            >
-              {vendors.map((vendor) => (
-                <MenuItem key={vendor.AgencyID} value={vendor.AgencyID}>
-                  <Chip
-                    label={vendor.AgencyName}
-                  />
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-        
+                          {/* ✅ Rate */}
+                          <TableCell>
+                            <TextField
+                              value={row.impanel_rate}
+                              size="small"
+                              disabled
+                            />
+                          </TableCell>
 
-        </Grid>
-      </AccordionDetails>
-      </Accordion>
-        </Paper>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+              </Grid>
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Vendor"
+                  SelectProps={{ multiple: true }}
+                  value={formData.vendor_id || []}
+                  onChange={(e) => {
+                    const selectedIds = e.target.value;
+                    const selectedVendors = vendors.filter((v) => selectedIds.includes(v.AgencyID));
+                    setFormData({
+                      ...formData,
+                      vendor_id: selectedIds,
+                      vendor_name: selectedVendors.map((v) => v.AgencyName),
+                    });
+                  }}
+                  sx={grayField}
+                >
+                  {vendors.map((vendor) => (
+                    <MenuItem key={vendor.AgencyID} value={vendor.AgencyID}>
+                      <Chip
+                        label={vendor.AgencyName}
+                      />
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+
+
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
+      </Paper>
 
       {/* ── Vehicle Details Card ── */}
       <Paper
