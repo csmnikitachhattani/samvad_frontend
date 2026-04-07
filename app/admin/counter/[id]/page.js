@@ -72,9 +72,9 @@ export default function WorkOrderForm() {
   const [workTypes, setWorkTypes] = useState([]);
   const [rateDurations, setRateDurations] = useState([]);
   const [workList, setWorkList] = useState([]);
-  const [selectedWorkType, setSelectedWorkType] = useState('');
+  const [selectedWork, setSelectedWork] = useState('');
   const [selectedRow, setSelectedRow] = useState('');
-  //const [rateList, setRateList] = useState([]);
+  const [rateList, setRateList] = useState([]);
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -122,10 +122,10 @@ export default function WorkOrderForm() {
     ],
   });
 
-  const rateList = [
-    { Impanel_rate_id: 1, impanel_rate: 5000, AgencyName: "ABC Pvt Ltd" },
-    { Impanel_rate_id: 2, impanel_rate: 8000, AgencyName: "Samvad" },
-  ];
+  // const rateList = [
+  //   { Impanel_rate_id: 1, impanel_rate: 5000, AgencyName: "ABC Pvt Ltd" },
+  //   { Impanel_rate_id: 2, impanel_rate: 8000, AgencyName: "Samvad" },
+  // ];
   const WorkNa = [
     { Impanel_rate_id: 1, impanel_rate: 5000, AgencyName: "ABC Pvt Ltd" },
     { Impanel_rate_id: 2, impanel_rate: 8000, AgencyName: "Samvad" },
@@ -138,7 +138,6 @@ export default function WorkOrderForm() {
     if (!Array.isArray(agencies)) return [];
     console.log(startDate, formatDateForInput(startDate))
     return agencies.map((agency) => ({
-
       vendorId: agency.AgencyId?.toString() || "",
       vendorName: agency.AgencyName || "",
       vendorCateId: agency.ServiceId?.toString() || "7",
@@ -282,18 +281,10 @@ export default function WorkOrderForm() {
   }
   async function fetchWorkList() {
     const payload = {
-
         "tender_cate_cd": "29",
-      
         "tender_id": "T202429001",
-      
         "work_type_id": "239",
-      
         "param": "get"
-      
-      
-       
-
     }
     try {
       const response = await adminServices.getOdmRateWorkList(payload);
@@ -305,8 +296,8 @@ export default function WorkOrderForm() {
   async function fetchRateList() {
     const payload = {
       "tender_cate_id": "29",
-      "work_type_cd": String(formData.work_type),
-      "work_cd": formData.work_list_id
+      "work_type_cd": String("239"),
+      "work_cd": formData.work_list_id || selectedWork
     }
     try {
       const response = await adminServices.getOdmRateList(payload);
@@ -336,10 +327,10 @@ export default function WorkOrderForm() {
     }
   }, [formData.rate_duration_id])
   useEffect(() => {
-    if (formData.work_list_id) {
+    if (formData.work_list_id ||  selectedWork) {
       fetchRateList()
     }
-  }, [formData.work_list_id])
+  }, [formData.work_list_id || selectedWork])
 
   useEffect(() => {
     fetchCategories()
@@ -710,10 +701,8 @@ export default function WorkOrderForm() {
 
                             <TableCell>
                               <Radio
-                                checked={selectedRow === row.work_cd}
-                                onChange={() => {
-                                  setSelectedRow(row.Impanel_rate_id);
-                                  setSelectedRate(row); // 🔥 important for vehicle logic
+                                checked={selectedWork === row.work_cd}
+                                onChange={() => {setSelectedWork(row.work_cd) // 🔥 important for vehicle logic
                                 }}
                               />
                             </TableCell>
