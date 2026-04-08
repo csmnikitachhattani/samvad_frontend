@@ -155,6 +155,27 @@ export default function WorkOrderForm() {
     }));
   };
 
+  const transformVehicleDetails = (agencies, startDate, endDate) => {
+    if (!Array.isArray(agencies)) return [];
+    console.log(startDate, formatDateForInput(startDate))
+    return agencies.map((agency) => ({
+      vendorId: agency.AgencyId?.toString() || "",
+      vendorName: agency.AgencyName || "",
+      vendorCateId: agency.ServiceId?.toString() || "7",
+      vendorCate: "outdoor media",
+      ledVehicleId: agency.VehicleId,
+      VehicleNo: agency.VehicleNo,
+      description: "",
+      //rate: selectedRate.impanel_rate,
+      noOfVehicle: 1,
+      noOfProgramme: 4,
+      //totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
+      startDate: formatDateForInput(startDate),
+      endDate: formatDateForInput(endDate),
+      selected: false,
+    }));
+  };
+
   async function fetchVehicle() {
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
