@@ -121,15 +121,6 @@ export default function WorkOrderForm() {
       },
     ],
   });
-
-  // const rateList = [
-  //   { Impanel_rate_id: 1, impanel_rate: 5000, AgencyName: "ABC Pvt Ltd" },
-  //   { Impanel_rate_id: 2, impanel_rate: 8000, AgencyName: "Samvad" },
-  // ];
-  const WorkNa = [
-    { Impanel_rate_id: 1, impanel_rate: 5000, AgencyName: "ABC Pvt Ltd" },
-    { Impanel_rate_id: 2, impanel_rate: 8000, AgencyName: "Samvad" },
-  ];
   const formatDateForInput = (dateString) => {
     return dateString?.split("T")[0];
   };
@@ -671,22 +662,6 @@ export default function WorkOrderForm() {
             <Grid container spacing={2}>
 
               <Grid item size={{ xs: 12, md: 6 }}>
-                {/* <TextField
-              fullWidth
-              select
-              label="Work List"
-              name="work_list_id"
-              value={formData.work_list_id}
-              onChange={handleChange}
-              sx={grayField}
-            >
-              {workList.map((item) => (
-                <MenuItem key={item.work_cd} value={item.work_cd}>
-                  {item.work_detail_text}
-                </MenuItem>
-              ))}
-
-            </TextField> */}
                 <Box sx={{ border: '1px solid #e5e5e5' }}>
                   <TableContainer>
                     <Table>
@@ -841,6 +816,119 @@ export default function WorkOrderForm() {
           <Table size="small">
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
+                {["Vehicle", "Vehicle No", "Agency","Start", "End", ""].map(
+                  (col, i) => (
+                    <TableCell
+                      key={i}
+                      padding={col === "" ? "checkbox" : "normal"}
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: "0.75rem",
+                        color: "#5a6072",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                        borderBottom: "1px solid #e2e4ea",
+                        py: 1.5,
+                      }}
+                    >
+                      {col === "" ? <Checkbox onChange={handleSelectAll} size="small" sx={{ color: "#b0b5c4" }} /> : col}
+                    </TableCell>
+                  )
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {vehicles.map((row, index) => (
+                <TableRow
+                  key={row.ledVehicleId}
+                  hover
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? "#ffffff" : "#fafbff",
+                    "&:hover": { backgroundColor: "#f0f3ff" },
+                    transition: "background-color 0.15s ease",
+                  }}
+                >
+                  <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
+                    {row.ledVehicleId}
+                  </TableCell>
+                  <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
+                    {row.vendorName}
+                  </TableCell>
+                  <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
+                    {row.VehicleNo}
+                  </TableCell>
+
+                  
+                  <TableCell>
+                    <TextField
+                      size="small"
+                      type="date"
+                      value={row.startDate}
+                      onChange={(e) =>
+                        handleVehicleChange(row.ledVehicleId, "startDate", e.target.value)
+                      }
+                      sx={smallGrayField}
+                      inputProps={{ style: { fontSize: "0.83rem" } }}
+                    />
+                  </TableCell>
+
+                  <TableCell>
+                    <TextField
+                      size="small"
+                      type="date"
+                      value={row.endDate}
+                      onChange={(e) =>
+                        handleVehicleChange(row.ledVehicleId, "endDate", e.target.value)
+                      }
+                      sx={smallGrayField}
+                      inputProps={{ style: { fontSize: "0.83rem" } }}
+                    />
+                  </TableCell>
+
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      size="small"
+                      checked={row.selected}
+                      onChange={(e) =>
+                        handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)
+                      }
+                      sx={{
+                        color: "#b0b5c4",
+                        "&.Mui-checked": { color: "#5c7cfa" },
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+
+              {vehicles.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={8} align="center" sx={{ py: 4, color: "#b0b5c4" }}>
+                    <Typography variant="body2">
+                      No vehicles found. Select a vendor to load vehicles.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+      </Paper>
+      <Paper
+       sx={{
+        p: 3,
+        my: 4,
+        borderRadius: "14px",
+        backgroundColor: "#ffffff",
+        border: "1px solid #e8eaf0",
+      }}
+      >
+        <Box>
+        <TableContainer sx={{ borderRadius: "10px", overflow: "hidden", border: "1px solid #eaecf2" }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
                 {["Vehicle", "Vehicle No", "Agency", "Rate", "Total", "Start", "End", ""].map(
                   (col, i) => (
                     <TableCell
@@ -962,6 +1050,7 @@ export default function WorkOrderForm() {
             </TableBody>
           </Table>
         </TableContainer>
+        </Box>
       </Paper>
 
       {/* ── Submit Bar ── */}
