@@ -167,6 +167,10 @@ export default function WorkOrderForm() {
     }));
   };
 
+  const SubmitVehicles = async () => {
+   
+  };
+
   async function fetchVehicle() {
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
@@ -342,6 +346,9 @@ export default function WorkOrderForm() {
       fetchRateList()
     }
   }, [formData.work_list_id || selectedWork])
+  useEffect(() =>{
+
+  },[])
   useEffect(() => {
     fetchCategories()
   }, []);
@@ -640,121 +647,7 @@ export default function WorkOrderForm() {
               ))}
             </TextField>
           </Grid>
-        </Grid>
-      </Paper>
-
-
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 3,
-          borderRadius: "14px",
-          backgroundColor: "#ffffff",
-          border: "1px solid #e8eaf0",
-        }}
-      >   <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Form Details</Typography>
-          </AccordionSummary>
-
-          <AccordionDetails>
-            <Grid container spacing={2}>
-
-              <Grid item size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e5e5e5' }}>
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>work Cd</TableCell>
-                          <TableCell width="400px">Work</TableCell>
-                          {/* <TableCell>Rate</TableCell> */}
-                          
-                          <TableCell>Select</TableCell>
-                        </TableRow>
-                      </TableHead>
-
-                      <TableBody>
-                        {workList.map((row, index) => (
-                          <TableRow key={row.Impanel_rate_id}>
-
-                            {/* ✅ Radio */}
-                            
-
-                            {/* ✅ Vendor Name */}
-                            <TableCell>
-                              <div>{index+1}
-                             </div>
-                            </TableCell>
-
-                            {/* ✅ Tender Type */}
-                            <TableCell>
-                        <div>{row.work}</div>
-                            </TableCell>
-
-                            <TableCell>
-                              <Radio
-                                checked={selectedWork === row.work_cd}
-                                onChange={() => {setSelectedWork(row.work_cd) // 🔥 important for vehicle logic
-                                }}
-                              />
-                            </TableCell>
-
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Box>
-              </Grid>
-              <Grid item size={{ xs: 12, md: 6 }}>
-               <Box sx={{border: '1px solid #e5e5e5'}}>
-               <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                      <TableCell>No.</TableCell>
-                      <TableCell>day</TableCell>
-                      <TableCell>Vendor Name</TableCell>
-                        <TableCell>Rate</TableCell>
-                        <TableCell>Select</TableCell>
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {rateList.map((row, index) => (
-                        <TableRow key={row.Impanel_rate_id}>
-                           <TableCell>{index+1}</TableCell>
-                           <TableCell>{row.rate_duration}</TableCell>
-                          <TableCell>{row.vendor_OrgName}</TableCell>
-                          {/* ✅ Rate */}
-                          <TableCell>
-                            {/* <TextField
-                              value={row.impanel_rate}
-                              size="small"
-                              disabled
-                            /> */}
-                            {row.impanel_rate}
-                          </TableCell>
-                          <TableCell>
-                            <Radio
-                              checked={selectedRow === row.Impanel_rate_id}
-                              onChange={() => {
-                                setSelectedRow(row.Impanel_rate_id);
-                                setSelectedRate(row); // 🔥 important for vehicle logic
-                              }}
-                            />
-                          </TableCell>
-
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Box>
-              </Grid>
-              <Grid item size={{ xs: 12, md: 6 }}>
+          <Grid item size={{ xs: 12, md: 6 }}>
                 <TextField
                   select
                   fullWidth
@@ -781,15 +674,12 @@ export default function WorkOrderForm() {
                   ))}
                 </TextField>
               </Grid>
-
-
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
+        </Grid>
       </Paper>
+      {/* select*/}
 
-      {/* ── Vehicle Details Card ── */}
-      <Paper
+       {/* ── Vehicle Details Card ── */}
+       <Paper
         elevation={0}
         sx={{
           p: 3,
@@ -913,7 +803,157 @@ export default function WorkOrderForm() {
             </TableBody>
           </Table>
         </TableContainer>
+        <Box 
+         mt={4}
+         mx={2}
+         sx={{
+           display: "flex",
+           justifyContent: "flex-end",
+           position: "sticky",
+           bottom: 0,
+           backgroundColor: "#f7f8fc",
+           pt: 2,
+           pb: 1,
+         }}
+        >
+        <Button
+          variant="contained"
+          size="large"
+          onClick={handleSubmit}
+          sx={{
+            px: 5,
+            py: 1.3,
+            borderRadius: "12px",
+            textTransform: "none",
+            fontWeight: 600,
+            fontSize: "0.95rem",
+            background: "#010a2a",
+            boxShadow: "0 4px 14px rgba(92,124,250,0.4)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #4f6ef5 0%, #3b58e0 100%)",
+              boxShadow: "0 6px 18px rgba(92,124,250,0.5)",
+            },
+            transition: "all 0.2s ease",
+          }}
+        >
+          Saved
+        </Button>
+        </Box>
+      </Paper>
 
+      <Paper
+        elevation={0}
+        sx={{
+          p: 3,
+          mb: 3,
+          borderRadius: "14px",
+          backgroundColor: "#ffffff",
+          border: "1px solid #e8eaf0",
+        }}
+      >   <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Form Details</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+            <Grid container spacing={2}>
+
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <Box sx={{ border: '1px solid #e5e5e5' }}>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>work Cd</TableCell>
+                          <TableCell width="400px">Work</TableCell>
+                          {/* <TableCell>Rate</TableCell> */}
+                          
+                          <TableCell>Select</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {workList.map((row, index) => (
+                          <TableRow key={row.Impanel_rate_id}>
+
+                            {/* ✅ Radio */}
+                            
+
+                            {/* ✅ Vendor Name */}
+                            <TableCell>
+                              <div>{index+1}
+                             </div>
+                            </TableCell>
+
+                            {/* ✅ Tender Type */}
+                            <TableCell>
+                        <div>{row.work}</div>
+                            </TableCell>
+
+                            <TableCell>
+                              <Radio
+                                checked={selectedWork === row.work_cd}
+                                onChange={() => {setSelectedWork(row.work_cd) // 🔥 important for vehicle logic
+                                }}
+                              />
+                            </TableCell>
+
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              </Grid>
+              <Grid item size={{ xs: 12, md: 6 }}>
+               <Box sx={{border: '1px solid #e5e5e5'}}>
+               <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                      <TableCell>No.</TableCell>
+                      <TableCell>day</TableCell>
+                      <TableCell>Vendor Name</TableCell>
+                        <TableCell>Rate</TableCell>
+                        <TableCell>Select</TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {rateList.map((row, index) => (
+                        <TableRow key={row.Impanel_rate_id}>
+                           <TableCell>{index+1}</TableCell>
+                           <TableCell>{row.rate_duration}</TableCell>
+                          <TableCell>{row.vendor_OrgName}</TableCell>
+                          {/* ✅ Rate */}
+                          <TableCell>
+                            {/* <TextField
+                              value={row.impanel_rate}
+                              size="small"
+                              disabled
+                            /> */}
+                            {row.impanel_rate}
+                          </TableCell>
+                          <TableCell>
+                            <Radio
+                              checked={selectedRow === row.Impanel_rate_id}
+                              onChange={() => {
+                                setSelectedRow(row.Impanel_rate_id);
+                                setSelectedRate(row); // 🔥 important for vehicle logic
+                              }}
+                            />
+                          </TableCell>
+
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+              </Grid>
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
       </Paper>
       <Paper
        sx={{
