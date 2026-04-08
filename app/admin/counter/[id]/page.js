@@ -65,6 +65,7 @@ export default function WorkOrderForm() {
 
   const [vendors, setVendors] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const [selectedVehicles, setSelectedVehicles] = useState([])
   const [selected, setSelected] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tenders, setTenders] = useState([]);
@@ -168,9 +169,24 @@ export default function WorkOrderForm() {
   };
 
   const SubmitVehicles = async () => {
-   
+   const veh =  vehicles.filter((item) => item.selected === true)
+   if (!Array.isArray(veh)) return [];
+   return veh.map((agency) => ({
+     vendorId: agency.vendorId?.toString() || "",
+     vendorName: agency.vendorName,
+     vendorCateId: agency.vendorCateId,
+     vendorCate: "outdoor media",
+     ledVehicleId: agency.ledVehicleId,
+     VehicleNo: agency.VehicleNo,
+     description: "",
+     rate: selectedRate.impanel_rate,
+     noOfVehicle: agency.noOfVehicle,
+     noOfProgramme: agency.noOfProgramme,
+     totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
+     startDate: agency.startDate,
+     endDate: agency.endDate,
+   }));
   };
-
   async function fetchVehicle() {
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
@@ -347,8 +363,10 @@ export default function WorkOrderForm() {
     }
   }, [formData.work_list_id || selectedWork])
   useEffect(() =>{
-
-  },[])
+    console.log("running")
+    const res =  SubmitVehicles()
+   setSelectedVehicles(res)
+  },[selectedRate])
   useEffect(() => {
     fetchCategories()
   }, []);
@@ -938,7 +956,6 @@ export default function WorkOrderForm() {
                               }}
                             />
                           </TableCell>
-
                         </TableRow>
                       ))}
                     </TableBody>
@@ -987,7 +1004,7 @@ export default function WorkOrderForm() {
             </TableHead>
 
             <TableBody>
-              {vehicles.map((row, index) => (
+              {selectedVehicles.map((row, index) => (
                 <TableRow
                   key={row.ledVehicleId}
                   hover
