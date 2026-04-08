@@ -845,7 +845,7 @@ export default function WorkOrderForm() {
         elevation={0}
         sx={{
           p: 3,
-          mb: 3,
+          my: 3,
           borderRadius: "14px",
           backgroundColor: "#ffffff",
           border: "1px solid #e8eaf0",
@@ -914,8 +914,8 @@ export default function WorkOrderForm() {
                       <TableCell>No.</TableCell>
                       <TableCell>day</TableCell>
                       <TableCell>Vendor Name</TableCell>
-                        <TableCell>Rate</TableCell>
-                        <TableCell>Select</TableCell>
+                      <TableCell>Rate</TableCell>
+                      <TableCell>Select</TableCell>
                       </TableRow>
                     </TableHead>
 
@@ -927,11 +927,6 @@ export default function WorkOrderForm() {
                           <TableCell>{row.vendor_OrgName}</TableCell>
                           {/* ✅ Rate */}
                           <TableCell>
-                            {/* <TextField
-                              value={row.impanel_rate}
-                              size="small"
-                              disabled
-                            /> */}
                             {row.impanel_rate}
                           </TableCell>
                           <TableCell>
