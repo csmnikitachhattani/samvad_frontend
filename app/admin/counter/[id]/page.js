@@ -11,6 +11,7 @@ import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 import Chip from '@mui/material/Chip';
 import { getDuration } from "@/utils/dateUtils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import {
   Box,
@@ -372,7 +373,9 @@ export default function WorkOrderForm() {
   useEffect(() => {
     fetchCategories()
   }, []);
-
+  const handleDeleteSelectedVehicle = (index) => {
+    setSelectedVehicles((prev) => prev.filter((_, i) => i !== index));
+  };
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       setSelected(vehicles.map((v) => v.VehicleId));
@@ -984,7 +987,7 @@ export default function WorkOrderForm() {
           <Table size="small">
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
-                {["Vehicle", "Vehicle No", "Agency", "Rate", "Total", "Start", "End", ""].map(
+                {["Vehicle", "Vehicle No", "Agency", "Rate", "Total", "Start", "End", "Action"].map(
                   (col, i) => (
                     <TableCell
                       key={i}
@@ -1077,19 +1080,16 @@ export default function WorkOrderForm() {
                     />
                   </TableCell>
 
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      size="small"
-                      checked={row.selected}
-                      onChange={(e) =>
-                        handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)
-                      }
-                      sx={{
-                        color: "#b0b5c4",
-                        "&.Mui-checked": { color: "#5c7cfa" },
-                      }}
-                    />
-                  </TableCell>
+                  <TableCell>
+  <Button
+    size="small"
+    color="error"
+    onClick={() => handleDeleteSelectedVehicle(index)}
+    sx={{ minWidth: 0, p: "4px 8px" }}
+  >
+   <DeleteIcon fontSize="medium" />
+  </Button>
+  </TableCell>
                 </TableRow>
               ))}
 
