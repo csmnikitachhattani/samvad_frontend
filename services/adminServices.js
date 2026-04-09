@@ -123,7 +123,7 @@ const adminService = {
   },
   proceedWorkload: async (payload) =>{
     try {
-      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-generate-ror`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-generate-ro`, payload);
       return res;
     } catch (err) {
       console.log("answer")

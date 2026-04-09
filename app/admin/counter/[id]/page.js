@@ -325,11 +325,13 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
+  const trimValue = (val) => val.split('/')[0];
   async function fetchRateList() {
     const payload = {
       "tender_cate_id": "29",
       "work_type_cd": String("239"),
-      "work_cd": formData.work_list_id || selectedWork
+      "work_cd": formData.work_list_id || selectedWork,
+      "rate_duration_id": trimValue(formData.rate_duration_id)
     }
     try {
       const response = await adminServices.getOdmRateList(payload);

@@ -78,22 +78,37 @@ const DataSetUI = () => {
       setError("");
       setSuccess("");
       const payload = {
-        'jobNo': job_id,
-        'avakRefId': avak_ref,
-        financialYear: '2025-2026',
-        'woSubject': wosubject,
-        "clientCd": "000019",
-        "billingClientCd": "000019",
-        "billingOfficeCode": "00020",
-        "clientGrpCd": "00002",
-        "odServiceTypeId": 2,
-        "startDate": startDate,
-        "endDate": endDate,
-        "commissionPercentage": commissionPercentage,
-        "gstPercentage": gstPercentage,
-        "entryIpAddress": "103.79.34.50",
-        "entryByUserId": "string",
-        "entryByUsername": "string"
+        financial_year: '2025-2026',
+        avak_ref_id: avak_ref,
+        job_no: job_id,
+        wo_subject: wosubject,
+      
+        client_cd: "000019",
+        billing_Client_cd: "000019",
+        billing_office_code: "00020",
+        client_grp_cd: "00002",
+      
+        od_servicetype_id: 2,
+      
+        start_date: new Date(startDate).toISOString(),
+        end_date: new Date(endDate).toISOString(),
+      
+        commision_Percentage: commissionPercentage, // keep API spelling
+        gst_percentage: gstPercentage,
+      
+        entry_ip_address: "103.79.34.50",
+        entry_by_user_id: "string",
+        entry_by_username: "string",
+      
+        ro_no_list: "",
+      
+        action_cd: "07",
+        action_name: "Generate RO",
+        status_reason_cd: "01",
+        remark: "remark",
+      
+        entry_by_section_cd: "08",
+        entry_by_type_cd: "09"
       };
       await adminServices.proceedWorkload(payload);
       setSuccess("Allocation submitted successfully.");
