@@ -55,7 +55,7 @@ const VehicleModal = ({ open = true, onClose, onSubmit }) => {
       formData.append("OwnerName", data.ownerName);
       formData.append("FitnessUpto", "2026-01-26T14:20:06.038Z");
       formData.append("InsuranceUpto", "2026-01-26T14:20:06.038Z");
-      formData.append("InsuranceUpto", specification);
+      formData.append("InsuranceUpto", data.specification);
       // File
       if (data.rcPhotoFile) {
         formData.append("RcPhotoFile", data.rcPhotoFile);
