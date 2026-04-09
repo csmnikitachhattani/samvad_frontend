@@ -434,7 +434,8 @@ export default function WorkOrderForm() {
       entryIpAddress: "127.0.0.1",
       entryByUserId: "1",
       entryByUsername: "admin",
-      details: vehicles.filter((item) => item.selected === true),
+      details: selectedVehicles,
+      duration: String(getDuration(formatDateForInput(formData.start_date), formatDateForInput(formData.end_date))),
     };
 
     axiosClient
