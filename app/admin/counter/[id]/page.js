@@ -182,7 +182,7 @@ export default function WorkOrderForm() {
      rate: selectedRate.impanel_rate,
      noOfVehicle: agency.noOfVehicle,
      noOfProgramme: agency.noOfProgramme,
-     totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
+     totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(agency.startDate), formatDateForInput(agency.endDate))),
      startDate: agency.startDate,
      endDate: agency.endDate,
    }));
@@ -361,12 +361,14 @@ export default function WorkOrderForm() {
     if (formData.work_list_id ||  selectedWork) {
       fetchRateList()
     }
-  }, [formData.work_list_id || selectedWork])
-  useEffect(() =>{
-    console.log("running")
-    const res =  SubmitVehicles()
-   setSelectedVehicles(res)
-  },[selectedRate])
+  }, [formData.work_list_id ,selectedWork])
+  useEffect(() => {
+    const run = async () => {
+      const res = await SubmitVehicles();
+      setSelectedVehicles(res);
+    };
+    run();
+  }, [selectedRate]);
   useEffect(() => {
     fetchCategories()
   }, []);
