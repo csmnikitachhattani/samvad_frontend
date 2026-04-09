@@ -1,6 +1,6 @@
 "use client";
 import { Box } from "@mui/material";
-import Sidebar from "@/components/admin/layout/sidebar";
+import Sidebar from "@/components/admin/layout/sidebar2";
 import Header from "@/components/Newspaper/header";
 
 export default function AdminLayout({ children }) {

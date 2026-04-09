@@ -50,6 +50,8 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
+
+
   
   const transformAgencyToDetails = (agencies) => {
     if (!Array.isArray(agencies)) return [];
@@ -68,7 +70,9 @@ const DataSetUI = () => {
       end_date: agency.end_date
     }));
   };
-
+  const handleDelete = (index) => {
+    setRecords((prev) => prev.filter((_, i) => i !== index));
+  };
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
@@ -130,13 +134,14 @@ const DataSetUI = () => {
   const { summary = {} } = data;
 
   const columns = [
-    { label: "Vehicle ID", key: "ledVehicleId", mono: true },
+    { label: "Vehicle ID", key: "led_vehicle_id", mono: true },
     { label: "Rate",       key: "rate",         fmt: true },
     //{ label: "Vehicles",   key: "no_of_vehicle" },
     { label: "Programme",  key: "no_of_programme" },
     { label: "Total",      key: "total_rate",   fmt: true, bold: true },
     { label: "Start Date", key: "start_date",   date: true },
     { label: "End Date",   key: "end_date",     date: true },
+    { label: "Action", key: "action" }
   ];
 
   return (
@@ -203,9 +208,9 @@ const DataSetUI = () => {
                     </td>
                   </tr>
                 ) : (
-                  records.map((row, i) => (
-                    <BodyRow key={i} row={row} columns={columns} fmt={fmt} />
-                  ))
+                 records.map((row, i) => (
+  <BodyRow key={i} row={row} columns={columns} fmt={fmt} onDelete={() => handleDelete(i)} />
+))
                 )}
               </tbody>
             </table>
@@ -245,7 +250,7 @@ const DataSetUI = () => {
 };
 
 // ── Row with hover ────────────────────────────────────────────────────────────
-function BodyRow({ row, columns, fmt }) {
+function BodyRow({ row, columns, fmt, onDelete }) {
   const [hovered, setHovered] = useState(false);
   return (
     <tr
@@ -262,6 +267,19 @@ function BodyRow({ row, columns, fmt }) {
         console.log(val)
         if (c.fmt)  val = fmt(val);
         if (c.date) val = val?.split("T")[0] ?? "—";
+        if (c.key === "action") {
+          return (
+            <td key="action" style={{ padding: "13px 20px" }}>
+              <button onClick={onDelete} title="Delete" style={{
+                background: "none", border: "none",
+                cursor: "pointer", fontSize: 16, color: "#dc2626",
+                padding: 0, lineHeight: 1,
+              }}>
+                🗑
+              </button>
+            </td>
+          );
+        }
         return (
           <td
             key={c.key}

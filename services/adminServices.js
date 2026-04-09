@@ -114,7 +114,7 @@ const adminService = {
   },
   ApprovedNotesheet: async (payload) =>{
     try {
-      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-db-approve-job-allocation`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-approve-job-allocation`, payload);
       return res;
     } catch (err) {
       console.log("answer")
@@ -123,7 +123,7 @@ const adminService = {
   },
   proceedWorkload: async (payload) =>{
     try {
-      const res = await axiosClient.post(`/OutDoorMediaTransaction/lvworkorder`, payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-generate-ror`, payload);
       return res;
     } catch (err) {
       console.log("answer")
