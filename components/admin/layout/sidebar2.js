@@ -44,24 +44,24 @@ const isActive = (path) => pathname.startsWith(path);
     //   path: "/admin/display",
     //   icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     // },
-    {
-      label: "Display Boards",
-      icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
-      submenu: [
-        {
-          label: " Display Board Avk List",
-          path: "/admin/displayboard/counter",
-        },
-        {
-          label: "Counter List",
-          path: "/admin/displayboard",
-        },
-        {
-          label: "Notsheet",
-          path: "/admin/display/reports",
-        },
-      ],
-    },
+    // {
+    //   label: "Display Boards",
+    //   icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
+    //   submenu: [
+    //     {
+    //       label: " Display Board Avk List",
+    //       path: "/admin/displayboard/counter",
+    //     },
+    //     {
+    //       label: "Counter List",
+    //       path: "/admin/displayboard",
+    //     },
+    //     {
+    //       label: "Notsheet",
+    //       path: "/admin/display/reports",
+    //     },
+    //   ],
+    // },
     {
       label: "Vehicle Boards",
       path: "/admin/vehicle",
