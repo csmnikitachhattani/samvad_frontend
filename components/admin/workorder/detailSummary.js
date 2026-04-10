@@ -64,9 +64,9 @@ const DataSetUI = () => {
       ledVehicleId: agency.led_vehicle_id,
       description: agency.description,
       rate: agency.rate,
-      noOfVehicle: 1,
-      noOfProgramme: 4,
-      totalRate: agency.total_rate,
+      no_of_vehicle: 1,
+      no_of_programme: agency.no_of_programme,
+      total_rate: agency.total_rate,
       startDate: agency.start_date,
       endDate: agency.end_date,
     }));
@@ -151,7 +151,7 @@ const DataSetUI = () => {
   const columns = [
     { label: "Vehicle ID", key: "ledVehicleId", mono: true },
     { label: "Rate",       key: "rate",          fmt: true },
-    { label: "Vehicles",   key: "no_of_vehicle" },
+    // { label: "Vehicles",   key: "no_of_vehicle" },
     { label: "Programme",  key: "no_of_programme" },
     { label: "Total",      key: "total_rate",    fmt: true, bold: true },
     { label: "Start Date", key: "start_date",    date: true },

@@ -147,31 +147,10 @@ export default function WorkOrderForm() {
       selected: false,
     }));
   };
-
-  const transformVehicleDetails = (agencies, startDate, endDate) => {
-    if (!Array.isArray(agencies)) return [];
-    console.log(startDate, formatDateForInput(startDate))
-    return agencies.map((agency) => ({
-      vendorId: agency.AgencyId?.toString() || "",
-      vendorName: agency.AgencyName || "",
-      vendorCateId: agency.ServiceId?.toString() || "7",
-      vendorCate: "outdoor media",
-      ledVehicleId: agency.VehicleId,
-      VehicleNo: agency.VehicleNo,
-      description: "",
-      //rate: selectedRate.impanel_rate,
-      noOfVehicle: 1,
-      noOfProgramme: 4,
-      //totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
-      startDate: formatDateForInput(startDate),
-      endDate: formatDateForInput(endDate),
-      selected: false,
-    }));
-  };
-
   const SubmitVehicles = async () => {
    const veh =  vehicles.filter((item) => item.selected === true)
    if (!Array.isArray(veh)) return [];
+   console.log()
    return veh.map((agency) => ({
      vendorId: agency.vendorId?.toString() || "",
      vendorName: agency.vendorName,
@@ -183,7 +162,7 @@ export default function WorkOrderForm() {
      rate: selectedRate.impanel_rate,
      noOfVehicle: agency.noOfVehicle,
      noOfProgramme: agency.noOfProgramme,
-     totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(agency.startDate), formatDateForInput(agency.endDate))),
+     totalRate: parseInt(selectedRate.impanel_rate) * parseInt(getDuration(formatDateForInput(agency.startDate), formatDateForInput(agency.endDate))),
      startDate: agency.startDate,
      endDate: agency.endDate,
    }));
