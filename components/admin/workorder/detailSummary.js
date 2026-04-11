@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
+import clientServices from "@/services/clientServices";
 import { Grid, TextField } from "@mui/material";
 
 import {  useDispatch } from "react-redux";
@@ -53,6 +54,27 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
+  const fetchClientRecords = async () => {
+
+    // const payload ={
+    //   user_id: '00100',
+    //   financial_year: '2024-2025' 
+    //   ref_id, 
+    //   category
+
+    // }
+    try {
+      setLoading(true);
+      const response = await clientServices.getClientRequest(payload);
+      setData(response.data);
+      setRecords(transformAgencyToDetails(response?.data?.records));
+    } catch (err) {
+      setError("Failed to load allocation records");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const transformAgencyToDetails = (agencies) => {
     if (!Array.isArray(agencies)) return [];
@@ -71,7 +93,7 @@ const DataSetUI = () => {
       endDate: agency.end_date,
     }));
   };
-
+  
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
@@ -154,8 +176,8 @@ const DataSetUI = () => {
     // { label: "Vehicles",   key: "no_of_vehicle" },
     { label: "Programme",  key: "no_of_programme" },
     { label: "Total",      key: "total_rate",    fmt: true, bold: true },
-    { label: "Start Date", key: "start_date",    date: true },
-    { label: "End Date",   key: "end_date",      date: true },
+    { label: "Start Date", key: "startDate",    date: true },
+    { label: "End Date",   key: "endDate",      date: true },
   ];
 
   const fieldSx = {
