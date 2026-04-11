@@ -79,7 +79,8 @@ export default function WorkOrderForm() {
   const [selectedWork, setSelectedWork] = useState('');
   const [selectedRow, setSelectedRow] = useState('');
   const [rateList, setRateList] = useState([]);
-  const [rateType, setRateType] = useState([]);
+  const [rateType, setRateType] = useState('');
+  const [hoardingRates, setHoardingRates] = useState([]);
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -239,7 +240,6 @@ export default function WorkOrderForm() {
       "tender_cate_cd": "29",
       "param": "search",
       "search_param": "category_id"
-
     }
     try {
       const response = await adminServices.getOdmRateCategory(payload);
@@ -315,7 +315,7 @@ export default function WorkOrderForm() {
     }
     try {
       const response = await adminServices.getLEDvehicleRate(payload);
-      setWorkList(response.data.data);
+      setHoardingRates(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
@@ -604,6 +604,8 @@ export default function WorkOrderForm() {
                   </MenuItem>
                 ))}
               </TextField>
+              
+            
               <RadioGroup
                 row
                 name="rate_duration_type"
@@ -645,6 +647,14 @@ export default function WorkOrderForm() {
                   />
                 ))}
               </RadioGroup>
+              <TextField fullWidth select label="Rate" name="rate"
+                value={formData.duration_id} onChange={handleChange} sx={grayField}>
+                {hoardingRates.map((item) => (
+                  <MenuItem key={item.duration_id} value={item.duration_id}>
+                    {item.duration}
+                  </MenuItem>
+                ))}
+              </TextField>
               <Grid container spacing={3}>
                 <Grid size item={{ xs: 6, md: 6 }}>
                   <TextField
