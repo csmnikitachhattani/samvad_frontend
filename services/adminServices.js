@@ -184,6 +184,16 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getLEDvehicleRate: async (payload) =>{
+    const {type} = payload
+    try {
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/GetHordingDurationByTypee?type=${type}`);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  }
 
  
 };

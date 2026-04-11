@@ -34,6 +34,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  RadioGroup,
+  FormControlLabel,
 } from "@mui/material";
 
 // ─── Shared sx helpers ────────────────────────────────────────────────────────
@@ -77,6 +79,7 @@ export default function WorkOrderForm() {
   const [selectedWork, setSelectedWork] = useState('');
   const [selectedRow, setSelectedRow] = useState('');
   const [rateList, setRateList] = useState([]);
+  const [rateType, setRateType] = useState([]);
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -84,8 +87,6 @@ export default function WorkOrderForm() {
     job_id: "",
     subject: "",
     dpr_job_ref_no: "",
-    startDate: "",
-    endDate: "",
     //wo_date: "",
     category: '',
     tender: '',
@@ -308,6 +309,17 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
+  async function fetchRateDur() {
+    const payload = {
+       type: rateType
+    }
+    try {
+      const response = await adminServices.getLEDvehicleRate(payload);
+      setWorkList(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
   const trimValue = (val) => val.split('/')[0];
   async function fetchRateList() {
     const payload = {
@@ -348,6 +360,11 @@ export default function WorkOrderForm() {
       fetchRateList()
     }
   }, [formData.work_list_id, selectedWork])
+  useEffect(() => {
+    if (rateType) {
+      fetchRateDur()
+    }
+  }, [rateType])
   useEffect(() => {
     const run = async () => {
       const res = await SubmitVehicles();
@@ -587,8 +604,47 @@ export default function WorkOrderForm() {
                   </MenuItem>
                 ))}
               </TextField>
-
-
+              <RadioGroup
+                row
+                name="rate_duration_type"
+                value={rateType}
+                onChange={(e) => setRateType(e.target.value)}
+                sx={{ gap: 1 }}
+              >
+                {[
+                  { label: "Month", value: "M" },
+                  { label: "Day", value: "D" },
+                ].map(({ label, value }) => (
+                  <FormControlLabel
+                    key={value}
+                    value={value}
+                    control={
+                      <Radio
+                        size="small"
+                        sx={{
+                          color: "#b0b5c4",
+                          "&.Mui-checked": { color: "#010a2a" },
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography variant="body2" sx={{ color: "#2d3142", fontWeight: 500 }}>
+                        {label}
+                      </Typography>
+                    }
+                    sx={{
+                      m: 0,
+                      px: 1.5,
+                      py: 0.75,
+                      borderRadius: "10px",
+                      border: "1px solid",
+                      borderColor: formData.rate_duration_type === value ? "#010a2a" : "#e2e4ea",
+                      backgroundColor: formData.rate_duration_type === value ? "#f0f3ff" : "#f4f5f7",
+                      transition: "all 0.15s ease",
+                    }}
+                  />
+                ))}
+              </RadioGroup>
               <Grid container spacing={3}>
                 <Grid size item={{ xs: 6, md: 6 }}>
                   <TextField
