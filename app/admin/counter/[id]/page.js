@@ -114,6 +114,7 @@ export default function WorkOrderForm() {
     entry_by_user_id: "",
     entry_by_username: "",
     billing_Client_cd: "",
+    durationId: "",
     detailList: [
       {
         display_board_id: 0,
@@ -320,6 +321,19 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
+  async function fetchAllocation() {
+    const payload = {
+       durationType: rateType,
+       durationId: formData.durationId,
+       agencyID: '4',
+    }
+    try {
+      const response = await adminServices.getAllocationList(payload);
+      setHoardingRates(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
   const trimValue = (val) => val.split('/')[0];
   async function fetchRateList() {
     const payload = {
@@ -350,6 +364,11 @@ export default function WorkOrderForm() {
       fetchRateDurations()
     }
   }, [formData.work_type])
+  useEffect(() => {
+    if (formData.durationId) {
+      fetchAllocation()
+    }
+  }, [formData.durationId])
   useEffect(() => {
     if (formData.rate_duration_id) {
       fetchWorkList()
@@ -410,6 +429,23 @@ export default function WorkOrderForm() {
       prev.map((row) => (row.ledVehicleId === vehicleId ? { ...row, [field]: value } : row))
     );
   };
+   
+
+
+  function calculateEndDate(startDate, duration, type) {
+    const date = new Date(startDate);
+  
+    if (type === "M") {
+      date.setMonth(date.getMonth() + duration);
+    } else if (type === "D") {
+      date.setDate(date.getDate() + duration);
+    }
+  
+    // subtract 1 day
+    date.setDate(date.getDate() - 1);
+  
+    return date;
+  }
 
   const handleSubmit = async () => {
     const total = vehicles
@@ -648,7 +684,7 @@ export default function WorkOrderForm() {
                 ))}
               </RadioGroup>
               <TextField fullWidth select label="Rate" name="rate"
-                value={formData.duration_id} onChange={handleChange} sx={grayField}>
+                value={formData.durationId} onChange={handleChange} sx={grayField}>
                 {hoardingRates.map((item) => (
                   <MenuItem key={item.duration_id} value={item.duration_id}>
                     {item.duration}
@@ -772,9 +808,6 @@ export default function WorkOrderForm() {
         </Grid>
       </Paper>
       {/* select*/}
-
-
-
       <Paper
         elevation={0}
         sx={{

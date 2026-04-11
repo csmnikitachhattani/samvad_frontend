@@ -193,8 +193,16 @@ const adminService = {
       console.log("answer")
       throw err; // interceptor will format it
     }
-  }
-
- 
+  }, 
+  getAllocationList: async (payload) =>{
+    //const {type} = payload
+    try {
+      const res = await axiosClient.get(`OutDoorMediaTransaction/ODM_LV_SelectAllListAvailibility_BetweenDate`,payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  }, 
 };
 export default adminService;
