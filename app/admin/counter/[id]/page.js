@@ -115,6 +115,7 @@ export default function WorkOrderForm() {
     entry_by_username: "",
     billing_Client_cd: "",
     durationId: "",
+    duration_id: "",
     detailList: [
       {
         display_board_id: 0,
@@ -136,8 +137,8 @@ export default function WorkOrderForm() {
     if (!Array.isArray(agencies)) return [];
     console.log(startDate, formatDateForInput(startDate))
     return agencies.map((agency) => ({
-      vendorId: agency.AgencyId?.toString() || "",
-      vendorName: agency.AgencyName || "",
+      vendorId: agency.agencyID?.toString() || "",
+      vendorName: agency.agency_name || "",
       vendorCateId: agency.ServiceId?.toString() || "7",
       vendorCate: "outdoor media",
       ledVehicleId: agency.VehicleId,
@@ -152,22 +153,23 @@ export default function WorkOrderForm() {
       selected: false,
     }));
   };
-  const SubmitVehicles = async () => {
-    const veh = vehicles.filter((item) => item.selected === true)
-    if (!Array.isArray(veh)) return [];
+  const SubmitVehicles = async (res) => {
+    //const veh = vehicles.filter((item) => item.selected === true)
+    if (!Array.isArray(res)) return [];
     console.log()
-    return veh.map((agency) => ({
-      vendorId: agency.vendorId?.toString() || "",
-      vendorName: agency.vendorName,
+    return res.map((agency) => ({
+      vendorId: agency.agencyID?.toString() || "",
+      vendorName: agency.agency_name || "",
       vendorCateId: agency.vendorCateId,
       vendorCate: "outdoor media",
       ledVehicleId: agency.ledVehicleId,
       VehicleNo: agency.VehicleNo,
       description: "",
-      rate: selectedRate.impanel_rate,
+      rate: agency.impanel_rate,
       noOfVehicle: agency.noOfVehicle,
       noOfProgramme: agency.noOfProgramme,
-      totalRate: parseInt(selectedRate.impanel_rate) * parseInt(getDuration(formatDateForInput(agency.startDate), formatDateForInput(agency.endDate))),
+      //totalRate: parseInt(selectedRate.impanel_rate) * parseInt(getDuration(formatDateForInput(agency.startDate), formatDateForInput(agency.endDate))),
+      total_rate:agency.total_impanel_rate,
       startDate: agency.startDate,
       endDate: agency.endDate,
     }));
@@ -324,12 +326,14 @@ export default function WorkOrderForm() {
   async function fetchAllocation() {
     const payload = {
        durationType: rateType,
-       durationId: formData.durationId,
-       agencyID: '4',
+       durationId: formData.duration_id,
+       agencyID: formData.vendor_id.toString(),
     }
     try {
       const response = await adminServices.getAllocationList(payload);
-      setHoardingRates(response.data.data);
+      //setHoardingRates(response.data.data);
+     const res = await SubmitVehicles(response.data.data)
+     setSelectedVehicles(res);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
@@ -365,10 +369,10 @@ export default function WorkOrderForm() {
     }
   }, [formData.work_type])
   useEffect(() => {
-    if (formData.durationId) {
+    if (formData.duration_id) {
       fetchAllocation()
     }
-  }, [formData.durationId])
+  }, [formData.duration_id])
   useEffect(() => {
     if (formData.rate_duration_id) {
       fetchWorkList()
@@ -384,13 +388,13 @@ export default function WorkOrderForm() {
       fetchRateDur()
     }
   }, [rateType])
-  useEffect(() => {
-    const run = async () => {
-      const res = await SubmitVehicles();
-      setSelectedVehicles(res);
-    };
-    run();
-  }, [selectedRate]);
+  // useEffect(() => {
+  //   const run = async () => {
+  //     const res = await SubmitVehicles();
+  //     setSelectedVehicles(res);
+  //   };
+  //   run();
+  // }, [selectedRate]);
   useEffect(() => {
     fetchCategories()
   }, []);
@@ -429,9 +433,6 @@ export default function WorkOrderForm() {
       prev.map((row) => (row.ledVehicleId === vehicleId ? { ...row, [field]: value } : row))
     );
   };
-   
-
-
   function calculateEndDate(startDate, duration, type) {
     const date = new Date(startDate);
   
@@ -683,8 +684,8 @@ export default function WorkOrderForm() {
                   />
                 ))}
               </RadioGroup>
-              <TextField fullWidth select label="Rate" name="rate"
-                value={formData.durationId} onChange={handleChange} sx={grayField}>
+              <TextField fullWidth select label="duartion_id" name="duration_id"
+                value={formData.duration_id} onChange={handleChange} sx={grayField}>
                 {hoardingRates.map((item) => (
                   <MenuItem key={item.duration_id} value={item.duration_id}>
                     {item.duration}

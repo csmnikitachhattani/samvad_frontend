@@ -197,7 +197,7 @@ const adminService = {
   getAllocationList: async (payload) =>{
     //const {type} = payload
     try {
-      const res = await axiosClient.get(`OutDoorMediaTransaction/ODM_LV_SelectAllListAvailibility_BetweenDate`,payload);
+      const res = await axiosClient.post(`OutDoorMediaTransaction/ODM_LV_SelectAllListAvailibility_BetweenDate`,payload);
       return res;
     } catch (err) {
       console.log("answer")
