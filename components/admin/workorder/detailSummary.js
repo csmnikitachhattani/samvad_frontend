@@ -100,7 +100,7 @@ const DataSetUI = () => {
       setError("");
       setSuccess("");
       const payload = {
-        financial_year: '2025-2026',
+        financial_year: '2024-2025',
         avak_ref_id: avak_ref,
         job_no: job_id,
         wo_subject: wosubject,
