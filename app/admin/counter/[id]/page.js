@@ -132,31 +132,8 @@ export default function WorkOrderForm() {
   const formatDateForInput = (dateString) => {
     return dateString?.split("T")[0];
   };
-
-  const transformAgencyToDetails = (agencies, startDate, endDate) => {
-    if (!Array.isArray(agencies)) return [];
-    console.log(startDate, formatDateForInput(startDate))
-    return agencies.map((agency) => ({
-      vendorId: agency.agencyID?.toString() || "",
-      vendorName: agency.agency_name || "",
-      vendorCateId: agency.ServiceId?.toString() || "7",
-      vendorCate: "outdoor media",
-      ledVehicleId: agency.VehicleId,
-      VehicleNo: agency.VehicleNo,
-      description: "",
-      //rate: selectedRate.impanel_rate,
-      noOfVehicle: 1,
-      noOfProgramme: 4,
-      //totalRate: selectedRate.impanel_rate * parseInt(getDuration(formatDateForInput(startDate), formatDateForInput(endDate))),
-      startDate: formatDateForInput(startDate),
-      endDate: formatDateForInput(endDate),
-      selected: false,
-    }));
-  };
   const SubmitVehicles = async (res) => {
-    //const veh = vehicles.filter((item) => item.selected === true)
     if (!Array.isArray(res)) return [];
-    console.log()
     return res.map((agency) => ({
       vendorId: agency.agencyID?.toString() || "",
       vendorName: agency.agency_name || "",
@@ -168,16 +145,17 @@ export default function WorkOrderForm() {
       rate: agency.impanel_rate,
       noOfVehicle: agency.noOfVehicle,
       noOfProgramme: agency.noOfProgramme,
-      //totalRate: parseInt(selectedRate.impanel_rate) * parseInt(getDuration(formatDateForInput(agency.startDate), formatDateForInput(agency.endDate))),
-      total_rate: agency.total_impanel_rate,
-      startDate: agency.startDate,
-      endDate: agency.endDate,
+      totalRate: agency.total_impanel_rate,
+      startDate: formData.start_date,
+      endDate: formData.end_date,
+      duration_text : formData.duration_text,
     }));
+    
   };
   async function fetchVehicle() {
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
-      const arr = transformAgencyToDetails(response.result, formData.start_date, formData.end_date);
+      //const arr = transformAgencyToDetails(response.result, formData.start_date, formData.end_date);
       setVehicles(arr);
     } catch (error) {
       console.error("Failed to fetch vehicles", error);
@@ -246,7 +224,6 @@ export default function WorkOrderForm() {
     }
     try {
       const response = await adminServices.getOdmRateCategory(payload);
-      console.log(response)
       setCategories(response.data.data);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
@@ -451,8 +428,6 @@ export default function WorkOrderForm() {
       .reduce((sum, item) => sum + Number(item.totalRate || 0), 0);
     const commission = total * 0.02;
     const gst = total * 0.18;
-
-    console.log(total);
     const payload = {
       financialYear: formData.financial_year,
       avakRefId: formData.avak_ref_id,
@@ -851,7 +826,7 @@ export default function WorkOrderForm() {
                     </TableCell>
 
                     <TableCell>
-                      <TextField
+                      {/* <TextField
                         size="small"
                         value={row.rate}
                         onChange={(e) =>
@@ -859,45 +834,20 @@ export default function WorkOrderForm() {
                         }
                         sx={smallGrayField}
                         inputProps={{ style: { fontSize: "0.83rem" } }}
-                      />
+                      /> */}
+                      {row.rate}
                     </TableCell>
 
                     <TableCell>
-                      <TextField
-                        size="small"
-                        value={row.total_rate}
-                        onChange={(e) =>
-                          handleVehicleChange(row.ledVehicleId, "total_rate", e.target.value)
-                        }
-                        sx={smallGrayField}
-                        inputProps={{ style: { fontSize: "0.83rem" } }}
-                      />
+                     {row.totalRate}
                     </TableCell>
 
                     <TableCell>
-                      <TextField
-                        size="small"
-                        type="date"
-                        value={row.startDate}
-                        onChange={(e) =>
-                          handleVehicleChange(row.ledVehicleId, "startDate", e.target.value)
-                        }
-                        sx={smallGrayField}
-                        inputProps={{ style: { fontSize: "0.83rem" } }}
-                      />
+                    {formatDateForInput(formData.startDate) || ""}
                     </TableCell>
 
                     <TableCell>
-                      <TextField
-                        size="small"
-                        type="date"
-                        value={row.endDate}
-                        onChange={(e) =>
-                          handleVehicleChange(row.ledVehicleId, "endDate", e.target.value)
-                        }
-                        sx={smallGrayField}
-                        inputProps={{ style: { fontSize: "0.83rem" } }}
-                      />
+                       {formatDateForInput(formData.endDate) || ""}
                     </TableCell>
 
                     <TableCell>
