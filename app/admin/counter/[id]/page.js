@@ -318,6 +318,11 @@ export default function WorkOrderForm() {
       const response = await adminServices.getAllocationList(payload);
       //setHoardingRates(response.data.data);
       const res = await SubmitVehicles(response.data.data)
+      const date=calculateEndDate(formData.startDate, 3)
+      setFormData((prev) => ({
+        ...prev,
+        end_date: date
+      }))
       setSelectedVehicles(res);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
@@ -368,11 +373,7 @@ export default function WorkOrderForm() {
     if (formData.duration_id) {
 
       fetchAllocation()
-      const date=calculateEndDate(formData.startDate, 3)
-      setFormData((prev) => ({
-        ...prev,
-        end_date: date
-      }))
+      
     }
   }, [formData.duration_id, selectedWork])
   // useEffect(() => {
