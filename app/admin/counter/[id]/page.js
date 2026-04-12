@@ -116,6 +116,7 @@ export default function WorkOrderForm() {
     billing_Client_cd: "",
     durationId: "",
     duration_id: "",
+    multiply_value: "",
     detailList: [
       {
         display_board_id: 0,
@@ -131,12 +132,12 @@ export default function WorkOrderForm() {
   });
   const formatDateForInput = (date) => {
     if (!date) return "";
-  
+
     const d = new Date(date);
-    
+
     // check if valid date
     if (isNaN(d)) return "";
-  
+
     return d.toISOString().split("T")[0];
   };
   const SubmitVehicles = async (res) => {
@@ -156,9 +157,10 @@ export default function WorkOrderForm() {
       totalRate: agency.total_impanel_rate,
       startDate: formData.start_date,
       endDate: formData.end_date,
-      duration_text : agency.duration_text,
+      duration_text: agency.duration_text,
+      selected: false,
     }));
-    
+
   };
   async function fetchVehicle() {
     try {
@@ -318,13 +320,13 @@ export default function WorkOrderForm() {
     try {
       const response = await adminServices.getAllocationList(payload);
       //setHoardingRates(response.data.data);
-      const date=calculateEndDate(formData.startDate, 3)
+      const date = calculateEndDate(formData.startDate, formData.multiply_value)
       await setFormData((prev) => ({
         ...prev,
         end_date: date
       }))
       const res = await SubmitVehicles(response.data.data)
-      
+
       setSelectedVehicles(res);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
@@ -375,7 +377,7 @@ export default function WorkOrderForm() {
     if (formData.duration_id) {
 
       fetchAllocation()
-      
+
     }
   }, [formData.duration_id, selectedWork, formData.vendor_id])
   // useEffect(() => {
@@ -425,7 +427,7 @@ export default function WorkOrderForm() {
   };
   function calculateEndDate(startDate, duration) {
     const date = new Date(startDate) || formData.start_date;
-    
+
 
     if (rateType === "M") {
       date.setMonth(date.getMonth() + duration);
@@ -465,7 +467,8 @@ export default function WorkOrderForm() {
       entryIpAddress: "127.0.0.1",
       entryByUserId: "1",
       entryByUsername: "admin",
-      details: selectedVehicles,
+      //details: selectedVehicles,
+      details: selectedVehicles.filter((item) => item.selected === true),
       duration: String(getDuration(formatDateForInput(formData.start_date), formatDateForInput(formData.end_date))),
     };
 
@@ -673,8 +676,23 @@ export default function WorkOrderForm() {
                   />
                 ))}
               </RadioGroup>
-              <TextField fullWidth select label="duartion_id" name="duration_id"
-                value={formData.duration_id} onChange={handleChange} sx={grayField}>
+              <TextField
+                fullWidth
+                select
+                label="Duration"
+                name="duration_id"
+                value={formData.duration_id}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const selected = hoardingRates.find((item) => item.duration_id === selectedId);
+                  setFormData({
+                    ...formData,
+                    duration_id: selectedId,
+                    multiply_value: selected?.multiply_value ?? 1,
+                  });
+                }}
+                sx={grayField}
+              >
                 {hoardingRates.map((item) => (
                   <MenuItem key={item.duration_id} value={item.duration_id}>
                     {item.duration}
@@ -735,52 +753,52 @@ export default function WorkOrderForm() {
 
           {/* ── Right: Vehicle Table ── */}
           <Grid item size={{ xs: 12, md: 9 }}>
-          <Box sx={{ border: '1px solid #e5e5e5' }}>
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>work Cd</TableCell>
-                          <TableCell width="400px">Work</TableCell>
-                          {/* <TableCell>Rate</TableCell> */}
+            <Box sx={{ border: '1px solid #e5e5e5' }}>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>work Cd</TableCell>
+                      <TableCell width="400px">Work</TableCell>
+                      {/* <TableCell>Rate</TableCell> */}
 
-                          <TableCell>Select</TableCell>
-                        </TableRow>
-                      </TableHead>
+                      <TableCell>Select</TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                      <TableBody>
-                        {workList.map((row, index) => (
-                          <TableRow key={row.Impanel_rate_id}>
+                  <TableBody>
+                    {workList.map((row, index) => (
+                      <TableRow key={row.Impanel_rate_id}>
 
-                            {/* ✅ Radio */}
+                        {/* ✅ Radio */}
 
 
-                            {/* ✅ Vendor Name */}
-                            <TableCell>
-                              <div>{index + 1}
-                              </div>
-                            </TableCell>
+                        {/* ✅ Vendor Name */}
+                        <TableCell>
+                          <div>{index + 1}
+                          </div>
+                        </TableCell>
 
-                            {/* ✅ Tender Type */}
-                            <TableCell>
-                              <div>{row.work}</div>
-                            </TableCell>
+                        {/* ✅ Tender Type */}
+                        <TableCell>
+                          <div>{row.work}</div>
+                        </TableCell>
 
-                            <TableCell>
-                              <Radio
-                                checked={selectedWork === row.work_cd}
-                                onChange={() => {
-                                  setSelectedWork(row.work_cd) // 🔥 important for vehicle logic
-                                }}
-                              />
-                            </TableCell>
+                        <TableCell>
+                          <Radio
+                            checked={selectedWork === row.work_cd}
+                            onChange={() => {
+                              setSelectedWork(row.work_cd) // 🔥 important for vehicle logic
+                            }}
+                          />
+                        </TableCell>
 
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Box>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
           </Grid>
 
         </Grid>
@@ -799,7 +817,7 @@ export default function WorkOrderForm() {
             <Table size="small">
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
-                  {["Vehicle", "Agency",'duration', "Rate", "Total", "Start", "End", "Action"].map(
+                  {["Vehicle", "Agency", 'duration', "Rate", "Total", "Start", "End", "Action"].map(
                     (col, i) => (
                       <TableCell
                         key={i}
@@ -847,26 +865,37 @@ export default function WorkOrderForm() {
                     </TableCell>
 
                     <TableCell>
-                     {row.totalRate}
+                      {row.totalRate}
                     </TableCell>
 
                     <TableCell>
-                    {formatDateForInput(row.startDate) || ""}
+                      {formatDateForInput(row.startDate) || ""}
                     </TableCell>
 
                     <TableCell>
-                       {formatDateForInput(row.endDate) || ""}
+                      {formatDateForInput(row.endDate) || ""}
                     </TableCell>
 
                     <TableCell>
-                      <Button
+                      {/* <Button
                         size="small"
                         color="error"
                         onClick={() => handleDeleteSelectedVehicle(index)}
                         sx={{ minWidth: 0, p: "4px 8px" }}
                       >
                         <DeleteIcon fontSize="medium" />
-                      </Button>
+                      </Button> */}
+                      <Checkbox
+                        size="small"
+                        checked={row.selected}
+                        onChange={(e) =>
+                          handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)
+                        }
+                        sx={{
+                          color: "#b0b5c4",
+                          "&.Mui-checked": { color: "#5c7cfa" },
+                        }}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
