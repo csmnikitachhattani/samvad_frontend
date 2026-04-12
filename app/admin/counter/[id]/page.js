@@ -133,13 +133,14 @@ export default function WorkOrderForm() {
     if (!date) return "";
   
     const d = new Date(date);
-  
+    
     // check if valid date
     if (isNaN(d)) return "";
   
     return d.toISOString().split("T")[0];
   };
   const SubmitVehicles = async (res) => {
+    console.log(formData.end_date)
     if (!Array.isArray(res)) return [];
     return res.map((agency) => ({
       vendorId: agency.agencyID?.toString() || "",
@@ -317,12 +318,13 @@ export default function WorkOrderForm() {
     try {
       const response = await adminServices.getAllocationList(payload);
       //setHoardingRates(response.data.data);
-      const res = await SubmitVehicles(response.data.data)
       const date=calculateEndDate(formData.startDate, 3)
-      setFormData((prev) => ({
+      await setFormData((prev) => ({
         ...prev,
         end_date: date
       }))
+      const res = await SubmitVehicles(response.data.data)
+      
       setSelectedVehicles(res);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
@@ -375,7 +377,7 @@ export default function WorkOrderForm() {
       fetchAllocation()
       
     }
-  }, [formData.duration_id, selectedWork])
+  }, [formData.duration_id, selectedWork, formData.vendor_id])
   // useEffect(() => {
   //   const run = async () => {
   //     const res = await SubmitVehicles();
@@ -849,11 +851,11 @@ export default function WorkOrderForm() {
                     </TableCell>
 
                     <TableCell>
-                    {formatDateForInput(formData.startDate) || ""}
+                    {formatDateForInput(row.startDate) || ""}
                     </TableCell>
 
                     <TableCell>
-                       {formatDateForInput(formData.endDate) || ""}
+                       {formatDateForInput(row.endDate) || ""}
                     </TableCell>
 
                     <TableCell>
