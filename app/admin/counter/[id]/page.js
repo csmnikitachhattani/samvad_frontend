@@ -129,8 +129,15 @@ export default function WorkOrderForm() {
       },
     ],
   });
-  const formatDateForInput = (dateString) => {
-    return dateString?.split("T")[0];
+  const formatDateForInput = (date) => {
+    if (!date) return "";
+  
+    const d = new Date(date);
+  
+    // check if valid date
+    if (isNaN(d)) return "";
+  
+    return d.toISOString().split("T")[0];
   };
   const SubmitVehicles = async (res) => {
     if (!Array.isArray(res)) return [];
@@ -148,7 +155,7 @@ export default function WorkOrderForm() {
       totalRate: agency.total_impanel_rate,
       startDate: formData.start_date,
       endDate: formData.end_date,
-      duration_text : formData.duration_text,
+      duration_text : agency.duration_text,
     }));
     
   };
@@ -156,7 +163,7 @@ export default function WorkOrderForm() {
     try {
       const response = await outdoorServices.getAgencyVehicle(formData.vendor_id);
       //const arr = transformAgencyToDetails(response.result, formData.start_date, formData.end_date);
-      setVehicles(arr);
+      //setVehicles(arr);
     } catch (error) {
       console.error("Failed to fetch vehicles", error);
     }
@@ -359,7 +366,13 @@ export default function WorkOrderForm() {
   }, [rateType])
   useEffect(() => {
     if (formData.duration_id) {
+
       fetchAllocation()
+      const date=calculateEndDate(formData.startDate, 3)
+      setFormData((prev) => ({
+        ...prev,
+        end_date: date
+      }))
     }
   }, [formData.duration_id, selectedWork])
   // useEffect(() => {
@@ -407,12 +420,13 @@ export default function WorkOrderForm() {
       prev.map((row) => (row.ledVehicleId === vehicleId ? { ...row, [field]: value } : row))
     );
   };
-  function calculateEndDate(startDate, duration, type) {
-    const date = new Date(startDate);
+  function calculateEndDate(startDate, duration) {
+    const date = new Date(startDate) || formData.start_date;
+    
 
-    if (type === "M") {
+    if (rateType === "M") {
       date.setMonth(date.getMonth() + duration);
-    } else if (type === "D") {
+    } else if (rateType === "D") {
       date.setDate(date.getDate() + duration);
     }
 
@@ -782,7 +796,7 @@ export default function WorkOrderForm() {
             <Table size="small">
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
-                  {["Vehicle", "Vehicle No", "Agency", "Rate", "Total", "Start", "End", "Action"].map(
+                  {["Vehicle", "Agency",'duration', "Rate", "Total", "Start", "End", "Action"].map(
                     (col, i) => (
                       <TableCell
                         key={i}
@@ -822,19 +836,10 @@ export default function WorkOrderForm() {
                       {row.vendorName}
                     </TableCell>
                     <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
-                      {row.VehicleNo}
+                      {row.duration_text}
                     </TableCell>
 
                     <TableCell>
-                      {/* <TextField
-                        size="small"
-                        value={row.rate}
-                        onChange={(e) =>
-                          handleVehicleChange(row.ledVehicleId, "rate", e.target.value)
-                        }
-                        sx={smallGrayField}
-                        inputProps={{ style: { fontSize: "0.83rem" } }}
-                      /> */}
                       {row.rate}
                     </TableCell>
 
@@ -863,7 +868,7 @@ export default function WorkOrderForm() {
                   </TableRow>
                 ))}
 
-                {vehicles.length === 0 && (
+                {selectedVehicles.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} align="center" sx={{ py: 4, color: "#b0b5c4" }}>
                       <Typography variant="body2">
