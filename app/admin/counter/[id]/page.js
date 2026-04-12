@@ -169,7 +169,7 @@ export default function WorkOrderForm() {
       noOfVehicle: agency.noOfVehicle,
       noOfProgramme: agency.noOfProgramme,
       //totalRate: parseInt(selectedRate.impanel_rate) * parseInt(getDuration(formatDateForInput(agency.startDate), formatDateForInput(agency.endDate))),
-      total_rate:agency.total_impanel_rate,
+      total_rate: agency.total_impanel_rate,
       startDate: agency.startDate,
       endDate: agency.endDate,
     }));
@@ -314,7 +314,7 @@ export default function WorkOrderForm() {
   }
   async function fetchRateDur() {
     const payload = {
-       type: rateType
+      type: rateType
     }
     try {
       const response = await adminServices.getLEDvehicleRate(payload);
@@ -325,15 +325,16 @@ export default function WorkOrderForm() {
   }
   async function fetchAllocation() {
     const payload = {
-       durationType: rateType,
-       durationId: formData.duration_id,
-       agencyID: formData.vendor_id.toString(),
+      durationType: rateType,
+      durationId: formData.duration_id,
+      agencyID: formData.vendor_id.toString(),
+      work_cd: "W202308485"
     }
     try {
       const response = await adminServices.getAllocationList(payload);
       //setHoardingRates(response.data.data);
-     const res = await SubmitVehicles(response.data.data)
-     setSelectedVehicles(res);
+      const res = await SubmitVehicles(response.data.data)
+      setSelectedVehicles(res);
     } catch (error) {
       console.error("Failed to fetch vendors", error);
     }
@@ -368,26 +369,22 @@ export default function WorkOrderForm() {
       fetchRateDurations()
     }
   }, [formData.work_type])
-  useEffect(() => {
-    if (formData.duration_id) {
-      fetchAllocation()
-    }
-  }, [formData.duration_id])
+
   useEffect(() => {
     if (formData.rate_duration_id) {
       fetchWorkList()
     }
   }, [formData.rate_duration_id])
   useEffect(() => {
-    if (formData.work_list_id || selectedWork) {
-      fetchRateList()
-    }
-  }, [formData.work_list_id, selectedWork])
-  useEffect(() => {
     if (rateType) {
       fetchRateDur()
     }
   }, [rateType])
+  useEffect(() => {
+    if (formData.duration_id) {
+      fetchAllocation()
+    }
+  }, [formData.duration_id, selectedWork])
   // useEffect(() => {
   //   const run = async () => {
   //     const res = await SubmitVehicles();
@@ -435,16 +432,16 @@ export default function WorkOrderForm() {
   };
   function calculateEndDate(startDate, duration, type) {
     const date = new Date(startDate);
-  
+
     if (type === "M") {
       date.setMonth(date.getMonth() + duration);
     } else if (type === "D") {
       date.setDate(date.getDate() + duration);
     }
-  
+
     // subtract 1 day
     date.setDate(date.getDate() - 1);
-  
+
     return date;
   }
 
@@ -641,8 +638,8 @@ export default function WorkOrderForm() {
                   </MenuItem>
                 ))}
               </TextField>
-              
-            
+
+
               <RadioGroup
                 row
                 name="rate_duration_type"
@@ -692,33 +689,31 @@ export default function WorkOrderForm() {
                   </MenuItem>
                 ))}
               </TextField>
-              <Grid container spacing={3}>
-                <Grid size item={{ xs: 6, md: 6 }}>
+              <Grid container spacing={1.5}>
+                <Grid item size={{ xs: 6 }}>
                   <TextField
+                    fullWidth
                     size="small"
                     type="date"
+                    label="Start Date"
                     name="start_date"
-                    value={formData.start_date}
+                    value={formatDateForInput(formData.start_date) || ""}
                     onChange={handleChange}
-                    // onChange={(e) =>
-                    //   handleVehicleChange(row.ledVehicleId, "startDate", e.target.value)
-                    // }
-                    sx={smallGrayField}
-                    inputProps={{ style: { fontSize: "0.83rem" } }}
+                    sx={grayField}
+                    InputLabelProps={{ shrink: true }}
                   />
                 </Grid>
-                <Grid size item={{ xs: 6, md: 6 }}>
+                <Grid item size={{ xs: 6 }}>
                   <TextField
+                    fullWidth
                     size="small"
                     type="date"
+                    label="End Date"
                     name="end_date"
-                    value={formData.end_date}
+                    value={formatDateForInput(formData.end_date) || ""}
                     onChange={handleChange}
-                    // onChange={(e) =>
-                    //   handleVehicleChange(row.ledVehicleId, "startDate", e.target.value)
-                    // }
-                    sx={smallGrayField}
-                    inputProps={{ style: { fontSize: "0.83rem" } }}
+                    sx={grayField}
+                    InputLabelProps={{ shrink: true }}
                   />
                 </Grid>
               </Grid>
@@ -748,86 +743,7 @@ export default function WorkOrderForm() {
 
           {/* ── Right: Vehicle Table ── */}
           <Grid item size={{ xs: 12, md: 9 }}>
-            <TableContainer sx={{ borderRadius: "10px", overflow: "hidden", border: "1px solid #eaecf2", height: "100%" }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
-                    {["S.No", "Vehicle", "Vehicle No", "Agency", ""].map((col, i) => (
-                      <TableCell
-                        key={i}
-                        padding={col === "" ? "checkbox" : "normal"}
-                        sx={{
-                          fontWeight: 600, fontSize: "0.75rem", color: "#5a6072",
-                          textTransform: "uppercase", letterSpacing: "0.5px",
-                          borderBottom: "1px solid #e2e4ea", py: 1.5,
-                        }}
-                      >
-                        {col === ""
-                          ? <Checkbox onChange={handleSelectAll} size="small" sx={{ color: "#b0b5c4" }} />
-                          : col}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {vehicles.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={4} align="center" sx={{ py: 6, color: "#b0b5c4" }}>
-                        <Typography variant="body2">
-                          No vehicles found. Select a vendor to load vehicles.
-                  </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                      vehicles.map((row, index) => (
-                        <TableRow key={row.ledVehicleId} hover sx={{
-                          backgroundColor: index % 2 === 0 ? "#ffffff" : "#fafbff",
-                          "&:hover": { backgroundColor: "#f0f3ff" },
-                          transition: "background-color 0.15s ease",
-                        }}>
-
-                          <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>{index + 1}</TableCell>
-                          <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>{row.ledVehicleId}</TableCell>
-                          <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>{row.VehicleNo}</TableCell>
-                          <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>{row.vendorName}</TableCell>
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              size="small"
-                              checked={row.selected}
-                              onChange={(e) => handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)}
-                              sx={{ color: "#b0b5c4", "&.Mui-checked": { color: "#5c7cfa" } }}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-
-        </Grid>
-      </Paper>
-      {/* select*/}
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          my: 3,
-          borderRadius: "14px",
-          backgroundColor: "#ffffff",
-          border: "1px solid #e8eaf0",
-        }}
-      >   <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Form Details</Typography>
-          </AccordionSummary>
-
-          <AccordionDetails>
-            <Grid container spacing={2}>
-
-              <Grid item size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e5e5e5' }}>
+          <Box sx={{ border: '1px solid #e5e5e5' }}>
                   <TableContainer>
                     <Table>
                       <TableHead>
@@ -873,50 +789,9 @@ export default function WorkOrderForm() {
                     </Table>
                   </TableContainer>
                 </Box>
-              </Grid>
-              <Grid item size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e5e5e5' }}>
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>No.</TableCell>
-                          <TableCell>day</TableCell>
-                          <TableCell>Vendor Name</TableCell>
-                          <TableCell>Rate</TableCell>
-                          <TableCell>Select</TableCell>
-                        </TableRow>
-                      </TableHead>
+          </Grid>
 
-                      <TableBody>
-                        {rateList.map((row, index) => (
-                          <TableRow key={row.Impanel_rate_id}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{row.rate_duration}</TableCell>
-                            <TableCell>{row.vendor_OrgName}</TableCell>
-                            {/* ✅ Rate */}
-                            <TableCell>
-                              {row.impanel_rate}
-                            </TableCell>
-                            <TableCell>
-                              <Radio
-                                checked={selectedRow === row.Impanel_rate_id}
-                                onChange={() => {
-                                  setSelectedRow(row.Impanel_rate_id);
-                                  setSelectedRate(row); // 🔥 important for vehicle logic
-                                }}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Box>
-              </Grid>
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
+        </Grid>
       </Paper>
       <Paper
         sx={{
@@ -966,7 +841,7 @@ export default function WorkOrderForm() {
                     }}
                   >
                     <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
-                      {row.ledVehicleId}
+                      {index + 1}
                     </TableCell>
                     <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
                       {row.vendorName}
@@ -990,9 +865,9 @@ export default function WorkOrderForm() {
                     <TableCell>
                       <TextField
                         size="small"
-                        value={row.totalRate}
+                        value={row.total_rate}
                         onChange={(e) =>
-                          handleVehicleChange(row.ledVehicleId, "totalRate", e.target.value)
+                          handleVehicleChange(row.ledVehicleId, "total_rate", e.target.value)
                         }
                         sx={smallGrayField}
                         inputProps={{ style: { fontSize: "0.83rem" } }}
