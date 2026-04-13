@@ -144,16 +144,16 @@ export default function WorkOrderForm() {
     console.log(formData.end_date)
     if (!Array.isArray(res)) return [];
     return res.map((agency) => ({
-      vendorId: agency.agencyID?.toString() || "",
-      vendorName: agency.agency_name || "",
+      vendorId: agency.agencyId?.toString() || "",
+      vendorName: agency.agency_name || "Vehicle-Agency",
       vendorCateId: agency.vendorCateId,
       vendorCate: "outdoor media",
-      ledVehicleId: agency.ledVehicleId,
-      VehicleNo: agency.VehicleNo,
+      ledVehicleId: agency.vehicleId,
+      VehicleNo: agency.vehicleNo,
       description: "",
       rate: agency.impanel_rate,
       noOfVehicle: agency.noOfVehicle,
-      noOfProgramme: agency.noOfProgramme,
+      noOfProgramme: 4,
       totalRate: agency.total_impanel_rate,
       startDate: formData.start_date,
       endDate: formData.end_date,
@@ -421,7 +421,7 @@ export default function WorkOrderForm() {
 
 
   const handleVehicleChange = (vehicleId, field, value) => {
-    setVehicles((prev) =>
+    setSelectedVehicles((prev) =>
       prev.map((row) => (row.ledVehicleId === vehicleId ? { ...row, [field]: value } : row))
     );
   };
@@ -442,7 +442,7 @@ export default function WorkOrderForm() {
   }
 
   const handleSubmit = async () => {
-    const total = vehicles
+    const total = selectedVehicles
       .filter((item) => item.selected === true)
       .reduce((sum, item) => sum + Number(item.totalRate || 0), 0);
     const commission = total * 0.02;
@@ -462,8 +462,8 @@ export default function WorkOrderForm() {
       woDate: new Date(formData.start_date).toISOString(),
       startDate: new Date(formData.start_date).toISOString(),
       endDate: new Date(formData.end_date).toISOString(),
-      commisionPercentage: "2",
-      gstPercentage: "18",
+      commisionPercentage: String(commission),
+      gstPercentage: String(gst),
       entryIpAddress: "127.0.0.1",
       entryByUserId: "1",
       entryByUsername: "admin",
@@ -817,7 +817,7 @@ export default function WorkOrderForm() {
             <Table size="small">
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
-                  {["Vehicle", "Agency", 'duration', "Rate", "Total", "Start", "End", "Action"].map(
+                  {["Vehicle","VehicleNo", "Agency", 'duration', "Rate", "Total", "Start", "End", "Action"].map(
                     (col, i) => (
                       <TableCell
                         key={i}
@@ -852,6 +852,9 @@ export default function WorkOrderForm() {
                   >
                     <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
                       {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
+                      {row.VehicleNo}
                     </TableCell>
                     <TableCell sx={{ color: "#2d3142", fontSize: "0.85rem" }}>
                       {row.vendorName}

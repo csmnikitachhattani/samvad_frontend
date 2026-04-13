@@ -64,7 +64,7 @@ const DataSetUI = () => {
       description: "",
       rate: agency.rate,
       no_of_vehicle: agency.no_of_vehicle,
-      no_of_programme: agency.no_of_programme,
+      no_of_programme: agency.no_of_programme || 4,
       total_rate: agency.total_rate,
       start_date: agency.start_date,
       end_date: agency.end_date
