@@ -115,9 +115,7 @@ const ModalShow = useSelector((state) => state.vehicle.ModalShow);
                   "Vehicle No",
                   "Agency",
                   "Owner Name",
-                  "Rate",
                   "Validity",
-                  "Image",
                 ].map((head) => (
                   <TableCell
                     key={head}
@@ -188,17 +186,10 @@ const ModalShow = useSelector((state) => state.vehicle.ModalShow);
                       fontSize: "0.813rem",
                       whiteSpace: "nowrap"
                     }}>
-                      {item.startTime} – {item.endTime}
+                      {item.OwnerName}
                     </TableCell>
 
-                    <TableCell sx={{ 
-                      fontWeight: 600,
-                      color: "#111827",
-                      fontSize: "0.875rem"
-                    }}>
-                      ₹{item.ratePerMonth?.toLocaleString()}
-                    </TableCell>
-
+                  
                     <TableCell sx={{ 
                       fontSize: "0.813rem",
                       color: "#6b7280",
@@ -210,10 +201,10 @@ const ModalShow = useSelector((state) => state.vehicle.ModalShow);
                     </TableCell>
 
                     {/* Image */}
-                    <TableCell>
+                    {/* <TableCell>
                       {item.imagepath ? (
                         <Avatar
-                          src={item.imagepath}
+                        src='http://103.79.34.50:8083/{item.imagepath}'
                           variant="rounded"
                           sx={{ 
                             width: 64, 
@@ -238,7 +229,7 @@ const ModalShow = useSelector((state) => state.vehicle.ModalShow);
                           —
                         </Box>
                       )}
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))
               )}
