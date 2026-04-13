@@ -152,7 +152,7 @@ export default function WorkOrderForm() {
       VehicleNo: agency.vehicleNo,
       description: "",
       rate: agency.impanel_rate,
-      noOfVehicle: agency.noOfVehicle,
+      noOfVehicle: agency.noOfVehicle || 1,
       noOfProgramme: 4,
       totalRate: agency.total_impanel_rate,
       startDate: formData.start_date,
@@ -198,12 +198,12 @@ export default function WorkOrderForm() {
           client_grp_cd: response.client_grp_cd ?? "",
           start_date: response.startDate ?? "",
           end_date: response.endDate ?? "",
-          commision_Percentage: response.commision_Percentage || 2,
-          commission_amount: response.commission_amount || 4000,
-          amount_with_commission: response.amount_with_commission || 2004000,
-          gst_percentage: response.gst_percentage ?? "",
-          gst_amount: response.gst_amount || 78,
-          toatl_amount: response.toatl_amount || 78,
+          commision_Percentage:  5,
+          //commission_amount: response.commission_amount,
+          //amount_with_commission: response.amount_with_commission ,
+          gst_percentage: 9,
+          //gst_amount: response.gst_amount ,
+          total_amount: response.total_amount ,
           startDate: response.startDate,
           endDate: response.endDate,
           detailList:
@@ -315,7 +315,7 @@ export default function WorkOrderForm() {
       durationType: rateType,
       durationId: formData.duration_id,
       agencyID: formData.vendor_id.toString(),
-      work_cd: "W202308485"
+      work_cd: formData.work_list_id || selectedWork,
     }
     try {
       const response = await adminServices.getAllocationList(payload);
@@ -445,8 +445,8 @@ export default function WorkOrderForm() {
     const total = selectedVehicles
       .filter((item) => item.selected === true)
       .reduce((sum, item) => sum + Number(item.totalRate || 0), 0);
-    const commission = total * 0.02;
-    const gst = total * 0.18;
+    const commission = 5;
+    const gst = 18;
     const payload = {
       financialYear: formData.financial_year,
       avakRefId: formData.avak_ref_id,
