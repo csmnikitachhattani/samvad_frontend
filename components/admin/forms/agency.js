@@ -18,6 +18,7 @@ import {
   Select,
 } from "@mui/material";
 import adminServices from "@/services/adminServices";
+import clientServices from "@/services/clientServices";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import commonServices from "@/services/commonServices";
 import { useDispatch } from "react-redux";
@@ -209,7 +210,6 @@ const AgencyForm = () => {
       serviceIds: typeof value === "string" ? value.split(",") : value,
     }));
   };
-
   const handleAddAgency = async () => {
     try {
       const updateObject = {
@@ -265,15 +265,15 @@ const AgencyForm = () => {
   }, []);
 
   useEffect(() => {
-    async function fetchServices() {
+    async function fetchCategory() {
       try {
-        const response = await adminServices.getServices();
-        setServices(response?.result || []);
+        const res = await clientServices.getAdvtCategory();
+        setServices(res.data.data);
       } catch (error) {
-        console.error("Failed to fetch services", error);
+        console.error("Failed to fetch categories", error);
       }
     }
-    fetchServices();
+    fetchCategory();
   }, []);
 
   return (
@@ -503,16 +503,17 @@ const AgencyForm = () => {
                   )}
                 >
                   {services.map((s) => (
-                    <MenuItem key={s.serviceId} value={s.serviceId}>
+                    <MenuItem key={s.catId} value={s.catId}>
                       <Checkbox
-                        checked={formData.serviceIds.includes(s.serviceId)}
+                        checked={formData.serviceIds.includes(s.catId)}
                         size="small"
                         sx={{ color: "#8b5cf6", "&.Mui-checked": { color: "#8b5cf6" }, mr: 0.5 }}
                       />
                       <ListItemText
-                        primary={s.serviceName}
+                        primary={s.catText}
                         primaryTypographyProps={{ fontSize: "0.875rem" }}
                       />
+                      
                     </MenuItem>
                   ))}
                 </Select>

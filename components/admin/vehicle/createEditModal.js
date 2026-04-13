@@ -47,7 +47,7 @@ export default function VehicleModal({ onClose }) {
 
   // ─── Fetch vendors on mount ───────────────────────────────────────────────
   useEffect(() => {
-    adminServices.getVendorList(1)
+    adminServices.getVendorList('08')
       .then((r) => setVendors(r.result))
       .catch((e) => console.error("Failed to fetch vendors", e));
   }, []);
