@@ -55,8 +55,8 @@ const ForwardTo = () => {
   const { financial_year, user_id, user_name } = useMemo(
     () => ({
       financial_year: localStorage.getItem("financial_year") || "2024-2025",
-      user_id: localStorage.getItem("user_id") || "00100",
-      user_name: localStorage.getItem("user_name") || "",
+      user_id: localStorage.getItem("userid") || "00100",
+      user_name: localStorage.getItem("username") || "",
     }),
     []
   );
@@ -80,8 +80,6 @@ const ForwardTo = () => {
             user_id,
             user_name,
             action: actionType,
-          
-         
           },
         }
       );

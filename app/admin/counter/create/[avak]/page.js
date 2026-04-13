@@ -672,31 +672,7 @@ export default function JobForm() {
             </Grid>
 
             {/* Service Type — still interactive */}
-            <Grid item size={{ xs: 12, md: 3 }}>
-              <TextField
-                select
-                label="Service Type"
-                name="od_servicetype_id"
-                fullWidth
-                value={data.od_servicetype_id}
-                onChange={handleChange}
-                sx={grayField}
-              >
-                {services.length > 0 ? (
-                  services.map((s) => (
-                    <MenuItem key={s.serviceId} value={s.serviceId}>
-                      {s.serviceName}
-                    </MenuItem>
-                  ))
-                ) : (
-                    <MenuItem disabled>
-                      <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-                        No services available
-            </Typography>
-                    </MenuItem>
-                  )}
-              </TextField>
-            </Grid>
+            
 
           </Grid>
         </Paper>

@@ -58,8 +58,8 @@ const ClientFileUpload = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setUserId(localStorage.getItem("user_id") || "00100");
-      setUserName(localStorage.getItem("user_name") || "");
+      setUserId(localStorage.getItem("userid") || "00100");
+      setUserName(localStorage.getItem("username") || "");
     }
   }, []);
 

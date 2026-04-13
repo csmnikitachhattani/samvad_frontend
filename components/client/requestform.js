@@ -398,12 +398,13 @@ const RequestForm = ({ category }) => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    localStorage.setItem("financialYear", localStorage.getItem("financialYear") || "2024-2025");
-    localStorage.setItem("userId",        localStorage.getItem("userId")        || "00100");
-    localStorage.setItem("refCategoryId", localStorage.getItem("refCategoryId") || "02");
-    localStorage.setItem("user_name",     localStorage.getItem("user_name")     || "SUPERINTENDING ENGINEER, City Circle-II CSPDCL,Raipur, रायपुर");
+    // localStorage.setItem("financialYear", localStorage.getItem("financialYear") );
+    // localStorage.setItem("user_id",        localStorage.getItem("userid")       );
+    // localStorage.setItem("refCategoryId", localStorage.getItem("refCategoryId") );
+    // localStorage.setItem("user_name",     localStorage.getItem("user_name") );
+    console.log("running")
     setFinancialYear(localStorage.getItem("financialYear"));
-    setUserId(localStorage.getItem("userId"));
+    setUserId(localStorage.getItem("userid"));
     setUserName(localStorage.getItem("user_name"));
     const getIP = async () => {
       try {

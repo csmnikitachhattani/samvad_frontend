@@ -534,8 +534,8 @@ export default function ClientAttachmentForm() {
         fixed_date: formData.fixedDate ? "Y" : "N",
         tender_amt: Number(formData.tender_amt) || 0,
         letter_no: formData.letter_no,
-        letter_date: formData.letterDate
-          ? new Date(formData.letterDate).toISOString().slice(0, 10)
+        letter_date: formData.letter_date
+          ? new Date(formData.letter_date).toISOString().slice(0, 10)
           : null,
         caption_cd: formData.captionCd || "02",
         total_pages: String(formData.files),
@@ -551,10 +551,10 @@ export default function ClientAttachmentForm() {
         section_code: formData.section,
         client_prarup_code: formData.clientPrarupCode || "2",
         client_name: formData.client_name,
-        ...(formData.isIndividual && {
-        client_address: formData.clientAddress || 'NA',
-        client_city: formData.clientCity || "NA",
-        }),
+        //...(formData.isIndividual && {
+        client_address: formData.clientAddress || formData.district,
+        client_city: formData.clientCity || formData.office,
+        //}),
         schedule_date: formData.schedule_date
           ? new Date(formData.schedule_date).toISOString().slice(0, 10)
           : null,
