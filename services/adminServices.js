@@ -74,9 +74,10 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
-  getClientRequestList: async () => {
+  getClientRequestList: async (payload) => {
+  const {userId,financialYear} = payload
     try {
-      const res = await axiosClient.get(`/Client/getclientadvtrequests?financial_year=2024-2025&action=get_forwarded&user_id=00100`);
+      const res = await axiosClient.get(`/Client/getclientadvtrequests?financial_year=${financialYear}&action=get_forwarded&user_id=${userId}`);
       return res.data;
     } catch (err) {
       console.log("answer")

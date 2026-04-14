@@ -166,12 +166,46 @@ const RequestTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [loading, setLoading] = useState(true);
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
 
   useEffect(() => {
-    async function fetchData() {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("user_name");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
       try {
-        const res = await adminServices.getClientRequestList();
-        // API returns { data: [...] } — adjust if shape differs
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  
+    getIP();
+  
+    async function fetchData() {
+      console.log("data", userIdLS, financialYearLS);
+  
+      const payload = {
+        userId: userIdLS,
+        financialYear: financialYearLS
+      };
+  
+      try {
+        const res = await adminServices.getClientRequestList(payload);
         setData(res?.data || res || []);
       } catch (error) {
         console.error("Failed to fetch requests", error);
@@ -179,6 +213,7 @@ const RequestTable = () => {
         setLoading(false);
       }
     }
+  
     fetchData();
   }, []);
 
