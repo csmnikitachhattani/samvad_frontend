@@ -35,15 +35,15 @@ const INITIAL_DATA = {
 };
 
 export default function VehicleModal({ onClose }) {
-  const router   = useRouter();
+  const router = useRouter();
   const dispatch = useDispatch();
   const ModalShow = useSelector((state) => state.vehicle.ModalShow);
 
-  const [vendors, setVendors]     = useState([]);
-  const [errors,  setErrors]      = useState({});
-  const [data,    setData]        = useState(INITIAL_DATA);
-  const [preview, setPreview]     = useState(null);   // ← image preview URL
-  const fileInputRef              = useRef(null);
+  const [vendors, setVendors] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [data, setData] = useState(INITIAL_DATA);
+  const [preview, setPreview] = useState(null);   // ← image preview URL
+  const fileInputRef = useRef(null);
 
   // ─── Fetch vendors on mount ───────────────────────────────────────────────
   useEffect(() => {
@@ -54,33 +54,33 @@ export default function VehicleModal({ onClose }) {
 
   const validateForm = () => {
     const newErrors = {};
-  
+
     if (!data.agencyId) {
       newErrors.agencyId = "Agency is required.";
     }
-  
+
     if (!data.vehicleNo?.trim()) {
       newErrors.vehicleNo = "Vehicle number is required.";
     } else if (!vehicleField.pattern.value.test(data.vehicleNo)) {
       newErrors.vehicleNo = vehicleField.pattern.message;
     }
-  
+
     if (!data.ownerName?.trim()) {
       newErrors.ownerName = "Owner name is required.";
     }
-  
+
     if (!data.fitnessUpto) {
       newErrors.fitnessUpto = "Fitness date is required.";
     }
-  
+
     if (!data.insuranceUpto) {
       newErrors.insuranceUpto = "Insurance date is required.";
     }
-  
+
     if (!data.rcPhotoFile) {
       newErrors.rcPhotoFile = "RC Photo is required.";
     }
-  
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -101,7 +101,7 @@ export default function VehicleModal({ onClose }) {
 
   async function getPublicIP() {
     try {
-      const res  = await fetch("https://api.ipify.org?format=json");
+      const res = await fetch("https://api.ipify.org?format=json");
       const json = await res.json();
       return json.ip;
     } catch {
@@ -147,11 +147,11 @@ export default function VehicleModal({ onClose }) {
   // ─── Submit ───────────────────────────────────────────────────────────────
   const createVehicle = async () => {
     if (!validateForm()) return;
-  
+
     try {
       const ip = await getPublicIP();
       const formData = new FormData();
-  
+
       formData.append("AgencyId", data.agencyId);
       formData.append("VehicleNo", data.vehicleNo);
       formData.append("OwnerName", data.ownerName);
@@ -160,17 +160,17 @@ export default function VehicleModal({ onClose }) {
       formData.append("Specification", data.specification);
       formData.append("CreatedBy", "01");
       formData.append("CreatedIpAddress", ip);
-  
+
       if (data.rcPhotoFile) {
         formData.append("RcPhotoFile", data.rcPhotoFile);
       }
-  
+
       await axiosClient.post(
         "http://103.79.34.50:8083/api/ManageMaster/createledVehicle",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
+
       dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
       router.push("/admin/vehicle");
       resetForm();
@@ -201,10 +201,10 @@ export default function VehicleModal({ onClose }) {
                 {vendors.length > 0 ? vendors.map((v) => (
                   <MenuItem key={v.AgencyID} value={v.AgencyID}>{v.AgencyName}</MenuItem>
                 )) : (
-                  <MenuItem disabled>
-                    <Typography variant="caption" sx={{ color: "#9ca3af" }}>No available Vendors</Typography>
-                  </MenuItem>
-                )}
+                    <MenuItem disabled>
+                      <Typography variant="caption" sx={{ color: "#9ca3af" }}>No available Vendors</Typography>
+                    </MenuItem>
+                  )}
               </TextField>
             </Grid>
 
@@ -214,7 +214,7 @@ export default function VehicleModal({ onClose }) {
                 label="Vehicle Number" name="vehicleNo" fullWidth size="small"
                 value={data.vehicleNo.toUpperCase()} onChange={handleChange}
                 error={!!errors.vehicleNo} helperText={errors.vehicleNo} sx={fieldStyle}
-               
+
               />
             </Grid>
 
@@ -228,17 +228,45 @@ export default function VehicleModal({ onClose }) {
 
             {/* Fitness Upto */}
             <Grid item size={{ xs: 12, md: 6 }}>
-              <TextField label="Fitness Upto" type="date" name="fitnessUpto" fullWidth size="small"
-                InputLabelProps={{ shrink: true }} value={data.fitnessUpto} onChange={handleChange}
-                error={!!errors.fitnessUpto} helperText={errors.fitnessUpto}
+              <TextField
+                label="Fitness Upto"
+                type="date"
+                name="fitnessUpto"
+                fullWidth
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                value={data.fitnessUpto}
+                onChange={handleChange}
+                error={!!errors.fitnessUpto}
+                helperText={errors.fitnessUpto}
+                inputProps={{
+                  min: new Date().toISOString().split("T")[0],
+                  // max: new Date(new Date().setMonth(new Date().getMonth() + 6))
+                  //   .toISOString()
+                  //   .split("T")[0],
+                }}
               />
             </Grid>
 
             {/* Insurance Upto */}
             <Grid item size={{ xs: 12, md: 6 }}>
-              <TextField label="Insurance Upto" type="date" name="insuranceUpto" fullWidth size="small"
-                InputLabelProps={{ shrink: true }} value={data.insuranceUpto} onChange={handleChange}
-                error={!!errors.insuranceUpto} helperText={errors.insuranceUpto}
+              <TextField
+                label="Insurance Upto"
+                type="date"
+                name="insuranceUpto"
+                fullWidth
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                value={data.insuranceUpto}
+                onChange={handleChange}
+                error={!!errors.insuranceUpto}
+                helperText={errors.insuranceUpto}
+                inputProps={{
+                  min: new Date().toISOString().split("T")[0],
+                  // max: new Date(new Date().setMonth(new Date().getMonth() + 6))
+                  //   .toISOString()
+                  //   .split("T")[0],
+                }}
               />
             </Grid>
 
@@ -300,13 +328,13 @@ export default function VehicleModal({ onClose }) {
                     </Button>
                   </Box>
                 ) : (
-                  <>
-                    <CloudUploadIcon sx={{ fontSize: 40, color: "#0f4c3a", opacity: 0.6 }} />
-                    <Typography variant="body2" sx={{ color: "#4a7c59" }}>
-                      Click below to upload RC Photo
+                    <>
+                      <CloudUploadIcon sx={{ fontSize: 40, color: "#0f4c3a", opacity: 0.6 }} />
+                      <Typography variant="body2" sx={{ color: "#4a7c59" }}>
+                        Click below to upload RC Photo
                     </Typography>
-                  </>
-                )}
+                    </>
+                  )}
 
                 {/* Upload button — always visible so user can change */}
                 <Button
@@ -330,10 +358,10 @@ export default function VehicleModal({ onClose }) {
                   />
                 </Button>
                 {errors.rcPhotoFile && (
-  <Typography variant="caption" color="error">
-    {errors.rcPhotoFile}
-  </Typography>
-)}
+                  <Typography variant="caption" color="error">
+                    {errors.rcPhotoFile}
+                  </Typography>
+                )}
               </Box>
             </Grid>
 
