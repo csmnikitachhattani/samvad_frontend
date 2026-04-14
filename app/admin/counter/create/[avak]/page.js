@@ -69,6 +69,7 @@ export default function JobForm() {
   const [sections, setSections] = useState([])
   const [officers, setOfficers] = useState([])
   const [avakFiles, setAvakFiles] = useState([]);
+  const [errors, setErrors] = useState({});
   const durationOptions = [
     { value: "1week", label: "1 Week" },
     { value: "2week", label: "2 Weeks" },
@@ -196,21 +197,42 @@ export default function JobForm() {
   }, []);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    // setData((prev) => ({
-    //   ...prev,
-    //   [name]: files ? files[0] : value,
-    // }));
     if (name === "files") {
-      setData((prev) => ({
-        ...prev,
-        files: files && files.length ? Array.from(files) : [],
-      }));
+      setData((prev) => ({ ...prev, files: files?.length ? Array.from(files) : [] }));
     } else {
-      setData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      setData((prev) => ({ ...prev, [name]: value }));
+      if (value) setErrors((prev) => ({ ...prev, [name]: "" }));
     }
+  };
+  const validate = () => {
+    const newErrors = {};
+  
+    if (!data.subject?.trim())           newErrors.subject               = "Subject is required.";
+    if (!data.startDate)                 newErrors.startDate             = "Start date is required.";
+    if (!data.endDate)                   newErrors.endDate               = "End date is required.";
+    if (data.startDate && data.endDate && data.endDate < data.startDate)
+                                         newErrors.endDate               = "End date must be after start date.";
+    if (!data.base_dept_code)            newErrors.base_dept_code        = "Base department is required.";
+    if (!data.district_code)             newErrors.district_code         = "District is required.";
+    if (!data.office_level_code)         newErrors.office_level_code     = "Office level is required.";
+    if (!data.office_code)               newErrors.office_code           = "Office is required.";
+    if (!data.section)                    newErrors.section               = "section is required.";
+    if (!data.billing_base_dept_code)    newErrors.billing_base_dept_code    = "Billing department is required.";
+    if (!data.billing_district_code)     newErrors.billing_district_code     = "Billing district is required.";
+    if (!data.billing_office_level_code) newErrors.billing_office_level_code = "Billing office level is required.";
+    if (!data.billing_office_code)       newErrors.billing_office_code       = "Billing office is required.";
+    if (!data.billing_section)           newErrors.billing_section               = "Billing section is required.";
+  
+    setErrors(newErrors);
+  
+    // Scroll to first error
+    const firstKey = Object.keys(newErrors)[0];
+    if (firstKey) {
+      const el = document.querySelector(`[name="${firstKey}"]`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  
+    return Object.keys(newErrors).length === 0;
   };
   async function getPublicIP() {
     const res = await fetch("https://api.ipify.org?format=json");
@@ -325,6 +347,7 @@ export default function JobForm() {
   // },[data.base_dept_code,])
   const handleSubmit = async (e) => {
     e.preventDefault();
+  if (!validate()) return;
   
     try {
       const ip = await getPublicIP();
@@ -710,6 +733,8 @@ export default function JobForm() {
                 InputLabelProps={{ shrink: true }}
                 value={data.startDate}
                 onChange={handleChange}
+                error={!!errors.startDate} 
+                helperText={errors.startDate}
                 sx={grayField}
               />
             </Grid>
@@ -721,6 +746,8 @@ export default function JobForm() {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 value={data.endDate}
+                error={!!errors.endDate} 
+                helperText={errors.endDate}
                 onChange={handleChange}
                 sx={grayField}
               />
@@ -748,6 +775,8 @@ export default function JobForm() {
                 label="Base Department"
                 name="base_dept_code"
                 value={data.base_dept_code}
+                error={!!errors.base_dept_code} 
+                helperText={errors.base_dept_code}
                 onChange={handleChange}
                 sx={field}
               >
@@ -766,6 +795,8 @@ export default function JobForm() {
                 label="District"
                 name="district_code"
                 value={data.district_code}
+                error={!!errors.district_code} 
+                helperText={errors.district_code}
                 onChange={handleChange}
                 sx={field}
               >
@@ -784,6 +815,8 @@ export default function JobForm() {
                 label="Office Level"
                 name="office_level_code"
                 value={data.office_level_code}
+                error={!!errors.office_level_code} 
+                helperText={errors.office_level_code}
                 onChange={handleChange}
                 sx={field}
               >
@@ -803,6 +836,8 @@ export default function JobForm() {
                 label="Office"
                 name="office_code"
                 value={data.office_code}
+                error={!!errors.office_code} 
+                helperText={errors.office_code}
                 onChange={handleChange}
                 sx={field}
               >
@@ -821,6 +856,8 @@ export default function JobForm() {
                 name="section"
                 value={data.section}
                 onChange={handleChange}
+                error={!!errors.section} 
+                helperText={errors.section}
                 sx={field}
               > {sections.map((section) => (
                 <MenuItem key={section} >
@@ -839,6 +876,8 @@ export default function JobForm() {
                 name="client_cd"
                 value={data.client_cd}
                 onChange={handleChange}
+                error={!!errors.client_cd} 
+                helperText={errors.client_cd}
                 sx={field}
               >
                 {officers.map((officer) => (
@@ -863,6 +902,8 @@ export default function JobForm() {
                 label="Base Department"
                 name="billing_base_dept_code"
                 value={data.billing_base_dept_code}
+                error={!!errors.billing_base_dept_code} 
+                helperText={errors.billing_base_dept_code}
                 onChange={handleChange}
                 sx={field}
               >
@@ -879,8 +920,10 @@ export default function JobForm() {
                 select
                 fullWidth
                 label="District"
-                name="district_code"
-                value={data.district_code}
+                name="billing_district_code"
+                value={data.billing_district_code}
+                error={!!errors.billing_district_code} 
+                helperText={errors.billing_district_code}
                 onChange={handleChange}
                 sx={field}
               >
@@ -898,6 +941,8 @@ export default function JobForm() {
                 fullWidth
                 label="Office Level"
                 name="billing_office_level_code"
+                error={!!errors.billing_office_level_code} 
+                helperText={errors.billing_office_level_code}
                 value={data.billing_office_level_code}
                 onChange={handleChange}
                 sx={field}
@@ -918,6 +963,8 @@ export default function JobForm() {
                 label="Billing Office"
                 name="billing_office_code"
                 value={data.billing_office_code}
+                error={!!errors.billing_office_code} 
+                helperText={errors.billing_office_code}
                 onChange={handleChange}
                 sx={field}
               >
@@ -933,8 +980,10 @@ export default function JobForm() {
               <TextField
                 fullWidth
                 label="Billing Section"
-                name="Billing CSection ode"
+                name="Billing Section code"
                 value={data.billing_section_code}
+                error={!!errors.billing_section_code} 
+                helperText={errors.billing_section_code}
                 onChange={handleChange}
                 sx={field}
               > {sections.map((section) => (
@@ -953,6 +1002,8 @@ export default function JobForm() {
                 label="Officer"
                 name="billing_client_name"
                 value={data.billing_client_cd}
+                error={!!errors.billing_client_cd} 
+                helperText={errors.billing_client_cd}
                 onChange={handleChange}
                 sx={field}
               >
@@ -966,7 +1017,7 @@ export default function JobForm() {
           </Grid>
         </SectionCard>
         {/* ── Address Info ── */}
-        <Paper
+        {/* <Paper
           elevation={0}
           sx={{
             p: 3,
@@ -1017,18 +1068,9 @@ export default function JobForm() {
               />
             </Grid>
 
-            {/* <Grid item size={{xs:12, md:3}}>
-              <TextField
-                label="IP Address"
-                name="ip_address"
-                fullWidth
-                value={data.ip_address}
-                onChange={handleChange}
-                sx={grayField}
-              />
-            </Grid> */}
+           
           </Grid>
-        </Paper>
+        </Paper> */}
 
         {/* ── File Upload ── */}
         <Paper
