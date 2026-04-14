@@ -272,6 +272,35 @@ export default function ClientAttachmentForm() {
     isIndividual: false,
   });
 
+  // ── Local Storage ──
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // localStorage.setItem("financialYear", localStorage.getItem("financialYear") );
+    // localStorage.setItem("user_id",        localStorage.getItem("userid")       );
+    // localStorage.setItem("refCategoryId", localStorage.getItem("refCategoryId") );
+    // localStorage.setItem("user_name",     localStorage.getItem("user_name") );
+    console.log("running")
+    setFinancialYear(localStorage.getItem("financialYear"));
+    setUserId(localStorage.getItem("userid"));
+    setUserName(localStorage.getItem("user_name"));
+    setUserTypeCd(localStorage.getItem("usertypecode"));
+    const getIP = async () => {
+      try {
+        const res  = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+        return data.ip
+      } catch { console.error("IP fetch failed"); }
+    };
+    getIP();
+  }, []);
+
+
   // ── handleChange clears the field's error on edit ───────────────────────────
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -542,7 +571,7 @@ export default function ClientAttachmentForm() {
         receiving_mode_code: formData.modeOfReceiving,
         letter_type_code: formData.letterType,
         remarks: formData.remark,
-        financial_year: formData.financialYear || "2024-2025",
+        financial_year: formData.financialYear || financialYear,
         client_cd: String(formData.officer),
         base_dept_code: formData.baseDept,
         office_code: formData.office,
@@ -560,13 +589,14 @@ export default function ClientAttachmentForm() {
           : null,
         ref_id: id,
         create_update_flag_name: "Insert",
-        entry_by_user_type_cd: "01",
-        entry_by_user_id: "00100",
+        entry_by_user_type_cd: userTypeCd,
+        entry_by_user_id: userId,
+        ip_address: getIP() || "103.79.34.50",
         entry_by_section_cd: formData.section || "",
         client_exist: "Y",
         entry_date: new Date().toISOString().slice(0, 10),
         entry_time: new Date().toTimeString().split(" ")[0],
-        ip_address: "103.79.34.50",
+     
       };
 
       const response = await axiosClient.post("/Client/create-update-avak", payload, {
