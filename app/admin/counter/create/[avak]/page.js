@@ -126,6 +126,34 @@ export default function JobForm() {
   
     files: null,
   });
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("username");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -182,7 +210,7 @@ export default function JobForm() {
           billing_office_code: res.data.office_code,
           billing_district_code: res.data.district_code,
           billing_office_level_code: res.data.office_level_code,
-          billing_section_code: res.data.section,
+          billing_section_code: res.data.section_code,
           billing_client_cd: res.data.client_cd
 
         }));
@@ -216,12 +244,12 @@ export default function JobForm() {
     if (!data.district_code)             newErrors.district_code         = "District is required.";
     if (!data.office_level_code)         newErrors.office_level_code     = "Office level is required.";
     if (!data.office_code)               newErrors.office_code           = "Office is required.";
-    if (!data.section)                    newErrors.section               = "section is required.";
+    //if (!data.section)                    newErrors.section               = "section is required.";
     if (!data.billing_base_dept_code)    newErrors.billing_base_dept_code    = "Billing department is required.";
     if (!data.billing_district_code)     newErrors.billing_district_code     = "Billing district is required.";
     if (!data.billing_office_level_code) newErrors.billing_office_level_code = "Billing office level is required.";
     if (!data.billing_office_code)       newErrors.billing_office_code       = "Billing office is required.";
-    if (!data.billing_section)           newErrors.billing_section               = "Billing section is required.";
+    //if (!data.billing_section)           newErrors.billing_section               = "Billing section is required.";
   
     setErrors(newErrors);
   
@@ -388,18 +416,18 @@ export default function JobForm() {
       // ===== USER =====
       payload.append("ip_address", ip);
   
-      payload.append("entry_user_name", data.entry_user_name);
-      payload.append("entry_by_user_id", data.entry_by_user_id);
+      payload.append("entry_user_name", user_name);
+      payload.append("entry_by_user_id", userId);
   
-      payload.append("entry_by_user_type_cd", data.entry_by_user_type_cd);
-      payload.append("modify_by_user_type_cd", data.modify_by_user_type_cd);
-      payload.append("user_type_cd", data.user_type_cd || "01");
+      payload.append("entry_by_user_type_cd", userTypeCd);
+      payload.append("modify_by_user_type_cd", userTypeCd);
+      payload.append("user_type_cd", userTypeCd);
   
-      payload.append("action_by_section_cd", data.action_by_section_cd);
-      payload.append("forward_to_section_cd", data.forward_to_section_cd);
+      payload.append("action_by_section_cd", '03');
+      payload.append("forward_to_section_cd", "04");
   
-      payload.append("owner_user_type_cd", data.owner_user_type_cd || "01");
-      payload.append("owner_user_id", data.owner_user_id || "00141");
+      payload.append("owner_user_type_cd", userTypeCd);
+      payload.append("owner_user_id", userId);
   
       // ===== BILLING =====
       payload.append(
@@ -854,10 +882,8 @@ export default function JobForm() {
                 fullWidth
                 label="Section"
                 name="section"
-                value={data.section}
+                value={data.section_code}
                 onChange={handleChange}
-                error={!!errors.section} 
-                helperText={errors.section}
                 sx={field}
               > {sections.map((section) => (
                 <MenuItem key={section} >
@@ -982,8 +1008,8 @@ export default function JobForm() {
                 label="Billing Section"
                 name="Billing Section code"
                 value={data.billing_section_code}
-                error={!!errors.billing_section_code} 
-                helperText={errors.billing_section_code}
+                // error={!!errors.billing_section_code} 
+                // helperText={errors.billing_section_code}
                 onChange={handleChange}
                 sx={field}
               > {sections.map((section) => (
