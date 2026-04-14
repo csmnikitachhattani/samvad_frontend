@@ -176,31 +176,29 @@ const AgencyForm = () => {
   const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-
-    // Apply email rules
+    const { name, value } = e.target;
+  
     if (name === "email") {
-      if (!value) {
-        setErrors({ ...errors, email: emailErrors.required })
-      } else if (!emailRules.pattern.test(value)) {
-        setErrors({ ...errors, email: emailErrors.pattern })
-      }
-      else {
-        setErrors({ ...errors, email: ""}) 
-      }
+      if (!value)                               setErrors((p) => ({ ...p, email: emailErrors.required }));
+      else if (!emailRules.pattern.test(value)) setErrors((p) => ({ ...p, email: emailErrors.pattern }));
+      else                                      setErrors((p) => ({ ...p, email: "" }));
+  
+    } else if (name === "gstin") {
+      if (!value)                                   setErrors((p) => ({ ...p, gstin: gstField.required.message }));
+      else if (!gstField.pattern.value.test(value)) setErrors((p) => ({ ...p, gstin: gstField.pattern.message }));
+      else                                          setErrors((p) => ({ ...p, gstin: "" }));
+  
+    } else if (name === "phone") {
+      if (!value)                        setErrors((p) => ({ ...p, phone: "Phone is required." }));
+      else if (!/^\d{10}$/.test(value))  setErrors((p) => ({ ...p, phone: "Enter a valid 10-digit phone number." }));
+      else                               setErrors((p) => ({ ...p, phone: "" }));
+  
+    } else {
+      if (value) setErrors((p) => ({ ...p, [name]: "" }));
     }
-    if( name === 'gstin'){
-      if (!value) {
-        setErrors({ ...errors, gstin: gstField.required.message })
-      } else if (!gstField.pattern.value.test(value)) {
-        setErrors({ ...errors, gstin: gstField.pattern.message })
-      } else {
-        setErrors({ ...errors, gstin: "" })
-      }
-    }
-
-    setFormData({ ...formData, [name]: value })
-  }
+  
+    setFormData({ ...formData, [name]: value });
+  };
 
 
   const handleServiceChange = (event) => {
@@ -211,6 +209,7 @@ const AgencyForm = () => {
     }));
   };
   const handleAddAgency = async () => {
+    if (!validate()) return; 
     try {
       const updateObject = {
         agencyName: formData.agencyName,
@@ -240,6 +239,49 @@ const AgencyForm = () => {
     } catch (err) {
       console.log("Error:", err.message);
     }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+  
+    if (!formData.agencyName?.trim())    newErrors.agencyName    = "Agency name is required.";
+    if (!formData.ownerName?.trim())     newErrors.ownerName     = "Owner name is required.";
+    if (!formData.gstin?.trim()) {
+      newErrors.gstin = "GSTIN is required.";
+    } else if (!gstField.pattern.value.test(formData.gstin)) {
+      newErrors.gstin = gstField.pattern.message;
+    }
+    if (!formData.address?.trim())       newErrors.address       = "Address is required.";
+    if (!formData.state)                 newErrors.state         = "State is required.";
+    if (!formData.city?.trim())          newErrors.city          = "City is required.";
+    if (!formData.district)              newErrors.district      = "District is required.";
+    if (!formData.contactPerson?.trim()) newErrors.contactPerson = "Contact person is required.";
+    if (!formData.phone?.trim()) {
+      newErrors.phone = "Phone is required.";
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Enter a valid 10-digit phone number.";
+    }
+    if (!formData.email?.trim()) {
+      newErrors.email = emailErrors.required;
+    } else if (!emailRules.pattern.test(formData.email)) {
+      newErrors.email = emailErrors.pattern;
+    }
+    if (!formData.validityFrom)          newErrors.validityFrom  = "Start date is required.";
+    if (!formData.validityTo)            newErrors.validityTo    = "End date is required.";
+    if (formData.validityFrom && formData.validityTo && formData.validityTo < formData.validityFrom) {
+      newErrors.validityTo = "End date must be after start date.";
+    }
+    if (!formData.serviceIds?.length)    newErrors.serviceIds    = "Select at least one service.";
+  
+    setErrors(newErrors);
+  
+    const firstKey = Object.keys(newErrors)[0];
+    if (firstKey) {
+      const el = document.querySelector(`[name="${firstKey}"]`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  
+    return Object.keys(newErrors).length === 0;
   };
 
   useEffect(() => {
@@ -330,10 +372,10 @@ const AgencyForm = () => {
         <SectionCard icon={<IconAgency />} title="Agency Information" subtitle="Basic agency identity and tax details" accent="#010a2a">
           <Grid container spacing={2.5}>
             <Grid item size={{ xs: 12, sm: 4 }}>
-              <TextField fullWidth label="Agency Name" name="agencyName" value={formData.agencyName} onChange={handleChange} sx={field} />
+              <TextField fullWidth label="Agency Name" name="agencyName" value={formData.agencyName} onChange={handleChange} rror={!!errors.agencyName} helperText={errors.agencyName} sx={field} />
             </Grid>
             <Grid item size={{ xs: 12, sm: 4 }}>
-              <TextField fullWidth label="Owner Name" name="ownerName" value={formData.ownerName} onChange={handleChange} sx={field} />
+              <TextField fullWidth label="Owner Name" name="ownerName" value={formData.ownerName} onChange={handleChange} sx={field} error={!!errors.ownerName} helperText={errors.ownerName} />
             </Grid>
             <Grid item size={{ xs: 12, sm: 4 }}>
               <TextField fullWidth label="GSTIN" name="gstin" value={formData.gstin} error={!!errors.gstin}
@@ -355,6 +397,7 @@ const AgencyForm = () => {
                 multiline
                 rows={3}
                 sx={field}
+                error={!!errors.address} helperText={errors.address}
               />
             </Grid>
             <Grid item size={{ xs: 12, sm: 4 }}>
@@ -365,6 +408,7 @@ const AgencyForm = () => {
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
+                error={!!errors.state} helperText={errors.state}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -382,7 +426,7 @@ const AgencyForm = () => {
               </TextField>
             </Grid>
             <Grid item size={{ xs: 12, sm: 4 }}>
-              <TextField fullWidth label="City" name="city" value={formData.city} onChange={handleChange} sx={field} />
+              <TextField fullWidth label="City" name="city" value={formData.city} onChange={handleChange}  error={!!errors.city} helperText={errors.city} sx={field}  error={!!errors.district} helperText={errors.district}/>
             </Grid>
             <Grid item size={{ xs: 12, sm: 4 }}>
               <TextField
@@ -392,6 +436,7 @@ const AgencyForm = () => {
                 name="district"
                 value={formData.district}
                 onChange={handleChange}
+                error={!!errors.district} helperText={errors.district}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -415,10 +460,10 @@ const AgencyForm = () => {
         <SectionCard icon={<IconContact />} title="Contact Details" subtitle="Person to reach and communication info" accent="#10b981">
           <Grid container spacing={2.5}>
             <Grid item xs={12} sm={4}>
-              <TextField fullWidth label="Contact Person" name="contactPerson" value={formData.contactPerson} onChange={handleChange} sx={field} />
+              <TextField fullWidth label="Contact Person" name="contactPerson" value={formData.contactPerson} onChange={handleChange}   error={!!errors.contactPerson} helperText={errors.contactPerson}  sx={field} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField fullWidth label="Phone" name="phone" value={formData.phone} onChange={handleChange} sx={field} />
+              <TextField fullWidth label="Phone" name="phone" value={formData.phone} onChange={handleChange} error={!!errors.phone} helperText={errors.phone} sx={field} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
@@ -448,6 +493,7 @@ const AgencyForm = () => {
                 value={formData.validityFrom}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                error={!!errors.validityFrom} helperText={errors.validityFrom} 
                 sx={field}
               />
             </Grid>
@@ -460,6 +506,7 @@ const AgencyForm = () => {
                 value={formData.validityTo}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                error={!!errors.validityTo} helperText={errors.validityTo}
                 sx={field}
               />
             </Grid>
