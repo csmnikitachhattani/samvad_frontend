@@ -276,9 +276,9 @@ export default function ClientAttachmentForm() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;  // ← handles checkbox
-  
+
     setFormData((prev) => ({ ...prev, [name]: newValue }));
-  
+
     if (newValue !== "" && newValue !== null && newValue !== undefined) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -288,22 +288,22 @@ export default function ClientAttachmentForm() {
   const validate = () => {
     const rules = {
       ref_Category_id: "Content category is required",
-      letter_no:       "Letter No is required",
-      receivingDate:   "Receiving Date is required",
-      caption_cd:      "Category is required",
-      tender_amt:      "Tender Amount is required",
-      schedule_date:   "Publication Date is required",
-      letterType:      "Letter Type is required",
+      letter_no: "Letter No is required",
+      receivingDate: "Receiving Date is required",
+      caption_cd: "Category is required",
+      tender_amt: "Tender Amount is required",
+      schedule_date: "Publication Date is required",
+      letterType: "Letter Type is required",
       modeOfReceiving: "Mode of Receiving is required",
-      files:           "No. of Pages is required",
-      client:          "Client is required",
-      baseDept:        "Base Department is required",
-      district:        "District is required",
-      officeLevel:     "Office Level is required",
-      office:          "Office is required",
-      officer:         "Officer is required",
-      client_name:     "client is Not Valid",
-      remark:          "Remark is required",
+      files: "No. of Pages is required",
+      client: "Client is required",
+      baseDept: "Base Department is required",
+      district: "District is required",
+      officeLevel: "Office Level is required",
+      office: "Office is required",
+      officer: "Officer is required",
+      client_name: "client is Not Valid",
+      remark: "Remark is required",
     };
 
     const newErrors = {};
@@ -429,14 +429,14 @@ export default function ClientAttachmentForm() {
         office: res.data?.data?.Office_code,
         section: res.data?.data?.section_code,
         officer: res.data?.data?.employee_code,
-        
+
       }));
       fetchDistricts();
     } catch (error) {
       console.error("Failed to fetch client", error);
     }
   }
-   useEffect(() => {
+  useEffect(() => {
     const {
       baseDept,
       district,
@@ -445,7 +445,7 @@ export default function ClientAttachmentForm() {
       officer,
       officeLevel,
     } = formData;
-  
+
     if (
       baseDept &&
       district &&
@@ -456,7 +456,7 @@ export default function ClientAttachmentForm() {
     ) {
       fetchClientName();
     }
-  
+
   }, [
     formData.baseDept,
     formData.district,
@@ -553,8 +553,8 @@ export default function ClientAttachmentForm() {
         client_prarup_code: formData.clientPrarupCode || "2",
         client_name: formData.client_name,
         ...(formData.isIndividual && {
-        client_address: formData.clientAddress || 'NA',
-        client_city: formData.clientCity || "NA",
+          client_address: formData.clientAddress || 'NA',
+          client_city: formData.clientCity || "NA",
         }),
         schedule_date: formData.schedule_date
           ? new Date(formData.schedule_date).toISOString().slice(0, 10)
@@ -663,7 +663,9 @@ export default function ClientAttachmentForm() {
                   value={formData.letter_no}
                   onChange={handleChange}
                   error={!!errors.letter_no}
-                  disabled
+                  InputProps={{
+                    readOnly: true,
+                  }}
                   helperText={errors.letter_no}
                   sx={field}
                 />
@@ -678,7 +680,9 @@ export default function ClientAttachmentForm() {
                   InputLabelProps={{ shrink: true }}
                   value={formData.receivingDate}
                   onChange={handleChange}
-                  disabled
+                  InputProps={{
+                    readOnly: true,
+                  }}
                   error={!!errors.receivingDate}
                   helperText={errors.receivingDate}
                   sx={field}
@@ -715,11 +719,13 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   error={!!errors.tender_amt}
                   helperText={errors.tender_amt}
-                  disabled
+                  disabled   // ✅ correct
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Typography sx={{ color: "#9ca3af", fontSize: "0.85rem", fontWeight: 600 }}>₹</Typography>
+                        <Typography sx={{ color: "#9ca3af", fontSize: "0.85rem", fontWeight: 600 }}>
+                          ₹
+        </Typography>
                       </InputAdornment>
                     ),
                   }}
@@ -737,7 +743,9 @@ export default function ClientAttachmentForm() {
                   value={formData.schedule_date}
                   onChange={handleChange}
                   error={!!errors.schedule_date}
-                  disabled
+                  InputProps={{
+                    readOnly: true,
+                  }}
                   helperText={errors.schedule_date}
                   sx={field}
                 />
@@ -790,7 +798,9 @@ export default function ClientAttachmentForm() {
                   name="files"
                   type="number"
                   value={formData.files}
-                  disabled
+                  InputProps={{
+                    readOnly: true,
+                  }}
                   onChange={handleChange}
                   error={!!errors.files}
                   helperText={errors.files}
@@ -801,196 +811,196 @@ export default function ClientAttachmentForm() {
             </Grid>
           </SectionCard>
           <Paper elevation={0} sx={{
-        mb: 3, px: 3, py: 2,
-        borderRadius: "14px", border: "1.5px solid #ebebf0",
-        background: "linear-gradient(135deg, #fafbff 0%, #f5f6fa 100%)",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        flexWrap: "wrap", gap: 1,
-      }}>
-        <Box>
-          <Typography variant="body2" fontWeight={700} sx={{ color: "#111827" }}>
-            Client Type
+            mb: 3, px: 3, py: 2,
+            borderRadius: "14px", border: "1.5px solid #ebebf0",
+            background: "linear-gradient(135deg, #fafbff 0%, #f5f6fa 100%)",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            flexWrap: "wrap", gap: 1,
+          }}>
+            <Box>
+              <Typography variant="body2" fontWeight={700} sx={{ color: "#111827" }}>
+                Client Type
           </Typography>
-          <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-            {formData.isIndividual
-              ? "Showing individual person fields"
-              : "Showing organisation / company fields"}
-          </Typography>
-        </Box>
- 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={formData.isIndividual}
-              name="isIndividual"
-              onChange={handleChange}
-              sx={{
-                color: "#c5cae9",
-                "&.Mui-checked": { color: "#010a2a" },
-                "& .MuiSvgIcon-root": { fontSize: 20 },
-              }}
-            />
-          }
-          label={
-            <Typography variant="body2" fontWeight={600} sx={{ color: "#374151", userSelect: "none" }}>
-              Individual / Person
-            </Typography>
-          }
-          sx={{ m: 0 }}
-        />
-      </Paper>
-          {/* ── Section 3: Location & Office ── */}
-          {!formData.isIndividual ?(
-          <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
-            <Grid container spacing={2.5}>
+              <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+                {formData.isIndividual
+                  ? "Showing individual person fields"
+                  : "Showing organisation / company fields"}
+              </Typography>
+            </Box>
 
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Client cd*"
-                  name="client"
-                  value={formData.client}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.isIndividual}
+                  name="isIndividual"
                   onChange={handleChange}
-                  error={!!errors.client}
-                  helperText={errors.client}
-                  sx={field}
-                />
-              </Grid>
-
-              <Grid item size={{ xs: 12 }}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Base Department *"
-                  name="baseDept"
-                  value={formData.baseDept}
-                  onChange={handleChange}
-                  error={!!errors.baseDept}
-                  helperText={errors.baseDept}
-                  sx={field}
-                >
-                  {departments.map((dept) => (
-                    <MenuItem key={dept.deptid} value={dept.deptid}>
-                      {dept.deptname}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="District *"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleChange}
-                  error={!!errors.district}
-                  helperText={errors.district}
-                  sx={field}
-                >
-                  {districts.map((district) => (
-                    <MenuItem key={district.dstrictid} value={district.dstrictid}>
-                      {district.districtname}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Office Level *"
-                  name="officeLevel"
-                  value={formData.officeLevel}
-                  onChange={handleChange}
-                  error={!!errors.officeLevel}
-                  helperText={errors.officeLevel}
-                  sx={field}
-                >
-                  {levels.map((level) => (
-                    <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
-                      {level.officeLevelName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Office *"
-                  name="office"
-                  value={formData.office}
-                  onChange={handleChange}
-                  error={!!errors.office}
-                  helperText={errors.office}
-                  sx={field}
-                >
-                  {offices.map((office) => (
-                    <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
-                      {office.officeName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              {/* Section — not required, kept as plain field */}
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Section"
-                  name="section"
-                  value={formData.section}
-                  onChange={handleChange}
-                  sx={field}
-                >
-                  {sections.map((section) => (
-                    <MenuItem key={section}>{section}</MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 4 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Officer *"
-                  name="officer"
-                  value={formData.officer}
-                  onChange={handleChange}
-                  error={!!errors.officer}
-                  helperText={errors.officer}
-                  sx={field}
-                >
-                  {officers.map((officer) => (
-                    <MenuItem key={officer.employeeId} value={officer.employeeId}>
-                      {officer.employeeName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 12 }}>
-                <TextField
-                  fullWidth
-                  label="Client Name *"
-                  name="client_name"
-                  value={formData.client_name}
-                  onChange={handleChange}
-                  error={!!errors.client_name}
-                  helperText={errors.client_name}
-                  InputProps={{
-                    readOnly: true,
+                  sx={{
+                    color: "#c5cae9",
+                    "&.Mui-checked": { color: "#010a2a" },
+                    "& .MuiSvgIcon-root": { fontSize: 20 },
                   }}
-                  sx={field}
                 />
+              }
+              label={
+                <Typography variant="body2" fontWeight={600} sx={{ color: "#374151", userSelect: "none" }}>
+                  Individual / Person
+            </Typography>
+              }
+              sx={{ m: 0 }}
+            />
+          </Paper>
+          {/* ── Section 3: Location & Office ── */}
+          {!formData.isIndividual ? (
+            <SectionCard icon={<IconOffice />} title="Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+              <Grid container spacing={2.5}>
+
+                <Grid item size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Client cd*"
+                    name="client"
+                    value={formData.client}
+                    onChange={handleChange}
+                    error={!!errors.client}
+                    helperText={errors.client}
+                    sx={field}
+                  />
+                </Grid>
+
+                <Grid item size={{ xs: 12 }}>
+                  <TextField
+                    fullWidth
+                    select
+                    label="Base Department *"
+                    name="baseDept"
+                    value={formData.baseDept}
+                    onChange={handleChange}
+                    error={!!errors.baseDept}
+                    helperText={errors.baseDept}
+                    sx={field}
+                  >
+                    {departments.map((dept) => (
+                      <MenuItem key={dept.deptid} value={dept.deptid}>
+                        {dept.deptname}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                <Grid item size={{ xs: 12 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="District *"
+                    name="district"
+                    value={formData.district}
+                    onChange={handleChange}
+                    error={!!errors.district}
+                    helperText={errors.district}
+                    sx={field}
+                  >
+                    {districts.map((district) => (
+                      <MenuItem key={district.dstrictid} value={district.dstrictid}>
+                        {district.districtname}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                <Grid item size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Office Level *"
+                    name="officeLevel"
+                    value={formData.officeLevel}
+                    onChange={handleChange}
+                    error={!!errors.officeLevel}
+                    helperText={errors.officeLevel}
+                    sx={field}
+                  >
+                    {levels.map((level) => (
+                      <MenuItem key={level.officeLevelCode} value={level.officeLevelCode}>
+                        {level.officeLevelName}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                <Grid item size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Office *"
+                    name="office"
+                    value={formData.office}
+                    onChange={handleChange}
+                    error={!!errors.office}
+                    helperText={errors.office}
+                    sx={field}
+                  >
+                    {offices.map((office) => (
+                      <MenuItem key={office.newOfficeCode} value={office.newOfficeCode}>
+                        {office.officeName}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                {/* Section — not required, kept as plain field */}
+                <Grid item size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Section"
+                    name="section"
+                    value={formData.section}
+                    onChange={handleChange}
+                    sx={field}
+                  >
+                    {sections.map((section) => (
+                      <MenuItem key={section}>{section}</MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                <Grid item size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Officer *"
+                    name="officer"
+                    value={formData.officer}
+                    onChange={handleChange}
+                    error={!!errors.officer}
+                    helperText={errors.officer}
+                    sx={field}
+                  >
+                    {officers.map((officer) => (
+                      <MenuItem key={officer.employeeId} value={officer.employeeId}>
+                        {officer.employeeName}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                <Grid item size={{ xs: 12, md: 12 }}>
+                  <TextField
+                    fullWidth
+                    label="Client Name *"
+                    name="client_name"
+                    value={formData.client_name}
+                    onChange={handleChange}
+                    error={!!errors.client_name}
+                    helperText={errors.client_name}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    sx={field}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-          </SectionCard>
-          ):(<SectionCard icon={<IconOffice />} title="Client Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
+            </SectionCard>
+          ) : (<SectionCard icon={<IconOffice />} title="Client Office & Location" subtitle="Departmental and geographic assignment" accent="#10b981">
             <Grid container spacing={2.5}>
 
               <Grid item size={{ xs: 12, md: 4 }}>
@@ -1034,7 +1044,7 @@ export default function ClientAttachmentForm() {
               </Grid>
             </Grid>
           </SectionCard>
-          )}
+            )}
 
           {/* ── Section 4: Remarks ── */}
           <SectionCard icon={<IconMeta />} title="Additional Remarks" subtitle="Any notes or supplementary information" accent="#8b5cf6">
