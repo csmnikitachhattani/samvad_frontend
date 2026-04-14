@@ -302,6 +302,7 @@ export default function ClientAttachmentForm() {
       officeLevel:     "Office Level is required",
       office:          "Office is required",
       officer:         "Officer is required",
+      client_name:     "client is Not Valid",
       remark:          "Remark is required",
     };
 
@@ -422,12 +423,12 @@ export default function ClientAttachmentForm() {
       const res = await clientServices.getClientData(client);
       setFormData((prev) => ({
         ...prev,
-        baseDept: res.data.data.base_dept_code,
-        district: res.data.data.district_code,
-        officeLevel: res.data.data.OfficeLevel,
-        office: res.data.data.Office_code,
-        section: res.data.data.section_code,
-        officer: res.data.data.employee_code,
+        baseDept: res.data?.data?.base_dept_code,
+        district: res.data?.data?.district_code,
+        officeLevel: res.data?.data?.OfficeLevel,
+        office: res.data?.data?.Office_code,
+        section: res.data?.data?.section_code,
+        officer: res.data?.data?.employee_code,
         
       }));
       fetchDistricts();
@@ -662,6 +663,7 @@ export default function ClientAttachmentForm() {
                   value={formData.letter_no}
                   onChange={handleChange}
                   error={!!errors.letter_no}
+                  disabled
                   helperText={errors.letter_no}
                   sx={field}
                 />
@@ -676,6 +678,7 @@ export default function ClientAttachmentForm() {
                   InputLabelProps={{ shrink: true }}
                   value={formData.receivingDate}
                   onChange={handleChange}
+                  disabled
                   error={!!errors.receivingDate}
                   helperText={errors.receivingDate}
                   sx={field}
@@ -712,6 +715,7 @@ export default function ClientAttachmentForm() {
                   onChange={handleChange}
                   error={!!errors.tender_amt}
                   helperText={errors.tender_amt}
+                  disabled
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -733,6 +737,7 @@ export default function ClientAttachmentForm() {
                   value={formData.schedule_date}
                   onChange={handleChange}
                   error={!!errors.schedule_date}
+                  disabled
                   helperText={errors.schedule_date}
                   sx={field}
                 />
@@ -785,6 +790,7 @@ export default function ClientAttachmentForm() {
                   name="files"
                   type="number"
                   value={formData.files}
+                  disabled
                   onChange={handleChange}
                   error={!!errors.files}
                   helperText={errors.files}
@@ -841,7 +847,7 @@ export default function ClientAttachmentForm() {
               <Grid item size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
-                  label="Client *"
+                  label="Client cd*"
                   name="client"
                   value={formData.client}
                   onChange={handleChange}
@@ -974,8 +980,11 @@ export default function ClientAttachmentForm() {
                   name="client_name"
                   value={formData.client_name}
                   onChange={handleChange}
-                  error={!!errors.client}
-                  helperText={errors.client}
+                  error={!!errors.client_name}
+                  helperText={errors.client_name}
+                  InputProps={{
+                    readOnly: true,
+                  }}
                   sx={field}
                 />
               </Grid>
