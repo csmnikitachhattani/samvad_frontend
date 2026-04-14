@@ -24,6 +24,7 @@ import {
 import axiosClient from "@/lib/axiosClient";
 
 
+
 // ── Shared field style ────────────────────────────────────────────────────────
 const field = {
   "& .MuiOutlinedInput-root": {
@@ -271,6 +272,35 @@ export default function ClientAttachmentForm() {
     remark: "",
     isIndividual: false,
   });
+
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("user_name");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
 
   // ── handleChange clears the field's error on edit ───────────────────────────
   const handleChange = (e) => {
@@ -561,9 +591,9 @@ export default function ClientAttachmentForm() {
           : null,
         ref_id: id,
         create_update_flag_name: "Insert",
-        entry_by_user_type_cd: "01",
-        entry_by_user_id: "00100",
-        entry_by_section_cd: formData.section || "",
+        entry_by_user_type_cd: userTypeCd,
+        entry_by_user_id: userId,
+        entry_by_section_cd:  '03',
         client_exist: "Y",
         entry_date: new Date().toISOString().slice(0, 10),
         entry_time: new Date().toTimeString().split(" ")[0],
