@@ -52,6 +52,39 @@ export default function VehicleModal({ onClose }) {
       .catch((e) => console.error("Failed to fetch vendors", e));
   }, []);
 
+  const validateForm = () => {
+    const newErrors = {};
+  
+    if (!data.agencyId) {
+      newErrors.agencyId = "Agency is required.";
+    }
+  
+    if (!data.vehicleNo?.trim()) {
+      newErrors.vehicleNo = "Vehicle number is required.";
+    } else if (!vehicleField.pattern.value.test(data.vehicleNo)) {
+      newErrors.vehicleNo = vehicleField.pattern.message;
+    }
+  
+    if (!data.ownerName?.trim()) {
+      newErrors.ownerName = "Owner name is required.";
+    }
+  
+    if (!data.fitnessUpto) {
+      newErrors.fitnessUpto = "Fitness date is required.";
+    }
+  
+    if (!data.insuranceUpto) {
+      newErrors.insuranceUpto = "Insurance date is required.";
+    }
+  
+    if (!data.rcPhotoFile) {
+      newErrors.rcPhotoFile = "RC Photo is required.";
+    }
+  
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   // ─── Cleanup object URL on unmount / file change ──────────────────────────
   useEffect(() => {
     return () => { if (preview) URL.revokeObjectURL(preview); };
@@ -113,25 +146,31 @@ export default function VehicleModal({ onClose }) {
 
   // ─── Submit ───────────────────────────────────────────────────────────────
   const createVehicle = async () => {
+    if (!validateForm()) return;
+  
     try {
       const ip = await getPublicIP();
       const formData = new FormData();
-      formData.append("AgencyId",        data.agencyId);
-      formData.append("VehicleNo",       data.vehicleNo);
-      formData.append("OwnerName",       data.ownerName);
-      formData.append("FitnessUpto",     data.fitnessUpto || "2026-01-26T14:20:06.038Z");
-      formData.append("InsuranceUpto",   data.insuranceUpto || "2026-01-26T14:20:06.038Z");
-      formData.append("Specification",   data.specification);
-      formData.append("CreatedBy",       "01");
+  
+      formData.append("AgencyId", data.agencyId);
+      formData.append("VehicleNo", data.vehicleNo);
+      formData.append("OwnerName", data.ownerName);
+      formData.append("FitnessUpto", data.fitnessUpto || "2026-01-26T14:20:06.038Z");
+      formData.append("InsuranceUpto", data.insuranceUpto || "2026-01-26T14:20:06.038Z");
+      formData.append("Specification", data.specification);
+      formData.append("CreatedBy", "01");
       formData.append("CreatedIpAddress", ip);
-      if (data.rcPhotoFile) formData.append("RcPhotoFile", data.rcPhotoFile);
-
+  
+      if (data.rcPhotoFile) {
+        formData.append("RcPhotoFile", data.rcPhotoFile);
+      }
+  
       await axiosClient.post(
         "http://103.79.34.50:8083/api/ManageMaster/createledVehicle",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-
+  
       dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
       router.push("/admin/vehicle");
       resetForm();
@@ -157,6 +196,7 @@ export default function VehicleModal({ onClose }) {
             <Grid item size={{ xs: 12, md: 6 }}>
               <TextField select label="Agency" name="agencyId" fullWidth size="small"
                 value={data.agencyId} onChange={handleChange} sx={fieldStyle}
+                error={!!errors.agencyId} helperText={errors.agencyId}
               >
                 {vendors.length > 0 ? vendors.map((v) => (
                   <MenuItem key={v.AgencyID} value={v.AgencyID}>{v.AgencyName}</MenuItem>
@@ -174,6 +214,7 @@ export default function VehicleModal({ onClose }) {
                 label="Vehicle Number" name="vehicleNo" fullWidth size="small"
                 value={data.vehicleNo.toUpperCase()} onChange={handleChange}
                 error={!!errors.vehicleNo} helperText={errors.vehicleNo} sx={fieldStyle}
+               
               />
             </Grid>
 
@@ -181,6 +222,7 @@ export default function VehicleModal({ onClose }) {
             <Grid item size={{ xs: 12, md: 6 }}>
               <TextField label="Owner Name" name="ownerName" fullWidth size="small"
                 value={data.ownerName} onChange={handleChange} sx={fieldStyle}
+                error={!!errors.ownerName} helperText={errors.ownerName}
               />
             </Grid>
 
@@ -188,6 +230,7 @@ export default function VehicleModal({ onClose }) {
             <Grid item size={{ xs: 12, md: 6 }}>
               <TextField label="Fitness Upto" type="date" name="fitnessUpto" fullWidth size="small"
                 InputLabelProps={{ shrink: true }} value={data.fitnessUpto} onChange={handleChange}
+                error={!!errors.fitnessUpto} helperText={errors.fitnessUpto}
               />
             </Grid>
 
@@ -195,6 +238,7 @@ export default function VehicleModal({ onClose }) {
             <Grid item size={{ xs: 12, md: 6 }}>
               <TextField label="Insurance Upto" type="date" name="insuranceUpto" fullWidth size="small"
                 InputLabelProps={{ shrink: true }} value={data.insuranceUpto} onChange={handleChange}
+                error={!!errors.insuranceUpto} helperText={errors.insuranceUpto}
               />
             </Grid>
 
@@ -285,6 +329,11 @@ export default function VehicleModal({ onClose }) {
                     onChange={handleChange}
                   />
                 </Button>
+                {errors.rcPhotoFile && (
+  <Typography variant="caption" color="error">
+    {errors.rcPhotoFile}
+  </Typography>
+)}
               </Box>
             </Grid>
 
