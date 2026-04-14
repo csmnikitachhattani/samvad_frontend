@@ -565,8 +565,8 @@ export default function ClientAttachmentForm() {
         fixed_date: formData.fixedDate ? "Y" : "N",
         tender_amt: Number(formData.tender_amt) || 0,
         letter_no: formData.letter_no,
-        letter_date: formData.letterDate
-          ? new Date(formData.letterDate).toISOString().slice(0, 10)
+        letter_date: formData.receivingDate
+          ? new Date(formData.receivingDate).toISOString().slice(0, 10)
           : null,
         caption_cd: formData.captionCd || "02",
         total_pages: String(formData.files),
@@ -605,7 +605,7 @@ export default function ClientAttachmentForm() {
       });
 
       dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
-      router.push("/admin/counter");
+      router.push("/admin/avak");
       console.log("SUCCESS:", response.data);
     } catch (error) {
       console.error("ERROR:", error.response?.data || error.message);

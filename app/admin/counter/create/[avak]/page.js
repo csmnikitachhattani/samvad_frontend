@@ -86,6 +86,7 @@ export default function JobForm() {
     is_client_dpr: "",
     ref_no: "",
     od_servicetype_id: "",
+    received_date: "",
     subject: "",
     startDate: "",
     duration: "",
@@ -391,7 +392,7 @@ export default function JobForm() {
   
       payload.append("ref_no", data.ref_no || data.letter_no);
       payload.append("ref_date", data.ref_date);
-      payload.append("receipt_date", data.receipt_date);
+      payload.append("receipt_date", data.received_date);
   
       payload.append("od_servicetype_id", data.od_servicetype_id || 2);
       payload.append("subject", data.subject);
