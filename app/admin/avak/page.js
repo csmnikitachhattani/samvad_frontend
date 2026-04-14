@@ -264,8 +264,9 @@ const AvakTable = () => {
 
                   {/* Dates */}
                   <TableCell sx={{ ...bodyCell, minWidth: 120 }}>
-                    <LabelVal label="Pub" value={fmt(row.caption_publish_date)} />
-                    <LabelVal label="Rcv" value={fmt(row.received_date)} />
+                    {/* <LabelVal label="Pub" value={fmt(row.caption_publish_date)} /> */}
+                    <LabelVal label="Pub" value={row.caption_publish_date} /> 
+                    <LabelVal label="Rcv" value={row.received_date} />
                   </TableCell>
 
                   {/* Actions */}
@@ -281,10 +282,10 @@ const AvakTable = () => {
                         onClick={() => router.push(`/admin/counter/create/${row.avak_ref_id}`)}>
                         Process
                       </Button>
-                      <Button size="small" variant="contained"
+                      {/* <Button size="small" variant="contained"
                         sx={actionBtn("#ef4444", "#fef2f2")}>
                         Delete
-                      </Button>
+                      </Button> */}
                     </Stack>
                   </TableCell>
 
