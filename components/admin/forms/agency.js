@@ -170,10 +170,43 @@ const AgencyForm = () => {
     isActive: true,
   });
 
+
+
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [services, setServices] = useState([]);
   const [errors, setErrors] = useState({})
+
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [ipAddress,   setIpAddress]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("user_name");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setIpAddress(data.ip);
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -227,10 +260,10 @@ const AgencyForm = () => {
         validityTo: formData.validityTo,
         isActive: formData.isActive,
         serviceIds: formData.serviceIds,
-        createdByUserId: formData.createdByUserId,
-        createdByUserName: "Nikita",
-        createdByUserTypeCd: formData.createdByUserTypeCd,
-        createdByUserTypeName: formData.createdByUserTypeName,
+        createdByUserId: userId,
+        createdByUserName: user_name,
+        createdByUserTypeCd: userTypeCd,
+        createdByUserTypeName: userTypeCd,
         createdIpAddress: formData.createdIpAddress,
       };
       const result = await adminServices.createAgency(updateObject);
