@@ -188,7 +188,7 @@ export default function WorkOrderForm() {
           job_id: response.job_id ?? "",
           subject: response.subject ?? "",
           ref_no: response.ref_no ?? "",
-          od_servicetype_id: response.od_servicetype_id,
+          od_servicetype_id: '08',
           receipt_date: response.receipt_date ?? "",
           vendor_id: response.vendor_id ?? [],
           vendor_name: response.vendor_name ?? [],
@@ -226,6 +226,12 @@ export default function WorkOrderForm() {
 
     fetchCounters();
   }, [id]);
+
+  const formatDate = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    return d.toISOString().split("T")[0]; // YYYY-MM-DD
+  };
   async function fetchCategories() {
     const payload = {
       "tender_cate_cd": "29",
@@ -446,7 +452,8 @@ export default function WorkOrderForm() {
       .filter((item) => item.selected === true)
       .reduce((sum, item) => sum + Number(item.totalRate || 0), 0);
     const commission = 5;
-    const gst = 18;
+    const sgst = 9;
+    const cgst = 9;
     const payload = {
       financialYear: formData.financial_year,
       avakRefId: formData.avak_ref_id,
@@ -458,12 +465,13 @@ export default function WorkOrderForm() {
       billingClientCd: formData.billing_Client_cd,
       billingOfficeCode: formData.billing_office_code,
       clientGrpCd: formData.client_grp_cd,
-      odServicetypeId: formData.od_servicetype_id,
+      odServicetypeId:  '08',
       woDate: new Date(formData.start_date).toISOString(),
       startDate: new Date(formData.start_date).toISOString(),
       endDate: new Date(formData.end_date).toISOString(),
       commisionPercentage: String(commission),
-      gstPercentage: String(gst),
+      cgst_percentage: String(cgst),
+      sgst_percentage: String(sgst),
       entryIpAddress: "127.0.0.1",
       entryByUserId: "1",
       entryByUsername: "admin",

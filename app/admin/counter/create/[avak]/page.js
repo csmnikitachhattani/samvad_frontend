@@ -374,6 +374,13 @@ export default function JobForm() {
   //   fetchOfficeLevel(data.base_dept_code)
   //   }
   // },[data.base_dept_code,])
+
+  const convertToISO = (dateStr) => {
+    if (!dateStr) return null;
+  
+    const [day, month, year] = dateStr.split("/");
+    return `${year}-${month}-${day}`;
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
   if (!validate()) return;
@@ -392,9 +399,12 @@ export default function JobForm() {
   
       payload.append("ref_no", data.ref_no || data.letter_no);
       payload.append("ref_date", data.ref_date);
-      payload.append("receipt_date", data.received_date);
+      // payload.append("receipt_date", data.received_date
+      // ? new Date(data.received_date).toISOString().slice(0, 10)
+      // : null,);
+      payload.append("receipt_date", convertToISO(data.received_date));
   
-      payload.append("od_servicetype_id", data.od_servicetype_id || 2);
+      payload.append("od_servicetype_id", '08');
       payload.append("subject", data.subject);
       payload.append("no_of_media_count", data.no_of_media_count || 0);
   
