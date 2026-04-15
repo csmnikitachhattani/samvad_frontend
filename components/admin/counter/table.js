@@ -19,13 +19,46 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import adminServices from "@/services/adminServices";
+import {  useDispatch } from "react-redux";
+import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 
 const AdvtDownloadTable = ({ rows = [] }) => {
+    const dispatch = useDispatch();
     const router = useRouter();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [search, setSearch] = useState("");
     const [data, setData] = useState([]);
+
+    const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [ipAddress,   setIpAddress]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("username");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setIpAddress(data.ip);
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
 
     // ✅ Fixed: search actually filters now
     const filteredRows = data.filter((row) => {
@@ -57,8 +90,8 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                 job_no: job_id,
                 ro_no_list: "",
                 approval_action: "A",
-                approved_by_user_id: "00141",
-                approved_by_username: "bheem sahu",
+                approved_by_user_id: userId,
+                approved_by_username: user_name,
                 approved_by_ip: "103.68.78.89",
                 action_cd: "06",
                 status_reason_cd: "01",
@@ -69,9 +102,16 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                 
             };
             const response = await adminServices.ApprovedNotesheet(payload);
+            dispatch(showNotification({ message: "Approved", severity: "success" }))
             // setData(response || []);
         } catch (error) {
             console.error("Failed to approve notesheet", error);
+            dispatch(
+                showNotification({
+                  message: error.response?.data?.message || "Save failed!",
+                  severity: "error",
+                })
+              );
         }
     }
 
@@ -208,13 +248,25 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                 >
                                                     Generate NoteSheet
                                                 </Button>
+                                                {/* <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `/admin/counter/notesheet/print?id=${row.job_id}&avak_ref=${row.avak_ref_id}`
+                                                        )
+                                                    }
+                                                    sx={btnStyle}
+                                                >
+                                                    Print
+                                                </Button> */}
                                                 <Button
                                                     variant="contained"
                                                     size="small"
                                                     onClick={() => Approved(row.job_id, row.avak_ref_id, row.financial_year)}
                                                     sx={btnStyle}
                                                 >
-                                                    Proceed to Work Order
+                                                   Approve
                                                 </Button>
                                             </Stack>
                                         </TableCell>
