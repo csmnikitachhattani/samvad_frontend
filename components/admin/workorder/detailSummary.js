@@ -25,6 +25,7 @@ const DataSetUI = () => {
   const searchParams = useSearchParams();
   const job_id = searchParams.get("id");
   const avak_ref = searchParams.get("avak_ref");
+  const ref_id  = searchParams.get("avak_ref");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,10 +38,7 @@ const DataSetUI = () => {
   const [commissionPercentage, setCommissionPercentage] = useState("");
   const [gstPercentage, setGstPercentage] = useState("");
 
-  useEffect(() => {
-    if (job_id && avak_ref) fetchRecords(job_id, avak_ref);
-  }, [job_id, avak_ref]);
-
+ 
   const fetchRecords = async (jobId, avakRef) => {
     try {
       setLoading(true);
@@ -54,19 +52,47 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
+
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("user_name");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
+  
   const fetchClientRecords = async () => {
 
     const payload ={
-      user_id: '00100',
-      financial_year: '2024-2025',
-      ref_id: '', 
-      category: '',
+      user_id: userId,
+      financial_year: financialYear || '2024-2025',
+      ref_id: ref_id, 
+      category: '08',
     }
     try {
       setLoading(true);
       const response = await clientServices.getClientRequest(payload);
-      setData(response.data);
-      setRecords(transformAgencyToDetails(response?.data?.records));
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -76,9 +102,18 @@ const DataSetUI = () => {
   };
 
   useEffect(() => {
-    if (job_id && avak_ref) {
-      fetchClientRecords();
-  }}, [job_id, avak_ref]);
+    if (!job_id || !avak_ref || !userId || !financialYear) return;
+  
+    fetchRecords(job_id, avak_ref);      // ✅ now waits
+    fetchClientRecords();                // ✅ already fixed
+  
+  }, [job_id, avak_ref, userId, financialYear]);
+
+
+  // useEffect(() => {
+  //   if (job_id && avak_ref) {
+  //     fetchClientRecords();
+  // }}, [job_id, avak_ref]);
   
 
   const transformAgencyToDetails = (agencies) => {
@@ -105,7 +140,7 @@ const DataSetUI = () => {
       setError("");
       setSuccess("");
       const payload = {
-        financial_year: '2024-2025',
+        financial_year: financialYear,
         avak_ref_id: avak_ref,
         job_no: job_id,
         wo_subject: wosubject,
@@ -124,8 +159,8 @@ const DataSetUI = () => {
         gst_percentage: gstPercentage,
       
         entry_ip_address: "103.79.34.50",
-        entry_by_user_id: "string",
-        entry_by_username: "string",
+        entry_by_user_id: userId,
+        entry_by_username: user_name,
       
         ro_no_list: "",
       

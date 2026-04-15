@@ -128,7 +128,8 @@ const CounterTable = ({ rows = [] }) => {
                                                 //onClick={() => setShowAction(true)}
                                                 onClick={() =>
                                                     router.push(
-                                                        `/admin/workorder/create?id=${row.job_id}&avak_ref=${row.avak_ref_id}`
+                                                        `/admin/workorder/create?id=${row.job_id}&avak_ref=${row.avak_ref_id}&ref_id=${
+                                                            row.client_ref_id}`
                                                     )
                                                 }
                                                 sx={{ mb: 2, background: "#010a2a", color: "#fff", textTransform: "capitalize", margin: '2px' }}
