@@ -51,6 +51,35 @@ const DataSetUI = () => {
     }
   };
 
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [ipAddress,   setIpAddress]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("username");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setIpAddress(data.ip);
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
 
   
   const transformAgencyToDetails = (agencies) => {
@@ -83,15 +112,15 @@ const DataSetUI = () => {
         financial_year: financial_year,
         avak_ref_id:  avak_ref,
         job_no: job_id,
-        notesheet_by_user_id: "00078",
-        notesheet_by_username: "Nikita",
-        notesheet_by_ip: "103.79.34.50",
+        notesheet_by_user_id: userId,
+        notesheet_by_username: user_name,
+        notesheet_by_ip: '103.79.34.50',
         action_done_fully: "1",
         action_cd: "05",
         action_name: "Generate Notesheet",
         status_reason_cd: "01",
         notesheet_by_section_cd: "03",
-        notesheet_by_type_cd: "17",
+        notesheet_by_type_cd: userTypeCd,
         remark: "string",
         newDetailList: records,
       };

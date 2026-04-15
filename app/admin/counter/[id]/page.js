@@ -338,6 +338,37 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
+
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [ipAddress,   setIpAddress]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("user_name");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setIpAddress(data.ip);
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
+
   const trimValue = (val) => val.split('/')[0];
   async function fetchRateList() {
     const payload = {
@@ -447,6 +478,8 @@ export default function WorkOrderForm() {
     return date;
   }
 
+  
+
   const handleSubmit = async () => {
     const total = selectedVehicles
       .filter((item) => item.selected === true)
@@ -472,9 +505,9 @@ export default function WorkOrderForm() {
       commisionPercentage: String(commission),
       cgst_percentage: String(cgst),
       sgst_percentage: String(sgst),
-      entryIpAddress: "127.0.0.1",
-      entryByUserId: "1",
-      entryByUsername: "admin",
+      entryIpAddress: ipAddress,
+      entryByUserId: userId,
+      entryByUsername: user_name,
       //details: selectedVehicles,
       details: selectedVehicles.filter((item) => item.selected === true),
       duration: String(getDuration(formatDateForInput(formData.start_date), formatDateForInput(formData.end_date))),
