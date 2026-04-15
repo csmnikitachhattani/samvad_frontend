@@ -213,6 +213,7 @@ const AgencyForm = () => {
     try {
       const updateObject = {
         agencyName: formData.agencyName,
+        AgencyName: formData.agencyName,
         ownerName: formData.ownerName,
         gstin: formData.gstin,
         address: formData.address,

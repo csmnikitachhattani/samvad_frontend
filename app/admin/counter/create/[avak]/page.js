@@ -431,7 +431,7 @@ export default function JobForm() {
       payload.append("entry_by_user_id", userId);
   
       payload.append("entry_by_user_type_cd", userTypeCd);
-      payload.append("modify_by_user_type_cd", userTypeCd);
+      //payload.append("modify_by_user_type_cd", userTypeCd);
       payload.append("user_type_cd", userTypeCd);
   
       payload.append("action_by_section_cd", '03');
