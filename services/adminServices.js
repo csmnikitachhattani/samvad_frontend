@@ -198,7 +198,16 @@ const adminService = {
   getAllocationList: async (payload) =>{
     //const {type} = payload
     try {
-      const res = await axiosClient.post(`OutDoorMediaTransaction/ODM_LV_SelectAllListAvailibility_BetweenDate`,payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/ODM_LV_SelectAllListAvailibility_BetweenDate`,payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getNoteSheetPrintDetail: async () =>{
+    try {
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-joballocation-notesheet-printfinancial_year=2024-2025&job_no=032604003&avak_ref_id=2024000006&audit_all=true`,payload);
       return res;
     } catch (err) {
       console.log("answer")

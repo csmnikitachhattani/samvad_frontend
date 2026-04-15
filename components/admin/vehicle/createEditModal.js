@@ -177,7 +177,13 @@ export default function VehicleModal({ onClose }) {
       closeModal();
     } catch (error) {
       console.error("Create vehicle failed:", error);
-      dispatch(showNotification({ message: "Save failed!", severity: "error" }));
+      // dispatch(showNotification({ message: "Save failed!", severity: "error" }));
+      dispatch(
+        showNotification({
+          message: error.response?.data?.message || "Save failed!",
+          severity: "error",
+        })
+      );
     }
   };
 
