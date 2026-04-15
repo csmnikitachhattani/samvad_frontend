@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import commonServices from "@/services/commonServices";
 import {
   Container,
   Box,
@@ -33,6 +34,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [userTypeList, setUserTypeList] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [finYears, setfinYears] = useState([]);
   // Generate Captcha
   const generateCaptcha = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -53,13 +55,23 @@ export default function LoginPage() {
       console.error("Failed to load user types", err);
     }
   };
-
+  async function fetchFinYear() {
+    try {
+      const res = await commonServices.getFinYearList();
+      setfinYears(res.data.result);
+    } catch (error) {
+      console.error("Failed to fetch districts", error);
+    }
+  }
   useEffect(() => {
     generateCaptcha();
     fetchUserTypes();
+    fetchFinYear()
   }, []);
 
   // Handle login
+
+
   const handleLogin = async () => {
     if (!userType.code || !username || !password || !userInput) {
       setError("Please fill all fields");
@@ -73,10 +85,10 @@ export default function LoginPage() {
     }
 
     setError("");
-   let res;
+    let res;
     try {
-  
-      if(userType.code === "ODM"){
+
+      if (userType.code === "ODM") {
         res = await axios.post(
           "http://103.79.34.50:8083/api/Login/agencylogin",
           {
@@ -88,31 +100,31 @@ export default function LoginPage() {
         )
         console.log("Login Path from API:", res.data.result[0]);
       }
-      else { 
+      else {
         res = await axios.post(
-        "http://103.79.34.50:8083/api/Login/cgsamvadlogin",
-        {
-          usertypecode: userType.code,
-          userid: username,
-          usrpassword: password,
-          usertypeid: userType.id.toString(),
-        },
-      );
-      console.log("Login Path from API:", res.data.result[0]);
+          "http://103.79.34.50:8083/api/Login/cgsamvadlogin",
+          {
+            usertypecode: userType.code,
+            userid: username,
+            usrpassword: password,
+            usertypeid: userType.id.toString(),
+          },
+        );
+        console.log("Login Path from API:", res.data.result[0]);
       }
       //console.log("Login Path from API:", res.data);
       if (res.data?.status == 200) {
         // ✅ CHECK LOGIN PATH (DEBUG)
         localStorage.setItem('username', res.data.result[0].username)
         localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
-        localStorage.setItem('userid', res.data.result[0].userid,)
+        localStorage.setItem('userid', res.data.result[0].userid)
         localStorage.setItem('financialYear', financialYear)
         localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
-        
-        if(userType.code === "CLNT"){
+
+        if (userType.code === "CLNT") {
           router.push("/client");
         }
-        else{
+        else {
           router.push("/admin");
         }
       } else {
@@ -230,13 +242,20 @@ export default function LoginPage() {
 
             {/* User Type Dropdown */}
             <FormControl fullWidth sx={{ mb: 2 }}>
-            <TextField
-              fullWidth
-              placeholder="Financial Year"
-              value={financialYear}
-              onChange={(e) => setFinancialYear(e.target.value)}
-              sx={{ mb: 2 }}
-            />
+              <TextField
+                select
+                fullWidth
+                label="Financial Year"
+                value={financialYear}
+                onChange={(e) => setFinancialYear(e.target.value)}
+                sx={{ mb: 2 }}
+              >
+                {finYears.map((finYear) => (
+                  <MenuItem key={finYear.financial_year} value={finYear.financial_year}>
+                    {finYear.financial_year}
+                  </MenuItem>
+                ))}
+              </TextField>
               <Select
                 value={userType.code}
                 onChange={(e) => {
