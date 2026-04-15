@@ -25,7 +25,7 @@ const DataSetUI = () => {
   const searchParams = useSearchParams();
   const job_id = searchParams.get("id");
   const avak_ref = searchParams.get("avak_ref");
-  const ref_id  = searchParams.get("avak_ref");
+  const ref_id  = searchParams.get("ref_id");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,6 +37,10 @@ const DataSetUI = () => {
   const [endDate, setEndDate] = useState("");
   const [commissionPercentage, setCommissionPercentage] = useState("");
   const [gstPercentage, setGstPercentage] = useState("");
+  const [clientCd, setClientCd] = useState("");
+  const [billingClientCd, setBillingClientCd] = useState("");
+  const [billingOfficeCd, setBillingOfficeCd] = useState("");
+  const [clientGrpCd, setClientGrpCd] = useState("");
 
  
   const fetchRecords = async (jobId, avakRef) => {
@@ -102,6 +106,14 @@ const DataSetUI = () => {
     try {
       setLoading(true);
       const response = await clientServices.getClientRequest(payload);
+      const data  = response?.data?.data[0]
+      console.log(response, data)
+      // client_cd: clientCd,
+      // billing_Client_cd: billingClientCd,
+      // billing_office_code: billingOfficeCd,
+      // client_grp_cd: clientGrpCd,
+      setClientCd(data.client_Cd)
+      setBillingClientCd(data.client_Cd)
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -156,10 +168,10 @@ const DataSetUI = () => {
         job_no: job_id,
         wo_subject: wosubject,
       
-        client_cd: "000019",
-        billing_Client_cd: "000019",
-        billing_office_code: "00020",
-        client_grp_cd: "00002",
+        client_cd: clientCd,
+        billing_Client_cd: billingClientCd,
+        billing_office_code: billingOfficeCd,
+        client_grp_cd: clientGrpCd,
       
         od_servicetype_id: 2,
       
@@ -280,6 +292,7 @@ const DataSetUI = () => {
               fullWidth size="small"
               label="Start Date"
               type="date"
+              disabled
               value={formatDate(startDate)}
               onChange={(e) => setStartDate(e.target.value)}
               InputLabelProps={{ shrink: true }}
@@ -291,6 +304,7 @@ const DataSetUI = () => {
               fullWidth size="small"
               label="End Date"
               type="date"
+              disabled
               value={formatDate(endDate)}
               onChange={(e) => setEndDate(e.target.value)}
               InputLabelProps={{ shrink: true }}
