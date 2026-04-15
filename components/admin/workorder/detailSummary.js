@@ -46,12 +46,19 @@ const DataSetUI = () => {
       setData(response.data);
       setRecords(transformAgencyToDetails(response?.data?.records));
       setRoNoList(getUniqueRoNumbers(response?.data?.records))
+      setWosubject(response?.data?.summary?.wo_subject)
+      setStartDate(response?.data?.records[0]?.start_date)
+      setEndDate(response?.data?.records[0]?.end_date)
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return new Date(dateString).toISOString().split("T")[0];
   };
 
   const [financialYear, setFinancialYear] = useState("");
@@ -273,7 +280,7 @@ const DataSetUI = () => {
               fullWidth size="small"
               label="Start Date"
               type="date"
-              value={startDate}
+              value={formatDate(startDate)}
               onChange={(e) => setStartDate(e.target.value)}
               InputLabelProps={{ shrink: true }}
               sx={fieldSx}
@@ -284,7 +291,7 @@ const DataSetUI = () => {
               fullWidth size="small"
               label="End Date"
               type="date"
-              value={endDate}
+              value={formatDate(endDate)}
               onChange={(e) => setEndDate(e.target.value)}
               InputLabelProps={{ shrink: true }}
               sx={fieldSx}
