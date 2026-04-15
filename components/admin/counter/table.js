@@ -23,14 +23,14 @@ import {  useDispatch } from "react-redux";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 
 const AdvtDownloadTable = ({ rows = [] }) => {
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [search, setSearch] = useState("");
-    const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [search, setSearch] = useState("");
+  const [data, setData] = useState([]);
 
-    const [financialYear, setFinancialYear] = useState("");
+  const [financialYear, setFinancialYear] = useState("");
   const [userId,        setUserId]        = useState("");
   const [user_name,     setUserName]      = useState("");
   const [userTypeCd,   setUserTypeCd]      = useState("");
