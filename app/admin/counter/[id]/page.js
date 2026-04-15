@@ -396,7 +396,7 @@ export default function WorkOrderForm() {
   }, [formData.tender])
   useEffect(() => {
     if (formData.work_type) {
-      fetchRateDurations()
+      fetchWorkList()
     }
   }, [formData.work_type])
 
@@ -667,14 +667,14 @@ export default function WorkOrderForm() {
                 ))}
               </TextField>
 
-              <TextField fullWidth select label="Rate Duration" name="rate_duration_id"
+              {/* <TextField fullWidth select label="Rate Duration" name="rate_duration_id"
                 value={formData.rate_duration_id} onChange={handleChange} sx={grayField}>
                 {rateDurations.map((item) => (
                   <MenuItem key={item.rate_duration_id} value={item.rate_duration_id}>
                     {item.rate_duration}
                   </MenuItem>
                 ))}
-              </TextField>
+              </TextField> */}
 
 
               <RadioGroup

@@ -21,6 +21,12 @@ export default function AuthGuard({ children }) {
       router.replace("/auth/login");
       return;
     }
+    if (role === "Client") {
+      if (!pathname.startsWith("/client")) {
+        router.replace("/client");
+        return;
+      }
+    }
 
     // Department can ONLY access /admin
     if (role === "Department") {
