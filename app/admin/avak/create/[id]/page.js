@@ -582,10 +582,10 @@ export default function ClientAttachmentForm() {
         section_code: formData.section,
         client_prarup_code: formData.clientPrarupCode || "2",
         client_name: formData.client_name,
-        ...(formData.isIndividual && {
-          client_address: formData.clientAddress || 'NA',
-          client_city: formData.clientCity || "NA",
-        }),
+        // ...(formData.isIndividual && {
+          client_address: formData.clientAddress || formData.office,
+          client_city: formData.clientCity || formData.district,
+        // }),
         schedule_date: formData.schedule_date
           ? new Date(formData.schedule_date).toISOString().slice(0, 10)
           : null,
