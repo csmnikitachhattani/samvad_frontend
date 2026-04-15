@@ -129,7 +129,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                             <TableCell><b>Subject</b></TableCell>
                             <TableCell align="center"><b>Receipt Date</b></TableCell>
                             <TableCell><b>Start – End Date</b></TableCell>
-                            <TableCell><b>Service Type</b></TableCell>
+                            {/* <TableCell><b>Service Type</b></TableCell> */}
                             <TableCell align="center"><b>Actions</b></TableCell>
                         </TableRow>
                     </TableHead>
@@ -181,9 +181,9 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                         </TableCell>
 
                                         {/* Service Type */}
-                                        <TableCell>
+                                        {/* <TableCell>
                                             <Typography variant="body2">{row.od_servicetype_id}</Typography>
-                                        </TableCell>
+                                        </TableCell> */}
 
                                         {/* Actions — vertical stack, evenly spaced */}
                                         <TableCell align="center">
