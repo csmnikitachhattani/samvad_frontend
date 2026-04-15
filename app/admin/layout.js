@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }) {
     const userType = localStorage.getItem("loginusertypename");
 
     if (!userType || userType !== "Department") {
-      router.push("/login"); // redirect if not authorized
+      router.push("/auth/login"); // redirect if not authorized
     }
   }, []);
 
