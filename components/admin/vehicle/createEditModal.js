@@ -28,12 +28,11 @@ const fieldStyle = {
 };
 
 const INITIAL_DATA = {
-  agencyId: "", vehicleNo: "", ownerName: "",
+  agencyId: "", vehicleNo: "", ownerName: "", agencyName: "",
   fitnessUpto: "", insuranceUpto: "",
   rcPhotoFile: null, rcPhotoPath: "",
   createdBy: "", createdIpAddress: "", specification: "",
 };
-
 export default function VehicleModal({ onClose }) {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -44,6 +43,36 @@ export default function VehicleModal({ onClose }) {
   const [data, setData] = useState(INITIAL_DATA);
   const [preview, setPreview] = useState(null);   // ← image preview URL
   const fileInputRef = useRef(null);
+
+  
+const [financialYear, setFinancialYear] = useState("");
+const [userId, setUserId] = useState("");
+const [user_name, setUserName] = useState("");
+const [userTypeCd, setUserTypeCd] = useState("");
+
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  const financialYearLS = localStorage.getItem("financialYear");
+  const userIdLS = localStorage.getItem("userid");
+  const userNameLS = localStorage.getItem("username");
+  const userTypeCdLS = localStorage.getItem("usertypecode");
+
+  setFinancialYear(financialYearLS);
+  setUserId(userIdLS);
+  setUserName(userNameLS);
+  setUserTypeCd(userTypeCdLS);
+
+  const getIP = async () => {
+    try {
+      const res = await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+      setFormData(p => ({ ...p, ip_address: data.ip }));
+    } catch {
+      console.error("IP fetch failed");
+    }
+  };
+}, []);
 
   // ─── Fetch vendors on mount ───────────────────────────────────────────────
   useEffect(() => {
@@ -153,12 +182,13 @@ export default function VehicleModal({ onClose }) {
       const formData = new FormData();
 
       formData.append("AgencyId", data.agencyId);
+      formData.append('AgencyName', data.agencyName)
       formData.append("VehicleNo", data.vehicleNo);
       formData.append("OwnerName", data.ownerName);
       formData.append("FitnessUpto", data.fitnessUpto || "2026-01-26T14:20:06.038Z");
       formData.append("InsuranceUpto", data.insuranceUpto || "2026-01-26T14:20:06.038Z");
       formData.append("Specification", data.specification);
-      formData.append("CreatedBy", "01");
+      formData.append("CreatedBy", userId);
       formData.append("CreatedIpAddress", ip);
 
       if (data.rcPhotoFile) {
@@ -180,7 +210,7 @@ export default function VehicleModal({ onClose }) {
       // dispatch(showNotification({ message: "Save failed!", severity: "error" }));
       dispatch(
         showNotification({
-          message: error.response?.data?.message || "Save failed!",
+          message: error?.message || "Save failed!",
           severity: "error",
         })
       );
@@ -200,7 +230,7 @@ export default function VehicleModal({ onClose }) {
 
             {/* Agency */}
             <Grid item size={{ xs: 12, md: 6 }}>
-              <TextField select label="Agency" name="agencyId" fullWidth size="small"
+              {/* <TextField select label="Agency" name="agencyId" fullWidth size="small"
                 value={data.agencyId} onChange={handleChange} sx={fieldStyle}
                 error={!!errors.agencyId} helperText={errors.agencyId}
               >
@@ -209,6 +239,38 @@ export default function VehicleModal({ onClose }) {
                 )) : (
                     <MenuItem disabled>
                       <Typography variant="caption" sx={{ color: "#9ca3af" }}>No available Vendors</Typography>
+                    </MenuItem>
+                  )}
+              </TextField> */}
+              <TextField
+                select
+                label="Agency"
+                name="agencyId"
+                fullWidth
+                size="small"
+                value={data.agencyId}
+                onChange={(e) => {
+                  const selected = vendors.find(v => v.AgencyID === e.target.value);
+
+                  setData({
+                    ...data,
+                    agencyId: e.target.value,
+                    agencyName: selected?.AgencyName || ""
+                  });
+                }}
+                sx={fieldStyle}
+                error={!!errors.agencyId}
+                helperText={errors.agencyId}
+              >
+                {vendors.length > 0 ? vendors.map((v) => (
+                  <MenuItem key={v.AgencyID} value={v.AgencyID}>
+                    {v.AgencyName}
+                  </MenuItem>
+                )) : (
+                    <MenuItem disabled>
+                      <Typography variant="caption" sx={{ color: "#9ca3af" }}>
+                        No available Vendors
+      </Typography>
                     </MenuItem>
                   )}
               </TextField>
