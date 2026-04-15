@@ -56,13 +56,12 @@ const DataSetUI = () => {
   };
   const fetchClientRecords = async () => {
 
-    // const payload ={
-    //   user_id: '00100',
-    //   financial_year: '2024-2025' 
-    //   ref_id, 
-    //   category
-
-    // }
+    const payload ={
+      user_id: '00100',
+      financial_year: '2024-2025',
+      ref_id: '', 
+      category: '',
+    }
     try {
       setLoading(true);
       const response = await clientServices.getClientRequest(payload);
@@ -75,6 +74,12 @@ const DataSetUI = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (job_id && avak_ref) {
+      fetchClientRecords();
+  }}, [job_id, avak_ref]);
+  
 
   const transformAgencyToDetails = (agencies) => {
     if (!Array.isArray(agencies)) return [];
@@ -246,7 +251,7 @@ const DataSetUI = () => {
               sx={fieldSx}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={2}>
+          {/* <Grid item xs={12} sm={6} md={2}>
             <TextField
               fullWidth size="small"
               label="Commission %"
@@ -263,7 +268,7 @@ const DataSetUI = () => {
               onChange={(e) => setGstPercentage(e.target.value)}
               sx={fieldSx}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </div>
 

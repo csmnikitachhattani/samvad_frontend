@@ -7,7 +7,7 @@ export default function CounterPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
     <div>
-      <h1>Work Order Pending Page</h1>
+      {/* <h1>Work Order Pending Page</h1> */}
      <div sx={{margin: '10'}}>
      <DetailSummary />
     </div>
