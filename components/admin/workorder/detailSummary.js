@@ -45,6 +45,7 @@ const DataSetUI = () => {
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
       setRecords(transformAgencyToDetails(response?.data?.records));
+      setRoNoList(getUniqueRoList(response?.data?.records))
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -57,7 +58,8 @@ const DataSetUI = () => {
   const [userId,        setUserId]        = useState("");
   const [user_name,     setUserName]      = useState("");
   const [userTypeCd,   setUserTypeCd]      = useState("");
-
+  const [roNoList,   setRoNoList]      = useState([]);
+ 
   useEffect(() => {
     if (typeof window === "undefined") return;
   
@@ -133,7 +135,15 @@ const DataSetUI = () => {
       endDate: agency.end_date,
     }));
   };
+  const getUniqueRoList = (records) => {
+    const seen = new Set();
   
+    return records.filter((item) => {
+      if (seen.has(item.ro_no)) return false;
+      seen.add(item.ro_no);
+      return true;
+    });
+  };
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
