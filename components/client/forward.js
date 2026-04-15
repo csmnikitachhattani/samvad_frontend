@@ -301,7 +301,7 @@ const handleForward = async (row) => {
     const payload = {
       ref_id: row.ref_Id, // adjust if different
       fin_year: row.financial_Year,
-      forward_by_user_id: localStorage.getItem("user_id"||"00100"), // or your auth state
+      forward_by_user_id: localStorage.getItem("userId"), // or your auth state
       forward_by_ip_address: userIP, // ideally from backend
       forward_date: new Date().toISOString(),
       forward_time: new Date().toLocaleTimeString(),
