@@ -237,6 +237,12 @@ const AgencyForm = () => {
       dispatch(showNotification({ message: "Saved successfully!", severity: "success" }));
       router.push("/admin/agency");
     } catch (err) {
+      dispatch(
+        showNotification({
+          message: error.response?.data?.message || "Save failed!",
+          severity: "error",
+        })
+      );
       console.log("Error:", err.message);
     }
   };
