@@ -596,10 +596,11 @@ export default function WorkOrderForm() {
             {/* Meta chips row */}
             <Box sx={{ mt: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
               {[
-                { label: "Subject", value: formData.subject },
-                { label: "FY", value: formData.financial_year },
+               
+                // { label: "FY", value: formData.financial_year },
                 { label: "Job", value: formData.job_id },
                 { label: "AVAK", value: formData.avak_ref_id },
+                { label: "Subject", value: formData.subject },
 
               ].map(({ label, value }) => (
                 <Box

@@ -45,7 +45,7 @@ const DataSetUI = () => {
       const response = await adminServices.getAllocationRecord(jobId, avakRef);
       setData(response.data);
       setRecords(transformAgencyToDetails(response?.data?.records));
-      setRoNoList(getUniqueRoList(response?.data?.records))
+      setRoNoList(getUniqueRoNumbers(response?.data?.records))
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -65,7 +65,7 @@ const DataSetUI = () => {
   
     const financialYearLS = localStorage.getItem("financialYear");
     const userIdLS = localStorage.getItem("userid");
-    const userNameLS = localStorage.getItem("user_name");
+    const userNameLS = localStorage.getItem("username");
     const userTypeCdLS = localStorage.getItem("usertypecode");
   
     setFinancialYear(financialYearLS);
@@ -135,14 +135,8 @@ const DataSetUI = () => {
       endDate: agency.end_date,
     }));
   };
-  const getUniqueRoList = (records) => {
-    const seen = new Set();
-  
-    return records.filter((item) => {
-      if (seen.has(item.ro_no)) return false;
-      seen.add(item.ro_no);
-      return true;
-    });
+  const getUniqueRoNumbers = (records) => {
+    return [...new Set(records.map(item => item.ro_no))];
   };
   const handleSubmit = async () => {
     try {
@@ -165,14 +159,14 @@ const DataSetUI = () => {
         start_date: new Date(startDate).toISOString(),
         end_date: new Date(endDate).toISOString(),
       
-        commision_Percentage: commissionPercentage, // keep API spelling
-        gst_percentage: gstPercentage,
+        commision_Percentage: "5",
+        gst_percentage: "18",
       
         entry_ip_address: "103.79.34.50",
         entry_by_user_id: userId,
         entry_by_username: user_name,
       
-        ro_no_list: "",
+        ro_no_list: roNoList.toString(),
       
         action_cd: "07",
         action_name: "Generate RO",
