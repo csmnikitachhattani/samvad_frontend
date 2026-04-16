@@ -33,7 +33,7 @@ const CounterTable = ({ rows = [] }) => {
         async function fetchCounters() {
             try {
                 const response = await adminServices.getWorkorders();
-                setData(response || []);
+                setData(response.data || []);
                 console.log(response)
             } catch (error) {
                 console.error("Failed to fetch states", error);
@@ -80,9 +80,9 @@ const CounterTable = ({ rows = [] }) => {
                             <TableCell><b>Avak/ref Id</b></TableCell>
                             <TableCell><b>Subject</b></TableCell>
 
-                            <TableCell align="center"><b>Receipt Date</b></TableCell>
+                            <TableCell align="center"><b>WO Date</b></TableCell>
                             {/* <TableCell align="center"><b>Status</b></TableCell> */}
-                            <TableCell><b>Start - End Date</b></TableCell>
+                            {/* <TableCell><b>Start - End Date</b></TableCell> */}
                             <TableCell><b>Service Type</b></TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
@@ -103,21 +103,23 @@ const CounterTable = ({ rows = [] }) => {
                                         </TableCell>
                                         <TableCell>
                                             <div>Avak Id:{row.avak_ref_id}</div>
+                            
                                             <div>ref no:{row.ref_no}</div>
                                         </TableCell>
-
+                                        <TableCell >
+                                            {row.wo_subject}
+                                        </TableCell>
                                         <TableCell>
                                             <div>
-                                                {new Date(row.receipt_date).toLocaleDateString()}
+                                            {row.wo_date }
+                                                {/* {new Date(row.receipt_date).toLocaleDateString()} */}
                                             </div>
                                         </TableCell>
-                                        <TableCell >
-                                            {row.subject}
-                                        </TableCell>
-                                        <TableCell>
+                                        
+                                        {/* <TableCell>
                                             {new Date(row.startDate).toLocaleDateString()}
                       -  {new Date(row.endDate).toLocaleDateString()}
-                                        </TableCell>
+                                        </TableCell> */}
 
                                         <TableCell>
                                             <div>{row.od_servicetype_id}</div>
@@ -128,7 +130,7 @@ const CounterTable = ({ rows = [] }) => {
                                                 //onClick={() => setShowAction(true)}
                                                 onClick={() =>
                                                     router.push(
-                                                        `/admin/workorder/create?id=${row.job_id}&avak_ref=${row.avak_ref_id}&ref_id=${
+                                                        `/admin/workorder/create?id=${row.job_no}&avak_ref=${row.avak_ref_id}&ref_id=${
                                                             row.client_ref_id}`
                                                     )
                                                 }

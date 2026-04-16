@@ -214,9 +214,10 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
-  getNoteSheetPrintDetail: async () =>{
+  getNoteSheetPrintDetail: async (payload) =>{
+    const {jobNo, avakRefId, fin_year} = payload
     try {
-      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-joballocation-notesheet-printfinancial_year=2024-2025&job_no=032604003&avak_ref_id=2024000006&audit_all=true`,payload);
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-joballocation-notesheet-printfinancial_year=${fin_year}&job_no=${jobNo}&avak_ref_id=${avakRefId}`);
       return res;
     } catch (err) {
       console.log("answer")
