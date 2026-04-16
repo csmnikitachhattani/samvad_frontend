@@ -248,18 +248,18 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                 >
                                                     Generate NoteSheet
                                                 </Button>
-                                                {/* <Button
+                                                <Button
                                                     variant="contained"
                                                     size="small"
                                                     onClick={() =>
                                                         router.push(
-                                                            `/admin/counter/notesheet/print?id=${row.job_id}&avak_ref=${row.avak_ref_id}`
+                                                            `/admin/counter/notesheet/print?job_id=${row.job_id}&avak_ref=${row.avak_ref_id}`
                                                         )
                                                     }
                                                     sx={btnStyle}
                                                 >
                                                     Print
-                                                </Button> */}
+                                                </Button>
                                                 <Button
                                                     variant="contained"
                                                     size="small"

@@ -215,9 +215,9 @@ const adminService = {
     }
   },
   getNoteSheetPrintDetail: async (payload) =>{
-    const {jobNo, avakRefId, fin_year} = payload
+    const {job_no, avak_ref, fin_year} = payload
     try {
-      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-joballocation-notesheet-printfinancial_year=${fin_year}&job_no=${jobNo}&avak_ref_id=${avakRefId}`);
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/odm-lv-joballocation-notesheet-print?financial_year=${fin_year}&job_no=${job_no}&avak_ref_id=${avak_ref}`);
       return res;
     } catch (err) {
       console.log("answer")

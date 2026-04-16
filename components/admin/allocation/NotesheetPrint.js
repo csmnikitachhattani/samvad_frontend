@@ -1,5 +1,7 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import adminServices from "@/services/adminServices";
 
 const defaultRows = [
   {
@@ -24,12 +26,34 @@ const defaultRows = [
 ];
 
 export default function WorkOrder() {
+  //const {avak_ref_id, job_id } = useParams();
   const [regnNo, setRegnNo] = useState("209");
   const [clientName, setClientName] = useState("अपर संचालक (इले.मी.), संचालनालय जनसंपर्क विभाग, रायपुर");
   const [subject, setSubject] = useState("माह दिसम्बर 2025ः शासकीय योजनाओं एवं कार्यक्रमों का समाचार चैनलों, एफएम रेडियो, आकाशवाणी और सिनेमाघरों के माध्यम से प्रचार-प्रसार की कार्यांतर कार्यादेश की स्वीकृति बाबत्।");
   const [clientRef, setClientRef] = useState("पत्र क्रमांक- 220696/EM/39/26/जसंस, दिनांक 09-02-2026 / 10752 / 0562687 / 25-26 / छ.ग.स. / इले.मी. / 2026 / Dated :- 13/02/2026");
   const [topDescription, setTopDescription] = useState("पत्र क्रमांक- 220696/EM/39/26/जसंस, दिनांक 09-02-2026 / 10752 / 0562687 / 25-26 / छ.ग.स. / इले.मी. / 2026 / Dated :- 13/02/2026");
   const [rows, setRows] = useState(defaultRows);
+  const searchParams = useSearchParams();
+  const job = searchParams.get("job_id");
+  const avak_ref = searchParams.get("avak_ref");
+  async function fetchPrintData() {
+    const payload = {
+      fin_year: '2024-2025',
+      avak_ref: avak_ref,
+      job_no: job,
+    };
+    try {
+      const response = await adminServices.getNoteSheetPrintDetail(payload);
+      console.log(response)
+      setRows(response.data.data)
+    } catch (error) {
+      console.error("Failed to fetch vendors", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchPrintData();
+  }, []);
 
   const updateRow = (id, field, val) =>
     setRows(rows.map(r => r.id === id ? { ...r, [field]: val } : r));
@@ -117,13 +141,13 @@ export default function WorkOrder() {
         {/* CLIENT NAME */}
         <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Name :</span>
-          <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /></span>
+          <span style={{ flex: 1 }}><F value={rows[0].client_name} onChange={setClientName} /></span>
         </div>
 
         {/* SUBJECT */}
         <div style={{ display: "flex",  padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Subject :</span>
-          <span style={{ flex: 1 }}><F value={subject} onChange={setSubject} multiline /></span>
+          <span style={{ flex: 1 }}><F value={rows[0].wo_subject} onChange={setSubject} multiline /></span>
         </div>
 
         {/* CLIENT REF */}
@@ -149,41 +173,30 @@ export default function WorkOrder() {
               {/* <th style={{ ...thStyle, width: 70 }}>work type</th> */}
               <th style={{ ...thStyle, width: 28 }}>S.N o.</th>
               <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
-              <th style={{ ...thStyle }}>Subject</th>
-              {/* <th style={{ ...thStyle, width: 55 }}>Unit</th> */}
-              <th style={{ ...thStyle, width: 20 }}>Programme</th>
-              <th style={{ ...thStyle, width: 44 }}>tot. days</th>
-              {/* <th style={{ ...thStyle, width: 70 }}>Tot. Dur.</th> */}
+              <th style={{ ...thStyle , width: 300}}>Subject</th>
               <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
               <th style={{ ...thStyle, width: 40 }}>Rate</th>
               <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
-              {/* <th style={{ ...thStyle, width: 28 }} className="no-print">✕</th> */}
             </tr>
           </thead>
           <tbody>
             {rows.map(r => (
               <tr key={r.id}>
-                {/* <td style={tdStyle}><F value={r.workType} onChange={v => updateRow(r.id, "workType", v)} /></td> */}
                 <td style={{ ...tdStyle, textAlign: "center" }}>{r.sno}</td>
-                <td style={tdStyle}><F value={r.Vehicle_No} onChange={v => updateRow(r.id, "Vehicle_No", v)} /></td>
-                <td style={tdStyle}><F value={r.roSubject} onChange={v => updateRow(r.id, "roSubject", v)} multiline /></td>
-                {/* <td style={tdStyle}><F value={r.unit} onChange={v => updateRow(r.id, "unit", v)} multiline /></td> */}
-                <td style={tdStyle}><F value={r.frqucy} onChange={v => updateRow(r.id, "frqucy", v)} /></td>
-                <td style={tdStyle}><F value={r.totDays} onChange={v => updateRow(r.id, "totDays", v)} /></td>
-                {/* <td style={tdStyle}><F value={r.totDur} onChange={v => updateRow(r.id, "totDur", v)} multiline /></td> */}
-                <td style={tdStyle}><F value={r.date} onChange={v => updateRow(r.id, "date", v)} multiline /></td>
-                <td style={tdStyle}><F value={r.rate} onChange={v => updateRow(r.id, "rate", v)} multiline /></td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹
-                  <F value={r.totAmt} onChange={v => updateRow(r.id, "totAmt", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
+                <td style={tdStyle}><F value={r.Vehicle_No || 'CG04MH6789'} onChange={v => updateRow(r.id, "Vehicle_No", v)} /></td>
+                <td style={tdStyle}><F value={r.wo_subject} onChange={v => updateRow(r.id, "roSubject", v)} multiline /></td>
+                <td style={tdStyle}> <F value={r.start_date}  multiline />
+                <F value={r.end_date} onChange={v => updateRow(r.id, "rate", v)} multiline />
                 </td>
-                {/* <td style={{ ...tdStyle, textAlign: "center" }} className="no-print">
-                  <button onClick={() => removeRow(r.id)}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#c00", fontSize: 13 }}>✕</button>
-                </td> */}
+                <td style={tdStyle}><F value={r.rate} onChange={v => updateRow(r.id, "rate", v)} multiline />
+                </td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹
+                  <F value={r.total_rate} onChange={v => updateRow(r.id, "totAmt", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
+                </td>
               </tr>
             ))}
             <tr>
-              <td colSpan={7} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
               {/* <td className="no-print" style={tdStyle} /> */}
             </tr>
