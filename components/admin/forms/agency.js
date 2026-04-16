@@ -253,7 +253,7 @@ const AgencyForm = () => {
         district: formData.district,
         city: formData.city,
         state: formData.state,
-        contact_person: formData.contactPerson,
+        contactPerson: formData.contactPerson,
         phone: formData.phone,
         email: formData.email,
         validityFrom: formData.validityFrom,
@@ -264,7 +264,7 @@ const AgencyForm = () => {
         createdByUserName: user_name,
         createdByUserTypeCd: userTypeCd,
         createdByUserTypeName: userTypeCd,
-        createdIpAddress: formData.createdIpAddress,
+        createdIpAddress: "103.49.78.89",
       };
       const result = await adminServices.createAgency(updateObject);
       console.log("Agency Created:", result);
