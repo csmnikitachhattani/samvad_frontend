@@ -32,7 +32,7 @@ const CounterTable = ({ rows = [] }) => {
     useEffect(() => {
         async function fetchCounters() {
             try {
-                const response = await adminServices.getcounter();
+                const response = await adminServices.getWorkorders();
                 setData(response || []);
                 console.log(response)
             } catch (error) {

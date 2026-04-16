@@ -124,6 +124,9 @@ export default function LoginPage() {
         if (userType.code === "CLNT") {
           router.push("/client");
         }
+        else  if (userType.code === "ODM") {
+          router.push("/client");
+        }
         else {
           router.push("/admin");
         }

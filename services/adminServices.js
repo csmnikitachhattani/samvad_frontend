@@ -47,6 +47,15 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getWorkorders: async () => {
+    try {
+      const res = await axiosClient.get("/OutDoorMediaTransaction/odm_lv_pending-ro-list");
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   getcounterDetail: async (id) => {
     try {
       const res = await axiosClient.get(`/OutDoorMediaTransaction/getodmlvcounter?id=${id}`);
