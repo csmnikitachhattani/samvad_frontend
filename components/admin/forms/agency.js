@@ -273,7 +273,7 @@ const AgencyForm = () => {
     } catch (err) {
       dispatch(
         showNotification({
-          message: error.response?.data?.message || "Save failed!",
+          message: err.message || "Save failed!",
           severity: "error",
         })
       );

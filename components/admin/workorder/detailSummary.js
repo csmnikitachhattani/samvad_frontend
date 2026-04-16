@@ -114,6 +114,7 @@ const DataSetUI = () => {
       // client_grp_cd: clientGrpCd,
       setClientCd(data.client_Cd)
       setBillingClientCd(data.client_Cd)
+      setBillingOfficeCd(data.office_code)
     } catch (err) {
       setError("Failed to load allocation records");
       console.error(err);
@@ -169,9 +170,9 @@ const DataSetUI = () => {
         wo_subject: wosubject,
       
         client_cd: clientCd,
-        billing_Client_cd: billingClientCd,
+        billing_Client_cd: clientCd,
         billing_office_code: billingOfficeCd,
-        client_grp_cd: clientGrpCd,
+        client_grp_cd: "01",
       
         od_servicetype_id: 2,
       
