@@ -95,6 +95,12 @@ export default function WorkOrder() {
     border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top",  height: "70px",
   };
 
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    return d.toLocaleDateString("en-GB"); // DD/MM/YYYY
+  };
+
   return (
     <div style={s.page}>
       <div style={s.btns}>
@@ -153,7 +159,7 @@ export default function WorkOrder() {
         {/* CLIENT REF */}
         <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Ref :</span>
-          <span style={{ flex: 1 }}><F value={clientRef} onChange={setClientRef} multiline /></span>
+          <span style={{ flex: 1 }}><F  value={rows[0].client_cd} onChange={setClientRef} multiline /></span>
         </div>
 
         {/* CLIENT REF */}
@@ -175,8 +181,8 @@ export default function WorkOrder() {
               <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
               <th style={{ ...thStyle , width: 300}}>Subject</th>
               <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
-              <th style={{ ...thStyle, width: 40 }}>Rate</th>
-              <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
+              <th style={{ ...thStyle, width: 100 }}>Rate</th>
+              <th style={{ ...thStyle, width: 100 }}>Tot. RO Amt</th>
             </tr>
           </thead>
           <tbody>
@@ -185,9 +191,10 @@ export default function WorkOrder() {
                 <td style={{ ...tdStyle, textAlign: "center" }}>{r.sno}</td>
                 <td style={tdStyle}><F value={r.Vehicle_No || 'CG04MH6789'} onChange={v => updateRow(r.id, "Vehicle_No", v)} /></td>
                 <td style={tdStyle}><F value={r.wo_subject} onChange={v => updateRow(r.id, "roSubject", v)} multiline /></td>
-                <td style={tdStyle}> <F value={r.start_date}  multiline />
-                <F value={r.end_date} onChange={v => updateRow(r.id, "rate", v)} multiline />
-                </td>
+                <td style={tdStyle}>
+  <F value={formatDate(r.start_date)} multiline />
+  <F value={formatDate(r.end_date)} multiline />
+</td>
                 <td style={tdStyle}><F value={r.rate} onChange={v => updateRow(r.id, "rate", v)} multiline />
                 </td>
                 <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹

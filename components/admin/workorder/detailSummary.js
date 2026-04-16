@@ -174,7 +174,7 @@ const DataSetUI = () => {
         billing_office_code: billingOfficeCd,
         client_grp_cd: "01",
       
-        od_servicetype_id: 2,
+        od_servicetype_id: '08',
       
         start_date: new Date(startDate).toISOString(),
         end_date: new Date(endDate).toISOString(),
