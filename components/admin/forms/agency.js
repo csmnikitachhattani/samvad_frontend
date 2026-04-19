@@ -568,11 +568,11 @@ const AgencyForm = () => {
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((id) => {
-                        const svc = services.find((s) => s.serviceId === id);
+                        const svc = services.find((s) => s.catId === id);
                         return (
                           <Chip
                             key={id}
-                            label={svc?.serviceName || id}
+                            label={svc?.catText || id}
                             size="small"
                             sx={{
                               borderRadius: "7px",
