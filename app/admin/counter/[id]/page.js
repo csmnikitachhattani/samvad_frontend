@@ -132,13 +132,15 @@ export default function WorkOrderForm() {
   });
   const formatDateForInput = (date) => {
     if (!date) return "";
-
+  
     const d = new Date(date);
-
-    // check if valid date
     if (isNaN(d)) return "";
-
-    return d.toISOString().split("T")[0];
+  
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+  
+    return `${year}-${month}-${day}`; // ✅ correct local date
   };
   const SubmitVehicles = async (res) => {
     console.log(formData.end_date)
@@ -326,7 +328,8 @@ export default function WorkOrderForm() {
     try {
       const response = await adminServices.getAllocationList(payload);
       //setHoardingRates(response.data.data);
-      const date = calculateEndDate(formData.startDate, formData.multiply_value)
+      console.log(formData.start_date, formData.multiply_value)
+      const date = calculateEndDate(formData?.start_date, formData.multiply_value)
       await setFormData((prev) => ({
         ...prev,
         end_date: date
@@ -477,6 +480,7 @@ export default function WorkOrderForm() {
 
     return date;
   }
+  
 
   
 
