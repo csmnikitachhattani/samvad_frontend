@@ -73,7 +73,7 @@ export default function LoginPage() {
 
 
   const handleLogin = async () => {
-    if (!userType.code || !username || !password || !userInput) {
+    if (!userType.code || !username || !password || !userInput || !financialYear) {
       setError("Please fill all fields");
       return;
     }
