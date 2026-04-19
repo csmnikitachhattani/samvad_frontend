@@ -505,7 +505,7 @@ export default function WorkOrderForm() {
       commisionPercentage: String(commission),
       cgst_percentage: String(cgst),
       sgst_percentage: String(sgst),
-      entryIpAddress: ipAddress,
+      entryIpAddress: "103.67.78.89",
       entryByUserId: userId,
       entryByUsername: user_name,
       //details: selectedVehicles,
