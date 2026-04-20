@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const defaultRows = [
   {
@@ -20,7 +22,7 @@ export default function WorkOrder() {
   const [clientRef, setClientRef] = useState("");
   const [topDescription, setTopDescription] = useState("");
   const [rows, setRows] = useState(defaultRows);
-
+  const [isDownloading, setIsDownloading] = useState(false);
   const searchParams = useSearchParams();
   const job = searchParams.get("job_id");
   const avak_ref = searchParams.get("avak_ref");
@@ -65,18 +67,49 @@ export default function WorkOrder() {
   // Grand total uses total_rate (API field)
   const totalAmt = rows.reduce((s, r) => s + (parseFloat(r.total_rate) || 0), 0);
 
-  const F = ({ value, onChange, style = {}, multiline = false }) =>
-    multiline
-      ? <textarea
-          value={value ?? ""}
-          onChange={e => onChange?.(e.target.value)}
-          style={{ width: "100%", border: "none", background: "transparent", fontFamily: "inherit", fontSize: "inherit", resize: "vertical", outline: "none", padding: 0, lineHeight: 1.4, ...style }}
-        />
-      : <input
-          value={value ?? ""}
-          onChange={e => onChange?.(e.target.value)}
-          style={{ width: "100%", border: "none", background: "transparent", fontFamily: "inherit", fontSize: "inherit", outline: "none", padding: 0, ...style }}
-        />;
+  const F = ({ value, onChange, style = {}, multiline = false }) => {
+    if (isDownloading) {
+      return (
+        <span style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", ...style }}>
+          {value}
+        </span>
+      );
+    }
+  
+    return multiline ? (
+      <textarea
+        value={value ?? ""}
+        onChange={e => onChange?.(e.target.value)}
+        style={{
+          width: "100%",
+          border: "none",
+          background: "transparent",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          resize: "vertical",
+          outline: "none",
+          padding: 0,
+          lineHeight: 1.4,
+          ...style
+        }}
+      />
+    ) : (
+      <input
+        value={value ?? ""}
+        onChange={e => onChange?.(e.target.value)}
+        style={{
+          width: "100%",
+          border: "none",
+          background: "transparent",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          outline: "none",
+          padding: 0,
+          ...style
+        }}
+      />
+    );
+  };
 
   const s = {
     page: { background: "#e8e8e8", minHeight: "100vh", padding: "20px", fontFamily: "Arial, sans-serif", fontSize: "12px" },
@@ -99,6 +132,45 @@ export default function WorkOrder() {
     border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top", height: "70px",
   };
 
+  const downloadPDF = async () => {
+    setIsDownloading(true);
+  
+    setTimeout(async () => {
+      const element = document.getElementById("printArea");
+  
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+  
+      const imgData = canvas.toDataURL("image/png");
+  
+      const pdf = new jsPDF("p", "mm", "a4");
+  
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+      let heightLeft = imgHeight;
+      let position = 0;
+  
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+  
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+  
+      pdf.save(`WorkOrder_${job || "file"}.pdf`);
+      setIsDownloading(false);
+    }, 300);
+  };
+
+  
   const formatDate = (date) => {
     if (!date) return "";
     const d = new Date(date);
@@ -108,7 +180,8 @@ export default function WorkOrder() {
   return (
     <div style={s.page}>
       <div style={s.btns}>
-        <button style={{ ...s.btn, ...s.btnP }} onClick={() => window.print()}>Print / PDF</button>
+        {/* <button style={{ ...s.btn, ...s.btnP }} onClick={() => window.print()}>Print / PDF</button> */}
+        <button onClick={downloadPDF}>Download PDF</button>
         <button style={s.btn} onClick={addRow}>+ Add Row</button>
       </div>
 
