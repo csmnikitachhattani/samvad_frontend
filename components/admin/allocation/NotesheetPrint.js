@@ -23,6 +23,9 @@ export default function WorkOrder() {
   const [topDescription, setTopDescription] = useState("");
   const [rows, setRows] = useState(defaultRows);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [CGST_amount, setCGSTAmount] = useState('');
+  const [SGST_amount, setSGSTAmount] = useState('');
+  const [net_amt, setNetAmount] = useState('');
   const searchParams = useSearchParams();
   const job = searchParams.get("job_id");
   const avak_ref = searchParams.get("avak_ref");
@@ -42,6 +45,11 @@ export default function WorkOrder() {
         setClientName(data[0]?.client_name ?? "");
         setSubject(data[0]?.wo_subject ?? "");
         setClientRef(data[0]?.ref_data  ?? "");
+        setCGSTAmount(data[0]?.CGST_amount)
+        setSGSTAmount(data[0]?.SGST_amount)
+        setNetAmount(data[0]?.net_amt)
+        
+
       }
     } catch (error) {
       console.error("Failed to fetch print data", error);
@@ -66,6 +74,7 @@ export default function WorkOrder() {
 
   // Grand total uses total_rate (API field)
   const totalAmt = rows.reduce((s, r) => s + (parseFloat(r.total_rate) || 0), 0);
+
 
   const F = ({ value, onChange, style = {}, multiline = false }) => {
     if (isDownloading) {
@@ -112,11 +121,11 @@ export default function WorkOrder() {
   };
 
   const s = {
-    page: { background: "#e8e8e8", minHeight: "100vh", padding: "20px", fontFamily: "Arial, sans-serif", fontSize: "12px" },
+    page: { background: "#e8e8e8", minHeight: "100vh", padding: "40px", fontFamily: "Arial, sans-serif", fontSize: "12px" },
     btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
     btn: { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
     btnP: { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
-    card: { maxWidth: 900, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "10px 14px" },
+    card: { maxWidth: 700, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
     center: { textAlign: "center" },
     bold: { fontWeight: "bold" },
     row: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
@@ -129,7 +138,7 @@ export default function WorkOrder() {
     fontWeight: "bold", fontSize: 11, background: "#f0f0f0", verticalAlign: "middle",
   };
   const tdStyle = {
-    border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top", height: "70px",
+    border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top", height: "content-fit",
   };
 
   const downloadPDF = async () => {
@@ -188,7 +197,7 @@ export default function WorkOrder() {
       <div style={s.card} id="printArea">
 
         {/* HEADER */}
-        <div style={{ ...s.row, alignItems: "flex-start" }}>
+        <div style={{ ...s.row, alignItems: "flex-start", border:'1px solid #000' }}>
           <div style={{ flex: 1 }} />
           <div style={{ flex: 3, textAlign: "center" }}>
             <div style={{ fontWeight: "bold", fontSize: 18 }}>CHHATTISGARH SAMVAD</div>
@@ -245,9 +254,9 @@ export default function WorkOrder() {
    
 
         {/* TOP DESCRIPTION — fixed: uses setTopDescription */}
-        <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
+        {/* <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
           <span style={{ flex: 1 }}><F value={topDescription} onChange={setTopDescription} multiline /></span>
-        </div>
+        </div> */}
 
         {/* WORK TABLE HEADING */}
         <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
@@ -267,9 +276,9 @@ export default function WorkOrder() {
             </tr>
           </thead>
           <tbody>
-            {rows.map(r=> (
+            {rows.map((r,i)=> (
               <tr key={r.id}>
-                <td style={{ ...tdStyle, textAlign: "center" }}></td>
+                <td style={{ ...tdStyle, textAlign: "center" }}>{i+1}</td>
                 <td style={tdStyle}>
                   <F value={r.VehicleNo ?? ""} onChange={v => updateRow(r.id, "VehicleNo", v)} />
                 </td>
@@ -289,16 +298,20 @@ export default function WorkOrder() {
               </tr>
             ))}
             <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
             </tr>
             <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{CGST_amount}</td>
+            </tr>
+            <tr>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{SGST_amount}</td>
             </tr>
             <tr>
               <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{net_amt}</td>
             </tr>
           </tbody>
         </table>

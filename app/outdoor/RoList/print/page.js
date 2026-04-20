@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import NotesheetPrint from "@/components/admin/allocation/NotesheetPrint"
+import WorkOrderPrint from "@/components/outdoor/workorder/workorderPrint"
 
 export default function Page() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <NotesheetPrint />
+      <WorkOrderPrint />
     </Suspense>
   );
 }

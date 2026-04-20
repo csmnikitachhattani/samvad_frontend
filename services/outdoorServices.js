@@ -55,6 +55,17 @@ const outdoorService = {
     }
   },
 
+  workorderPrint: async (payload) =>{
+    const {job_no, avak_ref, fin_year} = payload
+    try {
+      const  {} = payload ;
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/lv-work-order-printt?financial_year=${fin_year}&job_no=${job_no}&avak_ref_id=${avak_ref}`, );
+      return res.data;
+    } catch (err) {
+      throw err; // interceptor will format it
+    }
+  }
+
 };
 
 export default outdoorService;
