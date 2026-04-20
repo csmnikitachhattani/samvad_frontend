@@ -41,7 +41,7 @@ export default function WorkOrder() {
         // Populate header fields from first row
         setClientName(data[0]?.client_name ?? "");
         setSubject(data[0]?.wo_subject ?? "");
-        setClientRef(data[0]?.client_cd ?? "");
+        setClientRef(data[0]?.ref_data  ?? "");
       }
     } catch (error) {
       console.error("Failed to fetch print data", error);
@@ -267,14 +267,14 @@ export default function WorkOrder() {
             </tr>
           </thead>
           <tbody>
-            {rows.map(r => (
+            {rows.map(r=> (
               <tr key={r.id}>
-                <td style={{ ...tdStyle, textAlign: "center" }}>{r.sno}</td>
+                <td style={{ ...tdStyle, textAlign: "center" }}></td>
                 <td style={tdStyle}>
-                  <F value={r.Vehicle_No ?? ""} onChange={v => updateRow(r.id, "Vehicle_No", v)} />
+                  <F value={r.VehicleNo ?? ""} onChange={v => updateRow(r.id, "VehicleNo", v)} />
                 </td>
                 <td style={tdStyle}>
-                  <F value={r.wo_subject ?? ""} onChange={v => updateRow(r.id, "wo_subject", v)} multiline />
+                  <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
                 </td>
                 <td style={tdStyle}>
                   <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />
