@@ -119,13 +119,18 @@ export default function LoginPage() {
         localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
         localStorage.setItem('userid', res.data.result[0].userid)
         localStorage.setItem('financialYear', financialYear)
+        if(userType.code === "ODM"){
+          localStorage.setItem('loginusertypename', res.data.result[0].agency_id)
+        }
+        else{
         localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
+        }
 
         if (userType.code === "CLNT") {
           router.push("/client");
         }
         else  if (userType.code === "ODM") {
-          router.push("/client");
+          router.push("/outdoor");
         }
         else {
           router.push("/admin");

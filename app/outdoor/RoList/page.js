@@ -190,8 +190,34 @@ const WorkOrderTable = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
 
   useEffect(() => {
+
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("username");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
     async function fetchData() {
       try {
         const response = await outdoorServices.getOutdoorWorkorderList();

@@ -10,6 +10,14 @@ export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const logout = () => {
+    localStorage.clear();     // clears everything
+    sessionStorage.clear();   // optional
+  
+    //window.location.href = "/login";
+    window.location.reload();
+  };
+
   const isActive = (path) => pathname === path;
   const menuItems = [
     { 
@@ -34,7 +42,7 @@ export default function Sidebar() {
     },
     {
       label: "RO List",
-      path: "/outdoor/vehicle",
+      path: "/outdoor/RoList",
       icon: <DescriptionIcon sx={{ mr: 2, fontSize: "1.4rem" }} />,
     },
     // Add more items here
@@ -124,6 +132,7 @@ export default function Sidebar() {
           fullWidth
           variant="contained"
           startIcon={<LogoutIcon />}
+          onClick={logout}
           sx={{
             bgcolor: "rgba(255, 255, 255, 0.15)",
             color: "#fff",
