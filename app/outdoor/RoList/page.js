@@ -219,8 +219,11 @@ const WorkOrderTable = () => {
       }
     };
     async function fetchData() {
+      const params = {
+        agencyId : localStorage.getItem("usertypecode"),
+      }
       try {
-        const response = await outdoorServices.getOutdoorWorkorderList();
+        const response = await outdoorServices.getOutdoorWorkorderList(params);
         console.log(response)
         setData(response.data);
       } catch (error) {

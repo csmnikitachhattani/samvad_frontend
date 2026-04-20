@@ -116,14 +116,17 @@ export default function LoginPage() {
       if (res.data?.status == 200) {
         // ✅ CHECK LOGIN PATH (DEBUG)
         localStorage.setItem('username', res.data.result[0].username)
-        localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
+        
         localStorage.setItem('userid', res.data.result[0].userid)
         localStorage.setItem('financialYear', financialYear)
+        localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
         if(userType.code === "ODM"){
-          localStorage.setItem('loginusertypename', res.data.result[0].agency_id)
+          //localStorage.setItem('loginusertypename', res.data.result[0].agency_id)
+        localStorage.setItem('usertypecode', res.data.result[0].agency_id)
+
         }
         else{
-        localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
+          localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
         }
 
         if (userType.code === "CLNT") {

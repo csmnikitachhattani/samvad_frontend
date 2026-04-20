@@ -19,10 +19,11 @@ const outdoorService = {
       throw err; // interceptor will format it
     }
   },
-  getOutdoorWorkorderList: async ()=>{
+  getOutdoorWorkorderList: async (payload)=>{
     console.log("Workorder VehicleS")
+    const {agencyId} = payload
     try {
-      const res = await axiosClient.get("http://103.79.34.50:8083/api/OutDoorMediaTransaction/getlvworkorder", {});
+      const res = await axiosClient.get(`http://103.79.34.50:8083/api/OutDoorMediaTransaction/getlvworkorder?agencyId=${agencyId}`, {});
       return res;
     } catch (err) {
       throw err; // interceptor will format it
