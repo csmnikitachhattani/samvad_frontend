@@ -94,10 +94,45 @@ const AvakTable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("username");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  }, []);
+
+
   useEffect(() => {
     async function fetchData() {
+      const payload ={
+        fin_year : financialYear || localStorage.getItem("financialYear"),
+        datatype: "AvakList",
+        userId: localStorage.getItem("userid")
+      }
       try {
-        const res = await clientServices.getAdvtList({ fin_year: "2024-2025", datatype: "AvakList" });
+        const res = await clientServices.getAdvtList(payload);
         setData(res.data || []);
       } catch (err) {
         console.error("Failed to fetch avak list", err);
@@ -107,6 +142,7 @@ const AvakTable = () => {
     }
     fetchData();
   }, []);
+
 
   // ── useMemo for filtered + paginated rows ──────────────────────────────────
   const filteredRows = useMemo(() => {

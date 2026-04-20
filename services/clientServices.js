@@ -76,9 +76,10 @@ const clientServices = {
     }
   },
   getAdvtList: async (params)=>{
-    const {fin_year, datatype, } = params
+    console.log(params)
+    const {fin_year, datatype, userId} = params
     try {
-      const res = await axiosClient.get("/Client/avak-list?dataType=AvakList");
+      const res = await axiosClient.get(`/Client/avak-list?dataType=AvakList&finYear=${fin_year}&userId=${userId}`);
       return res;
     } catch (err) {
       throw err; // interceptor will format it"
@@ -145,7 +146,8 @@ const clientServices = {
       throw err
     }
   },
-  getAvakFilesList: async()=>{
+  getAvakFilesList: async(payload)=>{
+    
     try  {
       const res = await axiosClient.get("/Client/getavakfiles");
       return res
