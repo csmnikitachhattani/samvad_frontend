@@ -154,6 +154,36 @@ export default function JobForm() {
         console.error("IP fetch failed");
       }
     };
+  // }, []);
+
+  // useEffect(() => {
+    async function fetchAvakDetails() {
+      try {
+        const res = await clientServices.getAvakDetail({ avak_ref_id: avak, fin_year: localStorage.getItem("financialYear") });
+        setData((prev) => ({
+          ...prev,
+          ...res,
+          financial_year: localStorage.getItem("financialYear"),
+          subject: res.data.subject,
+          avak_ref_id: avak,
+          client_ref_id: res.data.client_ref_id,
+          client: res.data.client_cd,
+          billing_base_dept_code: res.data.base_dept_code,
+          billing_office_code: res.data.office_code,
+          billing_district_code: res.data.district_code,
+          billing_office_level_code: res.data.office_level_code,
+          billing_section_code: res.data.section_code,
+          billing_client_cd: res.data.client_cd
+
+        }));
+        setData((prev) => ({ ...prev, ...res.data }));
+      } catch (error) {
+        console.error("Failed to fetch services", error);
+      }
+    }
+    fetchAvakDetails();
+    fetchDepartment();
+    fetchDistricts();
   }, []);
 
 
@@ -167,7 +197,7 @@ export default function JobForm() {
           `http://103.79.34.50:8083/api/Client/getavakfiles`,
           {
             params: {
-              financial_year: "2024-2025",
+              financial_year: localStorage.getItem("financialYear"),
               avak_ref_id: avak,
             },
           }
@@ -195,35 +225,7 @@ export default function JobForm() {
     }
   }, [data.Avak_category]);
   const { avak } = useParams();
-  useEffect(() => {
-    async function fetchAvakDetails() {
-      try {
-        const res = await clientServices.getAvakDetail({ avak_ref_id: avak, fin_year: '2024-2025' });
-        setData((prev) => ({
-          ...prev,
-          ...res,
-          financial_year: '2024-2025',
-          subject: res.data.subject,
-          avak_ref_id: avak,
-          client_ref_id: res.data.client_ref_id,
-          client: res.data.client_cd,
-          billing_base_dept_code: res.data.base_dept_code,
-          billing_office_code: res.data.office_code,
-          billing_district_code: res.data.district_code,
-          billing_office_level_code: res.data.office_level_code,
-          billing_section_code: res.data.section_code,
-          billing_client_cd: res.data.client_cd
-
-        }));
-        setData((prev) => ({ ...prev, ...res.data }));
-      } catch (error) {
-        console.error("Failed to fetch services", error);
-      }
-    }
-    fetchAvakDetails();
-    fetchDepartment();
-    fetchDistricts();
-  }, []);
+ 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "files") {
