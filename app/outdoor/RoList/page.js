@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import outdoorServices from "@/services/outdoorServices";
+
 import {
   Box,
   Paper,
@@ -487,7 +488,7 @@ const WorkOrderTable = () => {
                     {/* Actions */}
                     <TableCell sx={{ ...bodyCell, minWidth: 130 }}>
                       <Stack spacing={0.8} alignItems="stretch">
-                        <Button
+                        {/* <Button
                           variant="contained"
                           size="small"
                           onClick={() => router.push(`/admin/work-order/${row.wo_no}`)}
@@ -502,13 +503,18 @@ const WorkOrderTable = () => {
                           sx={actionBtn("#6366f1", "#eef2ff")}
                         >
                           Detail List
-                        </Button>
+                        </Button> */}
                         <Button
                           variant="contained"
                           size="small"
+                          onClick={() =>
+                            router.push(
+                                `/outdoor/RoList/print?job_id=${row.job_no}&avak_ref=${row.avak_ref_id}&wo_no=${row.wo_no}`
+                            )
+                        }
                           sx={actionBtn("#10b981", "#ecfdf5")}
                         >
-                          Approve
+                         Print
                         </Button>
                       </Stack>
                     </TableCell>

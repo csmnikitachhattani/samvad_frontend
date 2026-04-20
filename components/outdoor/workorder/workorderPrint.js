@@ -1,46 +1,115 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import adminServices from "@/services/adminServices";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const defaultRows = [
   {
-    id: 1, workType: "PRODUCTION", sno: 1, roNum: "0562687/262",
-    roSubject: "05 मिनट की धान खरीदी पर आधारित 01 स्टोरी निर्माण और प्रसारण की कार्यांतर स्वीकृति।",
-    unit: "Master Version", frqucy: "NA", totDays: "1 SPECIAL STORY",
-    totDur: "5x1=5 Min(s)", date: "NA", rate: "State Rate: 7500.00, 1 to 5 Min(s)", totAmt: "37500.00",
-  },
-  {
-    id: 2, workType: "TELECAST", sno: 2, roNum: "0562687/9",
-    roSubject: "वी से विकास पर आधारित 181 सेकेण्ड का टी.व्ही स्पॉट 08 दिसम्बर 2025 से 05 दिनों तक प्रसारण की कार्यांतर स्वीकृति।",
-    unit: "06 AM-12 NOON", frqucy: "1 time(s)", totDays: "5 days",
-    totDur: "181x1x5=905 Sec(s)", date: "08/12/2025 - 12/12/2025", rate: "DAVP: 374.00 per 10 Sec(s)", totAmt: "33847.00",
+    id: 1, workType: "PRODUCTION", sno: 1, roNum: "0562687/262", Vehicle_No: 'CG04MH3959',
+    wo_subject: "LED Mounted (Per day Minimum 4 Programme) Size 12X8 Feet LED Screen (p6). equipped with GPS System , Audion Visual Equipment and Generator Along with LED Screen LED Technian",
+    unit: "Master Version", frqucy: "4", totDays: "5 days",
+    totDur: "5x1=5 Min(s)", start_date: "", end_date: "", rate: "₹5", total_rate: "37500.00",
+    client_name: "", client_cd: "",
   },
 ];
 
 export default function WorkOrder() {
   const [regnNo, setRegnNo] = useState("209");
-  const [clientName, setClientName] = useState("अपर संचालक (इले.मी.), संचालनालय जनसंपर्क विभाग, रायपुर");
-  const [subject, setSubject] = useState("माह दिसम्बर 2025ः शासकीय योजनाओं एवं कार्यक्रमों का समाचार चैनलों, एफएम रेडियो, आकाशवाणी और सिनेमाघरों के माध्यम से प्रचार-प्रसार की कार्यांतर कार्यादेश की स्वीकृति बाबत्।");
-  const [clientRef, setClientRef] = useState("पत्र क्रमांक- 220696/EM/39/26/जसंस, दिनांक 09-02-2026 / 10752 / 0562687 / 25-26 / छ.ग.स. / इले.मी. / 2026 / Dated :- 13/02/2026");
+  const [clientName, setClientName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [clientRef, setClientRef] = useState("");
+  const [topDescription, setTopDescription] = useState("");
   const [rows, setRows] = useState(defaultRows);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const searchParams = useSearchParams();
+  const job = searchParams.get("job_id");
+  const avak_ref = searchParams.get("avak_ref");
+
+  async function fetchPrintData() {
+    const payload = {
+      fin_year: '2024-2025',
+      avak_ref: avak_ref,
+      job_no: job,
+    };
+    try {
+      const response = await adminServices.getNoteSheetPrintDetail(payload);
+      const data = response?.data?.data;
+      if (Array.isArray(data) && data.length > 0) {
+        setRows(data);
+        // Populate header fields from first row
+        setClientName(data[0]?.client_name ?? "");
+        setSubject(data[0]?.wo_subject ?? "");
+        setClientRef(data[0]?.ref_data  ?? "");
+      }
+    } catch (error) {
+      console.error("Failed to fetch print data", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchPrintData();
+  }, []);
 
   const updateRow = (id, field, val) =>
     setRows(rows.map(r => r.id === id ? { ...r, [field]: val } : r));
 
   const addRow = () => setRows([...rows, {
     id: Date.now(), workType: "", sno: rows.length + 1, roNum: "",
-    roSubject: "", unit: "", frqucy: "", totDays: "", totDur: "", date: "", rate: "", totAmt: "",
+    wo_subject: "", unit: "", frqucy: "", totDays: "", totDur: "",
+    start_date: "", end_date: "", rate: "", total_rate: "", Vehicle_No: "",
+    client_name: "", client_cd: "",
   }]);
 
   const removeRow = (id) => rows.length > 1 && setRows(rows.filter(r => r.id !== id));
 
-  const totalAmt = rows.reduce((s, r) => s + (parseFloat(r.totAmt) || 0), 0);
+  // Grand total uses total_rate (API field)
+  const totalAmt = rows.reduce((s, r) => s + (parseFloat(r.total_rate) || 0), 0);
 
-  const F = ({ value, onChange, style = {}, multiline = false }) =>
-    multiline
-      ? <textarea value={value} onChange={e => onChange(e.target.value)}
-          style={{ width: "100%", border: "none", background: "transparent", fontFamily: "inherit", fontSize: "inherit", resize: "vertical", outline: "none", padding: 0, lineHeight: 1.4, ...style }} />
-      : <input value={value} onChange={e => onChange(e.target.value)}
-          style={{ width: "100%", border: "none", background: "transparent", fontFamily: "inherit", fontSize: "inherit", outline: "none", padding: 0, ...style }} />;
+  const F = ({ value, onChange, style = {}, multiline = false }) => {
+    if (isDownloading) {
+      return (
+        <span style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", ...style }}>
+          {value}
+        </span>
+      );
+    }
+  
+    return multiline ? (
+      <textarea
+        value={value ?? ""}
+        onChange={e => onChange?.(e.target.value)}
+        style={{
+          width: "100%",
+          border: "none",
+          background: "transparent",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          resize: "vertical",
+          outline: "none",
+          padding: 0,
+          lineHeight: 1.4,
+          ...style
+        }}
+      />
+    ) : (
+      <input
+        value={value ?? ""}
+        onChange={e => onChange?.(e.target.value)}
+        style={{
+          width: "100%",
+          border: "none",
+          background: "transparent",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          outline: "none",
+          padding: 0,
+          ...style
+        }}
+      />
+    );
+  };
 
   const s = {
     page: { background: "#e8e8e8", minHeight: "100vh", padding: "20px", fontFamily: "Arial, sans-serif", fontSize: "12px" },
@@ -60,13 +129,59 @@ export default function WorkOrder() {
     fontWeight: "bold", fontSize: 11, background: "#f0f0f0", verticalAlign: "middle",
   };
   const tdStyle = {
-    border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top",
+    border: "1px solid #000", padding: "3px 5px", fontSize: 11, verticalAlign: "top", height: "70px",
+  };
+
+  const downloadPDF = async () => {
+    setIsDownloading(true);
+  
+    setTimeout(async () => {
+      const element = document.getElementById("printArea");
+  
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+  
+      const imgData = canvas.toDataURL("image/png");
+  
+      const pdf = new jsPDF("p", "mm", "a4");
+  
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+      let heightLeft = imgHeight;
+      let position = 0;
+  
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+  
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+  
+      pdf.save(`WorkOrder_${job || "file"}.pdf`);
+      setIsDownloading(false);
+    }, 300);
+  };
+
+  
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    return isNaN(d) ? date : d.toLocaleDateString("en-GB");
   };
 
   return (
     <div style={s.page}>
       <div style={s.btns}>
-        <button style={{ ...s.btn, ...s.btnP }} onClick={() => window.print()}>Print / PDF</button>
+        {/* <button style={{ ...s.btn, ...s.btnP }} onClick={() => window.print()}>Print / PDF</button> */}
+        <button onClick={downloadPDF}>Download PDF</button>
         <button style={s.btn} onClick={addRow}>+ Add Row</button>
       </div>
 
@@ -101,90 +216,102 @@ export default function WorkOrder() {
 
         {/* TITLE */}
         <div style={{ ...s.center, ...s.bold, fontSize: 15, margin: "6px 0" }}>
-          Electronic Media Work Order
+          Mounted Vehicle NoteSheet
         </div>
 
         <div style={{ borderTop: "1px solid #000", margin: "6px 0" }} />
 
-        {/* CLIENT NAME */}
-        <div style={{ display: "flex", border: "1px solid #000", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+        {/* CLIENT NAME — uses clientName state */}
+        <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Name :</span>
           <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /></span>
         </div>
 
-        {/* SUBJECT */}
-        <div style={{ display: "flex", border: "1px solid #000", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+        {/* SUBJECT — uses subject state */}
+        <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Subject :</span>
           <span style={{ flex: 1 }}><F value={subject} onChange={setSubject} multiline /></span>
         </div>
 
-        {/* CLIENT REF */}
-        <div style={{ display: "flex", border: "1px solid #000", padding: "4px 6px", gap: 4 }}>
+        {/* CLIENT REF — uses clientRef state */}
+        <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Ref :</span>
           <span style={{ flex: 1 }}><F value={clientRef} onChange={setClientRef} multiline /></span>
         </div>
 
+        {/* <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
+         LED  किये जाने वाले कार्य का विवरण निम्नानुसार है :-
+        </div> */}
+   
+
+        {/* TOP DESCRIPTION — fixed: uses setTopDescription */}
+        <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
+          <span style={{ flex: 1 }}><F value={topDescription} onChange={setTopDescription} multiline /></span>
+        </div>
+
         {/* WORK TABLE HEADING */}
         <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
-          किये जाने वाले कार्य का विवरण निम्नानुसार है :-
+         LED Vehicle Outdoor media किये जाने वाले कार्य का विवरण निम्नानुसार है :-
         </div>
 
         {/* WORK TABLE */}
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
           <thead>
             <tr>
-              {/* <th style={{ ...thStyle, width: 70 }}>work type</th> */}
-              <th style={{ ...thStyle, width: 28 }}>S.N o.</th>
-              <th style={{ ...thStyle, width: 55 }}>RO Num</th>
-              <th style={{ ...thStyle }}>RO Subject</th>
-              <th style={{ ...thStyle, width: 55 }}>Unit</th>
-              <th style={{ ...thStyle, width: 48 }}>Frqucy</th>
-              <th style={{ ...thStyle, width: 44 }}>tot. days</th>
-              <th style={{ ...thStyle, width: 70 }}>Tot. Dur.</th>
-              <th style={{ ...thStyle, width: 80 }}>Date</th>
-              <th style={{ ...thStyle, width: 90 }}>Rate</th>
-              <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
-              <th style={{ ...thStyle, width: 28 }} className="no-print">✕</th>
+              <th style={{ ...thStyle, width: 28 }}>S.No.</th>
+              <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
+              <th style={{ ...thStyle, width: 300 }}>Subject</th>
+              <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
+              <th style={{ ...thStyle, width: 100 }}>Rate</th>
+              <th style={{ ...thStyle, width: 100 }}>Tot. RO Amt</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map(r => (
+            {rows.map(r=> (
               <tr key={r.id}>
-                <td style={tdStyle}><F value={r.workType} onChange={v => updateRow(r.id, "workType", v)} /></td>
-                <td style={{ ...tdStyle, textAlign: "center" }}>{r.sno}</td>
-                <td style={tdStyle}><F value={r.roNum} onChange={v => updateRow(r.id, "roNum", v)} /></td>
-                <td style={tdStyle}><F value={r.roSubject} onChange={v => updateRow(r.id, "roSubject", v)} multiline /></td>
-                <td style={tdStyle}><F value={r.unit} onChange={v => updateRow(r.id, "unit", v)} multiline /></td>
-                <td style={tdStyle}><F value={r.frqucy} onChange={v => updateRow(r.id, "frqucy", v)} /></td>
-                <td style={tdStyle}><F value={r.totDays} onChange={v => updateRow(r.id, "totDays", v)} /></td>
-                <td style={tdStyle}><F value={r.totDur} onChange={v => updateRow(r.id, "totDur", v)} multiline /></td>
-                <td style={tdStyle}><F value={r.date} onChange={v => updateRow(r.id, "date", v)} multiline /></td>
-                <td style={tdStyle}><F value={r.rate} onChange={v => updateRow(r.id, "rate", v)} multiline /></td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
-                  <F value={r.totAmt} onChange={v => updateRow(r.id, "totAmt", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
+                <td style={{ ...tdStyle, textAlign: "center" }}></td>
+                <td style={tdStyle}>
+                  <F value={r.VehicleNo ?? ""} onChange={v => updateRow(r.id, "VehicleNo", v)} />
                 </td>
-                <td style={{ ...tdStyle, textAlign: "center" }} className="no-print">
-                  <button onClick={() => removeRow(r.id)}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#c00", fontSize: 13 }}>✕</button>
+                <td style={tdStyle}>
+                  <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
+                </td>
+                <td style={tdStyle}>
+                  <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />
+                  <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />
+                </td>
+                <td style={tdStyle}>
+                  <F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} multiline />
+                </td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
+                  ₹<F value={r.total_rate ?? ""} onChange={v => updateRow(r.id, "total_rate", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
                 </td>
               </tr>
             ))}
             <tr>
-              <td colSpan={10} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>{totalAmt.toFixed(2)}</td>
-              <td className="no-print" style={tdStyle} />
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
 
         {/* SIGNATURES */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 40, gap: 8, textAlign: "center" }}>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>Prepared By</div></div>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>Checked By</div></div>
-          <div>
-            <div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>Authorised Signatory</div>
-            <div style={{ fontSize: 10, marginTop: 2 }}>Chhattisgarh Samvad</div>
-          </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 60, gap: 8, textAlign: "center" }}>
+          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>महाप्रबंधक</div></div>
+          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>कृपया अनुमोदनार्थ</div></div>
+          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>उपमहाप्रबंधक</div></div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 70, gap: 8, textAlign: "center" }}>
+          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>अतिरिक्त मुख्य कार्यपालन अधिकारी</div></div>
         </div>
 
       </div>
