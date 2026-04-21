@@ -28,7 +28,7 @@ export default function WorkOrder() {
   const [CGST_amount, setCGSTAmount] = useState('');
   const [SGST_amount, setSGSTAmount] = useState('');
   const [net_amt, setNetAmount] = useState('');
-  const [data, setData] = useState([]);
+  const [data, setData] = useState('');
   const searchParams = useSearchParams();
   const job = searchParams.get("job_id");
   const avak_ref = searchParams.get("avak_ref");
@@ -51,12 +51,12 @@ export default function WorkOrder() {
         setClientName(`${data[0].AgencyName}  ${data[0].OwnerName} ${data[0].city}` ?? "");
         setGST(`${data[0].gstin}`)
         setSubject(data[0]?.wo_subject ?? "");
-        setClientRef(data[0]?.ref_data  ?? "");
-        setData(data);
+        setClientRef(data[0]?.ref_data ?? "");
+        setData(`${wo_no}  ${formatDate(data[0].wo_date)}`);
         setCGSTAmount(data[0]?.CGST_amount)
         setSGSTAmount(data[0]?.SGST_amount)
         setNetAmount(data[0]?.net_amt)
-        
+
 
       }
     } catch (error) {
@@ -92,7 +92,7 @@ export default function WorkOrder() {
         </span>
       );
     }
-  
+
     return multiline ? (
       <textarea
         value={value ?? ""}
@@ -111,21 +111,21 @@ export default function WorkOrder() {
         }}
       />
     ) : (
-      <input
-        value={value ?? ""}
-        onChange={e => onChange?.(e.target.value)}
-        style={{
-          width: "100%",
-          border: "none",
-          background: "transparent",
-          fontFamily: "inherit",
-          fontSize: "inherit",
-          outline: "none",
-          padding: 0,
-          ...style
-        }}
-      />
-    );
+        <input
+          value={value ?? ""}
+          onChange={e => onChange?.(e.target.value)}
+          style={{
+            width: "100%",
+            border: "none",
+            background: "transparent",
+            fontFamily: "inherit",
+            fontSize: "inherit",
+            outline: "none",
+            padding: 0,
+            ...style
+          }}
+        />
+      );
   };
 
   const s = {
@@ -133,7 +133,7 @@ export default function WorkOrder() {
     btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
     btn: { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
     btnP: { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
-    card: { maxWidth: 650,  height: 1123, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
+    card: { maxWidth: 650, height: 1123, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
     center: { textAlign: "center" },
     bold: { fontWeight: "bold" },
     row: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
@@ -151,43 +151,43 @@ export default function WorkOrder() {
 
   const downloadPDF = async () => {
     setIsDownloading(true);
-  
+
     setTimeout(async () => {
       const element = document.getElementById("printArea");
-  
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff"
       });
-  
+
       const imgData = canvas.toDataURL("image/png");
-  
+
       const pdf = new jsPDF("p", "mm", "a4");
-  
+
       const imgWidth = 210;
       const pageHeight = 295;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  
+
       let heightLeft = imgHeight;
       let position = 0;
-  
+
       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
-  
+
       while (heightLeft > 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
         pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
       }
-  
+
       pdf.save(`WorkOrder_${job || "file"}.pdf`);
       setIsDownloading(false);
     }, 300);
   };
 
-  
+
   const formatDate = (date) => {
     if (!date) return "";
     const d = new Date(date);
@@ -202,142 +202,146 @@ export default function WorkOrder() {
         <button style={s.btn} onClick={addRow}>+ Add Row</button>
       </div>
 
-      <div style={{...s.card, padding: "20px"}} id="printArea">
-        <div style={{border:'1px solid #000', padding: "10px"}}>
-                  {/* HEADER */}
-        <div style={{ ...s.row, alignItems: "flex-start",  }}>
-          <div style={{ flex: 1,  }} />
-          <div style={{ flex: 3, textAlign: "center" }}>
-            <div style={{ fontWeight: "bold", fontSize: 18 }}>CHHATTISGARH SAMVAD</div>
-            <div style={{ fontSize: 11 }}>(An Associate Organization of CG Public Relation Dept.)</div>
-            <div style={{ fontSize: 10, marginTop: 2 }}>
-              North Block, Sec-19, Atal Nagar, Nava Raipur, CHHATTISGARH, 0771-2512567, https://samvad.cg.nic.in/
+      <div style={{ ...s.card, padding: "20px" }} id="printArea">
+        <div style={{ border: '1px solid #000', padding: "10px" }}>
+          {/* HEADER */}
+          <div style={{ ...s.row, alignItems: "flex-start", }}>
+            <div style={{ flex: 1, }} />
+            <div style={{ flex: 3, textAlign: "center" }}>
+              <div style={{ fontWeight: "bold", fontSize: 18 }}>CHHATTISGARH SAMVAD</div>
+              <div style={{ fontSize: 11 }}>(An Associate Organization of CG Public Relation Dept.)</div>
+              <div style={{ fontSize: 10, marginTop: 2 }}>
+                North Block, Sec-19, Atal Nagar, Nava Raipur, CHHATTISGARH, 0771-2512567, https://samvad.cg.nic.in/
+            </div>
+            </div>
+            <div style={{ flex: 1, textAlign: "right", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+              <span>Regn No.</span>
+              <F value={regnNo} onChange={setRegnNo} style={{ width: 40, textAlign: "right", borderBottom: "1px solid #999" }} />
             </div>
           </div>
-          <div style={{ flex: 1, textAlign: "right", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
-            <span>Regn No.</span>
-            <F value={regnNo} onChange={setRegnNo} style={{ width: 40, textAlign: "right", borderBottom: "1px solid #999" }} />
+
+          {/* <div style={s.hrThick} /> */}
+
+          {/* GST / PAN / TAN */}
+          <div style={{ ...s.row, fontSize: 11 }}>
+            <div><b>GST No : 22AAATC9294Q1Z4</b></div>
+            <div><b>PAN No : AAATC9294Q</b></div>
+            <div><b>TAN : JBPC00957F</b></div>
           </div>
+
+          <div style={s.hrThick} />
+
+          {/* TITLE */}
+          <div style={{ ...s.center, ...s.bold, fontSize: 15, margin: "6px 0" }}>
+            Mounted Vehicle WorkOrder
         </div>
 
-        {/* <div style={s.hrThick} /> */}
+          <div style={{ borderTop: "1px solid #000", margin: "6px 0" }} />
 
-        {/* GST / PAN / TAN */}
-        <div style={{ ...s.row, fontSize: 11 }}>
-          <div><b>GST No : 22AAATC9294Q1Z4</b></div>
-          <div><b>PAN No : AAATC9294Q</b></div>
-          <div><b>TAN : JBPC00957F</b></div>
+          {/* CLIENT NAME — uses clientName state */}
+          <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+            <span style={{ ...s.label, whiteSpace: "nowrap" }}>प्रति:</span>
+            <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /> <F value={gst} onChange={setClientName} /></span>
+          </div>
+
+
+
+          {/* SUBJECT — uses subject state */}
+          <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+            <span style={{ ...s.label, whiteSpace: "nowrap" }}>Subject :</span>
+            <span style={{ flex: 1 }}><F value={subject} onChange={setSubject} /></span>
+          </div>
+
+          {/* CLIENT REF — uses clientRef state */}
+          <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
+            <span style={{ ...s.label, whiteSpace: "nowrap" }}>
+              कार्यदेश क्रमांक :</span>
+
+            <div style={{ display: "flex", gap: 0, flex: 1 }}>
+              <span style={{ flex: 1 }}>
+                <F
+                  value={data}
+                  onChange={v => setWoNo(v)}
+                />
+{/* 
+                <F
+                  value={formatDate(data?.[0]?.wo_date)}
+                  onChange={v => setWoDate(v)}
+                /> */}
+              </span>
+            </div>
+          </div>
+
+
+
+          {/* WORK TABLE HEADING */}
+          <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
+            LED Vehicle Outdoor media किये जाने वाले कार्य का विवरण निम्नानुसार है :-
         </div>
 
-        <div style={s.hrThick} />
-
-        {/* TITLE */}
-        <div style={{ ...s.center, ...s.bold, fontSize: 15, margin: "6px 0" }}>
-          Mounted Vehicle WorkOrder
-        </div>
-
-        <div style={{ borderTop: "1px solid #000", margin: "6px 0" }} />
-
-        {/* CLIENT NAME — uses clientName state */}
-        <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
-          <span style={{ ...s.label, whiteSpace: "nowrap" }}>प्रति:</span>
-          <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /> <F value={gst} onChange={setClientName} /></span>
-        </div>
-
-
-
-        {/* SUBJECT — uses subject state */}
-        <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
-          <span style={{ ...s.label, whiteSpace: "nowrap" }}>Subject :</span>
-          <span style={{ flex: 1 }}><F value={subject} onChange={setSubject}/></span>
-        </div>
-
-        {/* CLIENT REF — uses clientRef state */}
-        <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
-          <span style={{ ...s.label, whiteSpace: "nowrap" }}>कार्यदेश  क्रमांक  :</span>
-          <div style={{ display: "flex", gap: "1px", flex: 1 }}>
-  <F 
-    value={wo_no} 
-    onChange={v => setWoNo(v)} 
-  />
-
-  <F 
-    value={formatDate(data?.[0]?.wo_date)} 
-    onChange={v => setWoDate(v)} 
-  />
-</div>
-        </div>
-
-       
-
-        {/* WORK TABLE HEADING */}
-        <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
-         LED Vehicle Outdoor media किये जाने वाले कार्य का विवरण निम्नानुसार है :-
-        </div>
-
-        {/* WORK TABLE */}
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
-          <thead>
-            <tr>
-              <th style={{ ...thStyle, width: 28 }}>S.No.</th>
-              <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
-              <th style={{ ...thStyle, width: 300 }}>Subject</th>
-              <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
-              <th style={{ ...thStyle, width: 100 }}>Rate</th>
-              <th style={{ ...thStyle, width: 100 }}>Tot. RO Amt</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r,i)=> (
-              <tr key={r.id}>
-                <td style={{ ...tdStyle, textAlign: "center" }}>{i+1}</td>
-                <td style={tdStyle}>
-                  <F value={r.VehicleNo ?? ""} onChange={v => updateRow(r.id, "VehicleNo", v)} />
-                </td>
-                <td style={tdStyle}>
-                  <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
-                </td>
-                <td style={tdStyle}>
-                  <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />-
-                  <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />
-                </td>
-                <td style={tdStyle}>
-                  <F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} multiline />
-                </td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
-                  ₹<F value={r.total_rate ?? ""} onChange={v => updateRow(r.id, "total_rate", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
-                </td>
+          {/* WORK TABLE */}
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+            <thead>
+              <tr>
+                <th style={{ ...thStyle, width: 28 }}>S.No.</th>
+                <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
+                <th style={{ ...thStyle, width: 300 }}>Subject</th>
+                <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
+                <th style={{ ...thStyle, width: 100 }}>Rate</th>
+                <th style={{ ...thStyle, width: 100 }}>Tot. RO Amt</th>
               </tr>
-            ))}
-            <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{CGST_amount}</td>
-            </tr>
-            <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{SGST_amount}</td>
-            </tr>
-            <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{net_amt}</td>
-            </tr>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={r.id}>
+                  <td style={{ ...tdStyle, textAlign: "center" }}>{i + 1}</td>
+                  <td style={tdStyle}>
+                    <F value={r.VehicleNo ?? ""} onChange={v => updateRow(r.id, "VehicleNo", v)} />
+                  </td>
+                  <td style={tdStyle}>
+                    <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
+                  </td>
+                  <td style={tdStyle}>
+                    <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />-
+                  <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />
+                  </td>
+                  <td style={tdStyle}>
+                    <F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} multiline />
+                  </td>
+                  <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
+                    ₹<F value={r.total_rate ?? ""} onChange={v => updateRow(r.id, "total_rate", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{CGST_amount}</td>
+              </tr>
+              <tr>
+                <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{SGST_amount}</td>
+              </tr>
+              <tr>
+                <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{net_amt}</td>
+              </tr>
+            </tbody>
+          </table>
 
-        {/* SIGNATURES */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 60, gap: 8, textAlign: "center" }}>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>महाप्रबंधक</div></div>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>कृपया अनुमोदनार्थ</div></div>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>उपमहाप्रबंधक</div></div>
-        </div>
+          {/* SIGNATURES */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 60, gap: 8, textAlign: "center" }}>
+            <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>महाप्रबंधक</div></div>
+            <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>कृपया अनुमोदनार्थ</div></div>
+            <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>उपमहाप्रबंधक</div></div>
+          </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 70, gap: 8, textAlign: "center" }}>
-          <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>अतिरिक्त मुख्य कार्यपालन अधिकारी</div></div>
-        </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 70, gap: 8, textAlign: "center" }}>
+            <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>अतिरिक्त मुख्य कार्यपालन अधिकारी</div></div>
+          </div>
 
         </div>
       </div>
