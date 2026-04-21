@@ -56,10 +56,10 @@ const outdoorService = {
   },
 
   workorderPrint: async (payload) =>{
-    const {job_no, avak_ref, fin_year} = payload
+    const {job_no, avak_ref, fin_year, wo_no, agency} = payload
     try {
       const  {} = payload ;
-      const res = await axiosClient.get(`/OutDoorMediaTransaction/lv-work-order-printt?financial_year=${fin_year}&job_no=${job_no}&avak_ref_id=${avak_ref}`, );
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/lv-work-order-print?financialYear=${fin_year}&jobNo=${job_no}&avakRefId=${avak_ref}&woNo=${wo_no}&agency_id=${agency}`, );
       return res.data;
     } catch (err) {
       throw err; // interceptor will format it

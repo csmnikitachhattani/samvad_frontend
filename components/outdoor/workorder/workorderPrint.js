@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import adminServices from "@/services/adminServices";
+import outdoorServices from "@/services/outdoorServices";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -29,16 +30,19 @@ export default function WorkOrder() {
   const searchParams = useSearchParams();
   const job = searchParams.get("job_id");
   const avak_ref = searchParams.get("avak_ref");
+  const wo_no = searchParams.get("wo_no");
 
   async function fetchPrintData() {
     const payload = {
-      fin_year: '2024-2025',
+      fin_year: localStorage.getItem('financialYear'),
+      agency: localStorage.getItem('usertypecode'),
       avak_ref: avak_ref,
       job_no: job,
+      wo_no: wo_no
     };
     try {
-      const response = await adminServices.getNoteSheetPrintDetail(payload);
-      const data = response?.data?.data;
+      const response = await outdoorServices.workorderPrint(payload);
+      const data = response;
       if (Array.isArray(data) && data.length > 0) {
         setRows(data);
         // Populate header fields from first row

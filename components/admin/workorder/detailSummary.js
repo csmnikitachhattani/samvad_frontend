@@ -411,7 +411,7 @@ const DataSetUI = () => {
               cursor: submitting || records.length === 0 ? "not-allowed" : "pointer",
             }}
           >
-            {submitting ? "Generating…" : "Generate Notesheet"}
+            {submitting ? "Generating…" : "Generate RO"}
           </button>
         </div>
 

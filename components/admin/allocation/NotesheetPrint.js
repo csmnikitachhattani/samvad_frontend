@@ -32,7 +32,7 @@ export default function WorkOrder() {
 
   async function fetchPrintData() {
     const payload = {
-      fin_year: '2024-2025',
+      fin_year: localStorage.getItem('financialYear'),
       avak_ref: avak_ref,
       job_no: job,
     };
