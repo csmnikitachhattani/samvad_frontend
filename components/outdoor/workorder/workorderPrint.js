@@ -21,12 +21,14 @@ export default function WorkOrder() {
   const [clientName, setClientName] = useState("");
   const [subject, setSubject] = useState("");
   const [clientRef, setClientRef] = useState("");
+  const [gst, setGST] = useState("");
   const [topDescription, setTopDescription] = useState("");
   const [rows, setRows] = useState(defaultRows);
   const [isDownloading, setIsDownloading] = useState(false);
   const [CGST_amount, setCGSTAmount] = useState('');
   const [SGST_amount, setSGSTAmount] = useState('');
   const [net_amt, setNetAmount] = useState('');
+  const [data, setData] = useState([]);
   const searchParams = useSearchParams();
   const job = searchParams.get("job_id");
   const avak_ref = searchParams.get("avak_ref");
@@ -46,9 +48,11 @@ export default function WorkOrder() {
       if (Array.isArray(data) && data.length > 0) {
         setRows(data);
         // Populate header fields from first row
-        setClientName(data[0]?.client_name ?? "");
+        setClientName(`${data[0].AgencyName}  ${data[0].OwnerName} ${data[0].city}` ?? "");
+        setGST(`${data[0].gstin}`)
         setSubject(data[0]?.wo_subject ?? "");
         setClientRef(data[0]?.ref_data  ?? "");
+        setData(data);
         setCGSTAmount(data[0]?.CGST_amount)
         setSGSTAmount(data[0]?.SGST_amount)
         setNetAmount(data[0]?.net_amt)
@@ -129,7 +133,7 @@ export default function WorkOrder() {
     btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
     btn: { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
     btnP: { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
-    card: { maxWidth: 650, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
+    card: { maxWidth: 650,  height: 1123, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
     center: { textAlign: "center" },
     bold: { fontWeight: "bold" },
     row: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
@@ -216,7 +220,7 @@ export default function WorkOrder() {
           </div>
         </div>
 
-        <div style={s.hrThick} />
+        {/* <div style={s.hrThick} /> */}
 
         {/* GST / PAN / TAN */}
         <div style={{ ...s.row, fontSize: 11 }}>
@@ -236,20 +240,32 @@ export default function WorkOrder() {
 
         {/* CLIENT NAME — uses clientName state */}
         <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
-          <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Name :</span>
-          <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /></span>
+          <span style={{ ...s.label, whiteSpace: "nowrap" }}>प्रति:</span>
+          <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /> <F value={gst} onChange={setClientName} /></span>
         </div>
+
+
 
         {/* SUBJECT — uses subject state */}
         <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
           <span style={{ ...s.label, whiteSpace: "nowrap" }}>Subject :</span>
-          <span style={{ flex: 1 }}><F value={subject} onChange={setSubject} multiline /></span>
+          <span style={{ flex: 1 }}><F value={subject} onChange={setSubject}/></span>
         </div>
 
         {/* CLIENT REF — uses clientRef state */}
         <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
-          <span style={{ ...s.label, whiteSpace: "nowrap" }}>Client Ref :</span>
-          <span style={{ flex: 1 }}><F value={clientRef} onChange={setClientRef} multiline /></span>
+          <span style={{ ...s.label, whiteSpace: "nowrap" }}>कार्यदेश  क्रमांक  :</span>
+          <div style={{ display: "flex", gap: "1px", flex: 1 }}>
+  <F 
+    value={wo_no} 
+    onChange={v => setWoNo(v)} 
+  />
+
+  <F 
+    value={formatDate(data?.[0]?.wo_date)} 
+    onChange={v => setWoDate(v)} 
+  />
+</div>
         </div>
 
        
