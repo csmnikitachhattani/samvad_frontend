@@ -129,7 +129,7 @@ export default function WorkOrder() {
     btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
     btn: { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
     btnP: { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
-    card: { maxWidth: 700, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
+    card: { maxWidth: 650, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
     center: { textAlign: "center" },
     bold: { fontWeight: "bold" },
     row: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
@@ -198,11 +198,11 @@ export default function WorkOrder() {
         <button style={s.btn} onClick={addRow}>+ Add Row</button>
       </div>
 
-      <div style={s.card} id="printArea">
-
-        {/* HEADER */}
-        <div style={{ ...s.row, alignItems: "flex-start", border:'1px solid #000' }}>
-          <div style={{ flex: 1 }} />
+      <div style={{...s.card, padding: "20px"}} id="printArea">
+        <div style={{border:'1px solid #000', padding: "10px"}}>
+                  {/* HEADER */}
+        <div style={{ ...s.row, alignItems: "flex-start",  }}>
+          <div style={{ flex: 1,  }} />
           <div style={{ flex: 3, textAlign: "center" }}>
             <div style={{ fontWeight: "bold", fontSize: 18 }}>CHHATTISGARH SAMVAD</div>
             <div style={{ fontSize: 11 }}>(An Associate Organization of CG Public Relation Dept.)</div>
@@ -252,15 +252,7 @@ export default function WorkOrder() {
           <span style={{ flex: 1 }}><F value={clientRef} onChange={setClientRef} multiline /></span>
         </div>
 
-        {/* <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
-         LED  किये जाने वाले कार्य का विवरण निम्नानुसार है :-
-        </div> */}
-   
-
-        {/* TOP DESCRIPTION — fixed: uses setTopDescription */}
-        {/* <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
-          <span style={{ flex: 1 }}><F value={topDescription} onChange={setTopDescription} multiline /></span>
-        </div> */}
+       
 
         {/* WORK TABLE HEADING */}
         <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
@@ -290,7 +282,7 @@ export default function WorkOrder() {
                   <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
                 </td>
                 <td style={tdStyle}>
-                  <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />
+                  <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />-
                   <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />
                 </td>
                 <td style={tdStyle}>
@@ -331,6 +323,7 @@ export default function WorkOrder() {
           <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>अतिरिक्त मुख्य कार्यपालन अधिकारी</div></div>
         </div>
 
+        </div>
       </div>
 
       <style>{`
