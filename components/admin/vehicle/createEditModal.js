@@ -88,6 +88,10 @@ useEffect(() => {
       newErrors.agencyId = "Agency is required.";
     }
 
+    if (!data.specification) {
+      newErrors.specification = "Specification is required.";
+    }
+
     if (!data.vehicleNo?.trim()) {
       newErrors.vehicleNo = "Vehicle number is required.";
     } else if (!vehicleField.pattern.value.test(data.vehicleNo)) {
@@ -340,8 +344,14 @@ useEffect(() => {
 
             {/* Specification */}
             <Grid item size={{ xs: 12, md: 6 }}>
-              <TextField label="Specification" name="specification" fullWidth size="small"
-                InputLabelProps={{ shrink: true }} value={data.specification} onChange={handleChange}
+              <TextField label="Specification" 
+                name="specification" 
+                fullWidth size="small"
+                InputLabelProps={{ shrink: true }} 
+                value={data.specification} 
+                onChange={handleChange}
+                error={!!errors.specification}
+                helperText={errors.specification}
               />
             </Grid>
 

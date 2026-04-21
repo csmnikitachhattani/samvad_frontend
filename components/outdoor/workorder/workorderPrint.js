@@ -133,7 +133,7 @@ export default function WorkOrder() {
     btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
     btn: { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
     btnP: { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
-    card: { maxWidth: 650, height: 1123, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
+    card: { maxWidth: 700, height: 1123, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
     center: { textAlign: "center" },
     bold: { fontWeight: "bold" },
     row: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
@@ -252,6 +252,18 @@ export default function WorkOrder() {
             <span style={{ flex: 1 }}><F value={subject} onChange={setSubject} /></span>
           </div>
 
+          <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+          
+            <span style={{ flex: 1 }}>
+                     विषयांतर्गत लेख है कि आयुक्त महोदय के निर्देशानुसार शासन की जनकल्याणकारी योजनाओं एवं उपलब्धियों का व्यापक प्रचार-प्रसार के उद्देश्य से प्रदेश के विभिन्न जिलों में 20 एलईडी वैन के माध्यम से प्रचार-प्रसार किया जाना है।
+
+उक्त कार्य छत्तीसगढ़ संवाद के निविदा के माध्यम से चयनित दर पर 03 इम्पैनल्ड एजेंसी द्वारा संपादित किया जाना प्रस्तावित है। एलईडी वैन से 07 मार्च से 15 मार्च 2024 तक 09 दिवस हेतु प्रचार-प्रसार किया जाना है।
+
+विवरण निम्नानुसार है, जिसे तय कार्यक्रमानुसार कार्यान्वित किया जाना है।
+            </span>
+          </div>
+
+
           {/* CLIENT REF — uses clientRef state */}
           <div style={{ display: "flex", padding: "4px 6px", gap: 4 }}>
             <span style={{ ...s.label, whiteSpace: "nowrap" }}>
@@ -284,8 +296,8 @@ export default function WorkOrder() {
             <thead>
               <tr>
                 <th style={{ ...thStyle, width: 28 }}>S.No.</th>
-                <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
-                <th style={{ ...thStyle, width: 300 }}>Subject</th>
+                <th style={{ ...thStyle, width: 90 }}>Vehicle No</th>
+                <th style={{ ...thStyle, width: 250 }}>Subject</th>
                 <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
                 <th style={{ ...thStyle, width: 100 }}>Rate</th>
                 <th style={{ ...thStyle, width: 100 }}>Tot. RO Amt</th>
@@ -305,8 +317,8 @@ export default function WorkOrder() {
                     <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />-
                   <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />
                   </td>
-                  <td style={tdStyle}>
-                    <F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} multiline />
+                  <td style={{...tdStyle,  textAlign: "right", fontWeight: "bold" }}>
+                  ₹<F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} style={{ textAlign: "right", fontWeight: "bold" }}/>
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
                     ₹<F value={r.total_rate ?? ""} onChange={v => updateRow(r.id, "total_rate", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
@@ -314,7 +326,7 @@ export default function WorkOrder() {
                 </tr>
               ))}
               <tr>
-                <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
+                <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Amount </td>
                 <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
               </tr>
               <tr>
@@ -333,15 +345,15 @@ export default function WorkOrder() {
           </table>
 
           {/* SIGNATURES */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 60, gap: 8, textAlign: "center" }}>
+          {/* <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 60, gap: 8, textAlign: "center" }}>
             <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>महाप्रबंधक</div></div>
             <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>कृपया अनुमोदनार्थ</div></div>
             <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>उपमहाप्रबंधक</div></div>
-          </div>
+          </div>*/}
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", marginTop: 70, gap: 8, textAlign: "center" }}>
             <div><div style={{ borderTop: "1px solid #000", paddingTop: 4 }}>अतिरिक्त मुख्य कार्यपालन अधिकारी</div></div>
-          </div>
+          </div> 
 
         </div>
       </div>

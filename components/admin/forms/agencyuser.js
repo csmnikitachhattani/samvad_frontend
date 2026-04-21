@@ -108,7 +108,7 @@ const SimpleAgencyUserForm = () => {
           emailId: selectedAgency.email || "",
           address: selectedAgency.address || "",
           loginUserTypeCd: selectedAgency.loginUserTypeCd || "",
-          loginUserTypeName: selectedAgency.loginUserTypeName || "",
+          loginUserTypeName: 'Outdoor',
           districtCode: selectedAgency.district || "",
           stdCode: selectedAgency.state || "",
           landlineNo: selectedAgency.landlineNo || "",
