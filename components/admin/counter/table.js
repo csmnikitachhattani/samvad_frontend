@@ -19,46 +19,46 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import adminServices from "@/services/adminServices";
-import {  useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { showNotification } from "@/store/modules/Snackbar/notificationSlice";
 
 const AdvtDownloadTable = ({ rows = [] }) => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [search, setSearch] = useState("");
-  const [data, setData] = useState([]);
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [search, setSearch] = useState("");
+    const [data, setData] = useState([]);
 
-  const [financialYear, setFinancialYear] = useState("");
-  const [userId,        setUserId]        = useState("");
-  const [user_name,     setUserName]      = useState("");
-  const [userTypeCd,   setUserTypeCd]      = useState("");
-  const [ipAddress,   setIpAddress]      = useState("");
+    const [financialYear, setFinancialYear] = useState("");
+    const [userId, setUserId] = useState("");
+    const [user_name, setUserName] = useState("");
+    const [userTypeCd, setUserTypeCd] = useState("");
+    const [ipAddress, setIpAddress] = useState("");
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-  
-    const financialYearLS = localStorage.getItem("financialYear");
-    const userIdLS = localStorage.getItem("userid");
-    const userNameLS = localStorage.getItem("username");
-    const userTypeCdLS = localStorage.getItem("usertypecode");
-  
-    setFinancialYear(financialYearLS);
-    setUserId(userIdLS);
-    setUserName(userNameLS);
-    setUserTypeCd(userTypeCdLS);
-  
-    const getIP = async () => {
-      try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const data = await res.json();
-        setIpAddress(data.ip);
-      } catch {
-        console.error("IP fetch failed");
-      }
-    };
-  }, []);
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        const financialYearLS = localStorage.getItem("financialYear");
+        const userIdLS = localStorage.getItem("userid");
+        const userNameLS = localStorage.getItem("username");
+        const userTypeCdLS = localStorage.getItem("usertypecode");
+
+        setFinancialYear(financialYearLS);
+        setUserId(userIdLS);
+        setUserName(userNameLS);
+        setUserTypeCd(userTypeCdLS);
+
+        const getIP = async () => {
+            try {
+                const res = await fetch("https://api.ipify.org?format=json");
+                const data = await res.json();
+                setIpAddress(data.ip);
+            } catch {
+                console.error("IP fetch failed");
+            }
+        };
+    }, []);
 
     // ✅ Fixed: search actually filters now
     const filteredRows = data.filter((row) => {
@@ -99,7 +99,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                 remark: "string",
                 approved_by_type_cd: "01",
                 approved_by_section_cd: "05"
-                
+
             };
             const response = await adminServices.ApprovedNotesheet(payload);
             dispatch(showNotification({ message: "Approved", severity: "success" }))
@@ -108,10 +108,10 @@ const AdvtDownloadTable = ({ rows = [] }) => {
             console.error("Failed to approve notesheet", error);
             dispatch(
                 showNotification({
-                  message: error.response?.data?.message || "Save failed!",
-                  severity: "error",
+                    message: error.response?.data?.message || "Save failed!",
+                    severity: "error",
                 })
-              );
+            );
         }
     }
 
@@ -228,59 +228,77 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                         {/* Actions — vertical stack, evenly spaced */}
                                         <TableCell align="center">
                                             <Stack spacing={0.75} alignItems="stretch">
-                                                <Button
-                                                    variant="contained"
-                                                    size="small"
-                                                    onClick={() => router.push(`/admin/counter/${row.job_id}`)}
-                                                    sx={btnStyle}
-                                                >
-                                                    Move to Allocation
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    size="small"
-                                                    onClick={() =>
-                                                        router.push(
-                                                            `/admin/counter/notesheet?id=${row.job_id}&avak_ref=${row.avak_ref_id}`
-                                                        )
-                                                    }
-                                                    sx={btnStyle}
-                                                >
-                                                    Generate NoteSheet
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    size="small"
-                                                    onClick={() =>
-                                                        router.push(
-                                                            `/admin/counter/notesheet/print?job_id=${row.job_id}&avak_ref=${row.avak_ref_id}`
-                                                        )
-                                                    }
-                                                    sx={btnStyle}
-                                                >
-                                                    Print
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    size="small"
-                                                    onClick={() => Approved(row.job_id, row.avak_ref_id, row.financial_year)}
-                                                    sx={btnStyle}
-                                                >
-                                                   Approve
-                                                </Button>
+
+                                                {/* Move to Allocation */}
+                                                {row.current_status == '01' && (
+                                                    <Button
+                                                        variant="contained"
+                                                        size="small"
+                                                        onClick={() => router.push(`/admin/counter/${row.job_id}`)}
+                                                        sx={btnStyle}
+                                                    >
+                                                        Move to Allocation
+                                                    </Button>
+                                                )}
+
+                                                {/* Generate NoteSheet */}
+                                                {row.current_status == '03' && (
+                                                    <Button
+                                                        variant="contained"
+                                                        size="small"
+                                                        onClick={() =>
+                                                            router.push(
+                                                                `/admin/counter/notesheet?id=${row.job_id}&avak_ref=${row.avak_ref_id}`
+                                                            )
+                                                        }
+                                                        sx={btnStyle}
+                                                    >
+                                                        Generate NoteSheet
+                                                    </Button>
+                                                )}
+
+                                                {/* Print */}
+                                                {row.notesheet_status === "generated" && (
+                                                    <Button
+                                                        variant="contained"
+                                                        size="small"
+                                                        onClick={() =>
+                                                            router.push(
+                                                                `/admin/counter/notesheet/print?job_id=${row.job_id}&avak_ref=${row.avak_ref_id}`
+                                                            )
+                                                        }
+                                                        sx={btnStyle}
+                                                    >
+                                                        Print
+                                                    </Button>
+                                                )}
+
+                                                {/* Approve */}
+                                                {row.approve_status !== "Y" && (
+                                                    <Button
+                                                        variant="contained"
+                                                        size="small"
+                                                        onClick={() =>
+                                                            Approved(row.job_id, row.avak_ref_id, row.financial_year)
+                                                        }
+                                                        sx={btnStyle}
+                                                    >
+                                                        Appro ve
+                                                    </Button>
+                                                )}
                                             </Stack>
                                         </TableCell>
                                     </TableRow>
                                 ))
                         ) : (
-                            <TableRow>
-                                <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
-                                    <Typography color="text.secondary">
-                                        {search ? `No results for "${search}"` : "No records found"}
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        )}
+                                <TableRow>
+                                    <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
+                                        <Typography color="text.secondary">
+                                            {search ? `No results for "${search}"` : "No records found"}
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                     </TableBody>
                 </Table>
             </TableContainer>

@@ -1039,7 +1039,7 @@ export default function JobForm() {
                 select
                 fullWidth
                 label="Officer"
-                name="billing_client_name"
+                name="billing_client_cd"
                 value={data.billing_client_cd}
                 error={!!errors.billing_client_cd} 
                 helperText={errors.billing_client_cd}

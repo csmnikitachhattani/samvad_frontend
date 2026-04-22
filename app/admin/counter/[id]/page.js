@@ -501,7 +501,7 @@ export default function WorkOrderForm() {
       clientCd: formData.client_cd,
       billingClientCd: formData.billing_Client_cd,
       billingOfficeCode: formData.billing_office_code,
-      clientGrpCd: formData.client_grp_cd,
+      clientGrpCd: formData.client_grp_cd || "0",
       odServicetypeId:  '08',
       woDate: new Date(formData.start_date).toISOString(),
       startDate: new Date(formData.start_date).toISOString(),

@@ -496,7 +496,22 @@ export default function ClientAttachmentForm() {
     formData.officeLevel,
   ]);
   useEffect(() => {
-    if (formData.client !== "") fetchClient(formData.client);
+    if (formData.client !== "") {
+      fetchClient(formData.client);
+    }
+    else{
+      setFormData((prev) => ({
+        ...prev,
+        baseDept: "",
+        district: "",
+        client_cd: "",
+        officer: "",
+        section: "",
+        officeLevel: "",
+        office:"",
+        client_name:""
+      }));
+    }
   }, [formData.client]);
 
   useEffect(() => {
