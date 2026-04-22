@@ -194,7 +194,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                         {/* Avak / Ref */}
                                         <TableCell>
                                             <Typography variant="caption">Avak: {row.avak_ref_id}</Typography><br />
-                                            <Typography variant="caption">Ref: {row.ref_no}</Typography>
+                                            <Typography variant="caption">Ref: {row.client_ref_id}</Typography>
                                         </TableCell>
 
                                         {/* ✅ Fixed: Subject now under Subject column */}
