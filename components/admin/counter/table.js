@@ -242,7 +242,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                 )}
 
                                                 {/* Generate NoteSheet */}
-                                                {row.current_status == '03' && (
+                                                {/* {row.current_status == '03' && ( */}
                                                     <Button
                                                         variant="contained"
                                                         size="small"
@@ -255,10 +255,10 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                     >
                                                         Generate NoteSheet
                                                     </Button>
-                                                )}
+                                                {/* )} */}
 
                                                 {/* Print */}
-                                                {row.notesheet_status === "generated" && (
+                                                {/* {row.notesheet_status === "generated" && ( */}
                                                     <Button
                                                         variant="contained"
                                                         size="small"
@@ -271,10 +271,10 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                     >
                                                         Print
                                                     </Button>
-                                                )}
+                                                {/* )} */}
 
                                                 {/* Approve */}
-                                                {row.approve_status !== "Y" && (
+                                                {/* {row.approve_status !== "Y" && ( */}
                                                     <Button
                                                         variant="contained"
                                                         size="small"
@@ -283,9 +283,9 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                         }
                                                         sx={btnStyle}
                                                     >
-                                                        Appro ve
+                                                        Approve
                                                     </Button>
-                                                )}
+                                                {/* )} */}
                                             </Stack>
                                         </TableCell>
                                     </TableRow>

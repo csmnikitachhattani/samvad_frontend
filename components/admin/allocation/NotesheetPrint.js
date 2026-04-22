@@ -185,6 +185,17 @@ export default function WorkOrder() {
     const d = new Date(date);
     return isNaN(d) ? date : d.toLocaleDateString("en-GB");
   };
+  function formatINR(value) {
+    const num = Number(value);
+  
+    if (isNaN(num)) return "0.00"; // handle invalid input
+  
+    return num.toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+  
 
   return (
     <div style={s.page}>
@@ -259,12 +270,12 @@ export default function WorkOrder() {
         </div> */}
 
         {/* WORK TABLE HEADING */}
-        <div style={{ ...s.bold, marginTop: 8, marginBottom: 4 }}>
+        <div style={{ ...s.bold, marginTop: 8, marginBottom: 4, marginTop: 100, }}>
          LED Vehicle Outdoor media किये जाने वाले कार्य का विवरण निम्नानुसार है :-
         </div>
 
         {/* WORK TABLE */}
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, }}>
           <thead>
             <tr>
               <th style={{ ...thStyle, width: 28 }}>S.No.</th>
@@ -287,31 +298,32 @@ export default function WorkOrder() {
                 </td>
                 <td style={tdStyle}>
                   <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />
+                  <hr/>
                   <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />
                 </td>
-                <td style={tdStyle}>
-                  <F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} multiline />
+                <td style={{...tdStyle, textAlign: "right", fontWeight: "bold" }}>
+                ₹{formatINR(r.rate) ?? ""} 
                 </td>
                 <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
-                  ₹<F value={r.total_rate ?? ""} onChange={v => updateRow(r.id, "total_rate", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
+                ₹{formatINR(r.total_rate) ?? ""} 
                 </td>
               </tr>
             ))}
             <tr>
               <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(totalAmt.toFixed(2))}</td>
             </tr>
             <tr>
               <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{CGST_amount}</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(CGST_amount)}</td>
             </tr>
             <tr>
               <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{SGST_amount}</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(SGST_amount)}</td>
             </tr>
             <tr>
               <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
-              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{net_amt}</td>
+              <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(net_amt)}</td>
             </tr>
           </tbody>
         </table>
