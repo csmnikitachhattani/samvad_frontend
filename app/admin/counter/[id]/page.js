@@ -12,6 +12,7 @@ import Chip from '@mui/material/Chip';
 import { getDuration } from "@/utils/dateUtils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 
 import {
   Box,
@@ -132,14 +133,14 @@ export default function WorkOrderForm() {
   });
   const formatDateForInput = (date) => {
     if (!date) return "";
-  
+
     const d = new Date(date);
     if (isNaN(d)) return "";
-  
+
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
-  
+
     return `${year}-${month}-${day}`; // ✅ correct local date
   };
   const SubmitVehicles = async (res) => {
@@ -161,6 +162,7 @@ export default function WorkOrderForm() {
       endDate: formData.end_date,
       duration_text: agency.duration_text,
       selected: false,
+      available_status: agency.available_status
     }));
 
   };
@@ -200,12 +202,12 @@ export default function WorkOrderForm() {
           client_grp_cd: response.client_grp_cd ?? "",
           start_date: response.startDate ?? "",
           end_date: response.endDate ?? "",
-          commision_Percentage:  5,
+          commision_Percentage: 5,
           //commission_amount: response.commission_amount,
           //amount_with_commission: response.amount_with_commission ,
           gst_percentage: 9,
           //gst_amount: response.gst_amount ,
-          total_amount: response.total_amount ,
+          total_amount: response.total_amount,
           startDate: response.startDate,
           endDate: response.endDate,
           detailList:
@@ -320,7 +322,7 @@ export default function WorkOrderForm() {
   }
   function formatDateSimple(dateString) {
     const date = new Date(dateString);
-  
+
     return (
       date.getFullYear() +
       "-" +
@@ -356,24 +358,24 @@ export default function WorkOrderForm() {
   }
 
   const [financialYear, setFinancialYear] = useState("");
-  const [userId,        setUserId]        = useState("");
-  const [user_name,     setUserName]      = useState("");
-  const [userTypeCd,   setUserTypeCd]      = useState("");
-  const [ipAddress,   setIpAddress]      = useState("");
+  const [userId, setUserId] = useState("");
+  const [user_name, setUserName] = useState("");
+  const [userTypeCd, setUserTypeCd] = useState("");
+  const [ipAddress, setIpAddress] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-  
+
     const financialYearLS = localStorage.getItem("financialYear");
     const userIdLS = localStorage.getItem("userid");
     const userNameLS = localStorage.getItem("username");
     const userTypeCdLS = localStorage.getItem("usertypecode");
-  
+
     setFinancialYear(financialYearLS);
     setUserId(userIdLS);
     setUserName(userNameLS);
     setUserTypeCd(userTypeCdLS);
-  
+
     const getIP = async () => {
       try {
         const res = await fetch("https://api.ipify.org?format=json");
@@ -493,9 +495,9 @@ export default function WorkOrderForm() {
 
     return date;
   }
-  
 
-  
+
+
 
   const handleSubmit = async () => {
     const total = selectedVehicles
@@ -515,7 +517,7 @@ export default function WorkOrderForm() {
       billingClientCd: formData.billing_Client_cd,
       billingOfficeCode: formData.billing_office_code,
       clientGrpCd: formData.client_grp_cd || "0",
-      odServicetypeId:  '08',
+      odServicetypeId: '08',
       woDate: new Date(formData.start_date).toISOString(),
       startDate: new Date(formData.start_date).toISOString(),
       endDate: new Date(formData.end_date).toISOString(),
@@ -613,7 +615,7 @@ export default function WorkOrderForm() {
             {/* Meta chips row */}
             <Box sx={{ mt: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
               {[
-               
+
                 // { label: "FY", value: formData.financial_year },
                 { label: "Job", value: formData.job_id },
                 { label: "AVAK", value: formData.avak_ref_id },
@@ -877,7 +879,7 @@ export default function WorkOrderForm() {
             <Table size="small">
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#f4f5f7" }}>
-                  {["Vehicle","VehicleNo", "Agency", 'duration', "Rate", "Total", "Start", "End", "Action"].map(
+                  {["Vehicle", "VehicleNo", "Agency", 'duration', "Rate", "Total", "Start", "End", "Action"].map(
                     (col, i) => (
                       <TableCell
                         key={i}
@@ -899,7 +901,7 @@ export default function WorkOrderForm() {
                 </TableRow>
               </TableHead>
 
-              <TableBody>
+              {/* <TableBody>
                 {selectedVehicles.map((row, index) => (
                   <TableRow
                     key={row.ledVehicleId}
@@ -940,14 +942,7 @@ export default function WorkOrderForm() {
                     </TableCell>
 
                     <TableCell>
-                      {/* <Button
-                        size="small"
-                        color="error"
-                        onClick={() => handleDeleteSelectedVehicle(index)}
-                        sx={{ minWidth: 0, p: "4px 8px" }}
-                      >
-                        <DeleteIcon fontSize="medium" />
-                      </Button> */}
+                     
                       <Checkbox
                         size="small"
                         checked={row.selected}
@@ -969,6 +964,92 @@ export default function WorkOrderForm() {
                       <Typography variant="body2">
                         No vehicles found. Select a vendor to load vehicles.
                     </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody> */}
+              <TableBody>
+                {selectedVehicles.map((row, index) => {
+                  const isUnavailable = row.available_status === "N";
+
+                  return (
+                    <TableRow
+                      key={row.ledVehicleId}
+                      hover={!isUnavailable}
+                      sx={{
+                        backgroundColor: isUnavailable
+                          ? "#2d3142"                                          // dark bg for unavailable
+                          : index % 2 === 0 ? "#ffffff" : "#fafbff",
+                        "&:hover": {
+                          backgroundColor: isUnavailable ? "#2d3142" : "#f0f3ff",
+                        },
+                        transition: "background-color 0.15s ease",
+                        opacity: isUnavailable ? 0.92 : 1,
+                      }}
+                    >
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {index + 1}
+                      </TableCell>
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {row.VehicleNo}
+                      </TableCell>
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {row.vendorName}
+                      </TableCell>
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {row.duration_text}
+                      </TableCell>
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {row.rate}
+                      </TableCell>
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {row.totalRate}
+                      </TableCell>
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {formatDateForInput(row.startDate) || ""}
+                      </TableCell>
+                      <TableCell sx={{ color: isUnavailable ? "#e0e3ef" : "#2d3142", fontSize: "0.85rem" }}>
+                        {formatDateForInput(row.endDate) || ""}
+                      </TableCell>
+                      <TableCell>
+                        {row.available_status !== 'N' ? (
+                          <Checkbox
+                            size="small"
+                            checked={row.selected}
+                            onChange={(e) =>
+                              handleVehicleChange(row.ledVehicleId, "selected", e.target.checked)
+                            }
+                            sx={{
+                              color: "#b0b5c4",
+                              "&.Mui-checked": { color: "#5c7cfa" },
+                            }}
+                          />
+                        ) : (
+                            <Chip
+                              label="Allocated"
+                              size="small"
+                              onDelete={() => { }}
+                              // deleteIcon={<CloseIcon fontSize="small" />}
+                              sx={{
+                                backgroundColor: "#fde8e8",
+                                color: "#e53e3e",
+                                fontWeight: 600,
+                                fontSize: "0.7rem",
+                                "& .MuiChip-deleteIcon": { color: "#e53e3e" },
+                              }}
+                            />
+                          )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+
+                {selectedVehicles.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={8} align="center" sx={{ py: 4, color: "#b0b5c4" }}>
+                      <Typography variant="body2">
+                        No vehicles found. Select a vendor to load vehicles.
+        </Typography>
                     </TableCell>
                   </TableRow>
                 )}
