@@ -318,12 +318,25 @@ export default function WorkOrderForm() {
       console.error("Failed to fetch vendors", error);
     }
   }
+  function formatDateSimple(dateString) {
+    const date = new Date(dateString);
+  
+    return (
+      date.getFullYear() +
+      "-" +
+      (date.getMonth() + 1) +
+      "-" +
+      date.getDate()
+    );
+  }
   async function fetchAllocation() {
     const payload = {
       durationType: rateType,
       durationId: formData.duration_id,
       agencyID: formData.vendor_id.toString(),
       work_cd: formData.work_list_id || selectedWork,
+      fromDate: formatDateSimple(formData.start_date),
+      toDate: formatDateSimple(formData.end_date)
     }
     try {
       const response = await adminServices.getAllocationList(payload);
@@ -531,7 +544,7 @@ export default function WorkOrderForm() {
         console.error("ERROR:", error.response?.data || error.message);
         dispatch(
           showNotification({
-            message: error.response?.data || "Save failed!",
+            message: error?.data || "Save failed!",
             severity: "error",
           })
         );
@@ -827,7 +840,8 @@ export default function WorkOrderForm() {
 
                         {/* ✅ Tender Type */}
                         <TableCell>
-                          <div>{row.work}</div>
+                          {/* <div>{row.work}</div> */}
+                          <div dangerouslySetInnerHTML={{ __html: row.work }} />
                         </TableCell>
 
                         <TableCell>
