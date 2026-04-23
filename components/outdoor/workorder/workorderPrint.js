@@ -194,6 +194,17 @@ export default function WorkOrder() {
     return isNaN(d) ? date : d.toLocaleDateString("en-GB");
   };
 
+  function formatINR(value) {
+    const num = Number(value);
+  
+    if (isNaN(num)) return "0.00"; // handle invalid input
+  
+    return num.toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
   return (
     <div style={s.page}>
       <div style={s.btns}>
@@ -241,7 +252,7 @@ export default function WorkOrder() {
           {/* CLIENT NAME — uses clientName state */}
           <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
             <span style={{ ...s.label, whiteSpace: "nowrap" }}>प्रति:</span>
-            <span style={{ flex: 1 }}><F value={clientName} onChange={setClientName} /> <F value={gst} onChange={setClientName} /></span>
+            <span style={{ flex: 1 }}>{clientName}  / {gst} </span>
           </div>
 
 
@@ -318,28 +329,30 @@ export default function WorkOrder() {
                   <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />
                   </td>
                   <td style={{...tdStyle,  textAlign: "right", fontWeight: "bold" }}>
-                  ₹<F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} style={{ textAlign: "right", fontWeight: "bold" }}/>
+                  ₹{formatINR(r.rate) ?? ""}
+                  {/* <F value={r.rate ?? ""} onChange={v => updateRow(r.id, "rate", v)} style={{ textAlign: "right", fontWeight: "bold" }}/> */}
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>
-                    ₹<F value={r.total_rate ?? ""} onChange={v => updateRow(r.id, "total_rate", v)} style={{ textAlign: "right", fontWeight: "bold" }} />
+                    ₹{formatINR(r.total_rate) ?? ""}
+                     {/* onChange={v => updateRow(r.id, "total_rate", v)} style={{ textAlign: "right", fontWeight: "bold" }} /> */}
                   </td>
                 </tr>
               ))}
               <tr>
                 <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Amount </td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{totalAmt.toFixed(2)}</td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(totalAmt.toFixed(2))}</td>
               </tr>
               <tr>
                 <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{CGST_amount}</td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(CGST_amount)}</td>
               </tr>
               <tr>
                 <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{SGST_amount}</td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(SGST_amount)}</td>
               </tr>
               <tr>
                 <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
-                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{net_amt}</td>
+                <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(net_amt)}</td>
               </tr>
             </tbody>
           </table>

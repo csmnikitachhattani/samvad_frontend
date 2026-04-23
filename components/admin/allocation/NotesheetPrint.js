@@ -174,7 +174,7 @@ export default function WorkOrder() {
         heightLeft -= pageHeight;
       }
   
-      pdf.save(`WorkOrder_${job || "file"}.pdf`);
+      pdf.save(`notesheet_${job || "file"}.pdf`);
       setIsDownloading(false);
     }, 300);
   };
