@@ -280,10 +280,11 @@ export default function WorkOrder() {
             <tr>
               <th style={{ ...thStyle, width: 28 }}>S.No.</th>
               <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
-              <th style={{ ...thStyle, width: 300 }}>Subject</th>
+              <th style={{ ...thStyle, width: 200 }}>Subject</th>
+              <th style={{ ...thStyle, width: 60 }}>Durations</th>
               <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
-              <th style={{ ...thStyle, width: 100 }}>Rate</th>
-              <th style={{ ...thStyle, width: 100 }}>Tot. RO Amt</th>
+              <th style={{ ...thStyle, width: 70 }}>Rate</th>
+              <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
             </tr>
           </thead>
           <tbody>
@@ -295,6 +296,9 @@ export default function WorkOrder() {
                 </td>
                 <td style={tdStyle}>
                   <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
+                </td>
+                <td style={tdStyle}>
+                  <F value={r.duration ?? ""} onChange={v => updateRow(r.id, "duration", v)} multiline />
                 </td>
                 <td style={tdStyle}>
                   <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />
@@ -310,19 +314,19 @@ export default function WorkOrder() {
               </tr>
             ))}
             <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
+              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(totalAmt.toFixed(2))}</td>
             </tr>
             <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
+              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(CGST_amount)}</td>
             </tr>
             <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
+              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(SGST_amount)}</td>
             </tr>
             <tr>
-              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(net_amt)}</td>
             </tr>
           </tbody>

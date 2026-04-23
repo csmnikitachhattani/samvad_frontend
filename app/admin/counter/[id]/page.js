@@ -529,7 +529,8 @@ export default function WorkOrderForm() {
       entryByUsername: user_name,
       //details: selectedVehicles,
       details: selectedVehicles.filter((item) => item.selected === true),
-      duration: String(getDuration(formatDateForInput(formData.start_date), formatDateForInput(formData.end_date))),
+      duration:  rateType === "M" ? `${formData.multiply_value} months` : `${formData.multiply_value} days`
+  
     };
 
     axiosClient
