@@ -258,7 +258,7 @@ export default function WorkOrder() {
 
 
           {/* SUBJECT — uses subject state */}
-          <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+          <div style={{ display: "flex", padding: "4px", gap: 4, marginBottom: "-1px" }}>
             <span style={{ ...s.label, whiteSpace: "nowrap" }}>Subject :</span>
             <span style={{ flex: 1 }}><F value={subject} onChange={setSubject} /></span>
           </div>
