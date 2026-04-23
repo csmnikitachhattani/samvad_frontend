@@ -210,7 +210,7 @@ export default function WorkOrder() {
       <div style={s.btns}>
         {/* <button style={{ ...s.btn, ...s.btnP }} onClick={() => window.print()}>Print / PDF</button> */}
         <button onClick={downloadPDF}>Download PDF</button>
-        <button style={s.btn} onClick={addRow}>+ Add Row</button>
+        {/* <button style={s.btn} onClick={addRow}>+ Add Row</button> */}
       </div>
 
       <div style={{ ...s.card, padding: "20px" }} id="printArea">
