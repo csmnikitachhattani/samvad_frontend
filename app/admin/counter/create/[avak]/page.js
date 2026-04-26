@@ -501,7 +501,7 @@ export default function JobForm() {
       // ===== FILES =====
       if (data.files && data.files.length > 0) {
         data.files.forEach((file) => {
-          payload.append("files[]", file);
+          payload.append("files", file);
         });
       }
   
@@ -1113,113 +1113,275 @@ export default function JobForm() {
 
         {/* ── File Upload ── */}
         <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            mb: 3,
-            borderRadius: "14px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #e8eaf0",
-          }}
-        >
-          <SectionHeader title="Attachment" />
-          <Box>
-            <Grid item xs={12} md={6}>
-              <Box>
-                <Typography fontWeight={600} mb={1}>Avak Files</Typography>
-                <Box display="flex" gap={2} flexWrap="wrap" sx={{ margin: '10px' }}>
-                  {avakFiles.length === 0 && (
-                    <Typography variant="caption">No files</Typography>
-                  )}
+  elevation={0}
+  sx={{
+    p: 3,
+    mb: 3,
+    borderRadius: "14px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #e8eaf0",
+  }}
+>
+  <SectionHeader title="Attachment" />
 
-                  {avakFiles.map((file) => {
-                    const isImage = file.content_type?.includes("image");
-                    const isPDF = file.content_type?.includes("pdf");
+  {/* Existing Files */}
+  <Box>
+    <Grid item xs={12} md={6}>
+      <Box>
+        <Typography fontWeight={600} mb={1}>
+          Avak Files
+        </Typography>
 
-                    const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+        {/* <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
+          {avakFiles.length === 0 && (
+            <Typography variant="caption">No files</Typography>
+          )}
 
-                    return (
-                      <Box
-                        key={file.id}
-                        onClick={() => handleOpenFile(file)}
-                        sx={{
-                          width: 100,
-                          height: 100,
-                          border: "1px solid #ddd",
-                          borderRadius: 2,
-                          overflow: "hidden",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          background: "#fff",
-                          "&:hover": { boxShadow: 3 },
-                        }}
-                      >
-                        {isImage ? (
-                          <img
-                            src={fileUrl}
-                            alt="file"
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                          />
-                        ) : isPDF ? (
-                          <Typography variant="caption">PDF</Typography>
-                        ) : (
-                              <Typography variant="caption">FILE</Typography>
-                            )}
-                      </Box>
-                    );
-                  })}
-                </Box>
+          {avakFiles.map((file) => {
+            const isImage = file.content_type?.includes("image");
+            const isPDF = file.content_type?.includes("pdf");
+            const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+
+            return (
+              <Box
+                key={file.id}
+                onClick={() => handleOpenFile(file)}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  border: "1px solid #ddd",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "#fff",
+                  "&:hover": { boxShadow: 3 },
+                }}
+              >
+                {isImage ? (
+                  <img
+                    src={fileUrl}
+                    alt="file"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : isPDF ? (
+                  <Typography variant="caption">PDF</Typography>
+                ) : (
+                  <Typography variant="caption">FILE</Typography>
+                )}
               </Box>
-            </Grid>
-          </Box>
-          <Box
-            component="label"
-            htmlFor="file-upload"
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 1,
-              p: 3,
-              borderRadius: "10px",
-              border: "2px dashed #d0d4e8",
-              backgroundColor: "#f4f5f7",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              "&:hover": {
-                borderColor: "#5c7cfa",
-                backgroundColor: "#eef1ff",
-              },
-            }}
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
-                stroke="#8a90a0"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <Typography variant="body2" sx={{ color: "#5a6072", fontWeight: 500 }}>
-              {data.files ? data.files.name : "Click to upload a file"}
-            </Typography>
-            <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
-              Any format accepted
-            </Typography>
-            <input
-              id="file-upload"
-              hidden
-              type="file"
-              name="files"
-              onChange={handleChange}
-            />
-          </Box>
+            );
+          })}
+        </Box> */}
+        {/* Existing Files + New Uploaded Preview Together */}
 
-        </Paper>
+<Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
+  {/* Already Uploaded Files */}
+  {avakFiles.map((file) => {
+    const isImage = file.content_type?.includes("image");
+    const isPDF = file.content_type?.includes("pdf");
+
+    const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+
+    return (
+      <Box
+        key={file.id}
+        onClick={() => handleOpenFile(file)}
+        sx={{
+          width: 100,
+          height: 100,
+          border: "1px solid #ddd",
+          borderRadius: 2,
+          overflow: "hidden",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#fff",
+        }}
+      >
+        {isImage ? (
+          <img
+            src={fileUrl}
+            alt="file"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        ) : isPDF ? (
+          <Typography variant="caption">PDF</Typography>
+        ) : (
+          <Typography variant="caption">FILE</Typography>
+        )}
+      </Box>
+    );
+  })}
+
+  {/* New Uploaded File Preview */}
+  <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
+  {/* Existing Files */}
+  {avakFiles.length === 0 && !data.files && (
+    <Typography variant="caption">No files</Typography>
+  )}
+
+  {avakFiles.map((file) => {
+    const isImage = file.content_type?.includes("image");
+    const isPDF = file.content_type?.includes("pdf");
+
+    const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+
+    return (
+      <Box
+        key={file.id}
+        onClick={() => handleOpenFile(file)}
+        sx={{
+          width: 100,
+          height: 100,
+          border: "1px solid #ddd",
+          borderRadius: 2,
+          overflow: "hidden",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#fff",
+          "&:hover": { boxShadow: 3 },
+        }}
+      >
+        {isImage ? (
+          <img
+            src={fileUrl}
+            alt="file"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        ) : isPDF ? (
+          <Typography variant="caption">PDF</Typography>
+        ) : (
+          <Typography variant="caption">FILE</Typography>
+        )}
+      </Box>
+    );
+  })}
+
+  {/* New Uploaded File Preview */}
+  {data.files && (
+    <Box
+      sx={{
+        width: 100,
+        height: 100,
+        border: "2px solid #4caf50",
+        borderRadius: 2,
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#f9fff9",
+      }}
+    >
+      {data.files?.type?.includes("image") ? (
+        <img
+          src={URL.createObjectURL(data.files)}
+          alt="preview"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      ) : data.files?.type?.includes("pdf") ? (
+        <Typography variant="caption">NEW PDF</Typography>
+      ) : (
+        <Typography variant="caption">
+          {data.files?.name || "NEW FILE"}
+        </Typography>
+      )}
+    </Box>
+  )}
+</Box>
+</Box>
+      </Box>
+    </Grid>
+  </Box>
+
+  {/* Upload Section */}
+  <Box
+    component="label"
+    htmlFor="file-upload"
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 1,
+      p: 3,
+      borderRadius: "10px",
+      border: "2px dashed #d0d4e8",
+      backgroundColor: "#f4f5f7",
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+      "&:hover": {
+        borderColor: "#5c7cfa",
+        backgroundColor: "#eef1ff",
+      },
+    }}
+  >
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+        stroke="#8a90a0"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+
+    {/* Show uploaded filename */}
+    <Typography
+      variant="body2"
+      sx={{
+        color: data.files ? "#2e7d32" : "#5a6072",
+        fontWeight: 600,
+      }}
+    >
+      {data.files
+        ? `Uploaded: ${data.files.name}`
+        : "Click to upload a file"}
+    </Typography>
+
+    {/* Upload success text */}
+    {data.files && (
+      <Typography variant="caption" sx={{ color: "green" }}>
+        File selected successfully ✅
+      </Typography>
+    )}
+
+    {!data.files && (
+      <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
+        Any format accepted
+      </Typography>
+    )}
+
+    <input
+      id="file-upload"
+      hidden
+      type="file"
+      name="files"
+      onChange={handleChange}
+    />
+  </Box>
+</Paper>
 
         {/* ── Submit Bar ── */}
         <Box

@@ -224,5 +224,15 @@ const adminService = {
       throw err; // interceptor will format it
     }
   }, 
+  finalAllocatePost: async (payload) =>{
+    //const {job_no, avak_ref, fin_year} = payload
+    try {
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-allocate-vendor`, payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  }, 
 };
 export default adminService;
