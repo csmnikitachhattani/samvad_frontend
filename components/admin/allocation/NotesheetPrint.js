@@ -125,7 +125,7 @@ export default function WorkOrder() {
     btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
     btn: { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
     btnP: { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
-    card: { maxWidth: 700, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
+    card: { maxWidth: 650, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
     center: { textAlign: "center" },
     bold: { fontWeight: "bold" },
     row: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
@@ -281,7 +281,6 @@ export default function WorkOrder() {
               <th style={{ ...thStyle, width: 28 }}>S.No.</th>
               <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
               <th style={{ ...thStyle, width: 200 }}>Subject</th>
-              <th style={{ ...thStyle, width: 60 }}>Durations</th>
               <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
               <th style={{ ...thStyle, width: 70 }}>Rate</th>
               <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
@@ -296,9 +295,6 @@ export default function WorkOrder() {
                 </td>
                 <td style={tdStyle}>
                   <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
-                </td>
-                <td style={tdStyle}>
-                  <F value={r.duration ?? ""} onChange={v => updateRow(r.id, "duration", v)} multiline />
                 </td>
                 <td style={tdStyle}>
                   <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />
