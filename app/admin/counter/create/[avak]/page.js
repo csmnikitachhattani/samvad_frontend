@@ -252,6 +252,8 @@ export default function JobForm() {
     if (!data.billing_district_code) newErrors.billing_district_code = "Billing district is required.";
     if (!data.billing_office_level_code) newErrors.billing_office_level_code = "Billing office level is required.";
     if (!data.billing_office_code) newErrors.billing_office_code = "Billing office is required.";
+    if (!data.office_address) newErrors.office_address = "Office address is required.";
+    if (!data.billing_address) newErrors.billing_address = "Billing office Address is required.";
     //if (!data.billing_section)           newErrors.billing_section               = "Billing section is required.";
 
     setErrors(newErrors);
@@ -766,6 +768,7 @@ export default function JobForm() {
                 label="Subject"
                 name="subject"
                 fullWidth
+                
                 value={data.subject}
                 onChange={handleChange}
                 sx={grayField}
@@ -1063,7 +1066,7 @@ export default function JobForm() {
           </Grid>
         </SectionCard>
         {/* ── Address Info ── */}
-        {/* <Paper
+         <Paper
           elevation={0}
           sx={{
             p: 3,
@@ -1075,7 +1078,7 @@ export default function JobForm() {
         >
           <SectionHeader title="Address & Remarks" />
           <Grid container spacing={2.5}>
-            <Grid item size={{ xs: 12, md: 3 }}>
+            <Grid item size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Office Address"
                 name="office_address"
@@ -1083,18 +1086,24 @@ export default function JobForm() {
                 rows={3}
                 fullWidth
                 value={data.office_address}
+                error={!!errors.office_address}
+                helperText={errors.office_address}
+                value={data.office_address}
                 onChange={handleChange}
                 sx={grayField}
               />
             </Grid>
 
-            <Grid item size={{ xs: 12, md: 3 }}>
+            <Grid item size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Billing Address"
                 name="billing_address"
                 multiline
                 rows={3}
                 fullWidth
+                value={data.billing_address}
+                error={!!errors.billing_address}
+                helperText={errors.billing_address}
                 value={data.billing_address}
                 onChange={handleChange}
                 sx={grayField}
@@ -1116,7 +1125,7 @@ export default function JobForm() {
 
            
           </Grid>
-        </Paper> */}
+        </Paper> 
 
         {/* ── File Upload ── */}
         <Paper

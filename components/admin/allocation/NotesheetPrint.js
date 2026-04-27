@@ -310,19 +310,19 @@ export default function WorkOrder() {
               </tr>
             ))}
             <tr>
-              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Anount </td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(totalAmt.toFixed(2))}</td>
             </tr>
             <tr>
-              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>CGST Charges(9%)</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(CGST_amount)}</td>
             </tr>
             <tr>
-              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>SGST Charges(9%)</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(SGST_amount)}</td>
             </tr>
             <tr>
-              <td colSpan={6} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
+              <td colSpan={5} style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>Grand Total</td>
               <td style={{ ...tdStyle, textAlign: "right", fontWeight: "bold" }}>₹{formatINR(net_amt)}</td>
             </tr>
           </tbody>
