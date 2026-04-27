@@ -1199,7 +1199,7 @@ export default function JobForm() {
 
                 <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
                   {/* Already Uploaded Files */}
-                  {avakFiles.map((file) => {
+                  {/* {avakFiles.map((file) => {
                     const isImage = file.content_type?.includes("image");
                     const isPDF = file.content_type?.includes("pdf");
 
@@ -1239,7 +1239,7 @@ export default function JobForm() {
                             )}
                       </Box>
                     );
-                  })}
+                  })} */}
 
                   {/* New Uploaded File Preview */}
                   <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
