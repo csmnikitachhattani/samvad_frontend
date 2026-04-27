@@ -97,7 +97,7 @@ export default function JobForm() {
     letter_no: "",
     client_name: "",
     office_address: "",
-  
+
     billing_client_cd: "",
     billing_base_dept_code: "",
     billing_office_code: "",
@@ -105,46 +105,46 @@ export default function JobForm() {
     billing_section_code: "",
     billing_client_name: "",
     billing_address: "",
-  
+
     office_code: "",
     base_dept_code: "",
     district_code: "",
     section: "",
     office_level_code: "",
-  
+
     remarks: "",
     ip_address: "",
     client: "",
-  
+
     entry_user_name: "nikita",
     entry_by_user_id: "00100",
     entry_by_user_type_cd: "02",
     modify_by_user_type_cd: "",
-  
+
     action_by_section_cd: "03",
     user_type_cd: "02",
     forward_to_section_cd: "07",
-  
+
     files: null,
   });
   const [financialYear, setFinancialYear] = useState("");
-  const [userId,        setUserId]        = useState("");
-  const [user_name,     setUserName]      = useState("");
-  const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [userId, setUserId] = useState("");
+  const [user_name, setUserName] = useState("");
+  const [userTypeCd, setUserTypeCd] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-  
+
     const financialYearLS = localStorage.getItem("financialYear");
     const userIdLS = localStorage.getItem("userid");
     const userNameLS = localStorage.getItem("username");
     const userTypeCdLS = localStorage.getItem("usertypecode");
-  
+
     setFinancialYear(financialYearLS);
     setUserId(userIdLS);
     setUserName(userNameLS);
     setUserTypeCd(userTypeCdLS);
-  
+
     const getIP = async () => {
       try {
         const res = await fetch("https://api.ipify.org?format=json");
@@ -154,9 +154,9 @@ export default function JobForm() {
         console.error("IP fetch failed");
       }
     };
-  // }, []);
+    // }, []);
 
-  // useEffect(() => {
+    // useEffect(() => {
     async function fetchAvakDetails() {
       try {
         const res = await clientServices.getAvakDetail({ avak_ref_id: avak, fin_year: localStorage.getItem("financialYear") });
@@ -225,7 +225,7 @@ export default function JobForm() {
     }
   }, [data.Avak_category]);
   const { avak } = useParams();
- 
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "files") {
@@ -237,32 +237,32 @@ export default function JobForm() {
   };
   const validate = () => {
     const newErrors = {};
-  
-    if (!data.subject?.trim())           newErrors.subject               = "Subject is required.";
-    if (!data.startDate)                 newErrors.startDate             = "Start date is required.";
-    if (!data.endDate)                   newErrors.endDate               = "End date is required.";
+
+    if (!data.subject?.trim()) newErrors.subject = "Subject is required.";
+    if (!data.startDate) newErrors.startDate = "Start date is required.";
+    if (!data.endDate) newErrors.endDate = "End date is required.";
     if (data.startDate && data.endDate && data.endDate < data.startDate)
-                                         newErrors.endDate               = "End date must be after start date.";
-    if (!data.base_dept_code)            newErrors.base_dept_code        = "Base department is required.";
-    if (!data.district_code)             newErrors.district_code         = "District is required.";
-    if (!data.office_level_code)         newErrors.office_level_code     = "Office level is required.";
-    if (!data.office_code)               newErrors.office_code           = "Office is required.";
+      newErrors.endDate = "End date must be after start date.";
+    if (!data.base_dept_code) newErrors.base_dept_code = "Base department is required.";
+    if (!data.district_code) newErrors.district_code = "District is required.";
+    if (!data.office_level_code) newErrors.office_level_code = "Office level is required.";
+    if (!data.office_code) newErrors.office_code = "Office is required.";
     //if (!data.section)                    newErrors.section               = "section is required.";
-    if (!data.billing_base_dept_code)    newErrors.billing_base_dept_code    = "Billing department is required.";
-    if (!data.billing_district_code)     newErrors.billing_district_code     = "Billing district is required.";
+    if (!data.billing_base_dept_code) newErrors.billing_base_dept_code = "Billing department is required.";
+    if (!data.billing_district_code) newErrors.billing_district_code = "Billing district is required.";
     if (!data.billing_office_level_code) newErrors.billing_office_level_code = "Billing office level is required.";
-    if (!data.billing_office_code)       newErrors.billing_office_code       = "Billing office is required.";
+    if (!data.billing_office_code) newErrors.billing_office_code = "Billing office is required.";
     //if (!data.billing_section)           newErrors.billing_section               = "Billing section is required.";
-  
+
     setErrors(newErrors);
-  
+
     // Scroll to first error
     const firstKey = Object.keys(newErrors)[0];
     if (firstKey) {
       const el = document.querySelector(`[name="${firstKey}"]`);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  
+
     return Object.keys(newErrors).length === 0;
   };
   async function getPublicIP() {
@@ -379,137 +379,137 @@ export default function JobForm() {
 
   const convertToISO = (dateStr) => {
     if (!dateStr) return null;
-  
+
     const [day, month, year] = dateStr.split("/");
     return `${year}-${month}-${day}`;
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  if (!validate()) return;
-  
+    if (!validate()) return;
+
     try {
       const ip = await getPublicIP();
-  
+
       const payload = new FormData();
-  
+
       // ===== BASIC =====
       payload.append("job_id", data.job_id);
       payload.append("financial_year", data.financial_year);
       payload.append("client_ref_id", data.client_ref_id);
       payload.append("avak_ref_id", data.avak_ref_id);
       payload.append("is_client_dpr", data.is_client_dpr);
-  
+
       payload.append("ref_no", data.ref_no || data.letter_no);
       payload.append("ref_date", data.ref_date);
       // payload.append("receipt_date", data.received_date
       // ? new Date(data.received_date).toISOString().slice(0, 10)
       // : null,);
       payload.append("receipt_date", convertToISO(data.received_date));
-  
+
       payload.append("od_servicetype_id", '08');
       payload.append("subject", data.subject);
       payload.append("no_of_media_count", data.no_of_media_count || 0);
-  
+
       payload.append("StartDate", data.startDate);
       payload.append("EndDate", data.endDate);
-  
+
       // ===== CLIENT =====
       payload.append("client_cd", data.client_cd);
       payload.append("client_name", data.client_name);
       payload.append("office_address", data.office_address);
-  
+
       payload.append("base_dept_code", data.base_dept_code || data.baseDepartment);
       payload.append("office_level_code", data.office_level_code || data.officeLevel);
       payload.append("office_code", data.office_code);
       payload.append("district_code", data.district_code);
       payload.append("section_code", data.section || 0);
-  
+
       payload.append("remarks", data.remarks);
-  
+
       // ===== USER =====
       payload.append("ip_address", ip);
-  
+
       payload.append("entry_user_name", user_name);
       payload.append("entry_by_user_id", userId);
-  
+
       payload.append("entry_by_user_type_cd", userTypeCd);
       //payload.append("modify_by_user_type_cd", userTypeCd);
       payload.append("user_type_cd", userTypeCd);
-  
+
       payload.append("action_by_section_cd", '03');
       payload.append("forward_to_section_cd", "04");
-  
+
       payload.append("owner_user_type_cd", userTypeCd);
       payload.append("owner_user_id", userId);
-  
+
       // ===== BILLING =====
       payload.append(
         "Billing_client_cd",
         data.billing_client_cd || data.client_cd
       );
-  
+
       payload.append(
         "Billing_client_name",
         data.billing_client_name || data.client_name
       );
-  
+
       payload.append(
         "Billing_address",
         data.billing_address || data.office_address
       );
-  
+
       payload.append(
         "Billing_base_dept_code",
         data.billing_base_dept_code || data.base_dept_code
       );
-  
+
       payload.append(
         "Billing_office_level_code",
         data.billing_office_level_code || data.office_level_code
       );
-  
+
       payload.append(
         "Billing_office_code",
         data.billing_office_code || data.office_code
       );
-  
+
       payload.append(
         "Billing_district_code",
         data.billing_district_code || data.district_code
       );
-  
+
       payload.append(
         "Billing_section_code",
         data.billing_section_code || 0
       );
-  
+
       payload.append(
         "Billing_client_prarup_code",
         data.Billing_client_prarup_code || ""
       );
-  
+
       payload.append(
         "Billing_officer",
         data.billing_client_cd || ""
       );
-  
+
       payload.append(
         "upload_doc_path",
         data.upload_doc_path || ""
       );
-  
+
       // ===== FILES =====
       if (data.files && data.files.length > 0) {
         data.files.forEach((file) => {
           payload.append("files", file);
         });
       }
-  
+
       // ===== DEBUG =====
       for (let pair of payload.entries()) {
         console.log(pair[0], pair[1]);
       }
-  
+
       // ===== API =====
       const response = await axiosClient.post(
         "/outDoorMediaTransaction/save-lv-counter",
@@ -520,23 +520,30 @@ export default function JobForm() {
           },
         }
       );
-  
+
       dispatch(
         showNotification({
           message: "Saved!",
           severity: "success",
         })
       );
-  
+
       router.push(`/admin/counter`);
-  
+
       console.log("SUCCESS:", response.data);
-  
+
     } catch (error) {
-      console.error(
-        "ERROR:",
-        error.response?.data || error.message
+      console.log(error)
+      dispatch(
+        showNotification({
+          message: error.data,
+          severity: "error",
+        })
       );
+      // console.error(
+      //   "ERROR:",
+      //   error.response?.data || error.message
+      // );
     }
   };
   function SectionCard({ title, subtitle, children, accent = "#010a2a" }) {
@@ -736,7 +743,7 @@ export default function JobForm() {
             </Grid>
 
             {/* Service Type — still interactive */}
-            
+
 
           </Grid>
         </Paper>
@@ -774,7 +781,7 @@ export default function JobForm() {
                 InputLabelProps={{ shrink: true }}
                 value={data.startDate}
                 onChange={handleChange}
-                error={!!errors.startDate} 
+                error={!!errors.startDate}
                 helperText={errors.startDate}
                 sx={grayField}
               />
@@ -787,7 +794,7 @@ export default function JobForm() {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 value={data.endDate}
-                error={!!errors.endDate} 
+                error={!!errors.endDate}
                 helperText={errors.endDate}
                 onChange={handleChange}
                 sx={grayField}
@@ -816,7 +823,7 @@ export default function JobForm() {
                 label="Base Department"
                 name="base_dept_code"
                 value={data.base_dept_code}
-                error={!!errors.base_dept_code} 
+                error={!!errors.base_dept_code}
                 helperText={errors.base_dept_code}
                 onChange={handleChange}
                 sx={field}
@@ -836,7 +843,7 @@ export default function JobForm() {
                 label="District"
                 name="district_code"
                 value={data.district_code}
-                error={!!errors.district_code} 
+                error={!!errors.district_code}
                 helperText={errors.district_code}
                 onChange={handleChange}
                 sx={field}
@@ -856,7 +863,7 @@ export default function JobForm() {
                 label="Office Level"
                 name="office_level_code"
                 value={data.office_level_code}
-                error={!!errors.office_level_code} 
+                error={!!errors.office_level_code}
                 helperText={errors.office_level_code}
                 onChange={handleChange}
                 sx={field}
@@ -877,7 +884,7 @@ export default function JobForm() {
                 label="Office"
                 name="office_code"
                 value={data.office_code}
-                error={!!errors.office_code} 
+                error={!!errors.office_code}
                 helperText={errors.office_code}
                 onChange={handleChange}
                 sx={field}
@@ -915,7 +922,7 @@ export default function JobForm() {
                 name="client_cd"
                 value={data.client_cd}
                 onChange={handleChange}
-                error={!!errors.client_cd} 
+                error={!!errors.client_cd}
                 helperText={errors.client_cd}
                 sx={field}
               >
@@ -941,7 +948,7 @@ export default function JobForm() {
                 label="Base Department"
                 name="billing_base_dept_code"
                 value={data.billing_base_dept_code}
-                error={!!errors.billing_base_dept_code} 
+                error={!!errors.billing_base_dept_code}
                 helperText={errors.billing_base_dept_code}
                 onChange={handleChange}
                 sx={field}
@@ -961,7 +968,7 @@ export default function JobForm() {
                 label="District"
                 name="billing_district_code"
                 value={data.billing_district_code}
-                error={!!errors.billing_district_code} 
+                error={!!errors.billing_district_code}
                 helperText={errors.billing_district_code}
                 onChange={handleChange}
                 sx={field}
@@ -980,7 +987,7 @@ export default function JobForm() {
                 fullWidth
                 label="Office Level"
                 name="billing_office_level_code"
-                error={!!errors.billing_office_level_code} 
+                error={!!errors.billing_office_level_code}
                 helperText={errors.billing_office_level_code}
                 value={data.billing_office_level_code}
                 onChange={handleChange}
@@ -1002,7 +1009,7 @@ export default function JobForm() {
                 label="Billing Office"
                 name="billing_office_code"
                 value={data.billing_office_code}
-                error={!!errors.billing_office_code} 
+                error={!!errors.billing_office_code}
                 helperText={errors.billing_office_code}
                 onChange={handleChange}
                 sx={field}
@@ -1041,7 +1048,7 @@ export default function JobForm() {
                 label="Officer"
                 name="billing_client_cd"
                 value={data.billing_client_cd}
-                error={!!errors.billing_client_cd} 
+                error={!!errors.billing_client_cd}
                 helperText={errors.billing_client_cd}
                 onChange={handleChange}
                 sx={field}
@@ -1113,26 +1120,26 @@ export default function JobForm() {
 
         {/* ── File Upload ── */}
         <Paper
-  elevation={0}
-  sx={{
-    p: 3,
-    mb: 3,
-    borderRadius: "14px",
-    backgroundColor: "#ffffff",
-    border: "1px solid #e8eaf0",
-  }}
->
-  <SectionHeader title="Attachment" />
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 3,
+            borderRadius: "14px",
+            backgroundColor: "#ffffff",
+            border: "1px solid #e8eaf0",
+          }}
+        >
+          <SectionHeader title="Attachment" />
 
-  {/* Existing Files */}
-  <Box>
-    <Grid item xs={12} md={6}>
-      <Box>
-        <Typography fontWeight={600} mb={1}>
-          Avak Files
+          {/* Existing Files */}
+          <Box>
+            <Grid item xs={12} md={6}>
+              <Box>
+                <Typography fontWeight={600} mb={1}>
+                  Avak Files
         </Typography>
 
-        {/* <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
+                {/* <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
           {avakFiles.length === 0 && (
             <Typography variant="caption">No files</Typography>
           )}
@@ -1179,209 +1186,209 @@ export default function JobForm() {
             );
           })}
         </Box> */}
-        {/* Existing Files + New Uploaded Preview Together */}
+                {/* Existing Files + New Uploaded Preview Together */}
 
-<Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
-  {/* Already Uploaded Files */}
-  {avakFiles.map((file) => {
-    const isImage = file.content_type?.includes("image");
-    const isPDF = file.content_type?.includes("pdf");
+                <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
+                  {/* Already Uploaded Files */}
+                  {avakFiles.map((file) => {
+                    const isImage = file.content_type?.includes("image");
+                    const isPDF = file.content_type?.includes("pdf");
 
-    const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+                    const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
 
-    return (
-      <Box
-        key={file.id}
-        onClick={() => handleOpenFile(file)}
-        sx={{
-          width: 100,
-          height: 100,
-          border: "1px solid #ddd",
-          borderRadius: 2,
-          overflow: "hidden",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#fff",
-        }}
-      >
-        {isImage ? (
-          <img
-            src={fileUrl}
-            alt="file"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+                    return (
+                      <Box
+                        key={file.id}
+                        onClick={() => handleOpenFile(file)}
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          border: "1px solid #ddd",
+                          borderRadius: 2,
+                          overflow: "hidden",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "#fff",
+                        }}
+                      >
+                        {isImage ? (
+                          <img
+                            src={fileUrl}
+                            alt="file"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : isPDF ? (
+                          <Typography variant="caption">PDF</Typography>
+                        ) : (
+                              <Typography variant="caption">FILE</Typography>
+                            )}
+                      </Box>
+                    );
+                  })}
+
+                  {/* New Uploaded File Preview */}
+                  <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
+                    {/* Existing Files */}
+                    {avakFiles.length === 0 && !data.files && (
+                      <Typography variant="caption">No files</Typography>
+                    )}
+
+                    {avakFiles.map((file) => {
+                      const isImage = file.content_type?.includes("image");
+                      const isPDF = file.content_type?.includes("pdf");
+
+                      const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+
+                      return (
+                        <Box
+                          key={file.id}
+                          onClick={() => handleOpenFile(file)}
+                          sx={{
+                            width: 100,
+                            height: 100,
+                            border: "1px solid #ddd",
+                            borderRadius: 2,
+                            overflow: "hidden",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: "#fff",
+                            "&:hover": { boxShadow: 3 },
+                          }}
+                        >
+                          {isImage ? (
+                            <img
+                              src={fileUrl}
+                              alt="file"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : isPDF ? (
+                            <Typography variant="caption">PDF</Typography>
+                          ) : (
+                                <Typography variant="caption">FILE</Typography>
+                              )}
+                        </Box>
+                      );
+                    })}
+
+                    {/* New Uploaded File Preview */}
+                    {data.files && (
+                      <Box
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          border: "2px solid #4caf50",
+                          borderRadius: 2,
+                          overflow: "hidden",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "#f9fff9",
+                        }}
+                      >
+                        {data.files?.type?.includes("image") ? (
+                          <img
+                            src={URL.createObjectURL(data.files)}
+                            alt="preview"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : data.files?.type?.includes("pdf") ? (
+                          <Typography variant="caption">NEW PDF</Typography>
+                        ) : (
+                              <Typography variant="caption">
+                                {data.files?.name || "NEW FILE"}
+                              </Typography>
+                            )}
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              </Box>
+            </Grid>
+          </Box>
+
+          {/* Upload Section */}
+          <Box
+            component="label"
+            htmlFor="file-upload"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              p: 3,
+              borderRadius: "10px",
+              border: "2px dashed #d0d4e8",
+              backgroundColor: "#f4f5f7",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                borderColor: "#5c7cfa",
+                backgroundColor: "#eef1ff",
+              },
             }}
-          />
-        ) : isPDF ? (
-          <Typography variant="caption">PDF</Typography>
-        ) : (
-          <Typography variant="caption">FILE</Typography>
-        )}
-      </Box>
-    );
-  })}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                stroke="#8a90a0"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
 
-  {/* New Uploaded File Preview */}
-  <Box display="flex" gap={2} flexWrap="wrap" sx={{ m: 1 }}>
-  {/* Existing Files */}
-  {avakFiles.length === 0 && !data.files && (
-    <Typography variant="caption">No files</Typography>
-  )}
+            {/* Show uploaded filename */}
+            <Typography
+              variant="body2"
+              sx={{
+                color: data.files ? "#2e7d32" : "#5a6072",
+                fontWeight: 600,
+              }}
+            >
+              {data.files
+                ? `Uploaded: ${data.files.name}`
+                : "Click to upload a file"}
+            </Typography>
 
-  {avakFiles.map((file) => {
-    const isImage = file.content_type?.includes("image");
-    const isPDF = file.content_type?.includes("pdf");
+            {/* Upload success text */}
+            {data.files && (
+              <Typography variant="caption" sx={{ color: "green" }}>
+                File selected successfully ✅
+              </Typography>
+            )}
 
-    const fileUrl = `http://103.79.34.50:8083/${file.file_path}`;
+            {!data.files && (
+              <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
+                Any format accepted
+              </Typography>
+            )}
 
-    return (
-      <Box
-        key={file.id}
-        onClick={() => handleOpenFile(file)}
-        sx={{
-          width: 100,
-          height: 100,
-          border: "1px solid #ddd",
-          borderRadius: 2,
-          overflow: "hidden",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#fff",
-          "&:hover": { boxShadow: 3 },
-        }}
-      >
-        {isImage ? (
-          <img
-            src={fileUrl}
-            alt="file"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-        ) : isPDF ? (
-          <Typography variant="caption">PDF</Typography>
-        ) : (
-          <Typography variant="caption">FILE</Typography>
-        )}
-      </Box>
-    );
-  })}
-
-  {/* New Uploaded File Preview */}
-  {data.files && (
-    <Box
-      sx={{
-        width: 100,
-        height: 100,
-        border: "2px solid #4caf50",
-        borderRadius: 2,
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#f9fff9",
-      }}
-    >
-      {data.files?.type?.includes("image") ? (
-        <img
-          src={URL.createObjectURL(data.files)}
-          alt="preview"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        />
-      ) : data.files?.type?.includes("pdf") ? (
-        <Typography variant="caption">NEW PDF</Typography>
-      ) : (
-        <Typography variant="caption">
-          {data.files?.name || "NEW FILE"}
-        </Typography>
-      )}
-    </Box>
-  )}
-</Box>
-</Box>
-      </Box>
-    </Grid>
-  </Box>
-
-  {/* Upload Section */}
-  <Box
-    component="label"
-    htmlFor="file-upload"
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 1,
-      p: 3,
-      borderRadius: "10px",
-      border: "2px dashed #d0d4e8",
-      backgroundColor: "#f4f5f7",
-      cursor: "pointer",
-      transition: "all 0.2s ease",
-      "&:hover": {
-        borderColor: "#5c7cfa",
-        backgroundColor: "#eef1ff",
-      },
-    }}
-  >
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
-        stroke="#8a90a0"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-
-    {/* Show uploaded filename */}
-    <Typography
-      variant="body2"
-      sx={{
-        color: data.files ? "#2e7d32" : "#5a6072",
-        fontWeight: 600,
-      }}
-    >
-      {data.files
-        ? `Uploaded: ${data.files.name}`
-        : "Click to upload a file"}
-    </Typography>
-
-    {/* Upload success text */}
-    {data.files && (
-      <Typography variant="caption" sx={{ color: "green" }}>
-        File selected successfully ✅
-      </Typography>
-    )}
-
-    {!data.files && (
-      <Typography variant="caption" sx={{ color: "#b0b5c4" }}>
-        Any format accepted
-      </Typography>
-    )}
-
-    <input
-      id="file-upload"
-      hidden
-      type="file"
-      name="files"
-      onChange={handleChange}
-    />
-  </Box>
-</Paper>
+            <input
+              id="file-upload"
+              hidden
+              type="file"
+              name="files"
+              onChange={handleChange}
+            />
+          </Box>
+        </Paper>
 
         {/* ── Submit Bar ── */}
         <Box
