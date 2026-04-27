@@ -419,6 +419,7 @@ export default function JobForm() {
       payload.append("client_cd", data.client_cd);
       payload.append("client_name", data.client_name);
       payload.append("office_address", data.office_address);
+      payload.append("billing_address", data.billing_address);
 
       payload.append("base_dept_code", data.base_dept_code || data.baseDepartment);
       payload.append("office_level_code", data.office_level_code || data.officeLevel);

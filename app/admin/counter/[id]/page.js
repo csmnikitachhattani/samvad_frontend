@@ -153,7 +153,7 @@ export default function WorkOrderForm() {
       vendorCate: "outdoor media",
       ledVehicleId: agency.vehicleId,
       VehicleNo: agency.vehicleNo,
-      description: "",
+      description: workList.find(x => x.work_cd === selectedWork)?.work,
       rate: agency.impanel_rate,
       noOfVehicle: agency.noOfVehicle || 1,
       noOfProgramme: 4,
