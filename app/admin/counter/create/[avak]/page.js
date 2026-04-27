@@ -1297,9 +1297,9 @@ export default function JobForm() {
                           background: "#f9fff9",
                         }}
                       >
-                        {data.files?.type?.includes("image") ? (
+                        {data.files[0]?.type?.includes("image") ? (
                           <img
-                            src={URL.createObjectURL(data.files)}
+                            src={URL.createObjectURL(data.files[0])}
                             alt="preview"
                             style={{
                               width: "100%",
@@ -1311,7 +1311,7 @@ export default function JobForm() {
                           <Typography variant="caption">NEW PDF</Typography>
                         ) : (
                               <Typography variant="caption">
-                                {data.files?.name || "NEW FILE"}
+                                {data.files[0]?.name || "NEW FILE"}
                               </Typography>
                             )}
                       </Box>
