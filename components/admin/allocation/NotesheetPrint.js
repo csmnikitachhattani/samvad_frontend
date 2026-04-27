@@ -280,7 +280,7 @@ export default function WorkOrder() {
             <tr>
               <th style={{ ...thStyle, width: 28 }}>S.No.</th>
               <th style={{ ...thStyle, width: 85 }}>Vehicle No</th>
-              <th style={{ ...thStyle, width: 200 }}>Subject</th>
+              <th style={{ ...thStyle, width: 200 }}>Description</th>
               <th style={{ ...thStyle, width: 80 }}>StartDate-EndDate</th>
               <th style={{ ...thStyle, width: 70 }}>Rate</th>
               <th style={{ ...thStyle, width: 70 }}>Tot. RO Amt</th>
@@ -294,6 +294,7 @@ export default function WorkOrder() {
                   <F value={r.VehicleNo ?? ""} onChange={v => updateRow(r.id, "VehicleNo", v)} />
                 </td>
                 <td style={tdStyle}>
+                  <F value={r.description ?? ""} onChange={v => updateRow(r.id, "description", v)} multiline />
                   <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
                 </td>
                 <td style={tdStyle}>
