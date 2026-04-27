@@ -120,6 +120,7 @@ export default function LoginPage() {
         localStorage.setItem('userid', res.data.result[0].userid)
         localStorage.setItem('financialYear', financialYear)
         localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
+        localStorage.setItem('sectionCd', res.data.result[0].section_cd)
         if(userType.code === "ODM"){
           //localStorage.setItem('loginusertypename', res.data.result[0].agency_id)
         localStorage.setItem('usertypecode', res.data.result[0].agency_id)
