@@ -248,6 +248,12 @@ export default function WorkOrder() {
         </div>
 
           <div style={{ borderTop: "1px solid #000", margin: "6px 0" }} />
+             {/* CLIENT NAME — uses clientName state */}
+             <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
+            <span style={{ ...s.label, whiteSpace: "nowrap" }}>Dispatch No:</span>
+           
+          </div>
+
 
           {/* CLIENT NAME — uses clientName state */}
           <div style={{ display: "flex", padding: "4px 6px", gap: 4, marginBottom: "-1px" }}>
