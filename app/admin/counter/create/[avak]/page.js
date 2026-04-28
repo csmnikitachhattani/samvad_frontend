@@ -131,6 +131,7 @@ export default function JobForm() {
   const [userId, setUserId] = useState("");
   const [user_name, setUserName] = useState("");
   const [userTypeCd, setUserTypeCd] = useState("");
+  const [sectionCd, setSectionCd] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -139,11 +140,13 @@ export default function JobForm() {
     const userIdLS = localStorage.getItem("userid");
     const userNameLS = localStorage.getItem("username");
     const userTypeCdLS = localStorage.getItem("usertypecode");
+    const sectionCdLS = localStorage.getItem("sectionCd");
 
     setFinancialYear(financialYearLS);
     setUserId(userIdLS);
     setUserName(userNameLS);
     setUserTypeCd(userTypeCdLS);
+    setSectionCd(sectionCdLS);
 
     const getIP = async () => {
       try {
@@ -439,7 +442,7 @@ export default function JobForm() {
       //payload.append("modify_by_user_type_cd", userTypeCd);
       payload.append("user_type_cd", userTypeCd);
 
-      payload.append("action_by_section_cd", '03');
+      payload.append("action_by_section_cd", sectionCd);
       payload.append("forward_to_section_cd", "04");
 
       payload.append("owner_user_type_cd", userTypeCd);
