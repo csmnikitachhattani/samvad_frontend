@@ -87,10 +87,10 @@ const DataSetUI = () => {
     return agencies.map((agency) => ({
       vendor_id: agency.vendor_id,
       vendor_name: agency.vendor_name,
-      vendor_cate_id: "7",
+      vendor_cate_id: agency.vendor_cate_id,
       vendor_cate: agency.vendor_cate,
       led_vehicle_id: String(agency.led_vehicle_id),
-      description: "",
+      description: agency.description,
       rate: agency.rate,
       no_of_vehicle: agency.no_of_vehicle,
       no_of_programme: agency.no_of_programme || 4,
