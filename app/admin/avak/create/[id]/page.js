@@ -277,6 +277,7 @@ export default function ClientAttachmentForm() {
   const [userId,        setUserId]        = useState("");
   const [user_name,     setUserName]      = useState("");
   const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [sectionCd, setSectionCd] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -285,11 +286,13 @@ export default function ClientAttachmentForm() {
     const userIdLS = localStorage.getItem("userid");
     const userNameLS = localStorage.getItem("username");
     const userTypeCdLS = localStorage.getItem("usertypecode");
+    const sectionCdLS = localStorage.getItem("sectionCd");
   
     setFinancialYear(financialYearLS);
     setUserId(userIdLS);
     setUserName(userNameLS);
     setUserTypeCd(userTypeCdLS);
+    setSectionCd(sectionCdLS)
   
     const getIP = async () => {
       try {

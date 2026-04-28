@@ -149,7 +149,7 @@ export default function WorkOrderForm() {
     return res.map((agency) => ({
       vendorId: agency.agencyId?.toString() || "",
       vendorName: agency.agency_name ,
-      vendorCateId: agency.vendorCateId,
+      vendorCateId: "08",
       vendorCate: "outdoor media",
       ledVehicleId: agency.vehicleId,
       VehicleNo: agency.vehicleNo,

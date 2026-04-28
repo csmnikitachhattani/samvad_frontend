@@ -49,6 +49,7 @@ const [financialYear, setFinancialYear] = useState("");
 const [userId, setUserId] = useState("");
 const [user_name, setUserName] = useState("");
 const [userTypeCd, setUserTypeCd] = useState("");
+const [sectionCd, setSectionCd] = useState("");
 
 useEffect(() => {
   if (typeof window === "undefined") return;
@@ -57,11 +58,13 @@ useEffect(() => {
   const userIdLS = localStorage.getItem("userid");
   const userNameLS = localStorage.getItem("username");
   const userTypeCdLS = localStorage.getItem("usertypecode");
+  const sectionCd = localStorage.getItem('sectionCd')
 
   setFinancialYear(financialYearLS);
   setUserId(userIdLS);
   setUserName(userNameLS);
   setUserTypeCd(userTypeCdLS);
+  setSectionCd(sectionCd)
 
   const getIP = async () => {
     try {
