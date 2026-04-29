@@ -161,6 +161,7 @@ export default function WorkOrderForm() {
       startDate: formData.start_date,
       endDate: formData.end_date,
       duration_text: agency.duration_text,
+      rate_type: "M",
       selected: false,
       available_status: agency.available_status
     }));
