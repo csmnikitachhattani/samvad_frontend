@@ -179,7 +179,7 @@ const clientServices = {
   getClientRequest: async(req)=>{
     const {user_id, financial_year,ref_id, category} = req
     try {
-      const res = await axiosClient.get(`/Client/getclientadvtrequests?user_id=${user_id}&financial_year=${financial_year}&action=get_by_id&ref_id=${ref_id}&category=${category}`);
+      const res = await axiosClient.get(`/Client/getclientadvtrequests?user_id=${user_id}&financial_year=${financial_year}&action=get_Workorder_Client_Detail&ref_id=${ref_id}&category=${category}`);
       return res
     }
     catch (err){

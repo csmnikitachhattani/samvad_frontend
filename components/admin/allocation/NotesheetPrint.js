@@ -16,18 +16,18 @@ const defaultRows = [
 ];
 
 export default function WorkOrder() {
-  const [regnNo]                    = useState("209");
+  const [regnNo] = useState("209");
   const [clientName, setClientName] = useState("");
-  const [subject,    setSubject]    = useState("");
-  const [clientRef,  setClientRef]  = useState("");
-  const [rows,       setRows]       = useState(defaultRows);
+  const [subject, setSubject] = useState("");
+  const [clientRef, setClientRef] = useState("");
+  const [rows, setRows] = useState(defaultRows);
   const [isDownloading, setIsDownloading] = useState(false);
   const [CGST_amount, setCGSTAmount] = useState('');
   const [SGST_amount, setSGSTAmount] = useState('');
-  const [net_amt,     setNetAmount]  = useState('');
+  const [net_amt, setNetAmount] = useState('');
 
   const searchParams = useSearchParams();
-  const job      = searchParams.get("job_id");
+  const job = searchParams.get("job_id");
   const avak_ref = searchParams.get("avak_ref");
 
   useEffect(() => {
@@ -42,9 +42,9 @@ export default function WorkOrder() {
         const data = response?.data?.data;
         if (Array.isArray(data) && data.length > 0) {
           setRows(data);
-          setClientName(data[0]?.client_name  ?? "");
-          setSubject(data[0]?.wo_subject      ?? "");
-          setClientRef(data[0]?.ref_data      ?? "");
+          setClientName(data[0]?.client_name ?? "");
+          setSubject(data[0]?.wo_subject ?? "");
+          setClientRef(data[0]?.ref_data ?? "");
           setCGSTAmount(data[0]?.CGST_amount);
           setSGSTAmount(data[0]?.SGST_amount);
           setNetAmount(data[0]?.net_amt);
@@ -83,13 +83,14 @@ export default function WorkOrder() {
    */
   const downloadPDF = async () => {
     setIsDownloading(true);
-    await new Promise(r => setTimeout(r, 120)); // wait for button to disappear from DOM
+    await new Promise((r) => setTimeout(r, 120));
 
     try {
       const element = document.getElementById("printArea");
 
-      // ── Step 1: render to high-res canvas ──────────────────────────────
+      // ── Step 1: Render full page into high quality canvas ─────────────
       const SCALE = 2;
+
       const canvas = await html2canvas(element, {
         scale: SCALE,
         useCORS: true,
@@ -97,89 +98,127 @@ export default function WorkOrder() {
         logging: false,
       });
 
-      // ── Step 2: record every row's pixel span inside the canvas ────────
-      const elRect   = element.getBoundingClientRect();
-      const allRows  = element.querySelectorAll("thead tr, tbody tr");
-      const rowBands = Array.from(allRows).map(tr => {
+      // ── Step 2: Detect table rows so rows never split between pages ────
+      const elRect = element.getBoundingClientRect();
+
+      const allRows = element.querySelectorAll("thead tr, tbody tr");
+
+      const rowBands = Array.from(allRows).map((tr) => {
         const r = tr.getBoundingClientRect();
+
         return {
-          top:    Math.floor((r.top    - elRect.top)  * SCALE),
-          bottom: Math.ceil ((r.bottom - elRect.top)  * SCALE),
+          top: Math.floor((r.top - elRect.top) * SCALE),
+          bottom: Math.ceil((r.bottom - elRect.top) * SCALE),
         };
       });
 
-      // ── Step 3: A4 geometry in canvas-pixel units ───────────────────────
-      const A4_W_MM  = 210;
-      const A4_H_MM  = 297;
-      const pxPerMm  = canvas.width / A4_W_MM;
+      // ── Step 3: A4 size in pixels ──────────────────────────────────────
+      const A4_W_MM = 210;
+      const A4_H_MM = 297;
+
+      const pxPerMm = canvas.width / A4_W_MM;
       const pageH_px = Math.floor(A4_H_MM * pxPerMm);
 
-      // ── Step 4: compute slice boundaries ───────────────────────────────
-      const slices = [];         // [{y, h}]  in canvas pixels
-      let cursor   = 0;
+      // ── Step 4: Slice pages smartly ────────────────────────────────────
+      const slices = [];
+      let cursor = 0;
 
       while (cursor < canvas.height) {
         let bottom = cursor + pageH_px;
 
         if (bottom >= canvas.height) {
-          // last (partial) page
-          slices.push({ y: cursor, h: canvas.height - cursor });
+          slices.push({
+            y: cursor,
+            h: canvas.height - cursor,
+          });
           break;
         }
 
-        // Does any row straddle this cut line?
+        // Prevent row cut
         const splitRow = rowBands.find(
-          rb => rb.top < bottom && rb.bottom > bottom
+          (rb) => rb.top < bottom && rb.bottom > bottom
         );
 
         if (splitRow) {
-          // Move cut to just before the row that would be split
           bottom = splitRow.top;
         }
 
         const h = bottom - cursor;
 
         if (h <= 0) {
-          // Safety: single row taller than a full page — include it anyway
-          const bigRow = rowBands.find(rb => rb.top === cursor) ??
-                         { bottom: cursor + pageH_px };
-          const safeH  = bigRow.bottom - cursor;
-          slices.push({ y: cursor, h: safeH });
+          const bigRow =
+            rowBands.find((rb) => rb.top === cursor) || {
+              bottom: cursor + pageH_px,
+            };
+
+          const safeH = bigRow.bottom - cursor;
+
+          slices.push({
+            y: cursor,
+            h: safeH,
+          });
+
           cursor += safeH;
           continue;
         }
 
-        slices.push({ y: cursor, h });
+        slices.push({
+          y: cursor,
+          h: h,
+        });
+
         cursor = bottom;
       }
 
-      // ── Step 5: build PDF ───────────────────────────────────────────────
+      // ── Step 5: Create PDF with margins ────────────────────────────────
       const pdf = new jsPDF("p", "mm", "a4");
 
+      const PAGE_W = 210;
+      const PAGE_H = 297;
+
       slices.forEach((slice, idx) => {
-        // Copy just this horizontal strip from the big canvas
-        const tmp    = document.createElement("canvas");
-        tmp.width    = canvas.width;
-        tmp.height   = Math.ceil(slice.h);
+        const tmp = document.createElement("canvas");
+
+        tmp.width = canvas.width;
+        tmp.height = Math.ceil(slice.h);
 
         tmp.getContext("2d").drawImage(
           canvas,
-          0,            Math.floor(slice.y),  // src x, y
-          canvas.width, Math.ceil(slice.h),   // src w, h
-          0,            0,                    // dst x, y
-          canvas.width, Math.ceil(slice.h)    // dst w, h
+          0,
+          Math.floor(slice.y),
+          canvas.width,
+          Math.ceil(slice.h),
+          0,
+          0,
+          canvas.width,
+          Math.ceil(slice.h)
         );
 
-        const imgData    = tmp.toDataURL("image/png");
-        const printedH   = slice.h / pxPerMm;   // mm on the PDF page
+        const imgData = tmp.toDataURL("image/png");
+
+        // Margins
+        const topMargin = idx === 0 ? 0 : 12; // second page onward
+        const leftRightMargin = 5;
+
+        const usableWidth = PAGE_W - leftRightMargin * 2;
+
+        const printedH = slice.h / pxPerMm;
 
         if (idx > 0) pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, 0, A4_W_MM, printedH);
+
+        pdf.addImage(
+          imgData,
+          "PNG",
+          leftRightMargin,
+          topMargin,
+          usableWidth,
+          printedH
+        );
       });
 
       pdf.save(`notesheet_${job || "file"}.pdf`);
-    } catch (err) {
-      console.error("PDF generation failed", err);
+    } catch (error) {
+      console.error("PDF generation failed:", error);
     } finally {
       setIsDownloading(false);
     }
@@ -194,16 +233,16 @@ export default function WorkOrder() {
 
   /* ── styles ── */
   const s = {
-    page:    { background: "#e8e8e8", minHeight: "100vh", padding: "40px", fontFamily: "Arial, sans-serif", fontSize: "12px" },
-    btns:    { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
-    btn:     { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
-    btnP:    { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
-    card:    { maxWidth: 650, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
-    center:  { textAlign: "center" },
-    bold:    { fontWeight: "bold" },
-    row:     { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
+    page: { background: "#e8e8e8", minHeight: "100vh", padding: "40px", fontFamily: "Arial, sans-serif", fontSize: "12px" },
+    btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
+    btn: { padding: "6px 18px", fontSize: 12, cursor: "pointer", border: "1px solid #555", borderRadius: 2, background: "#fff" },
+    btnP: { background: "#1a3a6b", color: "#fff", border: "1px solid #1a3a6b" },
+    card: { maxWidth: 650, margin: "0 auto", background: "#fff", border: "2px solid #000", padding: "20px 14px" },
+    center: { textAlign: "center" },
+    bold: { fontWeight: "bold" },
+    row: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
     hrThick: { borderTop: "2px solid #000", margin: "6px 0" },
-    label:   { fontWeight: "bold", whiteSpace: "nowrap", marginRight: 4 },
+    label: { fontWeight: "bold", whiteSpace: "nowrap", marginRight: 4 },
   };
 
   const thStyle = {
@@ -306,7 +345,14 @@ export default function WorkOrder() {
                   <Field value={r.VehicleNo ?? r.Vehicle_No ?? ""} />
                 </td>
                 <td style={tdStyle}>
-                  <Field value={r.description ?? r.wo_subject ?? ""} />
+                  {/* <Field value={r.description ?? r.wo_subject ?? ""} /> */}
+                  <Field
+                    value={(r.description ?? r.wo_subject ?? "")
+                      .replace(/<[^>]*>/g, "")      // remove html tags
+                      .replace(/&nbsp;/g, " ")      // convert nbsp
+                      .replace(/&#39;/g, "'")       // convert apostrophe
+                      .trim()}
+                  />
                   {r.Specification && (
                     <div style={{ marginTop: 2 }}>
                       <Field value={r.Specification} />
