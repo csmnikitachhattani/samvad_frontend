@@ -94,7 +94,9 @@ const CounterTable = ({ rows = [] }) => {
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => (
                                     <TableRow hover key={index}>
-                                        <TableCell>{row.job_id}</TableCell>
+                                        <TableCell>{row.job_no}
+                                        <div>{row.vendor_name}</div>
+                                        </TableCell>
 
                                         <TableCell><div>{row.client_name}</div>
                                             <div>{row.client_ref_id}</div>
@@ -104,7 +106,7 @@ const CounterTable = ({ rows = [] }) => {
                                         <TableCell>
                                             <div>Avak Id:{row.avak_ref_id}</div>
                             
-                                            <div>ref no:{row.ref_no}</div>
+                                            <div>ref no:{row.client_ref_id}</div>
                                         </TableCell>
                                         <TableCell >
                                             {row.wo_subject}

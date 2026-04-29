@@ -232,6 +232,7 @@ const AvakTable = () => {
                   <TableCell sx={{ ...bodyCell, width: 44, pl: 2 }}>
                     <Typography variant="caption" fontWeight={700} sx={{ color: "#c5cae9" }}>
                       {page * rowsPerPage + index + 1}
+                     
                     </Typography>
                   </TableCell>
 
@@ -256,8 +257,11 @@ const AvakTable = () => {
                         }} />
                       )}
                     </Box>
-                    <Typography variant="caption" sx={{ color: "#b0b5c4", fontSize: "0.7rem" }}>
-                      Recv: {fmt(row.received_date)}
+                    {/* <Typography variant="caption" sx={{ color: "#b0b5c4", fontSize: "0.7rem" }}>
+                      Recv: {row.received_date}
+                    </Typography> */}
+                    <Typography variant="caption" sx={{ color: "#b0b5c4", fontSize: "0.7rem" }} >
+                   avak no: { row.avak_ref_id}
                     </Typography>
                   </TableCell>
 
