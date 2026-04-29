@@ -405,7 +405,7 @@ export default function JobForm() {
       payload.append("is_client_dpr", data.is_client_dpr);
 
       payload.append("ref_no", data.ref_no || data.letter_no);
-      payload.append("ref_date", data.ref_date);
+      payload.append("ref_date", convertToISO(data.received_date));
       // payload.append("receipt_date", data.received_date
       // ? new Date(data.received_date).toISOString().slice(0, 10)
       // : null,);
