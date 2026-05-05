@@ -9,7 +9,13 @@ import DashboardIcon from "@mui/icons-material/Dashboard"
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
-
+  const logout = () => {
+    localStorage.clear();     // clears everything
+    sessionStorage.clear();   // optional
+  
+    //window.location.href = "/login";
+    window.location.reload();
+  };
   const isActive = (path) => pathname === path;
   const menuItems = [
     { 
@@ -119,6 +125,7 @@ export default function Sidebar() {
           fullWidth
           variant="contained"
           startIcon={<LogoutIcon />}
+          onClick={logout}
           sx={{
             bgcolor: "rgba(255, 255, 255, 0.15)",
             color: "#fff",
@@ -137,3 +144,4 @@ export default function Sidebar() {
     </Box>
   );
 }
+

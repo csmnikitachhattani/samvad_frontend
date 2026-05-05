@@ -37,7 +37,7 @@ export default function AuthGuard({ children }) {
     }
 
     // Newspaper can ONLY access /newspaper
-    if (role === "Newspaper") {
+    if (role === "News Paper") {
       if (!pathname.startsWith("/newspaper")) {
         router.replace("/newspaper");
         return;
