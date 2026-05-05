@@ -113,6 +113,16 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getAllocationRecordWorkorder: async (job_id, avakRefId, vendor_id) =>{
+    console.log("get Allocation detail")
+    try {
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getsubrecordswithtotals?avakRefId=${avakRefId}&jobNo=${job_id}&vendorId=${vendor_id}`);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   submitNotesheet: async (payload) =>{
     try {
       const res = await axiosClient.post(`/OutDoorMediaTransaction/odm-lv-notesheet-process`, payload);

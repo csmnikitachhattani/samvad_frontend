@@ -26,6 +26,7 @@ const DataSetUI = () => {
   const job_id = searchParams.get("id");
   const avak_ref = searchParams.get("avak_ref");
   const ref_id  = searchParams.get("ref_id");
+  const vendor_id  = searchParams.get("V_id");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,7 +47,7 @@ const DataSetUI = () => {
   const fetchRecords = async (jobId, avakRef) => {
     try {
       setLoading(true);
-      const response = await adminServices.getAllocationRecord(jobId, avakRef);
+      const response = await adminServices.getAllocationRecordWorkorder(jobId, avakRef, vendor_id);
       setData(response.data);
       setRecords(transformAgencyToDetails(response?.data?.records));
       setRoNoList(getUniqueRoNumbers(response?.data?.records))
@@ -103,6 +104,7 @@ const DataSetUI = () => {
       financial_year: financialYear || '2024-2025',
       ref_id: ref_id, 
       category: '08',
+      
     }
     try {
       setLoading(true);
@@ -125,12 +127,12 @@ const DataSetUI = () => {
   };
 
   useEffect(() => {
-    if (!job_id || !avak_ref || !userId || !financialYear) return;
+    if (!job_id || !avak_ref || !userId || !financialYear || !vendor_id) return;
   
-    fetchRecords(job_id, avak_ref);      // ✅ now waits
+    fetchRecords(job_id, avak_ref, vendor_id);      // ✅ now waits
     fetchClientRecords();                // ✅ already fixed
   
-  }, [job_id, avak_ref, userId, financialYear]);
+  }, [job_id, avak_ref, userId, financialYear, vendor_id]);
 
 
   // useEffect(() => {
