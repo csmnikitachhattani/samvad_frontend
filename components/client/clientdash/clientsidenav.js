@@ -11,82 +11,49 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  Avatar,
+  Typography,
+  Button,
 } from "@mui/material";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DraftsIcon from "@mui/icons-material/Drafts";
+import InboxIcon from "@mui/icons-material/Inbox";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import HeadsetMicOutlinedIcon from "@mui/icons-material/HeadsetMicOutlined";
 
 const EXPANDED_WIDTH = 260;
-const COLLAPSED_WIDTH = 56;
-
-const navItemStyle = {
-  color: "#E6EDF3",
-  fontSize: "13px",
-  borderRadius: "8px",
-  mx: 0.5,
-  my: 0.3,
-  transition: "all 0.25s ease",
-  "&:hover": {
-    backgroundColor: "rgba(255,255,255,0.08)",
-    paddingLeft: "18px",
-  },
-  "&.Mui-selected": {
-    background:
-      "linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))",
-    color: "#FFFFFF",
-    fontWeight: 600,
-    borderLeft: "3px solid #F4C430",
-  },
-  "&.Mui-selected:hover": {
-    background:
-      "linear-gradient(90deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08))",
-  },
-};
+const COLLAPSED_WIDTH = 68;
 
 const menuItems = [
-  { label: "Dashboard", path: "/newrequest" },
-  { label: "Notice Board", path: "/client/noticeboard" },
-  {
-    label: "Create New Request / Upload Your Work Order",
-    path: "/client/clientnewrequist",
-  },
-  {
-    label: "Draft Request",
-    path: "/client/forward",
-    action: "get_not_forwarded",
-  },
-  {
-    label: "Rejected List / Inbox",
-    path: "/client/forward",
-    action: "get_rejected",
-  },
-  {
-    label: "Under Processing Request",
-    path: "/client/forward",
-    action: "get_under_process",
-  },
-  {
-    label: "Accepted Request",
-    path: "/client/forward",
-    action: "get_all_accepted",
-  },
-  {
-    label: "Unaccepted Request",
-    path: "/client/forward",
-    action: "get_all_unaccepted",
-  },
-  { label: "Completed Work", path: "/Forward-Request" },
-  { label: "Report", path: "/client/report" },
-  { label: "News Paper Rate List", path: "/client/newsratelist" },
-  {
-    label: "Generated Bill List / Outstanding / Payment Details",
-    path: "/Forward-Request",
-  },
+  { label: "Dashboard", path: "/newrequest", icon: <DashboardIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Notice Board", path: "/client/noticeboard", icon: <AnnouncementIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Create New Request / Upload Your Work Order", path: "/client/clientnewrequist", icon: <AddCircleOutlineIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Draft Request", path: "/client/forward", action: "get_not_forwarded", icon: <DraftsIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Rejected List / Inbox", path: "/client/forward", action: "get_rejected", icon: <InboxIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Under Processing Request", path: "/client/forward", action: "get_under_process", icon: <HourglassEmptyIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Accepted Request", path: "/client/forward", action: "get_all_accepted", icon: <CheckCircleOutlineIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Unaccepted Request", path: "/client/forward", action: "get_all_unaccepted", icon: <CancelOutlinedIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Completed Work", path: "/Forward-Request", icon: <TaskAltIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Report", path: "/client/report", icon: <BarChartIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "News Paper Rate List", path: "/client/newsratelist", icon: <NewspaperIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Generated Bill List / Outstanding / Payment Details", path: "/Forward-Request", icon: <ReceiptLongIcon sx={{ fontSize: "1.2rem" }} /> },
 ];
 
 const footerItems = [
-  { label: "About Us", path: "/aboutus" },
-  { label: "Help Desk", path: "/helpdesk" },
+  { label: "About Us", path: "/aboutus", icon: <InfoOutlinedIcon sx={{ fontSize: "1.2rem" }} /> },
+  { label: "Help Desk", path: "/helpdesk", icon: <HeadsetMicOutlinedIcon sx={{ fontSize: "1.2rem" }} /> },
 ];
 
 const ClientSideNav = () => {
@@ -96,17 +63,68 @@ const ClientSideNav = () => {
   const router = useRouter();
 
   const isActive = (path, action) => {
-    if (action) {
-      return pathname === path && searchParams.get("action") === action;
-    }
+    if (action) return pathname === path && searchParams.get("action") === action;
     return pathname === path;
   };
 
   const handleLogout = () => {
-    // Clear your auth tokens/session here
     localStorage.removeItem("token");
     sessionStorage.clear();
     router.push("/login");
+  };
+
+  const NavItem = ({ item }) => {
+    const href = item.action ? `${item.path}?action=${item.action}` : item.path;
+    const active = isActive(item.path, item.action);
+
+    return (
+      <Tooltip title={isCollapsed ? item.label : ""} placement="right">
+        <ListItemButton
+          component={Link}
+          href={href}
+          sx={{
+            borderRadius: "12px",
+            mb: 0.5,
+            py: 1,
+            px: 1.2,
+            gap: 1.5,
+            justifyContent: isCollapsed ? "center" : "flex-start",
+            bgcolor: active ? "rgba(255,255,255,0.18)" : "transparent",
+            border: active ? "1px solid rgba(255,255,255,0.35)" : "1px solid transparent",
+            color: active ? "#FFFFFF" : "#CBD5E1",
+            transition: "all 0.25s ease",
+            "&:hover": {
+              bgcolor: "rgba(255,255,255,0.12)",
+              transform: "translateX(4px)",
+              color: "#FFFFFF",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: active ? "#F4C430" : "inherit",
+              minWidth: 0,
+              flexShrink: 0,
+            }}
+          >
+            {item.icon}
+          </Box>
+          {!isCollapsed && (
+            <ListItemText
+              primary={item.label}
+              primaryTypographyProps={{
+                fontSize: "0.75rem",
+                fontWeight: active ? 700 : 500,
+                letterSpacing: "0.2px",
+                lineHeight: 1.4,
+              }}
+            />
+          )}
+        </ListItemButton>
+      </Tooltip>
+    );
   };
 
   return (
@@ -121,24 +139,80 @@ const ClientSideNav = () => {
         flexDirection: "column",
         overflow: "hidden",
         boxShadow: "4px 0 12px rgba(0,0,0,0.35)",
+        p: 1.5,
+        fontFamily: "'Inter', 'Segoe UI', 'Roboto', sans-serif",
       }}
     >
-      {/* Toggle Button */}
+      {/* ── Avatar Header ── */}
+      {!isCollapsed && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mb: 2,
+            pb: 2,
+            borderBottom: "1px solid rgba(255,255,255,0.15)",
+            flexShrink: 0,
+          }}
+        >
+          <Avatar
+            sx={{
+              width: 68,
+              height: 68,
+              mb: 1.2,
+              bgcolor: "rgba(255,255,255,0.15)",
+              border: "3px solid rgba(255,255,255,0.35)",
+              fontSize: "1.6rem",
+              fontWeight: 700,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+            }}
+          >
+            CL
+          </Avatar>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 700, fontSize: "1rem", color: "#FFFFFF", textAlign: "center", mb: 0.3 }}
+          >
+            Client Portal
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.65)", textAlign: "center" }}
+          >
+            Client Dashboard
+          </Typography>
+        </Box>
+      )}
+
+      {/* ── Collapsed Avatar ── */}
+      {isCollapsed && (
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 1.5, flexShrink: 0 }}>
+          <Avatar
+            sx={{
+              width: 40,
+              height: 40,
+              bgcolor: "rgba(255,255,255,0.15)",
+              border: "2px solid rgba(255,255,255,0.35)",
+              fontSize: "1rem",
+              fontWeight: 700,
+            }}
+          >
+            CL
+          </Avatar>
+        </Box>
+      )}
+
+      {/* ── Toggle Button ── */}
       <Box
         sx={{
           display: "flex",
           justifyContent: isCollapsed ? "center" : "flex-end",
-          px: isCollapsed ? 0 : 1,
-          pt: 1,
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
+          mb: 1,
+          flexShrink: 0,
         }}
       >
-        <Tooltip
-          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          placement="right"
-        >
+        <Tooltip title={isCollapsed ? "Expand" : "Collapse"} placement="right">
           <IconButton
             onClick={() => setIsCollapsed((prev) => !prev)}
             size="small"
@@ -152,97 +226,84 @@ const ClientSideNav = () => {
         </Tooltip>
       </Box>
 
-      {/* Nav Items */}
-      <Box sx={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-        <List disablePadding sx={{ p: 1 }}>
-          {menuItems.map((item, index) => {
-            const href = item.action
-              ? `${item.path}?action=${item.action}`
-              : item.path;
+      {/* ── Scrollable Nav List ── */}
+      <Box
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
+          "&::-webkit-scrollbar": { width: 4 },
+          "&::-webkit-scrollbar-track": { background: "transparent" },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(255,255,255,0.2)",
+            borderRadius: 4,
+          },
+        }}
+      >
+        <List disablePadding>
+          {menuItems.map((item, index) => (
+            <NavItem key={index} item={item} />
+          ))}
 
-            return (
-              <ListItemButton
-                key={index}
-                component={Link}
-                href={href}
-                selected={isActive(item.path, item.action)}
-                sx={navItemStyle}
-              >
-                {!isCollapsed && (
-                  <ListItemText
-                    primary={item.label}
-                    primaryTypographyProps={{
-                      fontSize: "13px",
-                      letterSpacing: "0.3px",
-                      lineHeight: 1.4,
-                    }}
-                  />
-                )}
-              </ListItemButton>
-            );
-          })}
-
-          <Divider sx={{ my: 1.5, borderColor: "rgba(255,255,255,0.15)" }} />
+          <Divider sx={{ my: 1.5, borderColor: "rgba(255,255,255,0.12)" }} />
 
           {footerItems.map((item, index) => (
-            <ListItemButton
-              key={index}
-              component={Link}
-              href={item.path}
-              selected={isActive(item.path)}
-              sx={navItemStyle}
-            >
-              {!isCollapsed && (
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{
-                    fontSize: "13px",
-                    letterSpacing: "0.3px",
-                  }}
-                />
-              )}
-            </ListItemButton>
+            <NavItem key={index} item={item} />
           ))}
         </List>
       </Box>
 
-      {/* Logout Button — pinned to bottom */}
-      <Box
-        sx={{
-          p: 1,
-          borderTop: "1px solid rgba(255,255,255,0.12)",
-        }}
-      >
-        <Tooltip title="Logout" placement="right">
-          <ListItemButton
+      {/* ── Logout — pinned bottom ── */}
+      <Box sx={{ flexShrink: 0, mt: 1 }}>
+        <Divider sx={{ bgcolor: "rgba(255,255,255,0.15)", mb: 1.5 }} />
+        {isCollapsed ? (
+          <Tooltip title="Logout" placement="right">
+            <IconButton
+              onClick={handleLogout}
+              sx={{
+                width: "100%",
+                borderRadius: "12px",
+                py: 1,
+                color: "#FF6B6B",
+                border: "1px solid rgba(255,107,107,0.3)",
+                "&:hover": {
+                  bgcolor: "rgba(255,107,107,0.12)",
+                  transform: "translateY(-2px)",
+                },
+                transition: "all 0.25s ease",
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Button
+            fullWidth
+            variant="contained"
+            startIcon={<LogoutIcon />}
             onClick={handleLogout}
             sx={{
-              ...navItemStyle,
+              bgcolor: "rgba(255,107,107,0.15)",
               color: "#FF6B6B",
-              borderRadius: "8px",
-              justifyContent: isCollapsed ? "center" : "flex-start",
+              borderRadius: "12px",
+              py: 1,
+              fontWeight: 600,
+              textTransform: "none",
+              fontSize: "0.88rem",
+              border: "1px solid rgba(255,107,107,0.35)",
+              boxShadow: "none",
               "&:hover": {
-                backgroundColor: "rgba(255,107,107,0.12)",
-                paddingLeft: isCollapsed ? undefined : "18px",
+                bgcolor: "rgba(255,107,107,0.25)",
+                boxShadow: "none",
+                transform: "translateY(-2px)",
               },
+              transition: "all 0.25s ease",
             }}
           >
-            <LogoutIcon fontSize="small" />
-            {!isCollapsed && (
-              <ListItemText
-                primary="Logout"
-                primaryTypographyProps={{
-                  fontSize: "13px",
-                  letterSpacing: "0.3px",
-                  ml: 1.5,
-                  color: "#FF6B6B",
-                  fontWeight: 500,
-                }}
-                sx={{ ml: 1.5 }}
-              />
-            )}
-          </ListItemButton>
-        </Tooltip>
+            Logout
+          </Button>
+        )}
       </Box>
     </Box>
   );
