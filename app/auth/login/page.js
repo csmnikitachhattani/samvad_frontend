@@ -116,24 +116,24 @@ export default function LoginPage() {
       if (res.data?.status == 200) {
         // ✅ CHECK LOGIN PATH (DEBUG)
         localStorage.setItem('username', res.data.result[0].username)
-        
+
         localStorage.setItem('userid', res.data.result[0].userid)
         localStorage.setItem('financialYear', financialYear)
         localStorage.setItem('loginusertypename', res.data.result[0].loginusertypename)
         localStorage.setItem('sectionCd', res.data.result[0].section_cd)
-        if(userType.code === "ODM"){
+        if (userType.code === "ODM") {
           //localStorage.setItem('loginusertypename', res.data.result[0].agency_id)
-        localStorage.setItem('usertypecode', res.data.result[0].agency_id)
+          localStorage.setItem('usertypecode', res.data.result[0].agency_id)
 
         }
-        else{
+        else {
           localStorage.setItem('usertypecode', res.data.result[0].usertypecode)
         }
 
         if (userType.code === "CLNT") {
           router.push("/client");
         }
-        else  if (userType.code === "ODM") {
+        else if (userType.code === "ODM") {
           router.push("/outdoor");
         }
         else {
