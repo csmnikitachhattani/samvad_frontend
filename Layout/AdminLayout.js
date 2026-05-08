@@ -9,14 +9,14 @@ export default function AdminLayout({ children }) {
     <Box sx={{ display: "flex", height: "100vh", bgcolor: "#F8FAFC" }}>
       {/* Sidebar Panel (Fixed Width) */}
       <Box
-        sx={{
-          width: 260,
-          flexShrink: 0,
-          color: "#fff",
-          background: "#030236",
-          display: "flex",
-          flexDirection: "column",
-        }}
+        // sx={{
+        //   width: 260,
+        //   flexShrink: 0,
+        //   color: "#fff",
+        //   background: "#030236",
+        //   display: "flex",
+        //   flexDirection: "column",
+        // }}
       >
         <Sidebar />
       </Box>

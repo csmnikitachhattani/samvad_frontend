@@ -67,11 +67,18 @@ const ClientSideNav = () => {
     return pathname === path;
   };
 
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   sessionStorage.clear();
+  //   router.push("/login");
+  // };
+  
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.clear();
     sessionStorage.clear();
-    router.push("/login");
+    window.location.reload();
   };
+
 
   const NavItem = ({ item }) => {
     const href = item.action ? `${item.path}?action=${item.action}` : item.path;
