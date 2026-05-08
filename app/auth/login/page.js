@@ -136,6 +136,9 @@ export default function LoginPage() {
         else if (userType.code === "ODM") {
           router.push("/outdoor");
         }
+        else if (userType.code === "NP") {
+          router.push("/newspaper");
+        }
         else {
           router.push("/admin");
         }
