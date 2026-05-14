@@ -339,8 +339,10 @@ export default function WorkOrderForm() {
       agencyID: formData.vendor_id.toString(),
       work_cd: formData.work_list_id || selectedWork,
       fromDate: formatDateSimple(formData.start_date),
+
       toDate: formatDateSimple(formData.end_date)
     }
+    console.log("geeting this",calculateEndDate(formData?.start_date, formData.multiply_value))
     try {
       const response = await adminServices.getAllocationList(payload);
       //setHoardingRates(response.data.data);
@@ -477,24 +479,46 @@ export default function WorkOrderForm() {
 
 
   const handleVehicleChange = (vehicleId, field, value) => {
+    console.log("rjfj")
     setSelectedVehicles((prev) =>
       prev.map((row) => (row.ledVehicleId === vehicleId ? { ...row, [field]: value } : row))
     );
   };
+  // function calculateEndDate(startDate, duration) {
+  //   const date = new Date(startDate) || formData.start_date;
+
+
+  //   if (rateType === "M") {
+  //     date.setMonth(date.getMonth() + duration);
+  //   } else if (rateType === "D") {
+  //     date.setDate(date.getDate() + duration);
+  //   }
+
+  //   // subtract 1 day
+  //   date.setDate(date.getDate() - 1);
+
+  //   return date;
+  // }
   function calculateEndDate(startDate, duration) {
-    const date = new Date(startDate) || formData.start_date;
-
-
+    // Bug 1 fix: parse "2026-9-1" safely without relying on new Date(string)
+    const [year, month, day] = (startDate || formData.start_date)
+      .split("-")
+      .map(Number);
+  
+    const date = new Date(year, month - 1, day); // month is 0-indexed
+  
+    // Bug 2 fix: force duration to a number
+    const durationNum = Number(duration);
+  
     if (rateType === "M") {
-      date.setMonth(date.getMonth() + duration);
+      date.setMonth(date.getMonth() + durationNum); // 8 + 6 = 14 → Feb 2027 ✓
     } else if (rateType === "D") {
-      date.setDate(date.getDate() + duration);
+      date.setDate(date.getDate() + durationNum);
     }
-
-    // subtract 1 day
-    date.setDate(date.getDate() - 1);
-
-    return date;
+  
+    date.setDate(date.getDate() - 1); // subtract 1 day
+  
+    return date; // Feb 28, 2027 ✓
   }
 
 
