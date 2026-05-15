@@ -98,22 +98,25 @@ const AdvtDownloadTable = ({ rows = [] }) => {
 
     const [userId, setUserId] = useState("");
     const [userName, setUserName] = useState("");
+    const [financialYear, setFinancialYear] = useState("")
     const [ipAddress, setIpAddress] = useState("");
 
     useEffect(() => {
         if (typeof window === "undefined") return;
         setUserId(localStorage.getItem("userid") || "");
         setUserName(localStorage.getItem("username") || "");
+        setFinancialYear(localStorage.getItem("financialYear") || "");
+
 
         fetch("https://api.ipify.org?format=json")
             .then((r) => r.json())
             .then((d) => setIpAddress(d.ip))
             .catch(() => {});
-    }, []);
+    // }, []);
 
-    useEffect(() => {
+    // useEffect(() => {
         adminServices
-            .getcounter()
+            .getcounter(financialYear || localStorage.getItem("financialYear"))
             .then((res) => setData(res || []))
             .catch((err) => console.error("Failed to fetch counters", err));
     }, []);
