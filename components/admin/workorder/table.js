@@ -29,8 +29,28 @@ const CounterTable = ({ rows = [] }) => {
     const [search, setSearch] = useState("");
     const [data, setData] = useState([]);
     const filteredRows = data
+
+    const [userId, setUserId] = useState("");
+    const [userName, setUserName] = useState("");
+    const [financialYear, setFinancialYear] = useState("")
+    const [ipAddress, setIpAddress] = useState("");
+
     useEffect(() => {
-        async function fetchCounters() {
+        if (typeof window === "undefined") return;
+        setUserId(localStorage.getItem("userid") || "");
+        setUserName(localStorage.getItem("username") || "");
+        setFinancialYear(localStorage.getItem("financialYear") || "");
+
+
+        fetch("https://api.ipify.org?format=json")
+            .then((r) => r.json())
+            .then((d) => setIpAddress(d.ip))
+            .catch(() => {});
+    // }, []);
+
+    // useEffect(() => {
+        let fin_year = localStorage.getItem("financialYear")
+        async function fetchCounters(fin_year) {
             try {
                 const response = await adminServices.getWorkorders();
                 setData(response.data || []);
