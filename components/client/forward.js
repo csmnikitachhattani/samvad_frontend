@@ -344,7 +344,7 @@ const handleForward = async (row) => {
           user_id: user_id,
           user_name: user_name,
           action: "get_by_id",
-          category: "02", // Important (was missing earlier)
+          category: "08", // Important (was missing earlier)
           // category: ref_Category_Id , // fallback to 02 if not available
           ip_address: userIP,
         },

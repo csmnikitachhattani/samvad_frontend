@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-import NewsRateList from "@/components/client/forward";
+import Forward from "@/components/client/forward";
 
 import { Box, Divider } from "@mui/material";
 
@@ -11,7 +11,7 @@ function forward() {
   return (
     <Box>
       <Box>
-        < NewsRateList/>
+        <Forward />
       </Box>
     </Box>
   );

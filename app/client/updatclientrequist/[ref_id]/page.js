@@ -485,7 +485,8 @@ const NP = [
 ];
 
 /* ─────────────────────────────────────────────────────────────────────────── */
-export default function UpdateClientRequestForm({ userId = "00100", financialYear = "2024-2025" }) {
+export default function UpdateClientRequestForm() {
+
   const params = useParams();
   const ref_id = params?.ref_id;
   const category=params?.category;
@@ -507,13 +508,53 @@ export default function UpdateClientRequestForm({ userId = "00100", financialYea
     clientSnoKey: "", clientCd: "",
   });
 
+  const [financialYear, setFinancialYear] = useState("");
+  const [userId,        setUserId]        = useState("");
+  const [user_name,     setUserName]      = useState("");
+  const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [sectionCd, setSectionCd] = useState("");
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
+  
+    const financialYearLS = localStorage.getItem("financialYear");
+    const userIdLS = localStorage.getItem("userid");
+    const userNameLS = localStorage.getItem("username");
+    const userTypeCdLS = localStorage.getItem("usertypecode");
+    const sectionCdLS = localStorage.getItem("sectionCd");
+  
+    setFinancialYear(financialYearLS);
+    setUserId(userIdLS);
+    setUserName(userNameLS);
+    setUserTypeCd(userTypeCdLS);
+    setSectionCd(sectionCdLS)
+  
+    const getIP = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        setFormData(p => ({ ...p, ip_address: data.ip }));
+      } catch {
+        console.error("IP fetch failed");
+      }
+    };
+  // }, []);
+
+
+  // useEffect(() => {
     if (!ref_id) return;
     (async () => {
       try {
         const res = await axios.get(
           "http://103.79.34.50:8083/api/Client/getclientadvtrequests",
-          { params: { user_id: userId, financial_year: financialYear, action: "get_by_id", ref_id, category:"02" } }
+          { params: 
+            { 
+              user_id: localStorage.getItem("userid"), 
+              financial_year: localStorage.getItem("financialYear"), 
+              action: "get_by_id", 
+              ref_id, 
+              category:"08" 
+            } }
         );
         if (res.data?.message !== "Success") { alert(res.data?.message || "Fetch failed"); return; }
         const d = res.data?.data?.[0];
