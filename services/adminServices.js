@@ -49,6 +49,17 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getBuscounter: async () => {
+    console.log("RUNNING THID")
+
+    try {
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getoutdoorbuscounter`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   getWorkorders: async (financial_year) => {
     console.log(financial_year)
     try {
