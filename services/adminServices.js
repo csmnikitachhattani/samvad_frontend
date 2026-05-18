@@ -49,9 +49,10 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
-  getWorkorders: async () => {
+  getWorkorders: async (financial_year) => {
+    console.log(financial_year)
     try {
-      const res = await axiosClient.get("/OutDoorMediaTransaction/odm_lv_pending-ro-list");
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/odm_lv_pending-ro-list?financial_year=${financial_year}`);
       return res.data;
     } catch (err) {
       console.log("answer")
