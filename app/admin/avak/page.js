@@ -95,23 +95,23 @@ const AvakTable = () => {
   const [loading, setLoading] = useState(true);
 
   const [financialYear, setFinancialYear] = useState("");
-  const [userId,        setUserId]        = useState("");
-  const [user_name,     setUserName]      = useState("");
-  const [userTypeCd,   setUserTypeCd]      = useState("");
+  const [userId, setUserId] = useState("");
+  const [user_name, setUserName] = useState("");
+  const [userTypeCd, setUserTypeCd] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-  
+
     const financialYearLS = localStorage.getItem("financialYear");
     const userIdLS = localStorage.getItem("userid");
     const userNameLS = localStorage.getItem("username");
     const userTypeCdLS = localStorage.getItem("usertypecode");
-  
+
     setFinancialYear(financialYearLS);
     setUserId(userIdLS);
     setUserName(userNameLS);
     setUserTypeCd(userTypeCdLS);
-  
+
     const getIP = async () => {
       try {
         const res = await fetch("https://api.ipify.org?format=json");
@@ -126,8 +126,8 @@ const AvakTable = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const payload ={
-        fin_year : financialYear || localStorage.getItem("financialYear"),
+      const payload = {
+        fin_year: financialYear || localStorage.getItem("financialYear"),
         datatype: "AvakList",
         userId: localStorage.getItem("userid")
       }
@@ -149,10 +149,10 @@ const AvakTable = () => {
     const term = search.toLowerCase();
     if (!term) return data;
     return data.filter((row) =>
-      (row.letter_no     || "").toLowerCase().includes(term) ||
-      (row.client_name   || "").toLowerCase().includes(term) ||
-      (row.district      || "").toLowerCase().includes(term) ||
-      (row.subject       || "").toLowerCase().includes(term)
+      (row.letter_no || "").toLowerCase().includes(term) ||
+      (row.client_name || "").toLowerCase().includes(term) ||
+      (row.district || "").toLowerCase().includes(term) ||
+      (row.subject || "").toLowerCase().includes(term)
     );
   }, [data, search]);
 
@@ -178,8 +178,8 @@ const AvakTable = () => {
             boxShadow: "0 3px 10px rgba(1,10,42,0.25)",
           }}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M14 2v6h6M16 13H8M16 17H8" stroke="white" strokeWidth="1.7" strokeLinecap="round"/>
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M14 2v6h6M16 13H8M16 17H8" stroke="white" strokeWidth="1.7" strokeLinecap="round" />
             </svg>
           </Box>
           <Box>
@@ -232,7 +232,7 @@ const AvakTable = () => {
                   <TableCell sx={{ ...bodyCell, width: 44, pl: 2 }}>
                     <Typography variant="caption" fontWeight={700} sx={{ color: "#c5cae9" }}>
                       {page * rowsPerPage + index + 1}
-                     
+
                     </Typography>
                   </TableCell>
 
@@ -261,7 +261,7 @@ const AvakTable = () => {
                       Recv: {row.received_date}
                     </Typography> */}
                     <Typography variant="caption" sx={{ color: "#b0b5c4", fontSize: "0.7rem" }} >
-                   avak no: { row.avak_ref_id}
+                      avak no: {row.avak_ref_id}
                     </Typography>
                   </TableCell>
 
@@ -305,7 +305,7 @@ const AvakTable = () => {
                   {/* Dates */}
                   <TableCell sx={{ ...bodyCell, minWidth: 120 }}>
                     {/* <LabelVal label="Pub" value={fmt(row.caption_publish_date)} /> */}
-                    <LabelVal label="Pub" value={row.caption_publish_date} /> 
+                    <LabelVal label="Pub" value={row.caption_publish_date} />
                     <LabelVal label="Rcv" value={row.received_date} />
                   </TableCell>
 
@@ -317,11 +317,25 @@ const AvakTable = () => {
                         onClick={() => dispatch(toggleModal({ show: true, ref_id: row.avak_ref_id }))}>
                         Forward
                       </Button>
-                      <Button size="small" variant="contained"
-                        sx={actionBtn("#10b981", "#ecfdf5")}
-                        onClick={() => router.push(`/admin/counter/create/${row.avak_ref_id}`)}>
-                        Process
-                      </Button>
+                      {row.cat_text === "Bus" ? (
+                        <Button
+                          size="small"
+                          variant="contained"
+                          sx={actionBtn("#10b981", "#ecfdf5")}
+                          onClick={() => router.push(`/admin/counter/create/bus/${row.avak_ref_id}`)}
+                        >
+                          Process Bus
+                        </Button>
+                      ) : (
+                          <Button
+                            size="small"
+                            variant="contained"
+                            sx={actionBtn("#10b981", "#ecfdf5")}
+                            onClick={() => router.push(`/admin/counter/create/${row.avak_ref_id}`)}
+                          >
+                            Process
+                          </Button>
+                        )}
                       {/* <Button size="small" variant="contained"
                         sx={actionBtn("#ef4444", "#fef2f2")}>
                         Delete
@@ -332,19 +346,19 @@ const AvakTable = () => {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 6, border: "none" }}>
-                  <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
-                    <Box sx={{ width: 48, height: 48, borderRadius: "12px", backgroundColor: "#f3f4f8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <SearchIcon sx={{ fontSize: 24, color: "#c4c9d8" }} />
-                    </Box>
-                    <Typography variant="body2" fontWeight={600} sx={{ color: "#6b7280" }}>
-                      {search ? `No results for "${search}"` : "No records found"}
-                    </Typography>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            )}
+                  <TableRow>
+                    <TableCell colSpan={7} align="center" sx={{ py: 6, border: "none" }}>
+                      <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
+                        <Box sx={{ width: 48, height: 48, borderRadius: "12px", backgroundColor: "#f3f4f8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <SearchIcon sx={{ fontSize: 24, color: "#c4c9d8" }} />
+                        </Box>
+                        <Typography variant="body2" fontWeight={600} sx={{ color: "#6b7280" }}>
+                          {search ? `No results for "${search}"` : "No records found"}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                )}
           </TableBody>
         </Table>
       </TableContainer>

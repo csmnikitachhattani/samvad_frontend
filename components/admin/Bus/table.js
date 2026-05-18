@@ -384,7 +384,7 @@ const BusTable = () => {
           <Button
             variant="contained"
             size="small"
-            onClick={() => router.push("/admin/bus/new")}
+            onClick={() => router.push("/admin/bus/create")}
             sx={{
               borderRadius: "10px",
               textTransform: "none",
