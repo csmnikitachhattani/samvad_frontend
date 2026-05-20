@@ -97,7 +97,6 @@ const CounterTable = ({ rows = [] }) => {
                             <TableCell><b>Client</b></TableCell>
                             <TableCell><b>Avak/ref Id</b></TableCell>
                             <TableCell><b>Subject</b></TableCell>
-
                             <TableCell align="center"><b>WO Date</b></TableCell>
                             {/* <TableCell align="center"><b>Status</b></TableCell> */}
                             {/* <TableCell><b>Start - End Date</b></TableCell> */}
