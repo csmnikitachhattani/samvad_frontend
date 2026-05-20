@@ -148,14 +148,14 @@ function MetaPill({ label, value }) {
         backgroundColor: tokens.gray100,
         border: `1px solid ${tokens.gray200}`,
         borderRadius: "6px",
-        px: "1px",
+        px: 1.25,
         py: "4px",
       }}
     >
       <Typography sx={{ color: tokens.gray400, fontSize: "10px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>
         {label}
       </Typography>
-      <Box sx={{ width: "1px", height: "20px", background: tokens.gray200 }} />
+      <Box sx={{ width: "1px", height: "10px", background: tokens.gray200 }} />
       <Typography sx={{ color: tokens.navy, fontWeight: 700, fontSize: "10px" }}>
         {value || "—"}
       </Typography>
@@ -198,10 +198,10 @@ export default function WorkOrderForm() {
   const [vendors, setVendors] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const defaultPositions = () => ({
-    Left:   { enabled: false, L: "29", W: "3" },
-    Right:  { enabled: false, L: "30", W: "3" },
-    Corner: { enabled: false, L: "20", W: "3" },
-    Back:   { enabled: false, L: "3.5", W: "3" },
+    Left:   { enabled: false, L: "", W: "" },
+    Right:  { enabled: false, L: "", W: "" },
+    Corner: { enabled: false, L: "", W: "" },
+    Back:   { enabled: false, L: "", W: "" },
   });
   const [selectedVehicles, setSelectedVehicles] = useState([
     { ledVehicleId: "V001", VehicleNo: "TS 09 PA 1234", vendorName: "Hyderabad Outdoor Ads", duration_text: "1 Month", rate: 18000, totalRate: 18000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
@@ -1239,122 +1239,216 @@ export default function WorkOrderForm() {
                           "& td": { borderBottom: `1px solid ${isUnavailable ? "rgba(255,255,255,0.06)" : tokens.gray200}` },
                         }}
                       >
-                        <TableCell colSpan={9} sx={{ py: 1.25, px: 2 }}>
-                          <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
-                            {/* Label */}
-                            <Typography sx={{ fontSize: "0.68rem", fontWeight: 700, color: isUnavailable ? "rgba(255,255,255,0.25)" : tokens.gray400, textTransform: "uppercase", letterSpacing: "0.07em", flexShrink: 0 }}>
-                              Positions
-                            </Typography>
+                        <TableCell colSpan={9} sx={{ py: 1.5, px: 2 }}>
+                          <Box display="flex" alignItems="flex-start" gap={2}>
 
-                            {/* 4 position blocks */}
-                            {positionKeys.map((posKey) => {
-                              const pos = positions[posKey] || { enabled: false, L: "", W: "" };
-                              const colors = posColors[posKey];
-                              const isActive = pos.enabled;
-                              const dimText = pos.L && pos.W ? `${pos.L}×${pos.W}` : pos.L ? `${pos.L}×?` : "";
+                            {/* ── Bus Top-View Diagram ── */}
+                            <Box sx={{ flexShrink: 0 }}>
+                              {(() => {
+                                const leftOn   = positions["Left"]?.enabled;
+                                const rightOn  = positions["Right"]?.enabled;
+                                const cornerOn = positions["Corner"]?.enabled;
+                                const backOn   = positions["Back"]?.enabled;
+                                const RED      = "#e84545";
+                                const REDFILL  = "#fde8e8";
+                                const inStroke = isUnavailable ? "rgba(255,255,255,0.15)" : "#c8cde0";
+                                const inFill   = isUnavailable ? "rgba(255,255,255,0.03)" : "#eef0f8";
+                                const bodyFill = isUnavailable ? "rgba(255,255,255,0.05)" : "#e2e6f2";
+                                const bodyStroke = isUnavailable ? "rgba(255,255,255,0.1)" : "#b0b8d0";
+                                const lbl      = isUnavailable ? "rgba(255,255,255,0.22)" : "#9aa0b8";
+                                return (
+                                  <svg width="96" height="68" viewBox="0 0 96 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    {/* Bus body */}
+                                    <rect x="18" y="10" width="60" height="48" rx="5" fill={bodyFill} stroke={bodyStroke} strokeWidth="1.2"/>
 
-                              return (
-                                <Box
-                                  key={posKey}
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 0,
-                                    border: "1.5px solid",
-                                    borderColor: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.1)" : colors.border,
-                                    borderRadius: "8px",
-                                    overflow: "hidden",
-                                    background: isActive ? colors.bg : isUnavailable ? "rgba(255,255,255,0.04)" : tokens.white,
-                                    transition: "all 0.15s ease",
-                                    flexShrink: 0,
-                                  }}
-                                >
-                                  {/* Position label chip / toggle */}
+                                    {/* LEFT panel */}
+                                    <rect x="8" y="14" width="10" height="40" rx="2.5"
+                                      fill={leftOn ? REDFILL : inFill}
+                                      stroke={leftOn ? RED : inStroke}
+                                      strokeWidth={leftOn ? 1.8 : 1}
+                                    />
+                                    {leftOn && <rect x="8" y="14" width="10" height="40" rx="2.5" fill={RED} fillOpacity="0.12"/>}
+                                    <text x="13" y="36" textAnchor="middle" fontSize="5" fill={leftOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">L</text>
+
+                                    {/* RIGHT panel */}
+                                    <rect x="78" y="14" width="10" height="40" rx="2.5"
+                                      fill={rightOn ? REDFILL : inFill}
+                                      stroke={rightOn ? RED : inStroke}
+                                      strokeWidth={rightOn ? 1.8 : 1}
+                                    />
+                                    {rightOn && <rect x="78" y="14" width="10" height="40" rx="2.5" fill={RED} fillOpacity="0.12"/>}
+                                    <text x="83" y="36" textAnchor="middle" fontSize="5" fill={rightOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">R</text>
+
+                                    {/* BACK panel */}
+                                    <rect x="22" y="58" width="52" height="9" rx="2.5"
+                                      fill={backOn ? REDFILL : inFill}
+                                      stroke={backOn ? RED : inStroke}
+                                      strokeWidth={backOn ? 1.8 : 1}
+                                    />
+                                    {backOn && <rect x="22" y="58" width="52" height="9" rx="2.5" fill={RED} fillOpacity="0.12"/>}
+                                    <text x="48" y="64.5" textAnchor="middle" fontSize="4.5" fill={backOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">BACK</text>
+
+                                    {/* CORNER — front-left + front-right */}
+                                    <rect x="18" y="1" width="14" height="10" rx="2.5"
+                                      fill={cornerOn ? REDFILL : inFill}
+                                      stroke={cornerOn ? RED : inStroke}
+                                      strokeWidth={cornerOn ? 1.8 : 1}
+                                    />
+                                    {cornerOn && <rect x="18" y="1" width="14" height="10" rx="2.5" fill={RED} fillOpacity="0.12"/>}
+                                    <rect x="64" y="1" width="14" height="10" rx="2.5"
+                                      fill={cornerOn ? REDFILL : inFill}
+                                      stroke={cornerOn ? RED : inStroke}
+                                      strokeWidth={cornerOn ? 1.8 : 1}
+                                    />
+                                    {cornerOn && <rect x="64" y="1" width="14" height="10" rx="2.5" fill={RED} fillOpacity="0.12"/>}
+                                    <text x="25" y="7.5" textAnchor="middle" fontSize="4" fill={cornerOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">C</text>
+                                    <text x="71" y="7.5" textAnchor="middle" fontSize="4" fill={cornerOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">C</text>
+
+                                    {/* Windows row 1 */}
+                                    {[23,36,50,63].map(x => (
+                                      <rect key={x} x={x} y="14" width="10" height="7" rx="1.5"
+                                        fill={isUnavailable ? "rgba(255,255,255,0.05)" : "#d0d6ee"}
+                                        stroke={isUnavailable ? "rgba(255,255,255,0.07)" : "#b0b8d0"}
+                                        strokeWidth="0.8"
+                                      />
+                                    ))}
+                                    {/* Windows row 2 */}
+                                    {[23,36,50,63].map(x => (
+                                      <rect key={x+"b"} x={x} y="26" width="10" height="7" rx="1.5"
+                                        fill={isUnavailable ? "rgba(255,255,255,0.05)" : "#d0d6ee"}
+                                        stroke={isUnavailable ? "rgba(255,255,255,0.07)" : "#b0b8d0"}
+                                        strokeWidth="0.8"
+                                      />
+                                    ))}
+
+                                    {/* Wheels */}
+                                    <ellipse cx="26" cy="59" rx="4.5" ry="3" fill={isUnavailable ? "rgba(255,255,255,0.07)" : "#8a90a8"} stroke={isUnavailable ? "rgba(255,255,255,0.1)" : "#606680"} strokeWidth="0.8"/>
+                                    <ellipse cx="70" cy="59" rx="4.5" ry="3" fill={isUnavailable ? "rgba(255,255,255,0.07)" : "#8a90a8"} stroke={isUnavailable ? "rgba(255,255,255,0.1)" : "#606680"} strokeWidth="0.8"/>
+                                  </svg>
+                                );
+                              })()}
+                            </Box>
+
+                            {/* ── Position chips — two lines ── */}
+                            <Box display="flex" flexDirection="column" gap={1} flex={1}>
+
+                              {/* Line 1: label + Select All + Left + Right */}
+                              <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                                <Typography sx={{ fontSize: "0.65rem", fontWeight: 700, color: isUnavailable ? "rgba(255,255,255,0.25)" : tokens.gray400, textTransform: "uppercase", letterSpacing: "0.07em", flexShrink: 0 }}>
+                                  Positions
+                                </Typography>
+
+                                {/* Select All / Clear All */}
+                                {!isUnavailable && (
                                   <Box
-                                    onClick={() => !isUnavailable && togglePosition(row.ledVehicleId, posKey)}
+                                    onClick={() => {
+                                      const allOn = positionKeys.every(k => positions[k]?.enabled);
+                                      positionKeys.forEach(k => {
+                                        if (allOn ? positions[k]?.enabled : !positions[k]?.enabled) {
+                                          togglePosition(row.ledVehicleId, k);
+                                        }
+                                      });
+                                    }}
                                     sx={{
-                                      px: 1.25,
-                                      py: "5px",
-                                      cursor: isUnavailable ? "default" : "pointer",
-                                      background: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.06)" : colors.bg,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: 0.5,
-                                      userSelect: "none",
-                                      transition: "background 0.15s ease",
-                                      "&:hover": !isUnavailable ? { opacity: 0.85 } : {},
+                                      px: 1, py: "3px", borderRadius: "6px", border: "1.5px solid",
+                                      borderColor: positionKeys.every(k => positions[k]?.enabled) ? tokens.red : tokens.teal,
+                                      background: positionKeys.every(k => positions[k]?.enabled) ? tokens.redLight : tokens.tealLight,
+                                      cursor: "pointer", display: "flex", alignItems: "center", gap: 0.4,
+                                      userSelect: "none", transition: "all 0.15s ease",
+                                      "&:hover": { opacity: 0.8 }, flexShrink: 0,
                                     }}
                                   >
-                                    <Typography sx={{ fontSize: "0.72rem", fontWeight: 800, color: isActive ? "#fff" : isUnavailable ? "rgba(255,255,255,0.3)" : colors.text, letterSpacing: "0.03em", lineHeight: 1 }}>
-                                      {posKey}
-                                    </Typography>
-                                    {isActive && dimText && (
-                                      <Typography sx={{ fontSize: "0.66rem", fontWeight: 700, color: "rgba(255,255,255,0.8)", ml: 0.25, fontFamily: "monospace" }}>
-                                        {dimText}
-                                      </Typography>
+                                    {positionKeys.every(k => positions[k]?.enabled) ? (
+                                      <>
+                                        <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2l-6 6" stroke={tokens.red} strokeWidth="2" strokeLinecap="round"/></svg>
+                                        <Typography sx={{ fontSize: "0.63rem", fontWeight: 800, color: tokens.red, lineHeight: 1 }}>Clear All</Typography>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M1.5 5.5l2.5 2.5 5-5" stroke={tokens.teal} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                        <Typography sx={{ fontSize: "0.63rem", fontWeight: 800, color: tokens.teal, lineHeight: 1 }}>All</Typography>
+                                      </>
                                     )}
                                   </Box>
+                                )}
 
-                                  {/* L input */}
-                                  <Box sx={{ display: "flex", alignItems: "center", borderLeft: "1px solid", borderColor: isActive ? `${colors.active}40` : isUnavailable ? "rgba(255,255,255,0.08)" : colors.border }}>
-                                    <Typography sx={{ fontSize: "0.6rem", fontWeight: 700, color: isActive ? colors.text : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray400, px: 0.6, lineHeight: 1, userSelect: "none" }}>L</Typography>
-                                    <input
-                                      type="number"
-                                      placeholder="0"
-                                      value={pos.L}
-                                      disabled={isUnavailable}
-                                      onChange={(e) => handlePositionChange(row.ledVehicleId, posKey, "L", e.target.value)}
-                                      onFocus={() => !pos.enabled && !isUnavailable && togglePosition(row.ledVehicleId, posKey)}
-                                      style={{
-                                        width: 40,
-                                        border: "none",
-                                        outline: "none",
-                                        background: "transparent",
-                                        fontSize: "0.78rem",
-                                        fontWeight: 700,
-                                        color: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray600,
-                                        padding: "5px 4px",
-                                        fontFamily: "monospace",
-                                        MozAppearance: "textfield",
-                                        cursor: isUnavailable ? "not-allowed" : "text",
-                                      }}
-                                    />
-                                  </Box>
+                                {/* Left + Right chips */}
+                                {["Left", "Right"].map((posKey) => {
+                                  const pos = positions[posKey] || { enabled: false, L: "", W: "" };
+                                  const colors = posColors[posKey];
+                                  const isActive = pos.enabled;
+                                  const dimText = pos.L && pos.W ? `${pos.L}×${pos.W}` : "";
+                                  return (
+                                    <Box key={posKey} sx={{ display: "flex", alignItems: "center", border: "1.5px solid", borderColor: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.1)" : colors.border, borderRadius: "8px", overflow: "hidden", background: isActive ? colors.bg : isUnavailable ? "rgba(255,255,255,0.04)" : tokens.white, transition: "all 0.15s ease", flexShrink: 0 }}>
+                                      {/* Toggle btn */}
+                                      <Box onClick={() => !isUnavailable && togglePosition(row.ledVehicleId, posKey)} sx={{ width: 22, minHeight: 26, display: "flex", alignItems: "center", justifyContent: "center", cursor: isUnavailable ? "default" : "pointer", background: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.04)" : tokens.gray100, borderRight: "1px solid", borderColor: isActive ? `${colors.active}60` : isUnavailable ? "rgba(255,255,255,0.08)" : tokens.gray200, transition: "all 0.15s ease", "&:hover": !isUnavailable ? { opacity: 0.8 } : {} }}>
+                                        {isActive ? <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M1.5 5.5l2.5 2.5 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg> : <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke={isUnavailable ? "rgba(255,255,255,0.2)" : colors.text} strokeWidth="1.8" strokeLinecap="round"/></svg>}
+                                      </Box>
+                                      {/* Label */}
+                                      <Box sx={{ px: 0.9, py: "4px", background: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.06)" : colors.bg, borderRight: "1px solid", borderColor: isActive ? `${colors.active}40` : isUnavailable ? "rgba(255,255,255,0.08)" : colors.border, userSelect: "none" }}>
+                                        <Typography sx={{ fontSize: "0.68rem", fontWeight: 800, color: isActive ? "#fff" : isUnavailable ? "rgba(255,255,255,0.3)" : colors.text, lineHeight: 1 }}>{posKey}{isActive && dimText ? ` ${dimText}` : ""}</Typography>
+                                      </Box>
+                                      {/* L */}
+                                      <Box sx={{ display: "flex", alignItems: "center", borderRight: "1px solid", borderColor: isActive ? `${colors.active}30` : isUnavailable ? "rgba(255,255,255,0.08)" : colors.border }}>
+                                        <Typography sx={{ fontSize: "0.56rem", fontWeight: 800, color: isActive ? colors.text : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray400, px: 0.5, userSelect: "none" }}>L</Typography>
+                                        <input type="number" placeholder="—" value={pos.L} disabled={isUnavailable} onChange={(e) => handlePositionChange(row.ledVehicleId, posKey, "L", e.target.value)} onFocus={() => !pos.enabled && !isUnavailable && togglePosition(row.ledVehicleId, posKey)} style={{ width: 36, border: "none", outline: "none", background: "transparent", fontSize: "0.74rem", fontWeight: 700, color: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray600, padding: "4px 2px", fontFamily: "monospace", MozAppearance: "textfield", cursor: isUnavailable ? "not-allowed" : "text" }}/>
+                                      </Box>
+                                      <Typography sx={{ fontSize: "0.65rem", color: isActive ? colors.text : tokens.gray400, fontWeight: 700, px: 0.25, userSelect: "none" }}>×</Typography>
+                                      {/* W */}
+                                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                                        <Typography sx={{ fontSize: "0.56rem", fontWeight: 800, color: isActive ? colors.text : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray400, px: 0.5, userSelect: "none" }}>W</Typography>
+                                        <input type="number" placeholder="—" value={pos.W} disabled={isUnavailable} onChange={(e) => handlePositionChange(row.ledVehicleId, posKey, "W", e.target.value)} onFocus={() => !pos.enabled && !isUnavailable && togglePosition(row.ledVehicleId, posKey)} style={{ width: 36, border: "none", outline: "none", background: "transparent", fontSize: "0.74rem", fontWeight: 700, color: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray600, padding: "4px 4px 4px 0", fontFamily: "monospace", MozAppearance: "textfield", cursor: isUnavailable ? "not-allowed" : "text" }}/>
+                                      </Box>
+                                      {/* Deselect */}
+                                      {isActive && !isUnavailable && <Box onClick={() => togglePosition(row.ledVehicleId, posKey)} sx={{ width: 18, minHeight: 26, display: "flex", alignItems: "center", justifyContent: "center", borderLeft: `1px solid ${colors.active}30`, cursor: "pointer", background: `${colors.active}10`, "&:hover": { background: `${colors.active}25` } }}><svg width="7" height="7" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2l-6 6" stroke={colors.active} strokeWidth="2" strokeLinecap="round"/></svg></Box>}
+                                    </Box>
+                                  );
+                                })}
+                              </Box>
 
-                                  {/* separator */}
-                                  <Typography sx={{ fontSize: "0.7rem", color: isActive ? colors.text : tokens.gray400, fontWeight: 700, px: 0.25, userSelect: "none" }}>×</Typography>
+                              {/* Line 2: Corner + Back chips */}
+                              <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                                {/* spacer to align under chips */}
+                                <Box sx={{ width: 60, flexShrink: 0 }} />
 
-                                  {/* W input */}
-                                  <Box sx={{ display: "flex", alignItems: "center", borderRight: "none" }}>
-                                    <Typography sx={{ fontSize: "0.6rem", fontWeight: 700, color: isActive ? colors.text : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray400, px: 0.6, lineHeight: 1, userSelect: "none" }}>W</Typography>
-                                    <input
-                                      type="number"
-                                      placeholder="0"
-                                      value={pos.W}
-                                      disabled={isUnavailable}
-                                      onChange={(e) => handlePositionChange(row.ledVehicleId, posKey, "W", e.target.value)}
-                                      onFocus={() => !pos.enabled && !isUnavailable && togglePosition(row.ledVehicleId, posKey)}
-                                      style={{
-                                        width: 40,
-                                        border: "none",
-                                        outline: "none",
-                                        background: "transparent",
-                                        fontSize: "0.78rem",
-                                        fontWeight: 700,
-                                        color: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray600,
-                                        padding: "5px 4px 5px 0",
-                                        fontFamily: "monospace",
-                                        MozAppearance: "textfield",
-                                        cursor: isUnavailable ? "not-allowed" : "text",
-                                      }}
-                                    />
-                                  </Box>
-                                </Box>
-                              );
-                            })}
-                          </Box>
+                                {["Corner", "Back"].map((posKey) => {
+                                  const pos = positions[posKey] || { enabled: false, L: "", W: "" };
+                                  const colors = posColors[posKey];
+                                  const isActive = pos.enabled;
+                                  const dimText = pos.L && pos.W ? `${pos.L}×${pos.W}` : "";
+                                  return (
+                                    <Box key={posKey} sx={{ display: "flex", alignItems: "center", border: "1.5px solid", borderColor: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.1)" : colors.border, borderRadius: "8px", overflow: "hidden", background: isActive ? colors.bg : isUnavailable ? "rgba(255,255,255,0.04)" : tokens.white, transition: "all 0.15s ease", flexShrink: 0 }}>
+                                      {/* Toggle btn */}
+                                      <Box onClick={() => !isUnavailable && togglePosition(row.ledVehicleId, posKey)} sx={{ width: 22, minHeight: 26, display: "flex", alignItems: "center", justifyContent: "center", cursor: isUnavailable ? "default" : "pointer", background: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.04)" : tokens.gray100, borderRight: "1px solid", borderColor: isActive ? `${colors.active}60` : isUnavailable ? "rgba(255,255,255,0.08)" : tokens.gray200, transition: "all 0.15s ease", "&:hover": !isUnavailable ? { opacity: 0.8 } : {} }}>
+                                        {isActive ? <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M1.5 5.5l2.5 2.5 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg> : <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke={isUnavailable ? "rgba(255,255,255,0.2)" : colors.text} strokeWidth="1.8" strokeLinecap="round"/></svg>}
+                                      </Box>
+                                      {/* Label */}
+                                      <Box sx={{ px: 0.9, py: "4px", background: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.06)" : colors.bg, borderRight: "1px solid", borderColor: isActive ? `${colors.active}40` : isUnavailable ? "rgba(255,255,255,0.08)" : colors.border, userSelect: "none" }}>
+                                        <Typography sx={{ fontSize: "0.68rem", fontWeight: 800, color: isActive ? "#fff" : isUnavailable ? "rgba(255,255,255,0.3)" : colors.text, lineHeight: 1 }}>{posKey}{isActive && dimText ? ` ${dimText}` : ""}</Typography>
+                                      </Box>
+                                      {/* L */}
+                                      <Box sx={{ display: "flex", alignItems: "center", borderRight: "1px solid", borderColor: isActive ? `${colors.active}30` : isUnavailable ? "rgba(255,255,255,0.08)" : colors.border }}>
+                                        <Typography sx={{ fontSize: "0.56rem", fontWeight: 800, color: isActive ? colors.text : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray400, px: 0.5, userSelect: "none" }}>L</Typography>
+                                        <input type="number" placeholder="—" value={pos.L} disabled={isUnavailable} onChange={(e) => handlePositionChange(row.ledVehicleId, posKey, "L", e.target.value)} onFocus={() => !pos.enabled && !isUnavailable && togglePosition(row.ledVehicleId, posKey)} style={{ width: 36, border: "none", outline: "none", background: "transparent", fontSize: "0.74rem", fontWeight: 700, color: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray600, padding: "4px 2px", fontFamily: "monospace", MozAppearance: "textfield", cursor: isUnavailable ? "not-allowed" : "text" }}/>
+                                      </Box>
+                                      <Typography sx={{ fontSize: "0.65rem", color: isActive ? colors.text : tokens.gray400, fontWeight: 700, px: 0.25, userSelect: "none" }}>×</Typography>
+                                      {/* W */}
+                                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                                        <Typography sx={{ fontSize: "0.56rem", fontWeight: 800, color: isActive ? colors.text : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray400, px: 0.5, userSelect: "none" }}>W</Typography>
+                                        <input type="number" placeholder="—" value={pos.W} disabled={isUnavailable} onChange={(e) => handlePositionChange(row.ledVehicleId, posKey, "W", e.target.value)} onFocus={() => !pos.enabled && !isUnavailable && togglePosition(row.ledVehicleId, posKey)} style={{ width: 36, border: "none", outline: "none", background: "transparent", fontSize: "0.74rem", fontWeight: 700, color: isActive ? colors.active : isUnavailable ? "rgba(255,255,255,0.2)" : tokens.gray600, padding: "4px 4px 4px 0", fontFamily: "monospace", MozAppearance: "textfield", cursor: isUnavailable ? "not-allowed" : "text" }}/>
+                                      </Box>
+                                      {/* Deselect */}
+                                      {isActive && !isUnavailable && <Box onClick={() => togglePosition(row.ledVehicleId, posKey)} sx={{ width: 18, minHeight: 26, display: "flex", alignItems: "center", justifyContent: "center", borderLeft: `1px solid ${colors.active}30`, cursor: "pointer", background: `${colors.active}10`, "&:hover": { background: `${colors.active}25` } }}><svg width="7" height="7" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2l-6 6" stroke={colors.active} strokeWidth="2" strokeLinecap="round"/></svg></Box>}
+                                    </Box>
+                                  );
+                                })}
+                              </Box>
+
+                            </Box>{/* end position chips column */}
+                          </Box>{/* end row flex */}
                         </TableCell>
                       </TableRow>
+                     
                     </>
                   );
                 })

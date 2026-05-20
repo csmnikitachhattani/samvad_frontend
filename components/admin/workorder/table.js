@@ -122,7 +122,6 @@ const CounterTable = ({ rows = [] }) => {
                                         </TableCell>
                                         <TableCell>
                                             <div>Avak Id:{row.avak_ref_id}</div>
-                            
                                             <div>ref no:{row.client_ref_id}</div>
                                         </TableCell>
                                         <TableCell >
