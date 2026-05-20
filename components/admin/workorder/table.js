@@ -46,9 +46,7 @@ const CounterTable = ({ rows = [] }) => {
             .then((r) => r.json())
             .then((d) => setIpAddress(d.ip))
             .catch(() => {});
-    // }, []);
 
-    // useEffect(() => {
         let fin_year = localStorage.getItem("financialYear")
         async function fetchCounters(fin_year) {
             try {

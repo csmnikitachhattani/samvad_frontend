@@ -430,7 +430,7 @@ const AdvtDownloadTable = ({ rows = [] }) => {
                                                             variant="contained"
                                                             size="small"
                                                             disableElevation
-                                                            onClick={() => router.push(`/admin/counter/${row.job_id}`)}
+                                                            onClick={() => router.push(`/admin/counter/bus/${row.job_id}`)}
                                                             sx={btnStyles.alloc}
                                                         >
                                                             Move to Alloc.

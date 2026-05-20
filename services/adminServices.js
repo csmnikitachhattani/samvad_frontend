@@ -79,6 +79,15 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getBusCounterDetail: async (id) => {
+    try {
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/getoutdoorbuscounter?id=${id}`);
+      return res.data;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   getVendorList: async (id) => {
     try {
       const res = await axiosClient.get(`/ManageMaster/getagencybyserviceid/${id}`);
