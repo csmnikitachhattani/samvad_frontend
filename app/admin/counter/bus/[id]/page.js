@@ -739,7 +739,7 @@ export default function WorkOrderForm() {
         <Box p={3}>
           <Grid container spacing={3}>
             {/* ── Left Panel: Form Fields ── */}
-            <Grid item xs={12} md={3.5}>
+            <Grid item size={{xs:12, md:3.5}}>
               <Box
                 sx={{
                   background: tokens.gray50,
@@ -924,7 +924,7 @@ export default function WorkOrderForm() {
             </Grid>
 
             {/* ── Right Panel: Work List Table ── */}
-            <Grid item xs={12} md={8.5}>
+            <Grid item size={{xs:12,md:8.5}}>
               <Box
                 sx={{
                   border: `1px solid ${tokens.gray200}`,
@@ -1257,73 +1257,69 @@ export default function WorkOrderForm() {
                                 const bodyStroke = isUnavailable ? "rgba(255,255,255,0.1)" : "#b0b8d0";
                                 const lbl      = isUnavailable ? "rgba(255,255,255,0.22)" : "#9aa0b8";
                                 return (
-                                  <svg width="96" height="68" viewBox="0 0 96 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    {/* Bus body */}
-                                    <rect x="18" y="10" width="60" height="48" rx="5" fill={bodyFill} stroke={bodyStroke} strokeWidth="1.2"/>
+                                  <svg width="110" height="80" viewBox="0 0 110 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    {/* ── Bus body ── */}
+                                    <rect x="20" y="12" width="68" height="52" rx="4" fill={bodyFill} stroke={bodyStroke} strokeWidth="1.2"/>
 
-                                    {/* LEFT panel */}
-                                    <rect x="8" y="14" width="10" height="40" rx="2.5"
+                                    {/* ── LEFT side: Corner (top) + Left (main) ── */}
+                                    {/* Corner panel — top-left, smaller */}
+                                    <rect x="8" y="12" width="12" height="16" rx="2.5"
+                                      fill={cornerOn ? REDFILL : inFill}
+                                      stroke={cornerOn ? RED : inStroke}
+                                      strokeWidth={cornerOn ? 1.8 : 1}
+                                    />
+                                    {cornerOn && <rect x="8" y="12" width="12" height="16" rx="2.5" fill={RED} fillOpacity="0.13"/>}
+                                    <text x="14" y="22" textAnchor="middle" fontSize="4.2" fill={cornerOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">COR</text>
+
+                                    {/* Left panel — main, bigger, below corner */}
+                                    <rect x="8" y="30" width="12" height="30" rx="2.5"
                                       fill={leftOn ? REDFILL : inFill}
                                       stroke={leftOn ? RED : inStroke}
                                       strokeWidth={leftOn ? 1.8 : 1}
                                     />
-                                    {leftOn && <rect x="8" y="14" width="10" height="40" rx="2.5" fill={RED} fillOpacity="0.12"/>}
-                                    <text x="13" y="36" textAnchor="middle" fontSize="5" fill={leftOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">L</text>
+                                    {leftOn && <rect x="8" y="30" width="12" height="30" rx="2.5" fill={RED} fillOpacity="0.13"/>}
+                                    <text x="14" y="47" textAnchor="middle" fontSize="4.2" fill={leftOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">LEFT</text>
 
-                                    {/* RIGHT panel */}
-                                    <rect x="78" y="14" width="10" height="40" rx="2.5"
+                                    {/* ── RIGHT side: single full-height Right panel ── */}
+                                    <rect x="90" y="12" width="12" height="48" rx="2.5"
                                       fill={rightOn ? REDFILL : inFill}
                                       stroke={rightOn ? RED : inStroke}
                                       strokeWidth={rightOn ? 1.8 : 1}
                                     />
-                                    {rightOn && <rect x="78" y="14" width="10" height="40" rx="2.5" fill={RED} fillOpacity="0.12"/>}
-                                    <text x="83" y="36" textAnchor="middle" fontSize="5" fill={rightOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">R</text>
+                                    {rightOn && <rect x="90" y="12" width="12" height="48" rx="2.5" fill={RED} fillOpacity="0.13"/>}
+                                    <text x="96" y="38" textAnchor="middle" fontSize="4.2" fill={rightOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">R</text>
 
-                                    {/* BACK panel */}
-                                    <rect x="22" y="58" width="52" height="9" rx="2.5"
+                                    {/* ── BACK panel ── */}
+                                    <rect x="24" y="64" width="60" height="10" rx="2.5"
                                       fill={backOn ? REDFILL : inFill}
                                       stroke={backOn ? RED : inStroke}
                                       strokeWidth={backOn ? 1.8 : 1}
                                     />
-                                    {backOn && <rect x="22" y="58" width="52" height="9" rx="2.5" fill={RED} fillOpacity="0.12"/>}
-                                    <text x="48" y="64.5" textAnchor="middle" fontSize="4.5" fill={backOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">BACK</text>
+                                    {backOn && <rect x="24" y="64" width="60" height="10" rx="2.5" fill={RED} fillOpacity="0.13"/>}
+                                    <text x="54" y="71" textAnchor="middle" fontSize="4.2" fill={backOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">BACK</text>
 
-                                    {/* CORNER — front-left + front-right */}
-                                    <rect x="18" y="1" width="14" height="10" rx="2.5"
-                                      fill={cornerOn ? REDFILL : inFill}
-                                      stroke={cornerOn ? RED : inStroke}
-                                      strokeWidth={cornerOn ? 1.8 : 1}
-                                    />
-                                    {cornerOn && <rect x="18" y="1" width="14" height="10" rx="2.5" fill={RED} fillOpacity="0.12"/>}
-                                    <rect x="64" y="1" width="14" height="10" rx="2.5"
-                                      fill={cornerOn ? REDFILL : inFill}
-                                      stroke={cornerOn ? RED : inStroke}
-                                      strokeWidth={cornerOn ? 1.8 : 1}
-                                    />
-                                    {cornerOn && <rect x="64" y="1" width="14" height="10" rx="2.5" fill={RED} fillOpacity="0.12"/>}
-                                    <text x="25" y="7.5" textAnchor="middle" fontSize="4" fill={cornerOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">C</text>
-                                    <text x="71" y="7.5" textAnchor="middle" fontSize="4" fill={cornerOn ? RED : lbl} fontWeight="800" fontFamily="system-ui,sans-serif">C</text>
-
-                                    {/* Windows row 1 */}
-                                    {[23,36,50,63].map(x => (
-                                      <rect key={x} x={x} y="14" width="10" height="7" rx="1.5"
+                                    {/* ── Windows ── */}
+                                    {[25, 39, 53, 67].map(x => (
+                                      <rect key={x} x={x} y="16" width="11" height="7" rx="1.5"
                                         fill={isUnavailable ? "rgba(255,255,255,0.05)" : "#d0d6ee"}
                                         stroke={isUnavailable ? "rgba(255,255,255,0.07)" : "#b0b8d0"}
                                         strokeWidth="0.8"
                                       />
                                     ))}
-                                    {/* Windows row 2 */}
-                                    {[23,36,50,63].map(x => (
-                                      <rect key={x+"b"} x={x} y="26" width="10" height="7" rx="1.5"
+                                    {[25, 39, 53, 67].map(x => (
+                                      <rect key={x+"b"} x={x} y="28" width="11" height="7" rx="1.5"
                                         fill={isUnavailable ? "rgba(255,255,255,0.05)" : "#d0d6ee"}
                                         stroke={isUnavailable ? "rgba(255,255,255,0.07)" : "#b0b8d0"}
                                         strokeWidth="0.8"
                                       />
                                     ))}
 
-                                    {/* Wheels */}
-                                    <ellipse cx="26" cy="59" rx="4.5" ry="3" fill={isUnavailable ? "rgba(255,255,255,0.07)" : "#8a90a8"} stroke={isUnavailable ? "rgba(255,255,255,0.1)" : "#606680"} strokeWidth="0.8"/>
-                                    <ellipse cx="70" cy="59" rx="4.5" ry="3" fill={isUnavailable ? "rgba(255,255,255,0.07)" : "#8a90a8"} stroke={isUnavailable ? "rgba(255,255,255,0.1)" : "#606680"} strokeWidth="0.8"/>
+                                    {/* ── Wheels ── */}
+                                    <ellipse cx="30" cy="66" rx="5" ry="3.5" fill={isUnavailable ? "rgba(255,255,255,0.07)" : "#8a90a8"} stroke={isUnavailable ? "rgba(255,255,255,0.1)" : "#606680"} strokeWidth="0.8"/>
+                                    <ellipse cx="78" cy="66" rx="5" ry="3.5" fill={isUnavailable ? "rgba(255,255,255,0.07)" : "#8a90a8"} stroke={isUnavailable ? "rgba(255,255,255,0.1)" : "#606680"} strokeWidth="0.8"/>
+
+                                    {/* ── Gap line between Corner and Left on left side ── */}
+                                    <line x1="9" y1="28.5" x2="19" y2="28.5" stroke={isUnavailable ? "rgba(255,255,255,0.12)" : "#c8cde0"} strokeWidth="0.8" strokeDasharray="1.5 1.5"/>
                                   </svg>
                                 );
                               })()}
