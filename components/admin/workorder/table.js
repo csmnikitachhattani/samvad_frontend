@@ -50,7 +50,7 @@ const CounterTable = ({ rows = [] }) => {
         let fin_year = localStorage.getItem("financialYear")
         async function fetchCounters(fin_year) {
             try {
-                const response = await adminServices.getWorkorders();
+                const response = await adminServices.getWorkorders(localStorage.getItem("financialYear"));
                 setData(response.data || []);
                 console.log(response)
             } catch (error) {

@@ -128,6 +128,12 @@ export default function WorkOrder() {
       );
   };
 
+  const Field = ({ value, style = {} }) => (
+    <span style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", ...style }}>
+      {value || ""}
+    </span>
+  );
+
   const s = {
     page: { background: "#e8e8e8", minHeight: "100vh", padding: "40px", fontFamily: "Arial, sans-serif", fontSize: "12px" },
     btns: { display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" },
@@ -327,9 +333,25 @@ export default function WorkOrder() {
                   <td style={tdStyle}>
                     <F value={r.VehicleNo ?? ""} onChange={v => updateRow(r.id, "VehicleNo", v)} />
                   </td>
-                  <td style={tdStyle}>
+                  {/* <td style={tdStyle}>
                     <F value={r.Specification ?? ""} onChange={v => updateRow(r.id, "Specification", v)} multiline />
-                  </td>
+                  </td> */}
+                  <td style={tdStyle}>
+                  {/* <Field value={r.description ?? r.wo_subject ?? ""} /> */}
+                  {r.Specification && (
+                    <div style={{ marginTop: 2 }}>
+                      <Field value={r.Specification} />
+                    </div>
+                  )}
+                  <Field
+                    value={(r.description ?? r.wo_subject ?? "")
+                      .replace(/<[^>]*>/g, "")      // remove html tags
+                      .replace(/&nbsp;/g, " ")      // convert nbsp
+                      .replace(/&#39;/g, "'")       // convert apostrophe
+                      .trim()}
+                  />
+                 
+                </td>
                   <td style={tdStyle}>
                     <F value={formatDate(r.start_date)} onChange={v => updateRow(r.id, "start_date", v)} />-
                   <F value={formatDate(r.end_date)} onChange={v => updateRow(r.id, "end_date", v)} />

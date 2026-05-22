@@ -60,10 +60,10 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
-  getWorkorders: async (financial_year) => {
-    console.log(financial_year)
+  getWorkorders: async (fin_year) => {
+    console.log(fin_year)
     try {
-      const res = await axiosClient.get(`/OutDoorMediaTransaction/odm_lv_pending-ro-list?financial_year=${financial_year}`);
+      const res = await axiosClient.get(`/OutDoorMediaTransaction/odm_lv_pending-ro-list?financial_year=${fin_year}`);
       return res.data;
     } catch (err) {
       console.log("answer")
