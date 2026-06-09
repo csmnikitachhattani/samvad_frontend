@@ -204,16 +204,16 @@ export default function WorkOrderForm() {
     Back:   { enabled: false, L: "", W: "" },
   });
   const [selectedVehicles, setSelectedVehicles] = useState([
-    { ledVehicleId: "V001", VehicleNo: "TS 09 PA 1234", vendorName: "Hyderabad Outdoor Ads", duration_text: "1 Month", rate: 18000, totalRate: 18000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V002", VehicleNo: "TS 09 PB 5678", vendorName: "Hyderabad Outdoor Ads", duration_text: "1 Month", rate: 18000, totalRate: 18000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "N", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V003", VehicleNo: "TS 09 PC 9012", vendorName: "City Media Solutions",  duration_text: "1 Month", rate: 20000, totalRate: 20000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V004", VehicleNo: "TS 09 PD 3456", vendorName: "City Media Solutions",  duration_text: "1 Month", rate: 20000, totalRate: 20000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V005", VehicleNo: "TS 09 PE 7890", vendorName: "Sai Advertisers",       duration_text: "1 Month", rate: 15500, totalRate: 15500, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "N", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V006", VehicleNo: "TS 09 PF 2345", vendorName: "Sai Advertisers",       duration_text: "1 Month", rate: 15500, totalRate: 15500, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V007", VehicleNo: "TS 09 PG 6789", vendorName: "Metro LED Pvt Ltd",     duration_text: "1 Month", rate: 22000, totalRate: 22000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V008", VehicleNo: "TS 09 PH 0123", vendorName: "Metro LED Pvt Ltd",     duration_text: "1 Month", rate: 22000, totalRate: 22000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V009", VehicleNo: "TS 09 PI 4567", vendorName: "Urban Screens Co.",     duration_text: "1 Month", rate: 17000, totalRate: 17000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "N", selected: false, positions: defaultPositions() },
-    { ledVehicleId: "V010", VehicleNo: "TS 09 PJ 8901", vendorName: "Urban Screens Co.",     duration_text: "1 Month", rate: 17000, totalRate: 17000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V001", VehicleNo: "TS 09 PA 1234", vendorName: "Hyderabad Outdoor Ads", duration_text: "1 Month", rate: 18000, totalRate: 18000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V002", VehicleNo: "TS 09 PB 5678", vendorName: "Hyderabad Outdoor Ads", duration_text: "1 Month", rate: 18000, totalRate: 18000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "N", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V003", VehicleNo: "TS 09 PC 9012", vendorName: "City Media Solutions",  duration_text: "1 Month", rate: 20000, totalRate: 20000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V004", VehicleNo: "TS 09 PD 3456", vendorName: "City Media Solutions",  duration_text: "1 Month", rate: 20000, totalRate: 20000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V005", VehicleNo: "TS 09 PE 7890", vendorName: "Sai Advertisers",       duration_text: "1 Month", rate: 15500, totalRate: 15500, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "N", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V006", VehicleNo: "TS 09 PF 2345", vendorName: "Sai Advertisers",       duration_text: "1 Month", rate: 15500, totalRate: 15500, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V007", VehicleNo: "TS 09 PG 6789", vendorName: "Metro LED Pvt Ltd",     duration_text: "1 Month", rate: 22000, totalRate: 22000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V008", VehicleNo: "TS 09 PH 0123", vendorName: "Metro LED Pvt Ltd",     duration_text: "1 Month", rate: 22000, totalRate: 22000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V009", VehicleNo: "TS 09 PI 4567", vendorName: "Urban Screens Co.",     duration_text: "1 Month", rate: 17000, totalRate: 17000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "N", selected: false, positions: defaultPositions() },
+    // { ledVehicleId: "V010", VehicleNo: "TS 09 PJ 8901", vendorName: "Urban Screens Co.",     duration_text: "1 Month", rate: 17000, totalRate: 17000, startDate: "2025-06-01", endDate: "2025-06-30", available_status: "Y", selected: false, positions: defaultPositions() },
   ]);
   const [selected, setSelected] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -431,7 +431,7 @@ export default function WorkOrderForm() {
   useEffect(() => {
     async function fetchCounters() {
       try {
-        const response = await adminServices.getcounterDetail(id);
+        const response = await adminServices.getBusCounterDetail(id);
         setFormData((prev) => ({
           ...prev,
           main_id: response.main_id ?? 0,
@@ -440,7 +440,7 @@ export default function WorkOrderForm() {
           job_id: response.job_id ?? "",
           subject: response.subject ?? "",
           ref_no: response.ref_no ?? "",
-          od_servicetype_id: "08",
+          od_servicetype_id: "09",
           receipt_date: response.receipt_date ?? "",
           vendor_id: response.vendor_id ?? [],
           vendor_name: response.vendor_name ?? [],

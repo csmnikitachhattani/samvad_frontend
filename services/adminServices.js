@@ -79,6 +79,7 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  
   getBusCounterDetail: async (id) => {
     try {
       const res = await axiosClient.get(`/OutDoorMediaTransaction/getoutdoorbuscounter?id=${id}`);
