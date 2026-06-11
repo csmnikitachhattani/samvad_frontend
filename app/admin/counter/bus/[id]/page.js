@@ -339,7 +339,7 @@ export default function WorkOrderForm() {
 
   async function fetchCategories() {
     try {
-      const response = await adminServices.getOdmRateCategory({
+      const response = await adminServices.getOdmMBCategory({
         tender_cate_cd: "29",
         param: "search",
         search_param: "category_id",
@@ -352,7 +352,7 @@ export default function WorkOrderForm() {
 
   async function fetchTenders() {
     try {
-      const response = await adminServices.getOdmRateTender({
+      const response = await adminServices.getOdmMBTender({
         tender_cate_cd: formData.category,
         param: "search",
         search_param: "tender_id",
@@ -367,8 +367,8 @@ export default function WorkOrderForm() {
 
   async function fetchWorkTypes() {
     try {
-      const response = await adminServices.getOdmRateWorkTypes({
-        tender_cate_cd: "29",
+      const response = await adminServices.getOdmMBWorkTypes({
+        tender_cate_cd: formData.category,
         tender_type_id: "02",
         tender_id: formData.tender,
         param: "search",
@@ -382,10 +382,10 @@ export default function WorkOrderForm() {
 
   async function fetchWorkList() {
     try {
-      const response = await adminServices.getOdmRateWorkList({
-        tender_cate_cd: "29",
-        tender_id: "T202429001",
-        work_type_id: "239",
+      const response = await adminServices.getOdmMBWorkList({
+        tender_cate_cd: "33",
+        tender_id: formData.tender,
+        work_type_id: "251",
         param: "get",
       });
       setWorkList(response.data.data);

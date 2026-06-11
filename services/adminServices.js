@@ -228,6 +228,53 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+
+  getOdmMBCategory: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-mb-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmMBTender: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-mb-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmMBWorkTypes: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-mb-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmMBRateDuration: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-mb-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+  getOdmMBWorkList: async (payload) =>{
+    try {
+      const res = await axiosClient.post('/OutDoorMediaTransaction/odm-mb-get-rate-parameters', payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
+ 
   getLEDvehicleRate: async (payload) =>{
     const {type} = payload
     try {
