@@ -233,7 +233,6 @@ export default function WorkOrderForm() {
   const [userTypeCd, setUserTypeCd] = useState("");
   const [ipAddress, setIpAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
   const [formData, setFormData] = useState({
     main_id: 0,
     financial_year: "",
@@ -403,7 +402,7 @@ export default function WorkOrderForm() {
     }
   }
 
-  async function fetchAllocation() {
+  async function BusAllocationList() {
     const payload = {
       durationType: rateType,
       durationId: formData.duration_id,
@@ -413,7 +412,7 @@ export default function WorkOrderForm() {
       toDate: formatDateSimple(formData.end_date),
     };
     try {
-      const response = await adminServices.getAllocationList(payload);
+      const response = await adminServices.getBusAllocationList(payload);
       const date = calculateEndDate(formData?.start_date, formData.multiply_value);
       await setFormData((prev) => ({ ...prev, end_date: date }));
       const res = await SubmitVehicles(response.data.data);
@@ -488,7 +487,7 @@ export default function WorkOrderForm() {
   useEffect(() => { if (formData.work_type) fetchWorkList(); }, [formData.work_type]);
   useEffect(() => { if (formData.rate_duration_id) fetchWorkList(); }, [formData.rate_duration_id]);
   useEffect(() => { if (rateType) fetchRateDur(); }, [rateType]);
-  useEffect(() => { if (formData.duration_id) fetchAllocation(); }, [formData.duration_id, selectedWork, formData.vendor_id]);
+  useEffect(() => { if (formData.duration_id) BusAllocationList(); }, [formData.duration_id, selectedWork, formData.vendor_id]);
   useEffect(() => { fetchCategories(); }, []);
 
   // ── Handlers ───────────────────────────────────────────────────────────────

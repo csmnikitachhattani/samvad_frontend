@@ -295,6 +295,16 @@ const adminService = {
       throw err; // interceptor will format it
     }
   },
+  getBusAllocationList: async (payload) =>{
+    //const {type} = payload
+    try {
+      const res = await axiosClient.post(`/OutDoorMediaTransaction/bus-availability-between-date`,payload);
+      return res;
+    } catch (err) {
+      console.log("answer")
+      throw err; // interceptor will format it
+    }
+  },
   getNoteSheetPrintDetail: async (payload) =>{
     const {job_no, avak_ref, fin_year} = payload
     try {
